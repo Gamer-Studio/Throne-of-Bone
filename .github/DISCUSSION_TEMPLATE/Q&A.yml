@@ -1,0 +1,30 @@
+- attributes:
+    description: 어떤 운영체제를 사용 중이신가요?
+    label: 운영체제
+    placeholder: '예: Windows 11 / macOS Sonoma'
+    value: 운영체제
+  type: textarea
+  validations:
+    required: true
+- attributes:
+    default: 0
+    description: 현재 사용 중인 프로젝트 버전을 선택해 주세요.
+    label: 버전
+    multiple: false
+    options:
+    - 미정
+    - v0.1 데모
+    - v1.0 (출시 예정)
+  type: dropdown
+  validations:
+    required: true
+- attributes:
+    description: 모든 구성원이 안전하게 참여할 수 있도록 행동강령에 동의해 주세요.
+    label: 커뮤니티 행동강령
+    options:
+    - label: 이 프로젝트의 [행동강령](link/to/coc)을 읽고 동의합니다.
+      required: true
+  type: checkboxes
+- attributes:
+    value: 질문을 남겨주셔서 감사합니다! 빠르게 확인하고 답변드릴게요 😊
+  type: markdown
