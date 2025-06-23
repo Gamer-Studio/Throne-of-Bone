@@ -12,10 +12,6 @@ namespace ToB.Utils
     [SerializeField] [GetSet(nameof(Value))] private float value;
     [SerializeField] private Stat max;
 
-#if UNITY_EDITOR
-    [SerializeField] [GetSet(nameof(Max))] private float maxValue;
-#endif
-
     public RangedStat(float maxValue, float value, StatOperator<float> maxEffect = null)
     {
       max = new Stat(maxValue);
