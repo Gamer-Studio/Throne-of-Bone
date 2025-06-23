@@ -3,6 +3,8 @@ using System.Collections;
 using NaughtyAttributes;
 using ToB.Utils;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 namespace ToB.Player
 {
@@ -13,18 +15,18 @@ namespace ToB.Player
     private static readonly int TRIGGER_JUMP = Animator.StringToHash("Jump");
     private static readonly int TRIGGER_DASH = Animator.StringToHash("Dash");
     private static readonly int INT_DASH_STATE = Animator.StringToHash("DashState");
-    private static readonly int TRIGGER_GUN_FIRE = Animator.StringToHash("GunFire");
 
     #region State
     [Header( "State")]
     
-    [Tooltip("체력")] public RangedStat health = new (100);
+    [Tooltip("체력"), SerializeField] protected RangedStat health = new (100);
     [Tooltip("애니메이션 상태"), SerializeField, GetSet(nameof(AnimationState))] protected PlayerAnimationState animationState = PlayerAnimationState.Idle;
     [Tooltip("이동속도")] public float moveSpeed = 2;
     [Tooltip("최대 이동 속도")] public float maxMoveSpeed = 12;
     [Tooltip("좌/우 마찰력 보정값")] public float moveResistanceForce = 1;
     [Tooltip("이동방향 (좌/우)")] public PlayerMoveDirection moveDirection = PlayerMoveDirection.Left;
-    [Tooltip("이동 모드"), SerializeField, ReadOnly] protected PlayerMoveMode moveMode = PlayerMoveMode.Idle;
+    // true일 때 이동합니다.
+    [Tooltip("이동 모드"), SerializeField, ReadOnly] protected bool isMoving = false;
     [Tooltip("체공 여부"), SerializeField, ReadOnly] private bool isFlight = false;
 
     [Header("Jump State")]
@@ -34,32 +36,11 @@ namespace ToB.Player
     
     [Header("Dash State")]
     [Tooltip("대시 보정값")] public float dashMultiplier = 12;
-    [Tooltip("")] public float dashTimeLimit = 0.2f;
+    [Tooltip("대시 지속시간")] public float dashTimeLimit = 0.2f;
 
     // 이 아래는 외부 접근용 연결 필드입니다.
     public bool IsFlight => isFlight;
-    #endregion
 
-    /// <summary>
-    /// 플레이어 이동상태를 제어할 수 있습니다. <br/>
-    /// Idle - 아무 행동하지 않음 / Run - 뛰기
-    /// </summary>
-    /// <exception cref="ArgumentOutOfRangeException"></exception>
-    public PlayerMoveMode MoveMode
-    {
-      get => moveMode;
-      set
-      {
-        moveMode = value;
-        AnimationState = value switch
-        {
-          PlayerMoveMode.Idle => PlayerAnimationState.Idle,
-          PlayerMoveMode.Run => PlayerAnimationState.Run,
-          _ => throw new ArgumentOutOfRangeException(nameof(value), value, null)
-        };
-      }
-    }
-    
     protected PlayerAnimationState AnimationState
     {
       get => animationState;
@@ -69,7 +50,45 @@ namespace ToB.Player
         animationState = value;
       }
     }
+    
+    /// <summary>
+    /// 플레이어 이동상태를 제어할 수 있습니다. <br/>
+    /// Idle - 아무 행동하지 않음 / Run - 뛰기
+    /// </summary>
+    /// <exception cref="ArgumentOutOfRangeException"></exception>
+    public bool IsMoving
+    {
+      get => isMoving;
+      set
+      {
+        isMoving = value;
+        AnimationState = value ? PlayerAnimationState.Run : PlayerAnimationState.Idle;
+      }
+    }
+    
+    public RangedStat Health
+    {
+      get => health;
+      set
+      {
+        if (health != value && value != null)
+        {
+          if(health != null)
+            health.onChanged.RemoveListener(CheckDeath);
+          value.onChanged.AddListener(CheckDeath);
+        }
+        
+        health = value;
+      }
+    }
+    #endregion
 
+    #region Event
+    
+    public UnityEvent onDeath = new();
+    
+    #endregion
+    
     #region Binding
     [Header("Bindings")]
     
@@ -92,6 +111,11 @@ namespace ToB.Player
     
 #endif
 
+    private void Awake()
+    {
+      health?.onChanged.AddListener(CheckDeath);
+    }
+
     private void FixedUpdate()
     {
       isFlight = Math.Abs(body.linearVelocity.y) > 0.1f;
@@ -102,8 +126,8 @@ namespace ToB.Player
       
       if(isFlight && !isJumping) animator.SetTrigger(TRIGGER_FALL);
       
-      // idle이 아닐때 이동합니다.
-      if(moveMode != PlayerMoveMode.Idle)
+      // isMoving이 true일떄 이동합니다.
+      if(isMoving)
       {
         spriteRenderer.flipX = moveDirection == PlayerMoveDirection.Left;
         
@@ -180,7 +204,7 @@ namespace ToB.Player
 
     private Coroutine dashCoroutine = null;
     /// <summary>
-    /// 
+    /// 현재 플레이어의 방향으로 돌진합니다.
     /// </summary>
     public void Dash()
     {
@@ -209,6 +233,36 @@ namespace ToB.Player
     
     #endregion Dash Feature
     
+    #region Attack Feature
+    
+    [SerializeField] private Transform testTransform;
+
+    /// <summary>
+    /// direction 방향으로 공격합니다.
+    /// isMelee를 false로 하여 원거리 공격을 할 수 있습니다.
+    /// </summary>
+    /// <param name="direction">공격 방향입니다.</param>
+    /// <param name="isMelee">근거리/원거리 공격 방향입니다.</param>
+    public void Attack(Vector2 direction, bool isMelee = true)
+    {
+      if (isMelee)
+      {
+        testTransform.position = new Vector3(transform.position.x + direction.x, transform.position.y + direction.y, 0);
+      }
+      else
+      {
+        
+      }
+    }
+    
+    #endregion Attack Feature
+
+    protected virtual void CheckDeath(float value)
+    {
+      if(value <= 0)
+        onDeath.Invoke();
+    }
+    
     #endregion Feature
     
     protected enum PlayerAnimationState
@@ -219,15 +273,10 @@ namespace ToB.Player
     }
   }
   
+  // 이동방향 설정용 열거형입니다.
   public enum PlayerMoveDirection
   {
     Left,
     Right,
-  }
-
-  public enum PlayerMoveMode
-  {
-    Idle,
-    Run
   }
 }
