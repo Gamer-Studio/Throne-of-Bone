@@ -1,0 +1,30 @@
+- attributes:
+    description: 어떤 운영체제를 사용 중이신가요?
+    label: 운영체제
+    placeholder: '예: Windows 10 / macOS Ventura'
+    value: 운영체제
+  type: textarea
+  validations:
+    required: true
+- attributes:
+    default: 1
+    description: 현재 사용 중인 프로젝트 버전을 선택해 주세요.
+    label: 버전
+    multiple: false
+    options:
+    - 개발 초기
+    - 프리알파
+    - 테스트 빌드
+  type: dropdown
+  validations:
+    required: true
+- attributes:
+    description: 모든 구성원이 안전하게 참여할 수 있도록 행동강령에 동의해 주세요.
+    label: 커뮤니티 행동강령
+    options:
+    - label: 이 프로젝트의 [행동강령](link/to/coc)을 읽고 동의합니다.
+      required: true
+  type: checkboxes
+- attributes:
+    value: 작업물을 공유해주셔서 감사합니다! 팀과 함께 즐겁게 확인하겠습니다 🙌
+  type: markdown
