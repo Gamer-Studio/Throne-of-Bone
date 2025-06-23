@@ -18,7 +18,7 @@ namespace ToB
         private float coolDown;
 
         public Location ascendLocation;
-        
+        [field:SerializeField] public LayerMask GroundLayer { get; private set; }
         
         [Header("현재 패턴")]
         // 아래 string 값은 관측용으로 씁니다.
@@ -37,7 +37,8 @@ namespace ToB
 
         public override void Init()
         {
-            enemy.SetGravity(true);
+            enemy.Physics.collisionEnabled = true;
+            enemy.Physics.gravityEnabled = true;
             
             coolDown = breathTime;
             currentPatternName = "";

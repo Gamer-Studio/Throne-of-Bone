@@ -8,8 +8,8 @@ namespace ToB
         [field:SerializeField] public EnemyData EnemyData { get; private set; }
         [field:SerializeField] public Rigidbody2D rb { get; private set; }
 
-        private EnemyGravity gravity;
-        public bool IsGrounded => gravity.IsGrounded();
+        [field:SerializeField] public EnemyPhysics Physics { get; private set; }
+        public bool IsGrounded => Physics.IsGrounded();
         
         public Transform target;
 
@@ -18,7 +18,7 @@ namespace ToB
         {
             hittableMask = LayerMask.GetMask("Player");
             rb = GetComponent<Rigidbody2D>();
-            gravity = GetComponent<EnemyGravity>();
+            Physics = GetComponent<EnemyPhysics>();
         }
  
         // FSM|전략패턴|BT 무엇을 쓸지는 각자(ex: Slime.cs) 안에서
@@ -39,10 +39,7 @@ namespace ToB
             }
         }
 
-        public void SetGravity(bool gravityOption)
-        {
-            if (gravity) gravity.isActive = gravityOption;
-        }
+       
 
 
         public Vector2 GetTargetDirection()
