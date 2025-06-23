@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using NaughtyAttributes;
 using ToB.Utils;
 using UnityEngine;
@@ -7,35 +8,55 @@ namespace ToB.Player
 {
   public class PlayerCharacter : MonoBehaviour
   {
-    private static readonly int state = Animator.StringToHash("State");
-    private static readonly int jump = Animator.StringToHash("Jump");
+    private static readonly int INT_STATE = Animator.StringToHash("State");
+    private static readonly int TRIGGER_FALL = Animator.StringToHash("Fall");
+    private static readonly int TRIGGER_JUMP = Animator.StringToHash("Jump");
+    private static readonly int TRIGGER_DASH = Animator.StringToHash("Dash");
+    private static readonly int INT_DASH_STATE = Animator.StringToHash("DashState");
+    private static readonly int TRIGGER_GUN_FIRE = Animator.StringToHash("GunFire");
 
     #region State
+    [Header( "State")]
     
-    [SerializeField, GetSet(nameof(AnimationState))] protected PlayerAnimationState animationState = PlayerAnimationState.Idle;
-    public float jumpForce = 10;
-    public float gravityAcceleration = 10;
-    public float moveSpeed = 2;
-    public float maxMoveSpeed = 4;
-    public float moveResistanceForce = 1;
-    public PlayerMoveDirection moveDirection = PlayerMoveDirection.Left;
-    [SerializeField, ReadOnly] protected PlayerMoveMode moveMode = PlayerMoveMode.Idle;
+    [Tooltip("체력")] public RangedStat health = new (100);
+    [Tooltip("애니메이션 상태"), SerializeField, GetSet(nameof(AnimationState))] protected PlayerAnimationState animationState = PlayerAnimationState.Idle;
+    [Tooltip("이동속도")] public float moveSpeed = 2;
+    [Tooltip("최대 이동 속도")] public float maxMoveSpeed = 12;
+    [Tooltip("좌/우 마찰력 보정값")] public float moveResistanceForce = 1;
+    [Tooltip("이동방향 (좌/우)")] public PlayerMoveDirection moveDirection = PlayerMoveDirection.Left;
+    [Tooltip("이동 모드"), SerializeField, ReadOnly] protected PlayerMoveMode moveMode = PlayerMoveMode.Idle;
+    [Tooltip("체공 여부"), SerializeField, ReadOnly] private bool isFlight = false;
 
+    [Header("Jump State")]
+    [Tooltip("점프 파워")] public float jumpPower = 10;
+    [Tooltip("최대 점프 시간")] public float jumpTimeLimit = 0.2f;
+    [Tooltip("낙하시 중력가속도 보정값")] public float gravityAcceleration = 10;
+    
+    [Header("Dash State")]
+    [Tooltip("대시 보정값")] public float dashMultiplier = 12;
+    [Tooltip("")] public float dashTimeLimit = 0.2f;
+
+    // 이 아래는 외부 접근용 연결 필드입니다.
+    public bool IsFlight => isFlight;
     #endregion
 
+    /// <summary>
+    /// 플레이어 이동상태를 제어할 수 있습니다. <br/>
+    /// Idle - 아무 행동하지 않음 / Run - 뛰기
+    /// </summary>
+    /// <exception cref="ArgumentOutOfRangeException"></exception>
     public PlayerMoveMode MoveMode
     {
       get => moveMode;
       set
       {
         moveMode = value;
-        switch (value)
+        AnimationState = value switch
         {
-          case PlayerMoveMode.Idle: AnimationState = PlayerAnimationState.Idle; break;
-          case PlayerMoveMode.Walk: AnimationState = PlayerAnimationState.Walk; break;
-          case PlayerMoveMode.Run: AnimationState = PlayerAnimationState.Run; break;
-          default: throw new ArgumentOutOfRangeException(nameof(value), value, null);
-        }
+          PlayerMoveMode.Idle => PlayerAnimationState.Idle,
+          PlayerMoveMode.Run => PlayerAnimationState.Run,
+          _ => throw new ArgumentOutOfRangeException(nameof(value), value, null)
+        };
       }
     }
     
@@ -44,16 +65,17 @@ namespace ToB.Player
       get => animationState;
       set
       {
-        animator.SetInteger(state, (int) value);
+        animator.SetInteger(INT_STATE, (int) value);
         animationState = value;
       }
     }
 
     #region Binding
+    [Header("Bindings")]
     
-    public Rigidbody2D body;
-    [SerializeField] protected Animator animator;
-    [SerializeField] protected SpriteRenderer spriteRenderer;
+    [Tooltip("캐릭터 바디")] public Rigidbody2D body;
+    [Tooltip("캐릭터 애니메이터"), SerializeField] protected Animator animator;
+    [Tooltip("캐릭터 스프라이트"), SerializeField] protected SpriteRenderer spriteRenderer;
     
     #endregion
 
@@ -72,13 +94,21 @@ namespace ToB.Player
 
     private void FixedUpdate()
     {
+      isFlight = Math.Abs(body.linearVelocity.y) > 0.1f;
+      if (!isFlight && jumpCoroutine == null)
+      {
+        isJumping = false;
+      }
       
+      if(isFlight && !isJumping) animator.SetTrigger(TRIGGER_FALL);
+      
+      // idle이 아닐때 이동합니다.
       if(moveMode != PlayerMoveMode.Idle)
       {
         spriteRenderer.flipX = moveDirection == PlayerMoveDirection.Left;
         
         // 최대이동속도 설정 및 이동 구현
-        if (Math.Abs(body.linearVelocity.x) < (moveMode == PlayerMoveMode.Run ? maxMoveSpeed * 2 : maxMoveSpeed))
+        if (Math.Abs(body.linearVelocity.x) < maxMoveSpeed)
           body.AddForce(moveDirection == PlayerMoveDirection.Left ? Vector2.left * moveSpeed : Vector2.right * moveSpeed,
             ForceMode2D.Impulse);
       }
@@ -100,15 +130,86 @@ namespace ToB.Player
     
     #region Feature
     
+    #region Jump Feature
+    // 점프 관리용 코루틴
+    private Coroutine jumpCoroutine = null;
+    [SerializeField] private bool isJumping = false;
+    
+    /// <summary>
+    /// Jump()를 호출하여 점프를 시작할 수 있습니다.
+    /// 빠르게 CancelJump()를 호출하여 낮은 점프를 할 수 있습니다.
+    /// </summary>
+    [Button]
     public void Jump()
     {
-      if (Math.Abs(body.linearVelocity.y) > 0.1f) return;
+      if (isFlight) return;
       
-      animator.SetTrigger(jump);
-      body.AddRelativeForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+      animator.SetTrigger(TRIGGER_JUMP);
+      jumpCoroutine ??= StartCoroutine(JumpCoroutine());
+      isJumping = true;
+    }
+
+    /// <summary>
+    /// Jump()를 통한 점프가 끝나기전 호출해 점프 도중에 취소할 수 있습니다. 
+    /// </summary>
+    public void CancelJump()
+    {
+      if(jumpCoroutine != null)
+      {
+        StopCoroutine(jumpCoroutine);
+        jumpCoroutine = null;
+      }
+    }
+
+    private IEnumerator JumpCoroutine()
+    {
+      var jumpTime = 0f;
+      while (jumpTime < jumpTimeLimit)
+      {
+        body.AddRelativeForce(Vector2.up * (jumpPower * (Time.deltaTime / jumpTimeLimit)), ForceMode2D.Impulse);
+        jumpTime += Time.deltaTime;
+        yield return new WaitForFixedUpdate();
+      }
+      
+      jumpCoroutine = null;
     }
     
-    #endregion
+    #endregion Jump Feature
+    
+    #region Dash Feature
+
+    private Coroutine dashCoroutine = null;
+    /// <summary>
+    /// 
+    /// </summary>
+    public void Dash()
+    {
+      if(dashCoroutine == null) StartCoroutine(DashCoroutine());
+
+      animator.SetTrigger(TRIGGER_DASH);
+    }
+
+    private IEnumerator DashCoroutine()
+    {
+      animator.SetInteger(INT_DASH_STATE, 0);
+      var dashTime = 0f;
+      while (dashTime < dashTimeLimit)
+      {
+        if(dashTime > dashTimeLimit / 2) animator.SetInteger(INT_DASH_STATE, 1);
+        
+        body.AddRelativeForce((moveDirection == PlayerMoveDirection.Left ? Vector2.left : Vector2.right) *
+                              (moveSpeed * dashMultiplier * (Time.deltaTime / dashTimeLimit)), ForceMode2D.Impulse);
+        dashTime += Time.deltaTime;
+        yield return new WaitForFixedUpdate();
+      }
+      animator.SetInteger(INT_DASH_STATE, 2);
+      
+      dashCoroutine = null;
+    }
+    
+    #endregion Dash Feature
+    
+    #endregion Feature
     
     protected enum PlayerAnimationState
     {
@@ -127,7 +228,6 @@ namespace ToB.Player
   public enum PlayerMoveMode
   {
     Idle,
-    Walk,
     Run
   }
 }

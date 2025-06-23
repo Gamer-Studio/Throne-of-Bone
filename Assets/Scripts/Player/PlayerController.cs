@@ -28,15 +28,13 @@ namespace ToB.Player
     
     #region Input Action
 
-    [SerializeField, ReadOnly] private bool isRunning = false;
-    
     public void Move(InputAction.CallbackContext context)
     {
       var input = context.ReadValue<Vector2>().x;
       if (Math.Abs(input) > 0.1f)
       {
         character.moveDirection = input > 0 ? PlayerMoveDirection.Right : PlayerMoveDirection.Left;
-        character.MoveMode = isRunning ? PlayerMoveMode.Run : PlayerMoveMode.Walk;
+        character.MoveMode = PlayerMoveMode.Run;
       }
       else
       {
@@ -47,14 +45,12 @@ namespace ToB.Player
     public void Jump(InputAction.CallbackContext context)
     {
       if (context.performed) character.Jump();
+      else if (context.canceled) character.CancelJump();
     }
 
-    public void Run(InputAction.CallbackContext context)
+    public void Dash(InputAction.CallbackContext context)
     {
-      isRunning = context.performed;
-      
-      if (isRunning && character.MoveMode == PlayerMoveMode.Walk) character.MoveMode = PlayerMoveMode.Run;
-      else if(!isRunning && character.MoveMode == PlayerMoveMode.Run) character.MoveMode = PlayerMoveMode.Walk;
+      if (context.performed) character.Dash();
     }
     
     #endregion
