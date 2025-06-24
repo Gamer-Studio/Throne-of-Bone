@@ -15,10 +15,12 @@ namespace ToB
         private bool OutOfMeleeRange => enemy.GetTargetDistanceSQR() > Mathf.Pow(patternDistance, 2);
 
         [SerializeField] private float breathTime = 1;
+        [SerializeField] private SpriteRenderer Sprite;
         private float coolDown;
 
         public Location ascendLocation;
         [field:SerializeField] public LayerMask GroundLayer { get; private set; }
+        [field:SerializeField] public GameObject toxicBonePrefab { get; private set; }
         
         [Header("현재 패턴")]
         // 아래 string 값은 관측용으로 씁니다.
@@ -33,6 +35,8 @@ namespace ToB
             digPattern = new SewerRatDigPattern(enemy, this, PatternEnd);
             scratchPattern = new SewerRatScratchPattern(enemy, this, PatternEnd);
             toxicBonePattern = new SewerRatToxicBonePattern(enemy, this, PatternEnd);
+
+            Sprite = GetComponentInChildren<SpriteRenderer>();
         }
 
         public override void Init()
@@ -42,20 +46,22 @@ namespace ToB
             
             coolDown = breathTime;
             currentPatternName = "";
+            Sprite.flipX = enemy.GetTargetDirection().x < 0;
         }
 
         private void Update()
         {
-            
             if (currentPattern != null)
             {
                 currentPattern.Execute();
+                return;
             }
-            else if (!enemy.IsGrounded)
+            Sprite.flipX = enemy.GetTargetDirection().x < 0;
+            if (!enemy.IsGrounded)
             {
                 return;
             }
-            else if (coolDown > 0) coolDown -= Time.deltaTime;
+            if (coolDown > 0) coolDown -= Time.deltaTime;
             else ChooseNextPattern();
         }
 
@@ -103,6 +109,7 @@ namespace ToB
         private void PatternEnd()
         {
             currentPattern = null;   
+            currentPatternName = "Breath";
         }
     }
 }
