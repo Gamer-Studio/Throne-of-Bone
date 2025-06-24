@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Linq;
 using NaughtyAttributes;
 using ToB.Utils;
 using UnityEngine;
@@ -118,7 +119,7 @@ namespace ToB.Player
 
     private void FixedUpdate()
     {
-      isFlight = Math.Abs(body.linearVelocity.y) > 0.1f;
+      isFlight = Math.Abs(body.linearVelocity.y) > 0.2f;
       if (!isFlight && jumpCoroutine == null)
       {
         isJumping = false;
@@ -129,7 +130,7 @@ namespace ToB.Player
       // isMoving이 true일떄 이동합니다.
       if(isMoving)
       {
-        spriteRenderer.flipX = moveDirection == PlayerMoveDirection.Left;
+        transform.eulerAngles = new Vector3(0, moveDirection == PlayerMoveDirection.Left ? 180 : 0, 0);
         
         // 최대이동속도 설정 및 이동 구현
         if (Math.Abs(body.linearVelocity.x) < maxMoveSpeed)
@@ -237,6 +238,7 @@ namespace ToB.Player
     
     [SerializeField] private Transform testTransform;
 
+    private static readonly Vector2[] directions = {Vector2.left, Vector2.right, Vector2.up, Vector2.down};
     /// <summary>
     /// direction 방향으로 공격합니다.
     /// isMelee를 false로 하여 원거리 공격을 할 수 있습니다.
@@ -245,14 +247,17 @@ namespace ToB.Player
     /// <param name="isMelee">근거리/원거리 공격 방향입니다.</param>
     public void Attack(Vector2 direction, bool isMelee = true)
     {
+      var targetDir = direction;
       if (isMelee)
       {
-        testTransform.position = new Vector3(transform.position.x + direction.x, transform.position.y + direction.y, 0);
+        targetDir = (from dir in directions orderby Vector2.Distance(dir, direction) select dir).First();
       }
       else
       {
         
       }
+      
+      testTransform.position = new Vector3(transform.position.x + targetDir.x, transform.position.y + targetDir.y, 0);
     }
     
     #endregion Attack Feature

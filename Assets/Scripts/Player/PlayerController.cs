@@ -76,8 +76,8 @@ namespace ToB.Player
       if (context.performed)
       {
         var cursorPos = camera.ScreenToWorldPoint(Input.mousePosition).Z(0);
-        var characterPos = character.transform.position.Y(v => v + 1);
-        var angle = ((cursorPos - characterPos).normalized * 2).Y(v => v + 1);
+        var characterPos = character.transform.position.Y(v => v);
+        var angle = ((cursorPos - characterPos).normalized * 2).Y(v => v);
         
         character.Attack(angle, true);
       }
@@ -91,8 +91,8 @@ namespace ToB.Player
       if (context.performed)
       {
         var cursorPos = camera.ScreenToWorldPoint(Input.mousePosition).Z(0);
-        var characterPos = character.transform.position.Y(v => v + 1);
-        var angle = (cursorPos - characterPos).normalized.Y(v => v + 1);
+        var characterPos = character.transform.position.Y(v => v);
+        var angle = (cursorPos - characterPos).normalized.Y(v => v);
         
         character.Attack(angle, false);
       }
