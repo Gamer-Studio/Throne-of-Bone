@@ -6,6 +6,7 @@ namespace ToB
 {
     public class EnemyPhysics : MonoBehaviour
     {
+        private Enemy enemy;
         Rigidbody2D rb;
         [SerializeField] private float skinWidth = 0.02f;
         [SerializeField] BoxCollider2D terrainSensor;
@@ -23,6 +24,7 @@ namespace ToB
         private Vector2 fixPos;
         private void Awake()
         {
+            enemy = GetComponent<Enemy>();
             rb = GetComponent<Rigidbody2D>();
             terrainSensor = GetComponentInChildren<BoxCollider2D>();
 
@@ -31,6 +33,7 @@ namespace ToB
 
         void Update()
         {
+            enemy.Animator.SetFloat(EnemyAnimationString.VelocityY,rb.linearVelocityY);
             hasFixed = false;
             if (gravityEnabled)
             {

@@ -41,8 +41,10 @@ namespace ToB
             float jumpForce = 10;
             
             enemy.rb.linearVelocity = jumpDirection * jumpForce;
+            enemy.Animator.SetBool(EnemyAnimationString.Jump, true);
 
             yield return new WaitUntil(() => enemy.IsGrounded);
+            enemy.Animator.SetBool(EnemyAnimationString.Jump, false);
             
             enemy.rb.linearVelocity = Vector2.zero;
             

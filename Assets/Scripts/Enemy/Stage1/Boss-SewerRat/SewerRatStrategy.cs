@@ -15,6 +15,7 @@ namespace ToB
         private bool OutOfMeleeRange => enemy.GetTargetDistanceSQR() > Mathf.Pow(patternDistance, 2);
 
         [SerializeField] private float breathTime = 1;
+        [SerializeField] private SpriteRenderer Sprite;
         private float coolDown;
 
         public Location ascendLocation;
@@ -34,6 +35,8 @@ namespace ToB
             digPattern = new SewerRatDigPattern(enemy, this, PatternEnd);
             scratchPattern = new SewerRatScratchPattern(enemy, this, PatternEnd);
             toxicBonePattern = new SewerRatToxicBonePattern(enemy, this, PatternEnd);
+
+            Sprite = GetComponentInChildren<SpriteRenderer>();
         }
 
         public override void Init()
@@ -43,20 +46,22 @@ namespace ToB
             
             coolDown = breathTime;
             currentPatternName = "";
+            Sprite.flipX = enemy.GetTargetDirection().x < 0;
         }
 
         private void Update()
         {
-            
             if (currentPattern != null)
             {
                 currentPattern.Execute();
+                return;
             }
-            else if (!enemy.IsGrounded)
+            Sprite.flipX = enemy.GetTargetDirection().x < 0;
+            if (!enemy.IsGrounded)
             {
                 return;
             }
-            else if (coolDown > 0) coolDown -= Time.deltaTime;
+            if (coolDown > 0) coolDown -= Time.deltaTime;
             else ChooseNextPattern();
         }
 
