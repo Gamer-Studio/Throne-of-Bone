@@ -6,6 +6,7 @@ namespace ToB
 {
     public class EnemyPhysics : MonoBehaviour
     {
+        private Enemy enemy;
         Rigidbody2D rb;
         [SerializeField] private float skinWidth = 0.02f;
         [SerializeField] BoxCollider2D terrainSensor;
@@ -23,6 +24,7 @@ namespace ToB
         private Vector2 fixPos;
         private void Awake()
         {
+            enemy = GetComponent<Enemy>();
             rb = GetComponent<Rigidbody2D>();
             terrainSensor = GetComponentInChildren<BoxCollider2D>();
 
@@ -31,6 +33,7 @@ namespace ToB
 
         void Update()
         {
+            enemy.Animator.SetFloat(EnemyAnimationString.VelocityY,rb.linearVelocityY);
             hasFixed = false;
             if (gravityEnabled)
             {
@@ -59,8 +62,14 @@ namespace ToB
             FixSide(Vector2.up, terrainSensor.size, center);
             FixSide(Vector2.left, terrainSensor.size, center);
             FixSide(Vector2.right, terrainSensor.size, center);
-            
-            if (hasFixed) rb.MovePosition(rb.position + fixPos);
+
+            if (hasFixed)
+            {
+                rb.MovePosition(rb.position + fixPos);
+                if (fixPos.x != 0) rb.linearVelocityX = 0;
+                else if (fixPos.y != 0) rb.linearVelocityY = 0;
+                
+            }
         }
 
         private void FixSide(Vector2 direction, Vector2 terrainSensorSize, Vector2 center)
@@ -98,9 +107,10 @@ namespace ToB
 
         public bool IsGrounded()
         {
-            isGrounded =  CheckCollision(Vector2.down);
+            isGrounded = CheckCollision(Vector2.down) && rb.linearVelocityY <= 0;
             return isGrounded;
         }
+        
         private bool CheckCollision(Vector2 direction)
         {
             Vector2 center = (Vector2)transform.position +
@@ -113,11 +123,6 @@ namespace ToB
             RaycastHit2D hit = Physics2D.BoxCast(center, castSize, 0, direction, skinWidth, terrainLayer);
        
             return hit.collider;
-        }
-
-        public void SetGravity(bool g)
-        {
-            throw new NotImplementedException();
         }
     }
 }

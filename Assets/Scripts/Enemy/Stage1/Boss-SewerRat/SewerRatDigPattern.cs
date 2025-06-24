@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using DG.Tweening;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace ToB
 {
@@ -45,7 +46,13 @@ namespace ToB
         IEnumerator Ascend()
         {
             enemy.transform.position = strategy.ascendLocation.GetRandomPosition(fixedY:true);
+            
+            yield return new WaitForSeconds(Random.Range(0f,1f));
+            
+            // TODO : 지면에 출몰 예정 표시
+            
             yield return new WaitForSeconds(1f);
+            
             float ascendHeightPower = 25;
             
             enemy.rb.linearVelocityY = ascendHeightPower;

@@ -5,9 +5,9 @@ namespace ToB
 {
     public class SewerRatPattern:EnemyPattern
     {
-        protected SewerRatStrategy strategy;
-        
-        public SewerRatPattern(Enemy enemy, SewerRatStrategy strategy, Action EndCallback) : base(enemy, EndCallback)
+        protected readonly SewerRatStrategy strategy;
+
+        protected SewerRatPattern(Enemy enemy, SewerRatStrategy strategy, Action EndCallback) : base(enemy, EndCallback)
         {
             this.strategy = strategy;
         }
