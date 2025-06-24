@@ -19,6 +19,7 @@ namespace ToB
 
         public Location ascendLocation;
         [field:SerializeField] public LayerMask GroundLayer { get; private set; }
+        [field:SerializeField] public GameObject toxicBonePrefab { get; private set; }
         
         [Header("현재 패턴")]
         // 아래 string 값은 관측용으로 씁니다.
@@ -103,6 +104,7 @@ namespace ToB
         private void PatternEnd()
         {
             currentPattern = null;   
+            currentPatternName = "Breath";
         }
     }
 }

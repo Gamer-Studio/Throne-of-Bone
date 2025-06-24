@@ -59,8 +59,14 @@ namespace ToB
             FixSide(Vector2.up, terrainSensor.size, center);
             FixSide(Vector2.left, terrainSensor.size, center);
             FixSide(Vector2.right, terrainSensor.size, center);
-            
-            if (hasFixed) rb.MovePosition(rb.position + fixPos);
+
+            if (hasFixed)
+            {
+                rb.MovePosition(rb.position + fixPos);
+                if (fixPos.x != 0) rb.linearVelocityX = 0;
+                else if (fixPos.y != 0) rb.linearVelocityY = 0;
+                
+            }
         }
 
         private void FixSide(Vector2 direction, Vector2 terrainSensorSize, Vector2 center)
@@ -98,9 +104,10 @@ namespace ToB
 
         public bool IsGrounded()
         {
-            isGrounded =  CheckCollision(Vector2.down);
+            isGrounded = CheckCollision(Vector2.down) && rb.linearVelocityY <= 0;
             return isGrounded;
         }
+        
         private bool CheckCollision(Vector2 direction)
         {
             Vector2 center = (Vector2)transform.position +
@@ -113,11 +120,6 @@ namespace ToB
             RaycastHit2D hit = Physics2D.BoxCast(center, castSize, 0, direction, skinWidth, terrainLayer);
        
             return hit.collider;
-        }
-
-        public void SetGravity(bool g)
-        {
-            throw new NotImplementedException();
         }
     }
 }
