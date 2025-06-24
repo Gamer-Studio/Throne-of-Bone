@@ -37,6 +37,7 @@ namespace ToB.Player
     [Header("Dash State")]
     [Tooltip("대시 보정값")] public float dashMultiplier = 12;
     [Tooltip("대시 지속시간")] public float dashTimeLimit = 0.2f;
+    [Tooltip("물속인지")] public bool isWater = false;
 
     // 플레이어 스텟 관리 클래스입니다.
     public PlayerStats stat = new();
@@ -95,7 +96,7 @@ namespace ToB.Player
 
     private void FixedUpdate()
     {
-      isFlight = Math.Abs(body.linearVelocity.y) > 0.2f;
+      isFlight = Math.Abs(body.linearVelocity.y) > 0.1f;
       animator.SetBool(BOOL_IS_FLIGHT, isFlight);
 
       if (!isFlight && jumpCoroutine == null)
@@ -135,7 +136,7 @@ namespace ToB.Player
     public UnityEvent OnDeath => stat.onDeath;
     public UnityEvent<int> OnHpChange => stat.onHpChanged;
     
-    #endregion
+    #endregion Event
     
     #region Feature
     
@@ -151,7 +152,7 @@ namespace ToB.Player
     [Button]
     public void Jump()
     {
-      if (isFlight) return;
+      if (!isWater && isFlight) return;
       
       animator.SetTrigger(TRIGGER_JUMP);
       jumpCoroutine ??= StartCoroutine(JumpCoroutine());
@@ -222,7 +223,7 @@ namespace ToB.Player
     
 
     private static readonly Vector2[] DIRECTIONS = {Vector2.left, Vector2.right, Vector2.up, Vector2.down};
-    
+
     /// <summary>
     /// direction 방향으로 공격합니다.
     /// isMelee를 false로 하여 원거리 공격을 할 수 있습니다.
@@ -253,6 +254,37 @@ namespace ToB.Player
     }
     
     #endregion Feature
+    
+    #region Water
+
+    private Coroutine waterCoroutine = null;
+    
+    private void WaterEnter(int damage)
+    {
+      isWater = true;
+      waterCoroutine ??= StartCoroutine(WaterCoroutine(damage));
+    }
+
+    private void WaterExit()
+    {
+      isWater = false;
+      if(waterCoroutine != null)
+      {
+        StopCoroutine(waterCoroutine);
+        waterCoroutine = null;
+      }
+    }
+
+    private IEnumerator WaterCoroutine(int damage)
+    {
+      while (true)
+      {
+        yield return new WaitForSeconds(1f);
+        Damage(damage);
+      }
+    }
+
+    #endregion
     
     protected enum PlayerAnimationState
     {
