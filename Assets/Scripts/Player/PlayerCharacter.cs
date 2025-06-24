@@ -5,7 +5,6 @@ using NaughtyAttributes;
 using ToB.Utils;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Serialization;
 
 namespace ToB.Player
 {
@@ -21,7 +20,6 @@ namespace ToB.Player
     #region State
     [Header( "State")]
     
-    [Tooltip("체력"), SerializeField] protected RangedStat health = new (100);
     [Tooltip("애니메이션 상태"), SerializeField, GetSet(nameof(AnimationState))] protected PlayerAnimationState animationState = PlayerAnimationState.Idle;
     [Tooltip("이동속도")] public float moveSpeed = 2;
     [Tooltip("최대 이동 속도")] public float maxMoveSpeed = 12;
@@ -39,6 +37,9 @@ namespace ToB.Player
     [Header("Dash State")]
     [Tooltip("대시 보정값")] public float dashMultiplier = 12;
     [Tooltip("대시 지속시간")] public float dashTimeLimit = 0.2f;
+
+    // 플레이어 스텟 관리 클래스입니다.
+    public PlayerStats stat = new();
 
     // 이 아래는 외부 접근용 연결 필드입니다.
     public bool IsFlight => isFlight;
@@ -68,27 +69,6 @@ namespace ToB.Player
       }
     }
     
-    public RangedStat Health
-    {
-      get => health;
-      set
-      {
-        if (health != value && value != null)
-        {
-          if(health != null)
-            health.onChanged.RemoveListener(CheckDeath);
-          value.onChanged.AddListener(CheckDeath);
-        }
-        
-        health = value;
-      }
-    }
-    #endregion
-
-    #region Event
-    
-    public UnityEvent onDeath = new();
-    
     #endregion
     
     #region Binding
@@ -112,11 +92,6 @@ namespace ToB.Player
     }
     
 #endif
-
-    private void Awake()
-    {
-      health?.onChanged.AddListener(CheckDeath);
-    }
 
     private void FixedUpdate()
     {
@@ -153,6 +128,13 @@ namespace ToB.Player
       }
     }
 
+    #endregion
+    
+    #region Event
+
+    public UnityEvent OnDeath => stat.onDeath;
+    public UnityEvent<int> OnHpChange => stat.onHpChanged;
+    
     #endregion
     
     #region Feature
@@ -238,9 +220,9 @@ namespace ToB.Player
     
     #region Attack Feature
     
-    [SerializeField] private Transform testTransform;
 
-    private static readonly Vector2[] directions = {Vector2.left, Vector2.right, Vector2.up, Vector2.down};
+    private static readonly Vector2[] DIRECTIONS = {Vector2.left, Vector2.right, Vector2.up, Vector2.down};
+    
     /// <summary>
     /// direction 방향으로 공격합니다.
     /// isMelee를 false로 하여 원거리 공격을 할 수 있습니다.
@@ -252,22 +234,22 @@ namespace ToB.Player
       var targetDir = direction;
       if (isMelee)
       {
-        targetDir = (from dir in directions orderby Vector2.Distance(dir, direction) select dir).First();
+        targetDir = (from dir in DIRECTIONS orderby Vector2.Distance(dir, direction) select dir).First();
+
+        
       }
       else
       {
         
       }
-      
-      testTransform.position = new Vector3(transform.position.x + targetDir.x, transform.position.y + targetDir.y, 0);
     }
     
     #endregion Attack Feature
 
-    protected virtual void CheckDeath(float value)
+    public int Damage(int value)
     {
-      if(value <= 0)
-        onDeath.Invoke();
+      stat.Hp -= value;
+      return stat.Hp;
     }
     
     #endregion Feature
