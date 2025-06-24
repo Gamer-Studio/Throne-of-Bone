@@ -13,6 +13,7 @@ namespace ToB.Player
   {
     private static readonly int INT_STATE = Animator.StringToHash("State");
     private static readonly int TRIGGER_FALL = Animator.StringToHash("Fall");
+    private static readonly int BOOL_IS_FLIGHT = Animator.StringToHash("IsFlight");
     private static readonly int TRIGGER_JUMP = Animator.StringToHash("Jump");
     private static readonly int TRIGGER_DASH = Animator.StringToHash("Dash");
     private static readonly int INT_DASH_STATE = Animator.StringToHash("DashState");
@@ -120,12 +121,13 @@ namespace ToB.Player
     private void FixedUpdate()
     {
       isFlight = Math.Abs(body.linearVelocity.y) > 0.2f;
+      animator.SetBool(BOOL_IS_FLIGHT, isFlight);
+
       if (!isFlight && jumpCoroutine == null)
-      {
         isJumping = false;
-      }
       
-      if(isFlight && !isJumping) animator.SetTrigger(TRIGGER_FALL);
+      if(isFlight && !isJumping)
+        animator.SetTrigger(TRIGGER_FALL);
       
       // isMoving이 true일떄 이동합니다.
       if(isMoving)
