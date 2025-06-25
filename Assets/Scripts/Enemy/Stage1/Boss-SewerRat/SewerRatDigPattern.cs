@@ -32,6 +32,7 @@ namespace ToB
 
         IEnumerator Dig()
         {
+            enemy.bodyDamage = 20;
             enemy.Animator.SetBool(EnemyAnimationString.Roll, true);
             enemy.Physics.collisionEnabled = false;
             enemy.Physics.gravityEnabled = false;
@@ -55,7 +56,7 @@ namespace ToB
             
             yield return new WaitForSeconds(1f);
             
-            float ascendHeightPower = 25;
+            float ascendHeightPower = 32;
             
             enemy.Physics.velocityY = ascendHeightPower;
             enemy.Physics.gravityEnabled = true;
@@ -74,27 +75,29 @@ namespace ToB
             enemy.Physics.gravityEnabled = false;
             enemy.Physics.collisionEnabled =true;
             
-            float tackleSpeed = 30;
+            float tackleSpeed = 60;
+            
+            Vector2 fixedDirection = (destination - (Vector2)enemy.transform.position).normalized;  // 단순 플레이어 방향 방식이 궤도 오차가 심했어서 레이로
+            
             while (!enemy.IsGrounded)
             {
-                Vector2 currentPosition = enemy.transform.position;
-                Vector2 moveDir = (destination - currentPosition).normalized;
-                enemy.Physics.velocity = moveDir * tackleSpeed;
+                // 고정된 방향으로 등속 이동
+                enemy.Physics.velocity = fixedDirection * tackleSpeed;
                 yield return null;
+
             }
             enemy.Animator.SetBool(EnemyAnimationString.Roll, false);
-            yield return new WaitForSeconds(0.025f);    // 충돌 후 벽에 끼인 프레임 임시 처리. 물리 처리 바꿀 예정
-
+            yield return new WaitForFixedUpdate();
+            
             enemy.Physics.velocity = new Vector2(0, 10);
-            Debug.Log("태클  후 속도 변환 : " + Time.frameCount );
             enemy.Animator.SetBool(EnemyAnimationString.Jump, true);
             
             enemy.Physics.gravityEnabled = true;
 
             yield return new WaitUntil(() => enemy.IsGrounded);
             enemy.Animator.SetBool(EnemyAnimationString.Jump, false);
-            
-            
+
+            enemy.bodyDamage = enemy.EnemyData.ATK;
             Exit();
         }
     }

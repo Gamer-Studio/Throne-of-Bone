@@ -1,4 +1,5 @@
 using System;
+using ToB.Player;
 using UnityEngine;
 
 namespace ToB
@@ -12,7 +13,7 @@ namespace ToB
         
         [Header("속성 설정")]
         [SerializeField] float baseDamage = 10f;
-        [SerializeField] float dotDamage = 5f;
+        //[SerializeField] float dotDamage = 5f;
         [SerializeField] float maxLifeTime = 10f;   // 아무리 길어도 이 시간
                 
         // 
@@ -51,6 +52,8 @@ namespace ToB
             {
                 // other.GetComponent<IHittable>().OnHit();
                 // other.GetComponent<IPoisonable>().ApplyPoison();
+
+                other.GetComponent<PlayerCharacter>().Damage(baseDamage);
                 
                 Destroy(gameObject);
             }

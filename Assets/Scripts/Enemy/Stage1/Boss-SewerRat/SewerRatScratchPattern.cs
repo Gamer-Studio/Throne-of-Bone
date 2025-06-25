@@ -37,8 +37,9 @@ namespace ToB
             enemy.bodyDamage = 20;  // 대쉬 시 충돌 데미지
             Vector2 dashDirection = enemy.GetTargetDirection();
             dashDirection.y = 0;
+            dashDirection.Normalize();
 
-            float dashSpeed = 10f;
+            float dashSpeed = 20f;
             float dashDuration = 0.3f;
             
             enemy.Physics.velocity = dashDirection * dashSpeed;

@@ -60,14 +60,15 @@ namespace ToB
                 else velocity += new Vector2(0, Physics2D.gravity.y * Time.deltaTime);
                 
             }
+           
+        }
+
+        void FixedUpdate()
+        {
             if (collisionEnabled)
             {
                 FixPenetratedCollision();
             }
-        }
-
-        void LateUpdate()
-        {
             MoveToNextPosition();
         }
 
@@ -80,10 +81,10 @@ namespace ToB
             }
 
             if(collisionEnabled) {
-                rb.MovePosition(rb.position + velocity * Time.deltaTime);  // MovePosition 함수 테스트
+                rb.MovePosition(rb.position + velocity * Time.fixedDeltaTime);  // MovePosition 함수 테스트
                 // Debug.Log(rb.position);
             }
-            else rb.position += velocity * Time.deltaTime;
+            else rb.position += velocity * Time.fixedDeltaTime;
         }
 
         private void FixPenetratedCollision()
@@ -103,8 +104,8 @@ namespace ToB
             {
                 rb.position += fixPos - fixDirection * skinWidth; 
                 // Debug.Log("충돌 픽스 : " + Time.frameCount + velocity) ;
-                if (fixPos.x != 0) velocityX = 0;
-                else if (fixPos.y != 0) velocityY = 0;
+                // if (fixPos.x != 0) velocityX = 0;
+                // else if (fixPos.y != 0) velocityY = 0;
             }
         }
 
@@ -127,7 +128,7 @@ namespace ToB
             if (hit.collider)
             {
                 float penetration = distance - hit.distance;   
-
+                
                 if (penetration > 0.002f)
                 {
                     Vector2 penetrationVec = -direction * penetration;
