@@ -46,6 +46,7 @@ namespace ToB
 
             enemy.Animator.SetBool(EnemyAnimationString.Jump, true);
 
+            yield return new WaitForFixedUpdate();
             yield return new WaitUntil(() => enemy.IsGrounded);
             enemy.Animator.SetBool(EnemyAnimationString.Jump, false);
             

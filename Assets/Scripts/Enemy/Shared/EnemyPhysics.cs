@@ -80,8 +80,36 @@ namespace ToB
                 return;
             }
 
-            if(collisionEnabled) {
-                rb.MovePosition(rb.position + velocity * Time.fixedDeltaTime);  // MovePosition 함수 테스트
+            if(collisionEnabled)
+            {
+                Vector2 castBoxSize = terrainSensor.size;
+                //castBoxSize.x += skinWidth;
+                //castBoxSize.y += skinWidth;
+                
+                Vector2 moveDelta = velocity * Time.fixedDeltaTime;
+                RaycastHit2D hit = Physics2D.BoxCast(rb.position + terrainSensor.offset, castBoxSize, 0, velocity.normalized, moveDelta.magnitude, terrainLayer);
+
+                if (hit.collider)
+                {
+                    Vector2 resultMoveDelta = hit.distance * moveDelta.normalized;
+
+                    if (hit.normal.y < 0.5f) // 벽에 닿은 경우
+                    {
+                        resultMoveDelta.y = moveDelta.y;
+                        velocityX = 0;
+                    }
+                    else
+                    {
+                        resultMoveDelta.x = moveDelta.x;
+                        velocityY = 0;
+                    }
+                    
+                    rb.MovePosition(rb.position + resultMoveDelta);
+                }
+                else
+                {
+                    rb.MovePosition(rb.position + velocity * Time.fixedDeltaTime); // MovePosition 함수 테스트
+                }
                 // Debug.Log(rb.position);
             }
             else rb.position += velocity * Time.fixedDeltaTime;
@@ -115,11 +143,11 @@ namespace ToB
             float distance;
             if (direction.x != 0) {
                 castSize.x = skinWidth; // 좌우 검사시 x축 얇게
-                distance = terrainSensorSize.x / 2;
+                distance = terrainSensorSize.x / 2 + skinWidth/2;
             }
             else {
                 castSize.y = skinWidth; // 상하 검사시 y축 얇게
-                distance = terrainSensorSize.y / 2;
+                distance = terrainSensorSize.y / 2+ skinWidth/2;
             }
             
             RaycastHit2D hit = Physics2D.BoxCast(center, castSize, 0, direction, distance, terrainLayer);
@@ -128,7 +156,7 @@ namespace ToB
             if (hit.collider)
             {
                 float penetration = distance - hit.distance;   
-                
+                Debug.Log(direction + " :: " + hit.distance);
                 if (penetration > 0.002f)
                 {
                     Vector2 penetrationVec = -direction * penetration;
@@ -163,7 +191,7 @@ namespace ToB
             Vector2 castSize = terrainSensor.size;
             if(direction.x != 0) castSize.y -= skinWidth;
        
-            RaycastHit2D hit = Physics2D.BoxCast(center, castSize, 0, direction, skinWidth, terrainLayer);
+            RaycastHit2D hit = Physics2D.BoxCast(center, castSize, 0, direction, skinWidth*2f, terrainLayer);
        
             return hit.collider;
         }
