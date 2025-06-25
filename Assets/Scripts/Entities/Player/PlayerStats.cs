@@ -42,6 +42,8 @@ namespace ToB.Player
       }
     }
 
+    public float atk = 10;
+
     public PlayerStats()
     {
     }

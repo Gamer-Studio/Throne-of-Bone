@@ -77,7 +77,7 @@ namespace ToB.Player
       {
         var cursorPos = camera.ScreenToWorldPoint(Input.mousePosition).Z(0);
         var characterPos = character.transform.position.Y(v => v);
-        var angle = ((cursorPos - characterPos).normalized * 2).Y(v => v);
+        var angle = ((cursorPos - characterPos).normalized * 2);
         
         character.Attack(angle, true);
       }
