@@ -17,6 +17,20 @@ namespace ToB.Player
     private static readonly int TRIGGER_DASH = Animator.StringToHash("Dash");
     private static readonly int INT_DASH_STATE = Animator.StringToHash("DashState");
 
+    /// <returns>현재 활성화된 Player 태그가 붙은 오브젝트의 캐릭터를 찾아옵니다.</returns>
+    public static PlayerCharacter GetInstance()
+    {
+      foreach (var obj in GameObject.FindGameObjectsWithTag("Player"))
+      {
+        if (obj.TryGetComponent<PlayerCharacter>(out var comp) && obj.gameObject.activeSelf)
+        {
+          return comp;
+        }
+      }
+      
+      return null;
+    }
+    
     #region State
     [Header( "State")]
     
@@ -37,6 +51,7 @@ namespace ToB.Player
     [Header("Dash State")]
     [Tooltip("대시 보정값")] public float dashMultiplier = 12;
     [Tooltip("대시 지속시간")] public float dashTimeLimit = 0.2f;
+    [Tooltip("물속인지")] public bool isWater = false;
 
     // 플레이어 스텟 관리 클래스입니다.
     public PlayerStats stat = new();
@@ -95,7 +110,7 @@ namespace ToB.Player
 
     private void FixedUpdate()
     {
-      isFlight = Math.Abs(body.linearVelocity.y) > 0.2f;
+      isFlight = Math.Abs(body.linearVelocity.y) > 0.1f;
       animator.SetBool(BOOL_IS_FLIGHT, isFlight);
 
       if (!isFlight && jumpCoroutine == null)
@@ -132,10 +147,17 @@ namespace ToB.Player
     
     #region Event
 
+    /// <summary>
+    /// 플레이어 사망시 호출됩니다.
+    /// </summary>
     public UnityEvent OnDeath => stat.onDeath;
-    public UnityEvent<int> OnHpChange => stat.onHpChanged;
     
-    #endregion
+    /// <summary>
+    /// 플레이어의 체력이 변경될 시 호출되며, 매개변수로 현재 체력을 넘겨줍니다.
+    /// </summary>
+    public UnityEvent<float> OnHpChange => stat.onHpChanged;
+    
+    #endregion Event
     
     #region Feature
     
@@ -145,13 +167,13 @@ namespace ToB.Player
     [SerializeField] private bool isJumping = false;
     
     /// <summary>
-    /// Jump()를 호출하여 점프를 시작할 수 있습니다.
+    /// Jump()를 호출하여 점프를 시작할 수 있습니다. <br/>
     /// 빠르게 CancelJump()를 호출하여 낮은 점프를 할 수 있습니다.
     /// </summary>
     [Button]
     public void Jump()
     {
-      if (isFlight) return;
+      if (!isWater && isFlight) return;
       
       animator.SetTrigger(TRIGGER_JUMP);
       jumpCoroutine ??= StartCoroutine(JumpCoroutine());
@@ -222,7 +244,7 @@ namespace ToB.Player
     
 
     private static readonly Vector2[] DIRECTIONS = {Vector2.left, Vector2.right, Vector2.up, Vector2.down};
-    
+
     /// <summary>
     /// direction 방향으로 공격합니다.
     /// isMelee를 false로 하여 원거리 공격을 할 수 있습니다.
@@ -246,13 +268,47 @@ namespace ToB.Player
     
     #endregion Attack Feature
 
-    public int Damage(int value)
-    {
-      stat.Hp -= value;
-      return stat.Hp;
-    }
+    /// <summary>
+    /// 플레이어에게 방어력을 반영한 체력 피해를 줍니다.<br/>
+    /// 남은 체력 이상의 피해를 줄 시 자동으로 0까지만 내려가고, <br/>
+    /// 0이 될 시 stats.onDeath 이벤트를 호출합니다.
+    /// </summary>
+    /// <param name="value">피해량입니다.</param>
+    /// <returns>플레이어의 남은 체력입니다.</returns>
+    public float Damage(float value) => stat.Damage(value);
     
     #endregion Feature
+    
+    #region Water
+
+    private Coroutine waterCoroutine = null;
+    
+    private void WaterEnter(int damage)
+    {
+      isWater = true;
+      waterCoroutine ??= StartCoroutine(WaterCoroutine(damage));
+    }
+
+    private void WaterExit()
+    {
+      isWater = false;
+      if(waterCoroutine != null)
+      {
+        StopCoroutine(waterCoroutine);
+        waterCoroutine = null;
+      }
+    }
+
+    private IEnumerator WaterCoroutine(int damage)
+    {
+      while (true)
+      {
+        yield return new WaitForSeconds(1f);
+        Damage(damage);
+      }
+    }
+
+    #endregion
     
     protected enum PlayerAnimationState
     {

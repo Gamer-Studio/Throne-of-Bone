@@ -3,7 +3,7 @@ using UnityEngine.EventSystems;
 
 namespace ToB.Scenes.Intro
 {
-    public class HoverAction : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+    public class HoverAction : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
     {
         private GameObject Selector;
 
@@ -23,6 +23,11 @@ namespace ToB.Scenes.Intro
         }
 
         public void OnPointerExit(PointerEventData eventData)
+        {
+            Selector.SetActive(false);
+        }
+
+        public void OnPointerClick(PointerEventData eventData)
         {
             Selector.SetActive(false);
         }
