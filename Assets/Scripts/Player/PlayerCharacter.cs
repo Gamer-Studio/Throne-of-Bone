@@ -17,6 +17,20 @@ namespace ToB.Player
     private static readonly int TRIGGER_DASH = Animator.StringToHash("Dash");
     private static readonly int INT_DASH_STATE = Animator.StringToHash("DashState");
 
+    /// <returns>현재 활성화된 Player 태그가 붙은 오브젝트의 캐릭터를 찾아옵니다.</returns>
+    public static PlayerCharacter GetInstance()
+    {
+      foreach (var obj in GameObject.FindGameObjectsWithTag("Player"))
+      {
+        if (obj.TryGetComponent<PlayerCharacter>(out var comp) && obj.gameObject.activeSelf)
+        {
+          return comp;
+        }
+      }
+      
+      return null;
+    }
+    
     #region State
     [Header( "State")]
     
