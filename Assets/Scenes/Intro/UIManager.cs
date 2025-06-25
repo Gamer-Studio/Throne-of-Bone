@@ -1,5 +1,6 @@
 using ToB.Utils.Singletons;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 namespace ToB.Scenes.Intro
@@ -17,6 +18,8 @@ namespace ToB.Scenes.Intro
 
     public class UIManager : DDOLSingleton<UIManager>
     {
+        #region InitPanels
+        
         [SerializeField] public IntroUI introUI;
         [SerializeField] public CrossHairUI crossHairUI;
         [SerializeField] public GamePlayUI gamePlayUI;
@@ -56,6 +59,8 @@ namespace ToB.Scenes.Intro
             this.toastUI = _toastUI;
         }
         */
+        
+        #endregion
         private void OnEnable()
         {
             SceneManager.sceneLoaded += OnSceneLoaded;
@@ -96,6 +101,39 @@ namespace ToB.Scenes.Intro
             }
         }
         
+        #region PlayerInput
+        public bool isThereActiveUI = false;
+        public bool IsThereOverlayUI()
+        {
+            if (mainBookUI.gameObject.activeSelf || wideMapUI.gameObject.activeSelf)
+            {
+                return isThereActiveUI = true;
+            }
+            else
+            {
+                return isThereActiveUI = false;
+            }
+        }
+
+        /*
+         public void CancelUI(InputAction.CallbackContext context)
+         
+        {
+            Debug.Log("UIManager - ESC 인식");
+            CloseActiveUI();
+        }
+
+        private void CloseActiveUI()
+        {
+            if (IsThereOverlayUI())
+            {
+                wideMapUI.gameObject.SetActive(false);
+                mainBookUI.gameObject.SetActive(false);
+            }
+        }
+        */
+        #endregion
+            
 
 
 
