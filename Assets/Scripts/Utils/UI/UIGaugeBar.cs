@@ -1,5 +1,8 @@
 using System;
+using TMPro;
+using ToB.Player; 
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace ToB.Utils.UI
@@ -24,10 +27,12 @@ namespace ToB.Utils.UI
     [SerializeField] [GetSet("Value")] private float value;
     [SerializeField] private RectTransform rect;
     [SerializeField] private Image image;
-
+    [SerializeField] private TMP_Text text;
 #if UNITY_EDITOR
     [SerializeField] [GetSet("Color")] private Color color;
 #endif
+    
+
 
     public float Value
     {
@@ -56,5 +61,40 @@ namespace ToB.Utils.UI
       max = maxValue;
       Value = Value;
     }
+    #region HPBarChange
+    
+    private PlayerCharacter player;
+    private void OnEnable()
+    {
+      SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+      SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+      player = PlayerCharacter.GetInstance();
+      if (player != null)
+      {
+          Init();
+      }
+    }
+
+    private void Init()
+    {
+      ChangeMax(player.stat.maxHp);
+      text.text = $"{player.stat.Hp} / {max}";
+      player.stat.onHpChanged.AddListener(UpdateHPBar);
+    }
+
+    private void UpdateHPBar(float curHp)
+    {
+      Value = curHp;
+      text.text = $"{curHp} / {max}";
+    }
+    
+    #endregion
   }
 }

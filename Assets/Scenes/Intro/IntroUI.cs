@@ -23,13 +23,13 @@ namespace ToB.Scenes.Intro
         public void StartGame()
         {
             SceneManager.LoadScene("Stage");
-            Debug.Log("Start");
+            Debug.Log("게임 시작");
         }
         
         public void LoadGame()
         {
-            SceneManager.LoadScene("Stage");
-            Debug.Log("Load");       
+            SceneManager.LoadScene("Stage0623Copy");
+            Debug.Log("테스트 신 시작");       
         }
 
         public void MainPanelOn()
@@ -68,7 +68,7 @@ namespace ToB.Scenes.Intro
             ConformPanel.SetActive(false);
             SaveSlotPanel.SetActive(false);
             // 저장 방식에 따라서 각 세이브파일을 로드하는 방식 변경 예정
-            StartGame();       
+            LoadGame();       
         }
 
         public void LoadButtonClick()
