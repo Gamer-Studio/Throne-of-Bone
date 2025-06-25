@@ -17,7 +17,7 @@ namespace ToB
         public void SetRotationSpeed(float newSpeed)
         {
             rotSpeed = newSpeed;
-            rb.angularVelocity = rotSpeed;
+            rb.angularVelocity = -rotSpeed;
         }
     }
 }

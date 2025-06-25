@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using NaughtyAttributes;
 using UnityEngine;
 
@@ -26,6 +27,8 @@ namespace ToB
 
         [Header("현재 속도")] 
         public Vector2 velocity;
+        
+        public Dictionary<string, Vector2> externalVelocity = new Dictionary<string, Vector2>();
 
         public float velocityX
         {
@@ -74,45 +77,59 @@ namespace ToB
 
         private void MoveToNextPosition()
         {
+            Vector2 totalVelocity = velocity;
+
+            foreach (var element in externalVelocity)
+            {
+                totalVelocity += element.Value;
+            }
+            
             // 속도가 거의 0이면 이동하지 않음
             if (velocity.sqrMagnitude < 0.001f)
             {
                 return;
             }
 
+            // 벽에 박히지 않기 위한 다음 위치 계산 박스 캐스트 시작
             if(collisionEnabled)
             {
-                Vector2 castBoxSize = terrainSensor.size;
-                //castBoxSize.x += skinWidth;
-                //castBoxSize.y += skinWidth;
+                PerformBoxCastMovement();
+            }
+            else rb.position += velocity * Time.fixedDeltaTime; 
+        }
+
+        private void PerformBoxCastMovement()
+        {
+            Vector2 castBoxSize = terrainSensor.size;
                 
-                Vector2 moveDelta = velocity * Time.fixedDeltaTime;
-                RaycastHit2D hit = Physics2D.BoxCast(rb.position + terrainSensor.offset, castBoxSize, 0, velocity.normalized, moveDelta.magnitude, terrainLayer);
+            Vector2 moveDelta = velocity * Time.fixedDeltaTime;
+            RaycastHit2D hit = Physics2D.BoxCast(rb.position + terrainSensor.offset, castBoxSize, 0, velocity.normalized, moveDelta.magnitude, terrainLayer);
 
-                if (hit.collider)
+            if (hit.collider)
+            {
+                Vector2 resultMoveDelta = hit.distance * moveDelta.normalized;
+
+                if (hit.normal.y < 0.5f) // 벽에 닿은 경우
                 {
-                    Vector2 resultMoveDelta = hit.distance * moveDelta.normalized;
-
-                    if (hit.normal.y < 0.5f) // 벽에 닿은 경우
-                    {
-                        resultMoveDelta.y = moveDelta.y;
-                        velocityX = 0;
-                    }
-                    else
-                    {
-                        resultMoveDelta.x = moveDelta.x;
-                        velocityY = 0;
-                    }
-                    
-                    rb.MovePosition(rb.position + resultMoveDelta);
+                    resultMoveDelta.y = moveDelta.y;
+                    int leftRightNum = velocity.x > 0 ? 1 : -1;
+                    resultMoveDelta.x -= leftRightNum * skinWidth;
+                    velocityX = 0;
                 }
                 else
                 {
-                    rb.MovePosition(rb.position + velocity * Time.fixedDeltaTime); // MovePosition 함수 테스트
+                    resultMoveDelta.x = moveDelta.x;
+                    int upDownNum = velocity.y > 0 ? 1 : -1;
+                    resultMoveDelta.y -= upDownNum * skinWidth;
+                    velocityY = 0;
                 }
-                // Debug.Log(rb.position);
+                    
+                rb.MovePosition(rb.position + resultMoveDelta);
             }
-            else rb.position += velocity * Time.fixedDeltaTime;
+            else
+            {
+                rb.MovePosition(rb.position + velocity * Time.fixedDeltaTime); // MovePosition 함수 테스트
+            }
         }
 
         private void FixPenetratedCollision()
@@ -156,7 +173,6 @@ namespace ToB
             if (hit.collider)
             {
                 float penetration = distance - hit.distance;   
-                Debug.Log(direction + " :: " + hit.distance);
                 if (penetration > 0.002f)
                 {
                     Vector2 penetrationVec = -direction * penetration;

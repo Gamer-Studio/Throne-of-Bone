@@ -17,7 +17,7 @@ namespace ToB
 
         public void Init(Vector2 direction, float speed)
         {
-            this.direction = direction;
+            this.direction = direction.normalized;
             this.speed = speed;
         }
 

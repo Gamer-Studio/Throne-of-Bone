@@ -32,7 +32,7 @@ namespace ToB
         {
             if(!enemy.target) yield break;
             
-            enemy.Animator.SetTrigger(EnemyAnimationString.Dash);
+            enemy.Animator.SetBool("Roll", true);
             
             enemy.bodyDamage = 20;  // 대쉬 시 충돌 데미지
             Vector2 dashDirection = enemy.GetTargetDirection();
@@ -49,6 +49,7 @@ namespace ToB
             enemy.Physics.velocity = new Vector2(0, enemy.Physics.velocityY);
 
             coroutine = enemy.StartCoroutine(Scratch());
+            enemy.Animator.SetBool("Roll", false);
             enemy.bodyDamage = enemy.EnemyData.ATK;
         }
 

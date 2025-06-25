@@ -62,13 +62,14 @@ namespace ToB
             enemy.Animator.SetBool("Bark", true);
             for (int i = 0; i < 3; i++)
             {
-                Vector2 direction = enemy.GetTargetDirection();
+                
                 float speed = 10;
                 
                 GameObject boneObj = Object.Instantiate(strategy.toxicBonePrefab);
                 boneObj.transform.position = enemy.transform.position + new Vector3(0, 2, 0);
                 ToxicBone bone = boneObj.GetComponent<ToxicBone>();
                 
+                Vector2 direction = enemy.target.transform.position - boneObj.transform.position ;
                 bone.LinearMovement.Init(direction, speed);
                 bone.SimpleRotate.SetRotationSpeed(enemy.IsTargetLeft ? -360 : 360);
                 

@@ -12,6 +12,8 @@ namespace ToB
         [field:SerializeField] public EnemyPhysics Physics { get; private set; }
         [field:SerializeField] public Animator Animator { get; private set; }
         
+        [field:SerializeField] public EnemyKnockback Knockback { get; private set; }
+        
         // 스탯 핸들러는 스탯이 복잡해지면 다룰 예정. 현재는 HP 밖에 없음
         // [field:SerializeField] public EnemyStatHandler EnemyStatHandler { get; private set; }
         
@@ -47,13 +49,17 @@ namespace ToB
             bodyDamage = EnemyData.ATK;
         }
 
-        /// <summary>
-        /// 적군이 데미지를 입는 것을 담당하는 함수입니다.
-        /// </summary>
-        /// <param name="damage"></param>
+        
+        // 인터페이스화 할 예정
         public virtual void OnTakeDamage(float damage)
         {
-            ChangeHP(-damage);
+            float actualDamage = damage * (1 - EnemyData.DEF / 100);
+            ChangeHP(-actualDamage);
+        }
+
+        public void ApplyKnockback(Vector2 direction, float force)
+        {
+            Knockback?.ApplyKnockback(direction, force);
         }
 
         protected virtual void Die()
