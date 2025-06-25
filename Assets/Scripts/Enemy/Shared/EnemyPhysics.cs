@@ -22,35 +22,68 @@ namespace ToB
         
         bool hasFixed;
         private Vector2 fixPos;
+        private Vector2 fixDirection;
 
         [Header("현재 속도")] 
         public Vector2 velocity;
+
+        public float velocityX
+        {
+            get => velocity.x;
+            set => velocity = new Vector2(value, velocity.y);
+        }
+        
+        public float velocityY
+        {
+            get => velocity.y;
+            set => velocity = new Vector2(velocity.x, value);
+        }
+        
         private void Awake()
         {
             enemy = GetComponent<Enemy>();
             rb = GetComponent<Rigidbody2D>();
-            terrainSensor = GetComponentInChildren<BoxCollider2D>();
 
             terrainLayer = LayerMask.GetMask("Ground");
         }
 
         void Update()
         {
-            enemy.Animator.SetFloat(EnemyAnimationString.VelocityY,rb.linearVelocityY);
-            hasFixed = false;
+            enemy.Animator.SetFloat(EnemyAnimationString.VelocityY,velocityY);
+            
             if (gravityEnabled)
             {
-                if (IsGrounded() && rb.linearVelocity.y <= 0)
+                if (IsGrounded())
                 {
-                    rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0);
+                    velocity = new Vector2(velocityX, 0);
                 }
-                else rb.linearVelocity += new Vector2(0, Physics2D.gravity.y * Time.deltaTime);
+                else velocity += new Vector2(0, Physics2D.gravity.y * Time.deltaTime);
+                
             }
-
             if (collisionEnabled)
             {
                 FixPenetratedCollision();
             }
+        }
+
+        void LateUpdate()
+        {
+            MoveToNextPosition();
+        }
+
+        private void MoveToNextPosition()
+        {
+            // 속도가 거의 0이면 이동하지 않음
+            if (velocity.sqrMagnitude < 0.001f)
+            {
+                return;
+            }
+
+            if(collisionEnabled) {
+                rb.MovePosition(rb.position + velocity * Time.deltaTime);  // MovePosition 함수 테스트
+                // Debug.Log(rb.position);
+            }
+            else rb.position += velocity * Time.deltaTime;
         }
 
         private void FixPenetratedCollision()
@@ -58,7 +91,7 @@ namespace ToB
             Vector2 center = (Vector2)transform.position +
                              (Vector2)terrainSensor.gameObject.transform.localPosition +
                              terrainSensor.offset;
-
+            
             hasFixed = false;
             fixPos = Vector2.zero;
             FixSide(Vector2.down, terrainSensor.size, center);
@@ -68,10 +101,10 @@ namespace ToB
 
             if (hasFixed)
             {
-                rb.MovePosition(rb.position + fixPos);
-                if (fixPos.x != 0) rb.linearVelocityX = 0;
-                else if (fixPos.y != 0) rb.linearVelocityY = 0;
-                Debug.Log("충돌 픽스 : " + Time.frameCount) ;
+                rb.position += fixPos - fixDirection * skinWidth; 
+                // Debug.Log("충돌 픽스 : " + Time.frameCount + velocity) ;
+                if (fixPos.x != 0) velocityX = 0;
+                else if (fixPos.y != 0) velocityY = 0;
             }
         }
 
@@ -102,15 +135,21 @@ namespace ToB
                     {
                         fixPos = penetrationVec;
                         hasFixed = true;
+                        fixDirection = direction;
                     }
-                    else if (fixPos.sqrMagnitude > penetrationVec.sqrMagnitude) fixPos = penetrationVec;
+                    else if (fixPos.sqrMagnitude > penetrationVec.sqrMagnitude)
+                    {
+                        fixPos = penetrationVec;
+                        fixDirection = direction;
+                        
+                    }
                 }
             }
         }
 
         public bool IsGrounded()
         {
-            isGrounded = CheckCollision(Vector2.down) && rb.linearVelocityY <= 0;
+            isGrounded = CheckCollision(Vector2.down) && velocityY <= 0;
             return isGrounded;
         }
         

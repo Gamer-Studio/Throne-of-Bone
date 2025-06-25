@@ -41,11 +41,11 @@ namespace ToB
             float dashSpeed = 10f;
             float dashDuration = 0.3f;
             
-            enemy.rb.linearVelocity = dashDirection * dashSpeed;
+            enemy.Physics.velocity = dashDirection * dashSpeed;
             
             yield return new WaitForSeconds(dashDuration);
 
-            enemy.rb.linearVelocity = new Vector2(0, enemy.rb.linearVelocity.y);
+            enemy.Physics.velocity = new Vector2(0, enemy.Physics.velocityY);
 
             coroutine = enemy.StartCoroutine(Scratch());
             enemy.bodyDamage = enemy.EnemyData.ATK;

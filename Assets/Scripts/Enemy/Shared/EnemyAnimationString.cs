@@ -9,5 +9,7 @@ namespace ToB
         public static readonly int VelocityY = Animator.StringToHash("VelocityY");
         public static readonly int Roll = Animator.StringToHash("Roll");
         public static readonly int Dash = Animator.StringToHash("Dash");
+
+        public static readonly int MotionCancel = Animator.StringToHash("MotionCancel");
     }
 }

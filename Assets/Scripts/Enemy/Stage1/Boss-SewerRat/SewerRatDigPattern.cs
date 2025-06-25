@@ -57,7 +57,7 @@ namespace ToB
             
             float ascendHeightPower = 25;
             
-            enemy.rb.linearVelocityY = ascendHeightPower;
+            enemy.Physics.velocityY = ascendHeightPower;
             enemy.Physics.gravityEnabled = true;
             strategy.Sprite.flipX = enemy.GetTargetDirection().x < 0;
             
@@ -77,15 +77,15 @@ namespace ToB
             float tackleSpeed = 30;
             while (!enemy.IsGrounded)
             {
-                Vector2 currentPosition = enemy.rb.position;
+                Vector2 currentPosition = enemy.transform.position;
                 Vector2 moveDir = (destination - currentPosition).normalized;
-                enemy.rb.linearVelocity = moveDir * tackleSpeed;
+                enemy.Physics.velocity = moveDir * tackleSpeed;
                 yield return null;
             }
             enemy.Animator.SetBool(EnemyAnimationString.Roll, false);
             yield return new WaitForSeconds(0.025f);    // 충돌 후 벽에 끼인 프레임 임시 처리. 물리 처리 바꿀 예정
 
-            enemy.rb.linearVelocity = new Vector2(0, 10);
+            enemy.Physics.velocity = new Vector2(0, 10);
             Debug.Log("태클  후 속도 변환 : " + Time.frameCount );
             enemy.Animator.SetBool(EnemyAnimationString.Jump, true);
             
