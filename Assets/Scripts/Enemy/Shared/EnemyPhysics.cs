@@ -22,6 +22,9 @@ namespace ToB
         
         bool hasFixed;
         private Vector2 fixPos;
+
+        [Header("현재 속도")] 
+        public Vector2 velocity;
         private void Awake()
         {
             enemy = GetComponent<Enemy>();
@@ -68,7 +71,7 @@ namespace ToB
                 rb.MovePosition(rb.position + fixPos);
                 if (fixPos.x != 0) rb.linearVelocityX = 0;
                 else if (fixPos.y != 0) rb.linearVelocityY = 0;
-                
+                Debug.Log("충돌 픽스 : " + Time.frameCount) ;
             }
         }
 

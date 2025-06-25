@@ -32,6 +32,7 @@ namespace ToB
 
         IEnumerator Dig()
         {
+            enemy.Animator.SetBool(EnemyAnimationString.Roll, true);
             enemy.Physics.collisionEnabled = false;
             enemy.Physics.gravityEnabled = false;
             Tween tween = enemy.transform.DOShakePosition(1, new Vector3(0.5f, 0.5f, 0), 20, 90);
@@ -45,6 +46,7 @@ namespace ToB
 
         IEnumerator Ascend()
         {
+            
             enemy.transform.position = strategy.ascendLocation.GetRandomPosition(fixedY:true);
             
             yield return new WaitForSeconds(Random.Range(0f,1f));
@@ -57,7 +59,7 @@ namespace ToB
             
             enemy.rb.linearVelocityY = ascendHeightPower;
             enemy.Physics.gravityEnabled = true;
-            
+            strategy.Sprite.flipX = enemy.GetTargetDirection().x < 0;
             
             yield return new WaitForSeconds(0.8f);
             coroutine = enemy.StartCoroutine(Tackle());
@@ -80,8 +82,19 @@ namespace ToB
                 enemy.rb.linearVelocity = moveDir * tackleSpeed;
                 yield return null;
             }
+            enemy.Animator.SetBool(EnemyAnimationString.Roll, false);
+            yield return new WaitForSeconds(0.025f);    // 충돌 후 벽에 끼인 프레임 임시 처리. 물리 처리 바꿀 예정
+
             enemy.rb.linearVelocity = new Vector2(0, 10);
+            Debug.Log("태클  후 속도 변환 : " + Time.frameCount );
+            enemy.Animator.SetBool(EnemyAnimationString.Jump, true);
+            
             enemy.Physics.gravityEnabled = true;
+
+            yield return new WaitUntil(() => enemy.IsGrounded);
+            enemy.Animator.SetBool(EnemyAnimationString.Jump, false);
+            
+            
             Exit();
         }
     }

@@ -31,7 +31,9 @@ namespace ToB
         IEnumerator Dash()
         {
             if(!enemy.target) yield break;
-
+            
+            enemy.Animator.SetTrigger(EnemyAnimationString.Dash);
+            
             enemy.bodyDamage = 20;  // 대쉬 시 충돌 데미지
             Vector2 dashDirection = enemy.GetTargetDirection();
             dashDirection.y = 0;
@@ -52,6 +54,10 @@ namespace ToB
         IEnumerator Scratch()
         {
             // TODO : 스크래치 애니메이션과 함께 판정 처리
+            enemy.Animator.SetBool("Bark", true);
+            yield return new WaitForSeconds(0.59f); // 애니메이션 클립 시간 
+            enemy.Animator.SetBool("Bark", false);
+            
             Exit();
             yield return null;
         }

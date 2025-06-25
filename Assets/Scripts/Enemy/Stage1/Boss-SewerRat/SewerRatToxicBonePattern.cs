@@ -54,6 +54,7 @@ namespace ToB
         // 동작 2. 3회 뼈다귀를 던진다
         IEnumerator ThrowBone()
         {
+            enemy.Animator.SetBool("Bark", true);
             for (int i = 0; i < 3; i++)
             {
                 Vector2 direction = enemy.GetTargetDirection();
@@ -68,6 +69,9 @@ namespace ToB
                 
                 yield return new WaitForSeconds(0.27f);
             }
+
+            enemy.Animator.SetBool("Bark", false);
+            
             Exit();
         }
     }
