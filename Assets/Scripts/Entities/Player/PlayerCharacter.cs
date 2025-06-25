@@ -271,6 +271,7 @@ namespace ToB.Player
       var prevMotion = animator.GetInteger(INT_ATTACK_MOTION);
       prevMotion = prevMotion == 2 ? 0 : prevMotion + 1;
       animator.SetInteger(INT_ATTACK_MOTION, prevMotion);
+      
       if (direction.x > 0)
       {
           
@@ -280,12 +281,8 @@ namespace ToB.Player
           
       }
 
-      // 실제 피해 구현
-      if (isMelee)
-      {
-        
-      }
-      else
+      // 원거리 공격 구현
+      if (!isMelee)
       {
         
       }
