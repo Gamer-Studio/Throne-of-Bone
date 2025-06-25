@@ -133,8 +133,15 @@ namespace ToB.Player
     
     #region Event
 
+    /// <summary>
+    /// 플레이어 사망시 호출됩니다.
+    /// </summary>
     public UnityEvent OnDeath => stat.onDeath;
-    public UnityEvent<int> OnHpChange => stat.onHpChanged;
+    
+    /// <summary>
+    /// 플레이어의 체력이 변경될 시 호출되며, 매개변수로 현재 체력을 넘겨줍니다.
+    /// </summary>
+    public UnityEvent<float> OnHpChange => stat.onHpChanged;
     
     #endregion Event
     
@@ -146,7 +153,7 @@ namespace ToB.Player
     [SerializeField] private bool isJumping = false;
     
     /// <summary>
-    /// Jump()를 호출하여 점프를 시작할 수 있습니다.
+    /// Jump()를 호출하여 점프를 시작할 수 있습니다. <br/>
     /// 빠르게 CancelJump()를 호출하여 낮은 점프를 할 수 있습니다.
     /// </summary>
     [Button]
@@ -247,11 +254,14 @@ namespace ToB.Player
     
     #endregion Attack Feature
 
-    public int Damage(int value)
-    {
-      stat.Hp -= value;
-      return stat.Hp;
-    }
+    /// <summary>
+    /// 플레이어에게 방어력을 반영한 체력 피해를 줍니다.<br/>
+    /// 남은 체력 이상의 피해를 줄 시 자동으로 0까지만 내려가고, <br/>
+    /// 0이 될 시 stats.onDeath 이벤트를 호출합니다.
+    /// </summary>
+    /// <param name="value">피해량입니다.</param>
+    /// <returns>플레이어의 남은 체력입니다.</returns>
+    public float Damage(float value) => stat.Damage(value);
     
     #endregion Feature
     
