@@ -24,6 +24,7 @@ namespace ToB
         bool hasFixed;
         private Vector2 fixPos;
         private Vector2 fixDirection;
+        private Vector2 totalVelocity;
 
         [Header("현재 속도")] 
         public Vector2 velocity;
@@ -77,7 +78,7 @@ namespace ToB
 
         private void MoveToNextPosition()
         {
-            Vector2 totalVelocity = velocity;
+            totalVelocity = velocity;
 
             foreach (var element in externalVelocity)
             {
@@ -102,8 +103,8 @@ namespace ToB
         {
             Vector2 castBoxSize = terrainSensor.size;
                 
-            Vector2 moveDelta = velocity * Time.fixedDeltaTime;
-            RaycastHit2D hit = Physics2D.BoxCast(rb.position + terrainSensor.offset, castBoxSize, 0, velocity.normalized, moveDelta.magnitude, terrainLayer);
+            Vector2 moveDelta = totalVelocity * Time.fixedDeltaTime;
+            RaycastHit2D hit = Physics2D.BoxCast(rb.position + terrainSensor.offset, castBoxSize, 0, totalVelocity.normalized, moveDelta.magnitude, terrainLayer);
 
             if (hit.collider)
             {
@@ -112,23 +113,23 @@ namespace ToB
                 if (hit.normal.y < 0.5f) // 벽에 닿은 경우
                 {
                     resultMoveDelta.y = moveDelta.y;
-                    int leftRightNum = velocity.x > 0 ? 1 : -1;
+                    int leftRightNum = totalVelocity.x > 0 ? 1 : -1;
                     resultMoveDelta.x -= leftRightNum * skinWidth;
-                    velocityX = 0;
+                    totalVelocity.x = 0;
                 }
                 else
                 {
                     resultMoveDelta.x = moveDelta.x;
-                    int upDownNum = velocity.y > 0 ? 1 : -1;
+                    int upDownNum = totalVelocity.y > 0 ? 1 : -1;
                     resultMoveDelta.y -= upDownNum * skinWidth;
-                    velocityY = 0;
+                    totalVelocity.y = 0;
                 }
                     
                 rb.MovePosition(rb.position + resultMoveDelta);
             }
             else
             {
-                rb.MovePosition(rb.position + velocity * Time.fixedDeltaTime); // MovePosition 함수 테스트
+                rb.MovePosition(rb.position + totalVelocity * Time.fixedDeltaTime); // MovePosition 함수 테스트
             }
         }
 
