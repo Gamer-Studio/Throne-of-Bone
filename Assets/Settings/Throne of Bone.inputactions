@@ -58,6 +58,78 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "StatisticsUIToggle",
+                    "type": "Button",
+                    "id": "699a1533-a70b-48d6-a2d2-d0c03beffa58",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "QuestUIToggle",
+                    "type": "Button",
+                    "id": "88d3b73b-0a52-480f-b071-c09dd8594e47",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "WideMapToggle",
+                    "type": "Button",
+                    "id": "0ae8e2ff-56cd-4272-a917-8f99c401b7a5",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "SkillUIToggle",
+                    "type": "Button",
+                    "id": "5aa064cb-78cc-446d-bf95-5f010f4a369f",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "CollectionUIToggle",
+                    "type": "Button",
+                    "id": "81e4b314-8804-4f1e-8be1-73f39653e6ff",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "SettingUIToggle",
+                    "type": "Button",
+                    "id": "0f02cb88-2383-41d5-9bba-1d6c447ca69a",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "ClearActiveUI",
+                    "type": "Button",
+                    "id": "9eb61189-ef26-4150-a9cc-cccf27e58aaa",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "SoulUIToggle",
+                    "type": "Button",
+                    "id": "2f549dc3-86fb-46dd-8e29-8c5ddf3dbfc5",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -195,6 +267,61 @@
                 },
                 {
                     "name": "",
+                    "id": "3ccdf4cc-fc2f-4bbe-9339-2665cd71b30c",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ClearActiveUI",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ce68647f-3765-44f7-80fb-f38c90713a5b",
+                    "path": "<Keyboard>/o",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "CollectionUIToggle",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "cedebb06-7ffb-44fa-847e-1f20943ce7f7",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "SettingUIToggle",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6d818655-f426-4d80-93a3-faa99895c2ca",
+                    "path": "<Keyboard>/l",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "SkillUIToggle",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "24f516b1-c423-4f15-a89f-f4bbdd38c22f",
+                    "path": "<Keyboard>/j",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "QuestUIToggle",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "c1f7a91b-d0fd-4a62-997e-7fb9b69bf235",
                     "path": "<Gamepad>/rightStick",
                     "interactions": "",
@@ -313,6 +440,39 @@
                     "action": "RangedAtttack",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "27b6fe17-3169-4419-91c1-2f0cbf3d656e",
+                    "path": "<Keyboard>/p",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "StatisticsUIToggle",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "534b2cf8-291b-4ae3-a259-7a40767bd9f0",
+                    "path": "<Keyboard>/m",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "WideMapToggle",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "53f2a486-9748-4173-a55f-9959091f5cd2",
+                    "path": "<Keyboard>/k",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SoulUIToggle",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },
@@ -333,7 +493,7 @@
                     "name": "Submit",
                     "type": "Button",
                     "id": "687c57df-8788-464b-86f1-c39f1295097f",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -342,7 +502,7 @@
                     "name": "Cancel",
                     "type": "Button",
                     "id": "cf707984-b7bb-4e80-99b9-97e3dc3b13e7",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -827,6 +987,34 @@
                     "processors": "",
                     "groups": "XR",
                     "action": "TrackedDeviceOrientation",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "CustomUI",
+            "id": "d3c52d37-abae-444d-960d-1c5305dd2173",
+            "actions": [
+                {
+                    "name": "CancelUI",
+                    "type": "Button",
+                    "id": "24036898-0503-430b-a6c7-bd3bb6d41fa4",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "a2028dce-dbed-4047-ace7-5e03eec6edf9",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CancelUI",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

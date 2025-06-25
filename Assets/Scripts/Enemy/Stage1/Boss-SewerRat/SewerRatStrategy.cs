@@ -15,7 +15,7 @@ namespace ToB
         private bool OutOfMeleeRange => enemy.GetTargetDistanceSQR() > Mathf.Pow(patternDistance, 2);
 
         [SerializeField] private float breathTime = 1;
-        [SerializeField] private SpriteRenderer Sprite;
+        [SerializeField] public SpriteRenderer Sprite { get; private set; }
         private float coolDown;
 
         public Location ascendLocation;

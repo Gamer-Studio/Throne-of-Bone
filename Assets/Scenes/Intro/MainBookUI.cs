@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 namespace ToB.Scenes.Intro
@@ -42,11 +43,126 @@ namespace ToB.Scenes.Intro
         {
             for (int i = 0; i < panels.Length; i++)
             {
-                panels[i].SetActive(i == indexToShow);
+                if (i == indexToShow)
+                {
+                    panels[i].SetActive(true);
+                    currentPanel = panels[i];
+                }
+                else
+                    panels[i].SetActive(false);
                 // true인 것만 SetActive, 나머진 false
             }
         }
+#region InputAction
+        public void SkillUIToggle(InputAction.CallbackContext context)
+        {
+            //분기 1 : 메인북이 꺼져 있으면 켠다
+            // 분기 2-1 : 메인북이 켜져 있을 경우, 현재 패널을 또 부르면 끈다
+            // 분기 2-2 : 메인북이 켜져 있을 경우, 다른 패널을 부르면 패널을 바꾼다
+            if (context.performed)
+            {
+                if (gameObject.activeSelf && currentPanel == panels[0])
+                {
+                    gameObject.SetActive(false);
+                }
+                else if (gameObject.activeSelf && currentPanel != panels[0])
+                {
+                    ShowPanel(0);
+                }
+                else if (!gameObject.activeSelf)
+                {
+                    gameObject.SetActive(true);
+                    UIManager.Instance.wideMapUI.gameObject.SetActive(false);
+                    ShowPanel(0);
+                }
+            }
+        }
 
+        public void SoulUIToggle(InputAction.CallbackContext context)
+        {
+            if (context.performed)
+            {
+                if (gameObject.activeSelf && currentPanel == panels[1])
+                {
+                    gameObject.SetActive(false);
+                }
+                else if (gameObject.activeSelf && currentPanel != panels[1])
+                {
+                    ShowPanel(1);
+                }
+                else if (!gameObject.activeSelf)
+                {
+                    gameObject.SetActive(true);
+                    UIManager.Instance.wideMapUI.gameObject.SetActive(false);
+                    ShowPanel(1);
+                }
+            }
+        }
+        
+        public void CollectionUIToggle(InputAction.CallbackContext context)
+        {
+            if (context.performed)
+            {
+                if (gameObject.activeSelf && currentPanel == panels[2])
+                {
+                    gameObject.SetActive(false);
+                }
+                else if (gameObject.activeSelf && currentPanel != panels[2])
+                {
+                    ShowPanel(2);
+                }
+                else if (!gameObject.activeSelf)
+                {
+                    gameObject.SetActive(true);
+                    UIManager.Instance.wideMapUI.gameObject.SetActive(false);
+                    ShowPanel(2);
+                }
+            }
+        }
+
+        public void StatisticsUIToggle(InputAction.CallbackContext context)
+        {
+            if (context.performed)
+            {
+                if (gameObject.activeSelf && currentPanel == panels[3])
+                {
+                    gameObject.SetActive(false);
+                }
+                else if (gameObject.activeSelf && currentPanel != panels[3])
+                {
+                    ShowPanel(3);
+                }
+                else if (!gameObject.activeSelf)
+                {
+                    gameObject.SetActive(true);
+                    UIManager.Instance.wideMapUI.gameObject.SetActive(false);
+                    ShowPanel(3);
+                }
+            }
+        }
+
+        public void SettingUIToggle(InputAction.CallbackContext context)
+        {
+            Debug.Log("SettingUIToggle 실행됨");
+            if (context.performed && !UIManager.Instance.isThereActiveUI)
+            {
+                if (gameObject.activeSelf && currentPanel == panels[4])
+                {
+                    gameObject.SetActive(false);
+                }
+                else if (gameObject.activeSelf && currentPanel != panels[4])
+                {
+                    ShowPanel(4);
+                }
+                else if (!gameObject.activeSelf)
+                {
+                    gameObject.SetActive(true);
+                    UIManager.Instance.wideMapUI.gameObject.SetActive(false);
+                    ShowPanel(4);
+                }
+            }
+        }
+#endregion
 
 
 
