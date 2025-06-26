@@ -92,7 +92,7 @@ namespace ToB
             
             Vector2 fixedDirection = (destination - (Vector2)enemy.transform.position).normalized;  // 단순 플레이어 방향 방식이 궤도 오차가 심했어서 레이로
             
-            while (!enemy.IsGrounded)
+            while (!enemy.Physics.HasCollided)
             {
                 // 고정된 방향으로 등속 이동
                 enemy.Physics.velocity = fixedDirection * tackleSpeed;
