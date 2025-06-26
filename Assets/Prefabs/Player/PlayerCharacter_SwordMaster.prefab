@@ -104,6 +104,7 @@ GameObject:
   - component: {fileID: 1096863716109666581}
   - component: {fileID: 1067526606140988756}
   - component: {fileID: 1910508927396576283}
+  - component: {fileID: 7655265317321702560}
   m_Layer: 0
   m_Name: PlayerCharacter_SwordMaster
   m_TagString: Player
@@ -210,12 +211,12 @@ MonoBehaviour:
   moveDirection: 0
   isMoving: 0
   isFlight: 0
-  jumpPower: 20
+  jumpPower: 25
   jumpTimeLimit: 0.2
   gravityAcceleration: 2.5
-  dashMultiplier: 50
-  dashTimeLimit: 0.4
-  isWater: 0
+  dashMultiplier: 250
+  dashTimeLimit: 0.2
+  inWater: 0
   stat:
     onHpChanged:
       m_PersistentCalls:
@@ -229,6 +230,21 @@ MonoBehaviour:
   body: {fileID: 1096863716109666581}
   animator: {fileID: 6425824100770376572}
   spriteRenderer: {fileID: 9050726402138752261}
+  waterObjects: []
+--- !u!114 &7655265317321702560
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2968809511529205449}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d6c670f53eb482d92b45ac991a873c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buffs:
+    array: []
 --- !u!1 &3338924305840895927
 GameObject:
   m_ObjectHideFlags: 0

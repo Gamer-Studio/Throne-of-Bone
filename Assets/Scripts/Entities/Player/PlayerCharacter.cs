@@ -95,7 +95,7 @@ namespace ToB.Player
                                animator.GetCurrentAnimatorStateInfo(0).IsName("Slash1") ||
                                animator.GetCurrentAnimatorStateInfo(0).IsName("Slash2");
     
-    public bool IsDashing => animator.GetCurrentAnimatorStateInfo(0).IsName("Dash");
+    public bool IsDashing => animator.GetCurrentAnimatorStateInfo(0).IsName("Dash") || dashCoroutine != null;
     
     #endregion
     
@@ -187,11 +187,10 @@ namespace ToB.Player
     [Button]
     public void Jump()
     {
-      if (!inWater && isFlight) return;
-      if (IsDashing) return; 
-      
-      animator.SetTrigger(TRIGGER_JUMP);
-      jumpCoroutine ??= StartCoroutine(JumpCoroutine());
+      if ((inWater || !isFlight) && !IsDashing && jumpCoroutine == null)
+      {
+        jumpCoroutine = StartCoroutine(JumpCoroutine());
+      }
     }
 
     /// <summary>
@@ -208,6 +207,8 @@ namespace ToB.Player
 
     private IEnumerator JumpCoroutine()
     {
+      animator.SetTrigger(TRIGGER_JUMP);
+
       var jumpTime = 0f;
       while (jumpTime < jumpTimeLimit)
       {
@@ -229,10 +230,9 @@ namespace ToB.Player
     /// </summary>
     public void Dash()
     {
-      if(dashCoroutine == null && 
-         !animator.GetCurrentAnimatorStateInfo(0).IsName("Dash") && 
-         body.gravityScale != 0)
+      if(!IsDashing && body.gravityScale != 0)
       {
+        CancelJump();
         StartCoroutine(DashCoroutine());
       }
     }
@@ -256,6 +256,7 @@ namespace ToB.Player
 
       animator.SetInteger(INT_DASH_STATE, 1);
       body.gravityScale = beforeGravityScale;
+      body.linearVelocityX = 0;
       body.linearVelocityY = -0.1f;
       isFlight = true;
       dashCoroutine = null;
