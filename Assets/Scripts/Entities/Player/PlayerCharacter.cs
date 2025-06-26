@@ -123,6 +123,7 @@ namespace ToB.Player
 
     private void FixedUpdate()
     {
+      dashDelay -= Time.deltaTime;
       isFlight = Math.Abs(body.linearVelocityY) > 0.1f;
 
       var inDash = animator.GetCurrentAnimatorStateInfo(0).IsName("Dash");
@@ -223,6 +224,9 @@ namespace ToB.Player
     #endregion Jump Feature
     
     #region Dash Feature
+    
+    public float dashDelay = 0;
+    public float dashCoolTime = 0.5f;
 
     private Coroutine dashCoroutine = null;
     /// <summary>
@@ -230,8 +234,9 @@ namespace ToB.Player
     /// </summary>
     public void Dash()
     {
-      if(!IsDashing && body.gravityScale != 0)
+      if(dashDelay <= 0 && !IsDashing && body.gravityScale != 0)
       {
+        dashDelay = 20;
         CancelJump();
         StartCoroutine(DashCoroutine());
       }
@@ -260,6 +265,8 @@ namespace ToB.Player
       body.linearVelocityY = -0.1f;
       isFlight = true;
       dashCoroutine = null;
+
+      dashDelay = dashCoolTime;
     }
     
     #endregion Dash Feature
