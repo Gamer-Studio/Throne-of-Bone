@@ -28,8 +28,8 @@ namespace ToB
         {
             base.Exit();
             if(coroutine != null) enemy.StopCoroutine(coroutine);
-            strategy.groundDustEffect.gameObject.SetActive(false);
-            strategy.groundRubble.gameObject.SetActive(false);
+            strategy.GroundDustEffect.gameObject.SetActive(false);
+            strategy.GroundRubble.gameObject.SetActive(false);
         }
 
         IEnumerator Dig()
@@ -52,26 +52,25 @@ namespace ToB
             enemy.transform.position = strategy.ascendLocation.GetRandomPosition(fixedY:true);
 
             Vector2 groundPoint = GetGroundPoint();
-            strategy.groundDustEffect.transform.position = groundPoint;
-            strategy.groundRubble.transform.position = groundPoint;
+            strategy.GroundDustEffect.transform.position = groundPoint;
+            strategy.GroundRubble.transform.position = groundPoint;
             
             
             yield return new WaitForSeconds(Random.Range(0f,1f));
             
-            strategy.groundDustEffect.gameObject.SetActive(true);
-            strategy.groundDustEffect.Play();
+            strategy.GroundDustEffect.gameObject.SetActive(true);
+            strategy.GroundDustEffect.Play();
             
             yield return new WaitForSeconds(1f);
             
-            strategy.groundRubble.gameObject.SetActive(true);
-            strategy.groundRubble.Play();
+            strategy.GroundRubble.gameObject.SetActive(true);
+            strategy.GroundRubble.Play();
             
             const float ascendHeightPower = 32;
             
             enemy.Physics.velocityY = ascendHeightPower;
             enemy.Physics.gravityEnabled = true;
-            strategy.Sprite.flipX = enemy.GetTargetDirection().x < 0;
-            
+            strategy.LookPlayer();
            
             coroutine = enemy.StartCoroutine(Tackle());
         }

@@ -41,8 +41,6 @@ namespace ToB
             float jumpForce = 10;
             
             enemy.Physics.velocity = jumpDirection * jumpForce;
-            Debug.Log($"점프 직후 velocityY: {enemy.Physics.velocityY}");
-            Debug.Log($"gravityEnabled: {enemy.Physics.gravityEnabled}");
 
             enemy.Animator.SetBool(EnemyAnimationString.Jump, true);
 
@@ -62,12 +60,11 @@ namespace ToB
             enemy.Animator.SetBool("Bark", true);
             for (int i = 0; i < 3; i++)
             {
-                
                 float speed = 10;
                 
-                GameObject boneObj = Object.Instantiate(strategy.toxicBonePrefab);
+                GameObject boneObj = Object.Instantiate(strategy.ToxicBonePrefab);
                 boneObj.transform.position = enemy.transform.position + new Vector3(0, 2, 0);
-                ToxicBone bone = boneObj.GetComponent<ToxicBone>();
+                ToxicBone bone = boneObj.GetComponent<ToxicBone>();         // 양이 많지 않아서 굳이 풀링하지 않고 있습니다.
                 
                 Vector2 direction = enemy.target.transform.position - boneObj.transform.position ;
                 bone.LinearMovement.Init(direction, speed);
