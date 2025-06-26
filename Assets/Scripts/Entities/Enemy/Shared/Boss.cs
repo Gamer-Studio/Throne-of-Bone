@@ -31,7 +31,7 @@ namespace ToB
             Destroy(gameObject);
         }
 
-        public void Damage(float damage)
+        public void Damage(float damage, MonoBehaviour sender = null)
         {
             OnTakeDamage(damage);
         }

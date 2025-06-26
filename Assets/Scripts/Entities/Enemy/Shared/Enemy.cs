@@ -75,7 +75,7 @@ namespace ToB
             if ((hittableMask & (1 << other.gameObject.layer)) != 0)
             {
                 Debug.Log("플레이어 대미지(bodyDamage)");
-                other.GetComponent<PlayerCharacter>().Damage(bodyDamage);
+                other.GetComponent<PlayerCharacter>().Damage(bodyDamage, this);
             }
         }
 

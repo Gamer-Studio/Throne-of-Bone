@@ -29,6 +29,7 @@ namespace ToB
             base.Exit();
             if(coroutine != null) enemy.StopCoroutine(coroutine);
             strategy.groundDustEffect.gameObject.SetActive(false);
+            strategy.groundRubble.gameObject.SetActive(false);
         }
 
         IEnumerator Dig()
@@ -52,6 +53,7 @@ namespace ToB
 
             Vector2 groundPoint = GetGroundPoint();
             strategy.groundDustEffect.transform.position = groundPoint;
+            strategy.groundRubble.transform.position = groundPoint;
             
             
             yield return new WaitForSeconds(Random.Range(0f,1f));
@@ -60,7 +62,10 @@ namespace ToB
             strategy.groundDustEffect.Play();
             
             yield return new WaitForSeconds(1f);
-
+            
+            strategy.groundRubble.gameObject.SetActive(true);
+            strategy.groundRubble.Play();
+            
             const float ascendHeightPower = 32;
             
             enemy.Physics.velocityY = ascendHeightPower;
