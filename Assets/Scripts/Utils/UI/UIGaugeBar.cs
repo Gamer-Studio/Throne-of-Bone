@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using TMPro;
 using ToB.Player; 
 using UnityEngine;
@@ -64,24 +65,52 @@ namespace ToB.Utils.UI
     #region HPBarChange
     
     private PlayerCharacter player;
-    private void OnEnable()
+    
+    private void Awake()
     {
       SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
       SceneManager.sceneLoaded -= OnSceneLoaded;
     }
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+      if (scene.name == "Stage" || scene.name == "Stage0623Copy")
+      {
+        gameObject.SetActive(true);
+        player = PlayerCharacter.GetInstance();
+        if (player != null)
+        {
+          Init();
+        }
+        else
+        {
+          Debug.Log("PlayerCharacter is null");
+        }
+        Debug.Log("WaitAndInit end");
+      }
+    }
+   private IEnumerator WaitAndInit()
+    {
+      Debug.Log("WaitAndInit");
+      yield return new WaitForSeconds(0.5f);
+      // 한 프레임 쉬거나 약간 딜레이 : UI가 DDO라서 플레이어보다 먼저 생성됨.
+      // 추후 로딩신이 생겨서 await async등을 쓸 수 있으면 그때 더 정확하게 타이밍 조절할 수 있을 듯
+      // player = GameObject.FindGameObjectWithTag("Player")?.GetComponent<PlayerCharacter>();
+      // 직접 찾아도 되는데 뭐 메서드 이미 있으니 아래 사용
       player = PlayerCharacter.GetInstance();
       if (player != null)
       {
-          Init();
+        Init();
       }
+      else
+      {
+        Debug.Log("PlayerCharacter is null");
+      }
+      Debug.Log("WaitAndInit end");
     }
-
     private void Init()
     {
       ChangeMax(player.stat.maxHp);
