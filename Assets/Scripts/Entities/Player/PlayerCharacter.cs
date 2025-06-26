@@ -1,10 +1,13 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using NaughtyAttributes;
 using ToB.Entities;
 using ToB.Utils;
+using ToB.Worlds;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 namespace ToB.Player
 {
@@ -52,7 +55,7 @@ namespace ToB.Player
     [Header("Dash State")]
     [Tooltip("대시 보정값")] public float dashMultiplier = 12;
     [Tooltip("대시 지속시간")] public float dashTimeLimit = 0.2f;
-    [Tooltip("물속인지")] public bool isWater = false;
+    [FormerlySerializedAs("isWater")] [Tooltip("물속인지")] public bool inWater = false;
 
     // 플레이어 스텟 관리 클래스입니다.
     public PlayerStats stat = new();
@@ -92,6 +95,8 @@ namespace ToB.Player
                                animator.GetCurrentAnimatorStateInfo(0).IsName("Slash1") ||
                                animator.GetCurrentAnimatorStateInfo(0).IsName("Slash2");
     
+    public bool IsDashing => animator.GetCurrentAnimatorStateInfo(0).IsName("Dash");
+    
     #endregion
     
     #region Binding
@@ -121,7 +126,7 @@ namespace ToB.Player
       isFlight = Math.Abs(body.linearVelocityY) > 0.1f;
 
       var inDash = animator.GetCurrentAnimatorStateInfo(0).IsName("Dash");
-      var enterFallingAnim = body.linearVelocityY < -0.1f && !isWater &&
+      var enterFallingAnim = body.linearVelocityY < -0.1f && !inWater &&
                           !inDash && !IsAttacking;
       
       if (animator.GetBool(BOOL_FALLING) != enterFallingAnim)
@@ -182,7 +187,8 @@ namespace ToB.Player
     [Button]
     public void Jump()
     {
-      if (!isWater && isFlight) return;
+      if (!inWater && isFlight) return;
+      if (IsDashing) return; 
       
       animator.SetTrigger(TRIGGER_JUMP);
       jumpCoroutine ??= StartCoroutine(JumpCoroutine());
@@ -236,7 +242,7 @@ namespace ToB.Player
       animator.SetTrigger(TRIGGER_DASH);
       var beforeGravityScale = body.gravityScale;
       body.gravityScale = 0;
-      body.linearVelocityY = 0;
+      body.linearVelocity = Vector2.zero;
       
       animator.SetInteger(INT_DASH_STATE, 0);
       var dashTime = 0f;
@@ -250,13 +256,14 @@ namespace ToB.Player
 
       animator.SetInteger(INT_DASH_STATE, 1);
       body.gravityScale = beforeGravityScale;
+      body.linearVelocityY = -0.1f;
+      isFlight = true;
       dashCoroutine = null;
     }
     
     #endregion Dash Feature
     
     #region Attack Feature
-    
     
     /// <summary>
     /// direction 방향으로 공격합니다.
@@ -313,32 +320,22 @@ namespace ToB.Player
     #endregion Feature
     
     #region Water
-
-    private Coroutine waterCoroutine = null;
+    [SerializeField] private List<WaterObject> waterObjects = new();
     
-    private void WaterEnter(int damage)
+    private void WaterEnter(WaterObject obj)
     {
-      isWater = true;
-      waterCoroutine ??= StartCoroutine(WaterCoroutine(damage));
+      if(waterObjects.Contains(obj)) return;
+      
+      waterObjects.Add(obj);
+      if (waterObjects.Count > 0) inWater = true;
     }
 
-    private void WaterExit()
+    private void WaterExit(WaterObject obj)
     {
-      isWater = false;
-      if(waterCoroutine != null)
-      {
-        StopCoroutine(waterCoroutine);
-        waterCoroutine = null;
-      }
-    }
+      if(!waterObjects.Contains(obj)) return;
 
-    private IEnumerator WaterCoroutine(int damage)
-    {
-      while (true)
-      {
-        yield return new WaitForSeconds(1f);
-        Damage(damage, null);
-      }
+      waterObjects.Remove(obj);
+      if (waterObjects.Count == 0) inWater = false;
     }
 
     #endregion
