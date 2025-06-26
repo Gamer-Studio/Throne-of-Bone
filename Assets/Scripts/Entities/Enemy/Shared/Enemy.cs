@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using ToB.Player;
 using UnityEngine;
 
@@ -7,13 +8,15 @@ namespace ToB
     // [RequireComponent(typeof(EnemyStatHandler))]
     public abstract class Enemy : MonoBehaviour
     {
+        [Header("기본 참조")]
         [field:SerializeField] public EnemyData EnemyData { get; private set; }
         [field:SerializeField] public Rigidbody2D rb { get; private set; }
         [field:SerializeField] public EnemyPhysics Physics { get; private set; }
         [field:SerializeField] public Animator Animator { get; private set; }
-        
         [field:SerializeField] public EnemyKnockback Knockback { get; private set; }
-        
+        [field:SerializeField] public SpriteRenderer Sprite { get; private set; }
+
+        private Coroutine damageColorCoroutine;
         // 스탯 핸들러는 스탯이 복잡해지면 다룰 예정. 현재는 HP 밖에 없음
         // [field:SerializeField] public EnemyStatHandler EnemyStatHandler { get; private set; }
         
@@ -22,6 +25,8 @@ namespace ToB
         
         [Header("타겟")]
         public Transform target;
+        
+        [Header("속성")]
         public float bodyDamage;    // 충돌 시 데미지. 적군 상태에 따라 너무 유동적이기 쉬워서 public으로 함
 
         public float BaseHP => EnemyData.HP;
@@ -57,8 +62,29 @@ namespace ToB
         {
             float actualDamage = damage * (1 - EnemyData.DEF / 100);
             ChangeHP(-actualDamage);
+            
+            if (currentHP <= 0)
+            {
+                Die();
+            }
+            
+            if(damageColorCoroutine != null) StopCoroutine(damageColorCoroutine);
+            damageColorCoroutine = StartCoroutine(DamageColorOverlay());
 
-            if (currentHP <= 0) Die();
+        }
+
+        IEnumerator DamageColorOverlay()
+        {
+            Sprite.material.SetFloat("_Alpha", 1);
+            float duration = 0.3f;
+            float remainedTime = duration;
+
+            while (remainedTime > 0)
+            {
+                yield return null;
+                remainedTime -= Time.deltaTime;
+                Sprite.material.SetFloat("_Alpha", remainedTime / duration);
+            }
         }
 
         public void ApplyKnockback(Vector2 direction, float force)

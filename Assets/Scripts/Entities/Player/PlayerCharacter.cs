@@ -31,7 +31,7 @@ namespace ToB.Player
           return comp;
         }
       }
-      
+      Debug.Log("플레이어 인스턴스 반환 실패");
       return null;
     }
     

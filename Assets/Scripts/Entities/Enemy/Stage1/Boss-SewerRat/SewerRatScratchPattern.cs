@@ -26,6 +26,8 @@ namespace ToB
         {
             base.Exit();
             if(coroutine != null) enemy.StopCoroutine(coroutine);
+            strategy.ScratchEffect.gameObject.SetActive(false);
+
         }
 
         IEnumerator Dash()
@@ -57,9 +59,9 @@ namespace ToB
         {
             // TODO : 스크래치 애니메이션과 함께 판정 처리
             enemy.Animator.SetBool("Bark", true);
+            strategy.ScratchEffect.gameObject.SetActive(true);
             yield return new WaitForSeconds(0.59f); // 애니메이션 클립 시간 
             enemy.Animator.SetBool("Bark", false);
-            
             Exit();
             yield return null;
         }

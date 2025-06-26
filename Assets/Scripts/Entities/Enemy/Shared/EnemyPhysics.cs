@@ -30,6 +30,8 @@ namespace ToB
         public Vector2 velocity;
         
         public Dictionary<string, Vector2> externalVelocity = new Dictionary<string, Vector2>();
+        
+        public bool HasCollided { get; private set; }
 
         public float velocityX
         {
@@ -78,6 +80,7 @@ namespace ToB
 
         private void MoveToNextPosition()
         {
+            HasCollided = false;
             totalVelocity = velocity;
 
             foreach (var element in externalVelocity)
@@ -108,6 +111,7 @@ namespace ToB
 
             if (hit.collider)
             {
+                HasCollided = true;
                 Vector2 resultMoveDelta = hit.distance * moveDelta.normalized;
 
                 if (hit.normal.y < 0.5f) // 벽에 닿은 경우
@@ -117,7 +121,7 @@ namespace ToB
                     resultMoveDelta.x -= leftRightNum * skinWidth;
                     totalVelocity.x = 0;
                 }
-                else
+                else // 땅에 닿은 경우
                 {
                     resultMoveDelta.x = moveDelta.x;
                     int upDownNum = totalVelocity.y > 0 ? 1 : -1;
@@ -198,7 +202,8 @@ namespace ToB
             isGrounded = CheckCollision(Vector2.down) && velocityY <= 0;
             return isGrounded;
         }
-        
+
+
         private bool CheckCollision(Vector2 direction)
         {
             Vector2 center = (Vector2)transform.position +
