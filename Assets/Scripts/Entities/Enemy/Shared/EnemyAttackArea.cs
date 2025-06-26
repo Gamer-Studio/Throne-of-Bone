@@ -8,6 +8,13 @@ namespace ToB
     {
         [SerializeField] private MonoBehaviour owner;
         [SerializeField] private float damage;
+        [SerializeField] private LayerMask attackTargetLayers;
+
+
+        private void Awake()
+        {
+            attackTargetLayers = LayerMask.GetMask("Player");
+        }
 
         public void Init(MonoBehaviour character, float damage)
         {
@@ -16,7 +23,8 @@ namespace ToB
         }
         private void OnTriggerEnter2D(Collider2D other)
         {
-            other.Damage(damage, owner);
+            if((attackTargetLayers & 1 << other.gameObject.layer) != 0)
+                other.Damage(damage, owner);
         }
     }
 }
