@@ -95,7 +95,7 @@ namespace ToB.Player
                                animator.GetCurrentAnimatorStateInfo(0).IsName("Slash1") ||
                                animator.GetCurrentAnimatorStateInfo(0).IsName("Slash2");
     
-    public bool IsDashing => animator.GetCurrentAnimatorStateInfo(0).IsName("Dash");
+    public bool IsDashing => animator.GetCurrentAnimatorStateInfo(0).IsName("Dash") || dashCoroutine != null;
     
     #endregion
     
@@ -123,6 +123,7 @@ namespace ToB.Player
 
     private void FixedUpdate()
     {
+      dashDelay -= Time.deltaTime;
       isFlight = Math.Abs(body.linearVelocityY) > 0.1f;
 
       var inDash = animator.GetCurrentAnimatorStateInfo(0).IsName("Dash");
@@ -187,11 +188,10 @@ namespace ToB.Player
     [Button]
     public void Jump()
     {
-      if (!inWater && isFlight) return;
-      if (IsDashing) return; 
-      
-      animator.SetTrigger(TRIGGER_JUMP);
-      jumpCoroutine ??= StartCoroutine(JumpCoroutine());
+      if ((inWater || !isFlight) && !IsDashing && jumpCoroutine == null)
+      {
+        jumpCoroutine = StartCoroutine(JumpCoroutine());
+      }
     }
 
     /// <summary>
@@ -208,6 +208,8 @@ namespace ToB.Player
 
     private IEnumerator JumpCoroutine()
     {
+      animator.SetTrigger(TRIGGER_JUMP);
+
       var jumpTime = 0f;
       while (jumpTime < jumpTimeLimit)
       {
@@ -222,6 +224,9 @@ namespace ToB.Player
     #endregion Jump Feature
     
     #region Dash Feature
+    
+    public float dashDelay = 0;
+    public float dashCoolTime = 0.5f;
 
     private Coroutine dashCoroutine = null;
     /// <summary>
@@ -229,10 +234,10 @@ namespace ToB.Player
     /// </summary>
     public void Dash()
     {
-      if(dashCoroutine == null && 
-         !animator.GetCurrentAnimatorStateInfo(0).IsName("Dash") && 
-         body.gravityScale != 0)
+      if(dashDelay <= 0 && !IsDashing && body.gravityScale != 0)
       {
+        dashDelay = 20;
+        CancelJump();
         StartCoroutine(DashCoroutine());
       }
     }
@@ -256,9 +261,12 @@ namespace ToB.Player
 
       animator.SetInteger(INT_DASH_STATE, 1);
       body.gravityScale = beforeGravityScale;
+      body.linearVelocityX = 0;
       body.linearVelocityY = -0.1f;
       isFlight = true;
       dashCoroutine = null;
+
+      dashDelay = dashCoolTime;
     }
     
     #endregion Dash Feature
