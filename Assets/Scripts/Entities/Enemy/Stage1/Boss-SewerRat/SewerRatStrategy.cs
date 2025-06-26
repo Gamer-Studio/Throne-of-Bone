@@ -20,7 +20,11 @@ namespace ToB
 
         public Location ascendLocation;
         [field:SerializeField] public LayerMask GroundLayer { get; private set; }
+        
+        [Header("보조 프리팹")]
         [field:SerializeField] public GameObject toxicBonePrefab { get; private set; }
+        [field:SerializeField] public ParticleSystem groundDustEffect { get; private set; }
+        [field:SerializeField] public ParticleSystem groundRubble { get; private set; }
         
         [Header("현재 패턴")]
         // 아래 string 값은 관측용으로 씁니다.
@@ -36,6 +40,7 @@ namespace ToB
             scratchPattern = new SewerRatScratchPattern(enemy, this, PatternEnd);
             toxicBonePattern = new SewerRatToxicBonePattern(enemy, this, PatternEnd);
 
+            groundDustEffect.gameObject.transform.SetParent(null);
             Sprite = GetComponentInChildren<SpriteRenderer>();
         }
 

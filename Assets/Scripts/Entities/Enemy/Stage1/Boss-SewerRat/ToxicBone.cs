@@ -53,7 +53,7 @@ namespace ToB
                 // other.GetComponent<IHittable>().OnHit();
                 // other.GetComponent<IPoisonable>().ApplyPoison();
 
-                other.GetComponent<PlayerCharacter>().Damage(baseDamage);
+                other.GetComponent<PlayerCharacter>().Damage(baseDamage, this);
                 
                 Destroy(gameObject);
             }

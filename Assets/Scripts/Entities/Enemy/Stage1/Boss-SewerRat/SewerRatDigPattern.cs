@@ -28,6 +28,8 @@ namespace ToB
         {
             base.Exit();
             if(coroutine != null) enemy.StopCoroutine(coroutine);
+            strategy.groundDustEffect.gameObject.SetActive(false);
+            strategy.groundRubble.gameObject.SetActive(false);
         }
 
         IEnumerator Dig()
@@ -47,35 +49,47 @@ namespace ToB
 
         IEnumerator Ascend()
         {
-            
             enemy.transform.position = strategy.ascendLocation.GetRandomPosition(fixedY:true);
+
+            Vector2 groundPoint = GetGroundPoint();
+            strategy.groundDustEffect.transform.position = groundPoint;
+            strategy.groundRubble.transform.position = groundPoint;
+            
             
             yield return new WaitForSeconds(Random.Range(0f,1f));
             
-            // TODO : 지면에 출몰 예정 표시
+            strategy.groundDustEffect.gameObject.SetActive(true);
+            strategy.groundDustEffect.Play();
             
             yield return new WaitForSeconds(1f);
             
-            float ascendHeightPower = 32;
+            strategy.groundRubble.gameObject.SetActive(true);
+            strategy.groundRubble.Play();
+            
+            const float ascendHeightPower = 32;
             
             enemy.Physics.velocityY = ascendHeightPower;
             enemy.Physics.gravityEnabled = true;
             strategy.Sprite.flipX = enemy.GetTargetDirection().x < 0;
             
-            yield return new WaitForSeconds(0.8f);
+           
             coroutine = enemy.StartCoroutine(Tackle());
         }
 
         IEnumerator Tackle()
         {
+            yield return new WaitForSeconds(0.4f);
             Vector2 direction = (Vector2)enemy.target.transform.position - (Vector2)enemy.transform.position;
             RaycastHit2D hit = Physics2D.Raycast(enemy.transform.position, direction.normalized, 100f, strategy.GroundLayer);
             
             Vector2 destination = hit.point;
+            
+            yield return new WaitForSeconds(0.4f);
+            
             enemy.Physics.gravityEnabled = false;
             enemy.Physics.collisionEnabled =true;
             
-            float tackleSpeed = 60;
+            const float tackleSpeed = 40;
             
             Vector2 fixedDirection = (destination - (Vector2)enemy.transform.position).normalized;  // 단순 플레이어 방향 방식이 궤도 오차가 심했어서 레이로
             
@@ -99,6 +113,13 @@ namespace ToB
 
             enemy.bodyDamage = enemy.EnemyData.ATK;
             Exit();
+        }
+        
+        private Vector2 GetGroundPoint()
+        {
+            Vector2 rayOrigin = enemy.transform.position + new Vector3(0, 5f, 0);
+            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.down, 100f, strategy.GroundLayer);
+            return hit.point;
         }
     }
 }

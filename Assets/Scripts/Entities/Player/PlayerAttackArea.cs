@@ -1,4 +1,5 @@
 using System;
+using ToB.Entities;
 using UnityEngine;
 
 namespace ToB.Player
@@ -9,7 +10,7 @@ namespace ToB.Player
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-      Debug.Log(other.gameObject.name);
+      other.Damage(character.stat.atk, character);
     }
   }
 }

@@ -20,6 +20,7 @@ namespace ToB
         public bool IsGrounded => Physics.IsGrounded();
         public bool IsTargetLeft => GetTargetDirection().x < 0;
         
+        [Header("타겟")]
         public Transform target;
         public float bodyDamage;    // 충돌 시 데미지. 적군 상태에 따라 너무 유동적이기 쉬워서 public으로 함
 
@@ -33,6 +34,7 @@ namespace ToB
             if(!rb) rb = GetComponent<Rigidbody2D>();
             if(!Physics) Physics = GetComponent<EnemyPhysics>();
             if(!Animator) Animator = GetComponentInChildren<Animator>();
+            currentHP = EnemyData.HP;
             //if(!EnemyStatHandler) EnemyStatHandler = GetComponent<EnemyStatHandler>();
 
             //EnemyStatHandler.Init(this);
@@ -55,6 +57,8 @@ namespace ToB
         {
             float actualDamage = damage * (1 - EnemyData.DEF / 100);
             ChangeHP(-actualDamage);
+
+            if (currentHP <= 0) Die();
         }
 
         public void ApplyKnockback(Vector2 direction, float force)
@@ -71,7 +75,7 @@ namespace ToB
             if ((hittableMask & (1 << other.gameObject.layer)) != 0)
             {
                 Debug.Log("플레이어 대미지(bodyDamage)");
-                other.GetComponent<PlayerCharacter>().Damage(bodyDamage);
+                other.GetComponent<PlayerCharacter>().Damage(bodyDamage, this);
             }
         }
 
