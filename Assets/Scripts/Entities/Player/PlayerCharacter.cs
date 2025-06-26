@@ -1,21 +1,22 @@
 using System;
 using System.Collections;
-using System.Linq;
 using NaughtyAttributes;
+using ToB.Entities;
 using ToB.Utils;
 using UnityEngine;
 using UnityEngine.Events;
 
 namespace ToB.Player
 {
-  public class PlayerCharacter : MonoBehaviour
+  public class PlayerCharacter : MonoBehaviour, IDamageable
   {
     private static readonly int INT_STATE = Animator.StringToHash("State");
-    private static readonly int TRIGGER_FALL = Animator.StringToHash("Fall");
-    private static readonly int BOOL_IS_FLIGHT = Animator.StringToHash("IsFlight");
+    private static readonly int BOOL_FALLING = Animator.StringToHash("Falling");
     private static readonly int TRIGGER_JUMP = Animator.StringToHash("Jump");
     private static readonly int TRIGGER_DASH = Animator.StringToHash("Dash");
     private static readonly int INT_DASH_STATE = Animator.StringToHash("DashState");
+    private static readonly int TRIGGER_ATTACK = Animator.StringToHash("Attack");
+    private static readonly int INT_ATTACK_MOTION = Animator.StringToHash("AttackMotion");
 
     /// <returns>현재 활성화된 Player 태그가 붙은 오브젝트의 캐릭터를 찾아옵니다.</returns>
     public static PlayerCharacter GetInstance()
@@ -71,7 +72,7 @@ namespace ToB.Player
     
     /// <summary>
     /// 플레이어 이동상태를 제어할 수 있습니다. <br/>
-    /// Idle - 아무 행동하지 않음 / Run - 뛰기
+    /// false - 아무 행동하지 않음 / True - 뛰기
     /// </summary>
     /// <exception cref="ArgumentOutOfRangeException"></exception>
     public bool IsMoving
@@ -83,6 +84,13 @@ namespace ToB.Player
         AnimationState = value ? PlayerAnimationState.Run : PlayerAnimationState.Idle;
       }
     }
+
+    /// <summary>
+    /// 공격 모션이 재생되고 있는지 여부를 반환합니다.
+    /// </summary>
+    public bool IsAttacking => animator.GetCurrentAnimatorStateInfo(0).IsName("Slash0") ||
+                               animator.GetCurrentAnimatorStateInfo(0).IsName("Slash1") ||
+                               animator.GetCurrentAnimatorStateInfo(0).IsName("Slash2");
     
     #endregion
     
@@ -110,28 +118,30 @@ namespace ToB.Player
 
     private void FixedUpdate()
     {
-      isFlight = Math.Abs(body.linearVelocity.y) > 0.1f;
-      animator.SetBool(BOOL_IS_FLIGHT, isFlight);
+      isFlight = Math.Abs(body.linearVelocityY) > 0.1f;
 
-      if (!isFlight && jumpCoroutine == null)
-        isJumping = false;
+      var inDash = animator.GetCurrentAnimatorStateInfo(0).IsName("Dash");
+      var enterFallingAnim = body.linearVelocityY < -0.1f && !isWater &&
+                          !inDash && !IsAttacking;
       
-      if(isFlight && !isJumping)
-        animator.SetTrigger(TRIGGER_FALL);
+      if (animator.GetBool(BOOL_FALLING) != enterFallingAnim)
+      {
+        animator.SetBool(BOOL_FALLING, enterFallingAnim);
+      }
       
       // isMoving이 true일떄 이동합니다.
-      if(isMoving)
+      if(isMoving && !inDash)
       {
         transform.eulerAngles = new Vector3(0, moveDirection == PlayerMoveDirection.Left ? 180 : 0, 0);
         
         // 최대이동속도 설정 및 이동 구현
-        if (Math.Abs(body.linearVelocity.x) < maxMoveSpeed)
+        if (Math.Abs(body.linearVelocityX) < maxMoveSpeed)
           body.AddForce(moveDirection == PlayerMoveDirection.Left ? Vector2.left * moveSpeed : Vector2.right * moveSpeed,
             ForceMode2D.Impulse);
       }
       
       // 이동시 마찰력 보정
-      if(Math.Abs(body.linearVelocity.x) > 1)
+      if(Math.Abs(body.linearVelocityX) > 1)
       {
         body.AddForce(-body.linearVelocity.normalized.Y(0) * moveResistanceForce, ForceMode2D.Impulse);
       }
@@ -164,7 +174,6 @@ namespace ToB.Player
     #region Jump Feature
     // 점프 관리용 코루틴
     private Coroutine jumpCoroutine = null;
-    [SerializeField] private bool isJumping = false;
     
     /// <summary>
     /// Jump()를 호출하여 점프를 시작할 수 있습니다. <br/>
@@ -177,7 +186,6 @@ namespace ToB.Player
       
       animator.SetTrigger(TRIGGER_JUMP);
       jumpCoroutine ??= StartCoroutine(JumpCoroutine());
-      isJumping = true;
     }
 
     /// <summary>
@@ -215,26 +223,33 @@ namespace ToB.Player
     /// </summary>
     public void Dash()
     {
-      if(dashCoroutine == null) StartCoroutine(DashCoroutine());
-
-      animator.SetTrigger(TRIGGER_DASH);
+      if(dashCoroutine == null && 
+         !animator.GetCurrentAnimatorStateInfo(0).IsName("Dash") && 
+         body.gravityScale != 0)
+      {
+        StartCoroutine(DashCoroutine());
+      }
     }
 
     private IEnumerator DashCoroutine()
     {
+      animator.SetTrigger(TRIGGER_DASH);
+      var beforeGravityScale = body.gravityScale;
+      body.gravityScale = 0;
+      body.linearVelocityY = 0;
+      
       animator.SetInteger(INT_DASH_STATE, 0);
       var dashTime = 0f;
       while (dashTime < dashTimeLimit)
       {
-        if(dashTime > dashTimeLimit / 2) animator.SetInteger(INT_DASH_STATE, 1);
-        
-        body.AddRelativeForce((moveDirection == PlayerMoveDirection.Left ? Vector2.left : Vector2.right) *
-                              (moveSpeed * dashMultiplier * (Time.deltaTime / dashTimeLimit)), ForceMode2D.Impulse);
+        body.AddForce((moveDirection == PlayerMoveDirection.Left ? Vector2.left : Vector2.right) *
+                              (moveSpeed * dashMultiplier * Time.deltaTime), ForceMode2D.Impulse);
         dashTime += Time.deltaTime;
         yield return new WaitForFixedUpdate();
       }
-      animator.SetInteger(INT_DASH_STATE, 2);
-      
+
+      animator.SetInteger(INT_DASH_STATE, 1);
+      body.gravityScale = beforeGravityScale;
       dashCoroutine = null;
     }
     
@@ -242,9 +257,6 @@ namespace ToB.Player
     
     #region Attack Feature
     
-
-    private static readonly Vector2[] DIRECTIONS = {Vector2.left, Vector2.right, Vector2.up, Vector2.down};
-
     /// <summary>
     /// direction 방향으로 공격합니다.
     /// isMelee를 false로 하여 원거리 공격을 할 수 있습니다.
@@ -253,11 +265,24 @@ namespace ToB.Player
     /// <param name="isMelee">근거리/원거리 공격 방향입니다.</param>
     public void Attack(Vector2 direction, bool isMelee = true)
     {
-      var targetDir = direction;
+      if (IsAttacking) return;
+      // 애니메이션 구현
+      animator.SetTrigger(TRIGGER_ATTACK);
+      var prevMotion = animator.GetInteger(INT_ATTACK_MOTION);
+      prevMotion = prevMotion == 2 ? 0 : prevMotion + 1;
+      animator.SetInteger(INT_ATTACK_MOTION, prevMotion);
+      if (direction.x > 0)
+      {
+          
+      }
+      else
+      {
+          
+      }
+
+      // 실제 피해 구현
       if (isMelee)
       {
-        targetDir = (from dir in DIRECTIONS orderby Vector2.Distance(dir, direction) select dir).First();
-
         
       }
       else
@@ -275,7 +300,7 @@ namespace ToB.Player
     /// </summary>
     /// <param name="value">피해량입니다.</param>
     /// <returns>플레이어의 남은 체력입니다.</returns>
-    public float Damage(float value) => stat.Damage(value);
+    public void Damage(float value) => stat.Damage(value);
     
     #endregion Feature
     

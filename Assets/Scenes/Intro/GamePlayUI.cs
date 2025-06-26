@@ -1,5 +1,6 @@
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.InputSystem;
+using UnityEngine.UI;   
 namespace ToB.Scenes.Intro
 {
     public class GamePlayUI:MonoBehaviour
@@ -14,6 +15,18 @@ namespace ToB.Scenes.Intro
             miniMapPanel.SetActive(true);
         }
         
-        //추후 HP바와 플레이어 체력 연동 필요.
+        public void ClearActiveUI(InputAction.CallbackContext context)
+        {
+            if (context.performed)
+            {
+                Debug.Log("ClearActiveUI 실행됨");
+                if (UIManager.Instance.IsThereOverlayUI())
+                {
+                    Debug.Log("활성화된 UI 존재함. UI 닫음.");
+                    UIManager.Instance.wideMapUI.gameObject.SetActive(false);
+                    UIManager.Instance.mainBookUI.gameObject.SetActive(false);
+                }
+            }
+        }
     }
 }
