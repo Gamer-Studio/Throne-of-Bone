@@ -95,6 +95,8 @@ namespace ToB.Player
                                animator.GetCurrentAnimatorStateInfo(0).IsName("Slash1") ||
                                animator.GetCurrentAnimatorStateInfo(0).IsName("Slash2");
     
+    public bool IsDashing => animator.GetCurrentAnimatorStateInfo(0).IsName("Dash");
+    
     #endregion
     
     #region Binding
@@ -186,7 +188,7 @@ namespace ToB.Player
     public void Jump()
     {
       if (!inWater && isFlight) return;
-      if (dashCoroutine != null) return; 
+      if (IsDashing) return; 
       
       animator.SetTrigger(TRIGGER_JUMP);
       jumpCoroutine ??= StartCoroutine(JumpCoroutine());
@@ -254,6 +256,8 @@ namespace ToB.Player
 
       animator.SetInteger(INT_DASH_STATE, 1);
       body.gravityScale = beforeGravityScale;
+      body.linearVelocityY = -0.1f;
+      isFlight = true;
       dashCoroutine = null;
     }
     
