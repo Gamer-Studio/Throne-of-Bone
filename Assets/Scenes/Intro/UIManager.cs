@@ -1,6 +1,7 @@
+using System.Collections;
+using System.Collections.Generic;
 using ToB.Utils.Singletons;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 namespace ToB.Scenes.Intro
@@ -20,12 +21,12 @@ namespace ToB.Scenes.Intro
     {
         #region InitPanels
         
-        [SerializeField] public IntroUI introUI;
-        [SerializeField] public CrossHairUI crossHairUI;
-        [SerializeField] public GamePlayUI gamePlayUI;
+        public IntroUI introUI;
+        public CrossHairUI crossHairUI;
+        public GamePlayUI gamePlayUI;
 
-        [SerializeField] public MainBookUI mainBookUI;
-        [SerializeField] public WideMapUI wideMapUI;
+        public MainBookUI mainBookUI;
+        public WideMapUI wideMapUI;
         //[SerializeField] public ToastUI toastUI;
 
         public void Init(IntroUI _introUI)
@@ -61,6 +62,7 @@ namespace ToB.Scenes.Intro
         */
         
         #endregion
+
         private void OnEnable()
         {
             SceneManager.sceneLoaded += OnSceneLoaded;
@@ -70,9 +72,16 @@ namespace ToB.Scenes.Intro
         {
             SceneManager.sceneLoaded -= OnSceneLoaded;
         }
-       
+
+        private IEnumerator WaitForInits()
+        {
+            yield return null;
+        }
+
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
+            StartCoroutine(WaitForInits());
+            
             switch (SceneManager.GetActiveScene().name)
             {
                 case "MainMenu":
@@ -84,6 +93,14 @@ namespace ToB.Scenes.Intro
                     break;
                 
                 case "Stage":
+                    introUI.gameObject.SetActive(false);
+                    crossHairUI.gameObject.SetActive(true);
+                    gamePlayUI.gameObject.SetActive(true);
+                    mainBookUI.gameObject.SetActive(false);
+                    wideMapUI.gameObject.SetActive(false);
+                    break;
+                
+                case "Stage0623Copy":
                     introUI.gameObject.SetActive(false);
                     crossHairUI.gameObject.SetActive(true);
                     gamePlayUI.gameObject.SetActive(true);
