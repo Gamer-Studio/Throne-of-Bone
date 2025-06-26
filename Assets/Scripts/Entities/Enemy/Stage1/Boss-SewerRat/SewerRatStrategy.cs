@@ -15,16 +15,18 @@ namespace ToB
         private bool OutOfMeleeRange => enemy.GetTargetDistanceSQR() > Mathf.Pow(patternDistance, 2);
 
         [SerializeField] private float breathTime = 1;
-        [SerializeField] public SpriteRenderer Sprite { get; private set; }
+
         private float coolDown;
 
         public Location ascendLocation;
         [field:SerializeField] public LayerMask GroundLayer { get; private set; }
         
-        [Header("보조 프리팹")]
-        [field:SerializeField] public GameObject toxicBonePrefab { get; private set; }
-        [field:SerializeField] public ParticleSystem groundDustEffect { get; private set; }
-        [field:SerializeField] public ParticleSystem groundRubble { get; private set; }
+        [Header("이펙트 오브젝트")]
+        [field:SerializeField] public GameObject ToxicBonePrefab { get; private set; }
+        [field:SerializeField] public ParticleSystem GroundDustEffect { get; private set; }
+        [field:SerializeField] public ParticleSystem GroundRubble { get; private set; }
+        [field:SerializeField] public EnemyAttackArea ScratchEffect { get; private set; }
+        
         
         [Header("현재 패턴")]
         // 아래 string 값은 관측용으로 씁니다.
@@ -40,8 +42,10 @@ namespace ToB
             scratchPattern = new SewerRatScratchPattern(enemy, this, PatternEnd);
             toxicBonePattern = new SewerRatToxicBonePattern(enemy, this, PatternEnd);
 
-            groundDustEffect.gameObject.transform.SetParent(null);
-            Sprite = GetComponentInChildren<SpriteRenderer>();
+            GroundDustEffect.gameObject.transform.SetParent(null);
+            ScratchEffect = GetComponentInChildren<EnemyAttackArea>();
+            ScratchEffect.gameObject.SetActive(false);
+            ScratchEffect.Init(enemy, 30);
         }
 
         public override void Init()
@@ -51,7 +55,15 @@ namespace ToB
             
             coolDown = breathTime;
             currentPatternName = "";
-            Sprite.flipX = enemy.GetTargetDirection().x < 0;
+
+            LookPlayer();
+        }
+
+        public void LookPlayer()
+        {
+            Vector3 localScale = transform.localScale;
+            localScale.x = enemy.GetTargetDirection().x < 0 ? -1 : 1;
+            transform.localScale = localScale;
         }
 
         private void Update()
@@ -61,7 +73,7 @@ namespace ToB
                 currentPattern.Execute();
                 return;
             }
-            Sprite.flipX = enemy.GetTargetDirection().x < 0;
+            LookPlayer();
             if (!enemy.IsGrounded)
             {
                 return;

@@ -33,6 +33,7 @@ namespace ToB
 
         public void Damage(float damage, MonoBehaviour sender = null)
         {
+            Debug.Log("??");
             OnTakeDamage(damage);
         }
     }
