@@ -257,6 +257,7 @@ namespace ToB.Player
     
     #region Attack Feature
     
+    
     /// <summary>
     /// direction 방향으로 공격합니다.
     /// isMelee를 false로 하여 원거리 공격을 할 수 있습니다.
@@ -271,6 +272,9 @@ namespace ToB.Player
       var prevMotion = animator.GetInteger(INT_ATTACK_MOTION);
       prevMotion = prevMotion == 2 ? 0 : prevMotion + 1;
       animator.SetInteger(INT_ATTACK_MOTION, prevMotion);
+      
+      var dir = direction.x > 0 ? PlayerMoveDirection.Right : PlayerMoveDirection.Left;
+      
       if (direction.x > 0)
       {
           
@@ -280,15 +284,19 @@ namespace ToB.Player
           
       }
 
-      // 실제 피해 구현
-      if (isMelee)
+      // 원거리 공격 구현
+      if (!isMelee)
       {
         
       }
-      else
-      {
-        
-      }
+    }
+
+    /// <summary>
+    /// 이벤트 트리거에요. 호출하지 말아주세요!
+    /// </summary>
+    public void AttackEnd()
+    {
+      
     }
     
     #endregion Attack Feature
@@ -300,7 +308,7 @@ namespace ToB.Player
     /// </summary>
     /// <param name="value">피해량입니다.</param>
     /// <returns>플레이어의 남은 체력입니다.</returns>
-    public void Damage(float value) => stat.Damage(value);
+    public void Damage(float value, MonoBehaviour sender) => stat.Damage(value);
     
     #endregion Feature
     
@@ -329,7 +337,7 @@ namespace ToB.Player
       while (true)
       {
         yield return new WaitForSeconds(1f);
-        Damage(damage);
+        Damage(damage, null);
       }
     }
 
