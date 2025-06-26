@@ -198,6 +198,11 @@ namespace ToB
             isGrounded = CheckCollision(Vector2.down) && velocityY <= 0;
             return isGrounded;
         }
+
+        // public bool IsCollided()
+        // {
+        //     
+        // }
         
         private bool CheckCollision(Vector2 direction)
         {
