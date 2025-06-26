@@ -17,10 +17,14 @@ namespace ToB.Entities.Buffs
       if (!buffs.ContainsKey(buff))
       {
         buff.Apply(gameObject, info);
+        buffs[buff] = info;
       }
       else if (!force) return;
       
-      buffs[buff] = info;
+      var currentInfo = buffs[buff];
+      currentInfo.duration = info.duration;
+      currentInfo.delay = info.delay;
+      currentInfo.level = info.level;
     }
     
     /// <summary>
