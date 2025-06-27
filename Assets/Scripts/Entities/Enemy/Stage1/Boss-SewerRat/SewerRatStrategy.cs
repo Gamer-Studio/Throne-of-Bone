@@ -41,8 +41,7 @@ namespace ToB
             digPattern = new SewerRatDigPattern(enemy, this, PatternEnd);
             scratchPattern = new SewerRatScratchPattern(enemy, this, PatternEnd);
             toxicBonePattern = new SewerRatToxicBonePattern(enemy, this, PatternEnd);
-
-            GroundDustEffect.gameObject.transform.SetParent(null);
+            
             ScratchEffect = GetComponentInChildren<EnemyAttackArea>();
             ScratchEffect.gameObject.SetActive(false);
             ScratchEffect.Init(enemy, 30);
