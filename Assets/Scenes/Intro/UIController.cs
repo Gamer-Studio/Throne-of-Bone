@@ -45,19 +45,22 @@ namespace ToB.Scenes.Intro
             SetTargetActionMap(sceneName);
         }
 
-        private void SetTargetActionMap(string actionMapName)
+        private void SetTargetActionMap(string _sceneName)
         {
             //에셋의 액션맵들을 다 disable한 뒤, 특정 액션 맵만 켜 주도록 함(액션 맵 이름 = 플레이어 말고는 씬 이름)
-            foreach (var actionMaps in InputActionAsset.actionMaps)
+            foreach (var actionMap in InputActionAsset.actionMaps)
             {
-                actionMaps.Disable();
+                actionMap.Disable();
             }
-            playerInput.currentActionMap = InputActionAsset.FindActionMap(actionMapName);
             
-            //추후 테스트신 벗어날 시 제거해야 함
-            if (actionMapName == "Stage0623Copy")
+            //추후 테스트신 벗어날 시 if 조건 수정 필요
+            if (_sceneName == "Stage0623Copy" || _sceneName == "Intro")
             {
                 playerInput.currentActionMap = InputActionAsset.FindActionMap("Stage");
+            }
+            else
+            {
+                playerInput.currentActionMap = InputActionAsset.FindActionMap(_sceneName);
             }
             playerInput.currentActionMap.Enable();
             Debug.Log(playerInput.currentActionMap.name);
