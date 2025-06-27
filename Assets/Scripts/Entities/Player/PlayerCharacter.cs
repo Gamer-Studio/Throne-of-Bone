@@ -11,7 +11,7 @@ using UnityEngine.Serialization;
 
 namespace ToB.Player
 {
-  public class PlayerCharacter : MonoBehaviour, IDamageable
+  public class PlayerCharacter : MonoBehaviour, IDamageable, IKnockBackable
   {
     private static readonly int INT_STATE = Animator.StringToHash("State");
     private static readonly int BOOL_FALLING = Animator.StringToHash("Falling");
@@ -353,6 +353,23 @@ namespace ToB.Player
     /// </summary>
     /// <param name="value">피해량입니다.</param>
     public void Damage(float value, MonoBehaviour sender) => stat.Damage(value);
+
+    /// <summary>
+    /// 플레이어를 넉백시킵니다.
+    /// </summary>
+    /// <param name="value">넉백 세기입니다.</param>
+    /// <param name="direction">넉백 방향입니다.</param>
+    public void KnockBack(float value, Vector2 direction)
+    {
+      body.AddForce(direction.normalized * value, ForceMode2D.Impulse);
+    }
+    
+    /// <summary>
+    /// 플레이어를 넉백시킵니다.
+    /// </summary>
+    /// <param name="value">넉백 세기입니다.</param>
+    /// <param name="sender">넉백을 가하는 오브젝트입니다.</param>
+    public void KnockBack(float value, GameObject sender) => KnockBack(value, sender.transform.position - transform.position);
     
     #endregion Feature
     
