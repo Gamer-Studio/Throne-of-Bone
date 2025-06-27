@@ -23,5 +23,15 @@ namespace ToB
             parentStage = GetComponentInParent<Stage>();
             virtualCamera = GetComponentInChildren<CinemachineVirtualCamera>();
         }
+
+        private void OnEnable()
+        {
+            virtualCamera.Priority = 10;
+        }
+
+        private void OnDisable()
+        {
+            virtualCamera.Priority = 0;       
+        }
     }
 }

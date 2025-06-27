@@ -4,12 +4,17 @@ using UnityEngine;
 
 namespace ToB
 {
+    public enum StageName
+    {
+        Proto
+    }
     public class Stage : MonoBehaviour
     {
-        [field:SerializeField] public string StageName { get; private set; }
+        [field:SerializeField] public StageName StageName { get; private set; }
         [field:SerializeField] public List<Room> Rooms { get; private set; }
         Dictionary<int, Room> RoomDic;
 
+        
         private void Awake()
         {
             RoomDic = new Dictionary<int, Room>();

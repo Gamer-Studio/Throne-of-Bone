@@ -11,6 +11,8 @@ namespace ToB
         [field: SerializeField] World world;
         [field: SerializeField] public int ElapsedMonth;    // 월드 안에 들어갈지 매니저가 들고있을지 고민되는 필드입니다
         [SerializeField] Season season;
+        
+        [field: SerializeField, ReadOnly] public Stage CurrentStage { get; private set; }
         [field: SerializeField, ReadOnly] public Room CurrentRoom { get; private set; }
         [field: SerializeField] private PlayerCharacter player;
 
@@ -33,12 +35,22 @@ namespace ToB
                 stage.gameObject.SetActive(false);
             }
             
-            CurrentRoom = world.GetStage("StageProto").GetRoom(0);  // 첫 스테이지 ID인 StageProto는 하이어라키에서 확인할 수 있습니다
-            
+            CurrentStage = world.GetStage(StageName.Proto);
+            CurrentRoom = world.GetStage(StageName.Proto).GetRoom(0);  // 첫 스테이지 ID인 StageProto는 하이어라키에서 확인할 수 있습니다
             CurrentRoom.visited = true;
             CurrentRoom.parentStage.gameObject.SetActive(true);
             CurrentRoom.gameObject.SetActive(true);
             player.transform.position = new Vector3(-11.8800001f, -7.17000008f, 0); // 하이어라키에서 위치잡고 포지션값 복사한 그대로
+        }
+
+        public void EnterRoomByLink(RoomLink link)
+        {
+            CurrentRoom.gameObject.SetActive(false);
+            Stage nextStage = world.GetStage(link.LinkedStageName);
+            Room nextRoom = nextStage.GetRoom(link.LinkedRoomID);
+            
+            nextRoom.gameObject.SetActive(true);
+            CurrentRoom = nextRoom;
         }
     }
 }
