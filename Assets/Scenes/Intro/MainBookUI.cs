@@ -1,5 +1,7 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace ToB.Scenes.Intro
@@ -10,7 +12,7 @@ namespace ToB.Scenes.Intro
         [SerializeField] public GameObject[] panels;
         private GameObject currentPanel;
         [SerializeField] public Button[] buttons;
-       
+        private List<Image> panelImages = new List<Image>();
         private void Awake()
         {
            UIManager.Instance.Init(this);
@@ -29,6 +31,11 @@ namespace ToB.Scenes.Intro
         }
         private void InitPanels()
         {
+            for (int i = 0; i < panels.Length; i++)
+            {
+                panelImages.Add(panels[i].GetComponent<Image>());
+            }
+            
             if (currentPanel == null)
             {
                 panels[0].SetActive(true);
@@ -46,14 +53,25 @@ namespace ToB.Scenes.Intro
                 if (i == indexToShow)
                 {
                     panels[i].SetActive(true);
+                    panelImages[i].raycastTarget = true;
                     currentPanel = panels[i];
                 }
                 else
+                {
                     panels[i].SetActive(false);
+                    panelImages[i].raycastTarget = false;
+                }
                 // true인 것만 SetActive, 나머진 false
             }
         }
-#region InputAction
+
+        public void BackToMainMenuScene()
+        {
+            this.gameObject.SetActive(false);
+            SceneManager.LoadScene("MainMenu");
+        }
+
+        #region InputAction
         public void SkillUIToggle(InputAction.CallbackContext context)
         {
             //분기 1 : 메인북이 꺼져 있으면 켠다
