@@ -1,4 +1,6 @@
 using System;
+using NaughtyAttributes;
+using UnityEngine;
 using UnityEngine.Events;
 
 namespace ToB.Player
@@ -22,7 +24,7 @@ namespace ToB.Player
     /// </summary>
     public float maxHp = 100;
     
-    private float currentHp = 100;
+    [SerializeField, ReadOnly] private float currentHp = 100;
 
     /// <summary>
     /// 플레이어의 현재 방어력입니다. % 비율로 피해를 감소시킵니다.
