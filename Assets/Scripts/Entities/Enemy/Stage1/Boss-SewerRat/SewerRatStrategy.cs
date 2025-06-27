@@ -61,7 +61,7 @@ namespace ToB
         public void LookPlayer()
         {
             Vector3 localScale = transform.localScale;
-            localScale.x = enemy.GetTargetDirection().x < 0 ? -1 : 1;
+            localScale.x = enemy.GetTargetDirection().x < 0 ? -1.5f : 1.5f;
             transform.localScale = localScale;
         }
 
