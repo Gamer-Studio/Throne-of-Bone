@@ -11,7 +11,7 @@ using UnityEngine.Serialization;
 
 namespace ToB.Player
 {
-  public class PlayerCharacter : MonoBehaviour, IDamageable
+  public class PlayerCharacter : MonoBehaviour, IDamageable, IKnockBackable
   {
     private static readonly int INT_STATE = Animator.StringToHash("State");
     private static readonly int BOOL_FALLING = Animator.StringToHash("Falling");
@@ -57,11 +57,33 @@ namespace ToB.Player
     [Tooltip("대시 지속시간")] public float dashTimeLimit = 0.2f;
     [FormerlySerializedAs("isWater")] [Tooltip("물속인지")] public bool inWater = false;
 
+    [Header("Attack State")] 
+    [Tooltip("최대 원거리 공격 스택")] public int maxRangedAttack = 5;
+    [Tooltip("원거리 공격 스택"), SerializeField, ReadOnly] private int availableRangedAttack = 5;
+    [Tooltip("원거리 공격 스택 재생 시간(초)")] public float rangedAttackRegenTime = 1;
+    [Tooltip("원거리 공격 딜레이")] public float rangedAttackDelay = 0.2f;
+
     // 플레이어 스텟 관리 클래스입니다.
     public PlayerStats stat = new();
 
     // 이 아래는 외부 접근용 연결 필드입니다.
     public bool IsFlight => isFlight;
+
+    // 현재 원거리 공격 가능 횟수입니다.
+    public int AvailableRangedAttack
+    {
+      get => availableRangedAttack;
+      set
+      {
+        var input = Math.Min(maxRangedAttack, Math.Max(value, 0));
+
+        if (input != availableRangedAttack)
+        {
+          availableRangedAttack = input;
+          OnRangedAttackStackChange.Invoke(availableRangedAttack);
+        }
+      }
+    }
 
     protected PlayerAnimationState AnimationState
     {
@@ -172,6 +194,12 @@ namespace ToB.Player
     /// 플레이어의 체력이 변경될 시 호출되며, 매개변수로 현재 체력을 넘겨줍니다.
     /// </summary>
     public UnityEvent<float> OnHpChange => stat.onHpChanged;
+
+    /// <summary>
+    /// 원거리 공격 가능 횟수가 변경될 시 호출되며, 매개변수로 현재 원거리 공격가능 횟수를 넘겨줍니다.
+    /// </summary>
+    // ReSharper disable once InconsistentNaming
+    public UnityEvent<int> OnRangedAttackStackChange = new();
     
     #endregion Event
     
@@ -300,9 +328,10 @@ namespace ToB.Player
       }
 
       // 원거리 공격 구현
-      if (!isMelee)
+      if (!isMelee && AvailableRangedAttack > 0)
       {
         
+        AvailableRangedAttack--;
       }
     }
 
@@ -313,6 +342,7 @@ namespace ToB.Player
     {
       
     }
+
     
     #endregion Attack Feature
 
@@ -322,8 +352,24 @@ namespace ToB.Player
     /// 0이 될 시 stats.onDeath 이벤트를 호출합니다.
     /// </summary>
     /// <param name="value">피해량입니다.</param>
-    /// <returns>플레이어의 남은 체력입니다.</returns>
     public void Damage(float value, MonoBehaviour sender) => stat.Damage(value);
+
+    /// <summary>
+    /// 플레이어를 넉백시킵니다.
+    /// </summary>
+    /// <param name="value">넉백 세기입니다.</param>
+    /// <param name="direction">넉백 방향입니다.</param>
+    public void KnockBack(float value, Vector2 direction)
+    {
+      body.AddForce(direction.normalized * value, ForceMode2D.Impulse);
+    }
+    
+    /// <summary>
+    /// 플레이어를 넉백시킵니다.
+    /// </summary>
+    /// <param name="value">넉백 세기입니다.</param>
+    /// <param name="sender">넉백을 가하는 오브젝트입니다.</param>
+    public void KnockBack(float value, GameObject sender) => KnockBack(value, sender.transform.position - transform.position);
     
     #endregion Feature
     
