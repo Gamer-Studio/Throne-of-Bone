@@ -29,7 +29,6 @@ namespace ToB.Scenes.Intro
         // 이거는 사용할 일이 없을 거 같긴 한데...
         public void OpenMainPanel()
         {
-            CloseAllPanels();
             MainPanel.SetActive(true);
         }
         
@@ -97,6 +96,7 @@ namespace ToB.Scenes.Intro
                 var panel = uiStack.Pop();
                 panel.SetActive(false);
             }
+            OpenMainPanel();
         }
         
         #endregion
