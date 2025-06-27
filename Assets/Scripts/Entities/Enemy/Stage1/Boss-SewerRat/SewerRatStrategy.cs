@@ -41,8 +41,7 @@ namespace ToB
             digPattern = new SewerRatDigPattern(enemy, this, PatternEnd);
             scratchPattern = new SewerRatScratchPattern(enemy, this, PatternEnd);
             toxicBonePattern = new SewerRatToxicBonePattern(enemy, this, PatternEnd);
-
-            GroundDustEffect.gameObject.transform.SetParent(null);
+            
             ScratchEffect = GetComponentInChildren<EnemyAttackArea>();
             ScratchEffect.gameObject.SetActive(false);
             ScratchEffect.Init(enemy, 30);
@@ -62,7 +61,7 @@ namespace ToB
         public void LookPlayer()
         {
             Vector3 localScale = transform.localScale;
-            localScale.x = enemy.GetTargetDirection().x < 0 ? -1 : 1;
+            localScale.x = enemy.GetTargetDirection().x < 0 ? -1.5f : 1.5f;
             transform.localScale = localScale;
         }
 
