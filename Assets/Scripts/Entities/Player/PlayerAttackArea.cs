@@ -10,7 +10,6 @@ namespace ToB.Player
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-      Debug.Log(other.gameObject.name);
       other.Damage(character.stat.atk, character);
     }
   }
