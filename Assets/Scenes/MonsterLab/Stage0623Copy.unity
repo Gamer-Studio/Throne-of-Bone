@@ -534,6 +534,107 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1174578748
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1174578752}
+  - component: {fileID: 1174578751}
+  - component: {fileID: 1174578750}
+  - component: {fileID: 1174578749}
+  m_Layer: 5
+  m_Name: MainCanvas
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1174578749
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1174578748}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!114 &1174578750
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1174578748}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_UiScaleMode: 1
+  m_ReferencePixelsPerUnit: 100
+  m_ScaleFactor: 1
+  m_ReferenceResolution: {x: 1920, y: 1080}
+  m_ScreenMatchMode: 0
+  m_MatchWidthOrHeight: 0
+  m_PhysicalUnit: 3
+  m_FallbackScreenDPI: 96
+  m_DefaultSpriteDPI: 96
+  m_DynamicPixelsPerUnit: 1
+  m_PresetInfoIsWorld: 0
+--- !u!223 &1174578751
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1174578748}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 0
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
+  m_TargetDisplay: 0
+--- !u!224 &1174578752
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1174578748}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0, y: 0, z: 0}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0, y: 0}
 --- !u!1001 &1209963221
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8918,42 +9019,42 @@ MonoBehaviour:
     m_ActionName: 'Player/RangedAtttack[/Mouse/rightButton]'
   - m_PersistentCalls:
       m_Calls: []
-    m_ActionId: 4007a022-de53-4ebf-bc74-2768a7bdd80d
-    m_ActionName: 'MainMenu/CloseCurrentPanel[/Keyboard/escape]'
+    m_ActionId: 699a1533-a70b-48d6-a2d2-d0c03beffa58
+    m_ActionName: 'Player/StatisticsUIToggle[/Keyboard/p]'
   - m_PersistentCalls:
       m_Calls: []
-    m_ActionId: d22c1a39-121a-47a0-be08-ce6de272878f
-    m_ActionName: 'Stage/StatisticsUIToggle[/Keyboard/p]'
+    m_ActionId: 88d3b73b-0a52-480f-b071-c09dd8594e47
+    m_ActionName: 'Player/QuestUIToggle[/Keyboard/j]'
   - m_PersistentCalls:
       m_Calls: []
-    m_ActionId: 93a7054b-fecb-46f2-aa0c-96c73ede3ec6
-    m_ActionName: 'Stage/SoulUIToggle[/Keyboard/k]'
+    m_ActionId: 0ae8e2ff-56cd-4272-a917-8f99c401b7a5
+    m_ActionName: 'Player/WideMapToggle[/Keyboard/m]'
   - m_PersistentCalls:
       m_Calls: []
-    m_ActionId: 21472047-e2b9-4149-96da-6338e1767ef0
-    m_ActionName: 'Stage/ClearActiveUI[/Keyboard/escape]'
+    m_ActionId: 5aa064cb-78cc-446d-bf95-5f010f4a369f
+    m_ActionName: 'Player/SkillUIToggle[/Keyboard/l]'
   - m_PersistentCalls:
       m_Calls: []
-    m_ActionId: 596070d4-a770-4160-88c7-2ca22b638597
-    m_ActionName: 'Stage/SettingUIToggle[/Keyboard/escape]'
+    m_ActionId: 81e4b314-8804-4f1e-8be1-73f39653e6ff
+    m_ActionName: 'Player/CollectionUIToggle[/Keyboard/o]'
   - m_PersistentCalls:
       m_Calls: []
-    m_ActionId: b86368c6-de3e-43f2-a931-bd0f5744379e
-    m_ActionName: 'Stage/SkillUIToggle[/Keyboard/l]'
+    m_ActionId: 0f02cb88-2383-41d5-9bba-1d6c447ca69a
+    m_ActionName: 'Player/SettingUIToggle[/Keyboard/escape]'
   - m_PersistentCalls:
       m_Calls: []
-    m_ActionId: 3c2d5ed0-767f-4e53-b745-6bf54c7e10bf
-    m_ActionName: 'Stage/CollectionUIToggle[/Keyboard/o]'
+    m_ActionId: 9eb61189-ef26-4150-a9cc-cccf27e58aaa
+    m_ActionName: 'Player/ClearActiveUI[/Keyboard/escape]'
   - m_PersistentCalls:
       m_Calls: []
-    m_ActionId: fab35e07-4445-493b-ab5d-4fd22e232ce5
-    m_ActionName: 'Stage/WideMapToggle[/Keyboard/m]'
+    m_ActionId: 2f549dc3-86fb-46dd-8e29-8c5ddf3dbfc5
+    m_ActionName: 'Player/SoulUIToggle[/Keyboard/k]'
   - m_PersistentCalls:
       m_Calls: []
-    m_ActionId: e61fd35c-2604-48ab-92b3-2cb13fcd67ff
-    m_ActionName: 'Stage/QuestUIToggle[/Keyboard/j]'
-  m_NeverAutoSwitchControlSchemes: 1
-  m_DefaultControlScheme: 
+    m_ActionId: 24036898-0503-430b-a6c7-bd3bb6d41fa4
+    m_ActionName: 'CustomUI/CancelUI[/Keyboard/escape]'
+  m_NeverAutoSwitchControlSchemes: 0
+  m_DefaultControlScheme: Keyboard&Mouse
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
@@ -9028,22 +9129,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6221600684614603251, guid: bf61dc359a881fc41823c4c99309ea43, type: 3}
-      propertyPath: m_Color.b
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6221600684614603251, guid: bf61dc359a881fc41823c4c99309ea43, type: 3}
-      propertyPath: m_Color.g
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6221600684614603251, guid: bf61dc359a881fc41823c4c99309ea43, type: 3}
-      propertyPath: m_Color.r
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6221600684614603251, guid: bf61dc359a881fc41823c4c99309ea43, type: 3}
-      propertyPath: 'm_Materials.Array.data[0]'
-      value: 
-      objectReference: {fileID: 2100000, guid: 00973b81481db1c479e78cad3207a170, type: 2}
     - target: {fileID: 9076656960145260971, guid: bf61dc359a881fc41823c4c99309ea43, type: 3}
       propertyPath: ascendLocation
       value: 
@@ -9059,6 +9144,7 @@ SceneRoots:
   m_Roots:
   - {fileID: 562585909}
   - {fileID: 1499905405}
+  - {fileID: 1174578752}
   - {fileID: 1624301974}
   - {fileID: 827818004}
   - {fileID: 1209963221}
