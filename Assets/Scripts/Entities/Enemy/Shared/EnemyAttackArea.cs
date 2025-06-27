@@ -26,7 +26,7 @@ namespace ToB.Entities
             if ((attackTargetLayers & 1 << other.gameObject.layer) != 0)
             {
                 other.Damage(damage, owner);
-                
+                other.KnockBack(30, new Vector2(owner.gameObject.transform.localScale.x, 0));
             }
         }
     }
