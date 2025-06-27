@@ -53,14 +53,14 @@ namespace ToB.Scenes.Intro
                 actionMap.Disable();
             }
             
-            //추후 테스트신 벗어날 시 if 조건 수정 필요
-            if (_sceneName == "Stage0623Copy" || _sceneName == "Intro")
+            //추후 씬 정리되거나 액션맵이 추가될 경우 이 부분 수정 필요.
+            if (_sceneName == "MainMenu")
             {
-                playerInput.currentActionMap = InputActionAsset.FindActionMap("Stage");
+                playerInput.currentActionMap = InputActionAsset.FindActionMap(_sceneName);
             }
             else
             {
-                playerInput.currentActionMap = InputActionAsset.FindActionMap(_sceneName);
+                playerInput.currentActionMap = InputActionAsset.FindActionMap("Stage");
             }
             playerInput.currentActionMap.Enable();
             Debug.Log(playerInput.currentActionMap.name);
