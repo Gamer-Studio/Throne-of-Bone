@@ -2,7 +2,7 @@ using System;
 using ToB.Entities;
 using UnityEngine;
 
-namespace ToB
+namespace ToB.Entities
 {
     public class EnemyAttackArea : MonoBehaviour
     {
@@ -23,8 +23,11 @@ namespace ToB
         }
         private void OnTriggerEnter2D(Collider2D other)
         {
-            if((attackTargetLayers & 1 << other.gameObject.layer) != 0)
+            if ((attackTargetLayers & 1 << other.gameObject.layer) != 0)
+            {
                 other.Damage(damage, owner);
+                
+            }
         }
     }
 }

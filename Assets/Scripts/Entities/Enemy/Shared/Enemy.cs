@@ -3,7 +3,7 @@ using System.Collections;
 using ToB.Player;
 using UnityEngine;
 
-namespace ToB
+namespace ToB.Entities
 {
     // [RequireComponent(typeof(EnemyStatHandler))]
     public abstract class Enemy : MonoBehaviour

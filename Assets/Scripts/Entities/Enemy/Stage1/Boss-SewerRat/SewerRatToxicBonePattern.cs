@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace ToB
+namespace ToB.Entities
 {
     public class SewerRatToxicBonePattern : SewerRatPattern
     {

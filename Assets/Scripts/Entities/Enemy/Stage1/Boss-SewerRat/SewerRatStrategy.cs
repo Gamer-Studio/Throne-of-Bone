@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace ToB
+namespace ToB.Entities
 {
     public class SewerRatStrategy : EnemyStrategy
     {

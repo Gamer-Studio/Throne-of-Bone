@@ -4,7 +4,7 @@ using DG.Tweening;
 using ToB.Entities;
 using UnityEngine;
 
-namespace ToB
+namespace ToB.Entities
 {
     // 보스별 개성적인 연출 특성상 클래스 명이 SewerRat이 될 가능성이 높습니다
     public class Boss : Enemy, IDamageable
