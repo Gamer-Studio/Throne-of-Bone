@@ -117,6 +117,7 @@ namespace ToB.Utils.UI
     {
       ChangeMax(player.stat.maxHp);
       text.text = $"{player.stat.Hp} / {max}";
+      UpdateHPBar(player.stat.Hp);
       player.stat.onHpChanged.AddListener(UpdateHPBar);
     }
 
