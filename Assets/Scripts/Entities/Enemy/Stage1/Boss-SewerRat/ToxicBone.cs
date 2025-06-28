@@ -2,7 +2,7 @@ using System;
 using ToB.Player;
 using UnityEngine;
 
-namespace ToB
+namespace ToB.Entities
 {
     [RequireComponent(typeof(BoxCollider2D))]
     public class ToxicBone : MonoBehaviour

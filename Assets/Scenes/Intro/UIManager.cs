@@ -27,6 +27,7 @@ namespace ToB.Scenes.Intro
 
         public MainBookUI mainBookUI;
         public WideMapUI wideMapUI;
+        public GameOverUI gameOverUI;
         //[SerializeField] public ToastUI toastUI;
 
         public void Init(IntroUI _introUI)
@@ -52,6 +53,11 @@ namespace ToB.Scenes.Intro
         public void Init(WideMapUI _wideMapUI)
         {
             this.wideMapUI = _wideMapUI;
+        }
+        
+        public void Init(GameOverUI _gameOverUI)
+        {
+            this.gameOverUI = _gameOverUI;
         }
         
         /*
@@ -90,6 +96,7 @@ namespace ToB.Scenes.Intro
                     gamePlayUI.gameObject.SetActive(false);
                     mainBookUI.gameObject.SetActive(false);
                     wideMapUI.gameObject.SetActive(false);
+                    gameOverUI.gameObject.SetActive(false);
                     break;
                 
                 case "Stage":
@@ -98,6 +105,7 @@ namespace ToB.Scenes.Intro
                     gamePlayUI.gameObject.SetActive(true);
                     mainBookUI.gameObject.SetActive(false);
                     wideMapUI.gameObject.SetActive(false);
+                    gameOverUI.gameObject.SetActive(false);
                     break;
                 
                 case "Stage0623Copy":
@@ -106,6 +114,7 @@ namespace ToB.Scenes.Intro
                     gamePlayUI.gameObject.SetActive(true);
                     mainBookUI.gameObject.SetActive(false);
                     wideMapUI.gameObject.SetActive(false);
+                    gameOverUI.gameObject.SetActive(false);
                     break;
                 
                 default:
@@ -114,6 +123,7 @@ namespace ToB.Scenes.Intro
                     gamePlayUI.gameObject.SetActive(false);
                     mainBookUI.gameObject.SetActive(false);
                     wideMapUI.gameObject.SetActive(false);
+                    gameOverUI.gameObject.SetActive(false);
                     break;
             }
         }

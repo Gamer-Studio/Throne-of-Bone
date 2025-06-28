@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-namespace ToB
+namespace ToB.Entities
 {
     public class EnemyKnockback : MonoBehaviour
     {

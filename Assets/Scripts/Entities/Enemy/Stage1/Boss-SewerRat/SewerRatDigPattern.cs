@@ -4,7 +4,7 @@ using DG.Tweening;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace ToB
+namespace ToB.Entities
 {
     public class SewerRatDigPattern : SewerRatPattern
     {

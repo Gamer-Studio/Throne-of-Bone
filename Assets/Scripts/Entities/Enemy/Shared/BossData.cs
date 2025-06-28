@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace ToB
+namespace ToB.Entities
 {
     [CreateAssetMenu(fileName = "BossData", menuName = "Scriptable Objects/BossData")]
     public class BossData : EnemyData
