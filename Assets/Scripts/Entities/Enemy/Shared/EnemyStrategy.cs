@@ -2,7 +2,7 @@ using System;
 using Unity.Collections;
 using UnityEngine;
 
-namespace ToB
+namespace ToB.Entities
 {
     public abstract class EnemyStrategy : MonoBehaviour
     {
