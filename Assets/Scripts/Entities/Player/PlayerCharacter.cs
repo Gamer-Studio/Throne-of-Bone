@@ -114,7 +114,7 @@ namespace ToB.Player
     /// <summary>
     /// 공격 모션이 재생되고 있는지 여부를 반환합니다.
     /// </summary>
-    [] public bool isAttacking = false; 
+    public bool isAttacking = false; 
     
     public bool IsDashing => animator.GetCurrentAnimatorStateInfo(0).IsName("Dash") || dashCoroutine != null;
     
@@ -149,7 +149,7 @@ namespace ToB.Player
 
       var inDash = animator.GetCurrentAnimatorStateInfo(0).IsName("Dash");
       var enterFallingAnim = body.linearVelocityY < -0.1f && !inWater &&
-                          !inDash && !IsAttacking;
+                          !inDash && !isAttacking;
       
       if (animator.GetBool(BOOL_FALLING) != enterFallingAnim)
       {
@@ -304,7 +304,7 @@ namespace ToB.Player
     
     #region Attack Feature
 
-    private Coroutine rangedRegen = null;
+    // private Coroutine rangedRegen = null;
     
     /// <summary>
     /// direction 방향으로 공격합니다.
@@ -314,7 +314,7 @@ namespace ToB.Player
     /// <param name="isMelee">근거리/원거리 공격 방향입니다.</param>
     public void Attack(Vector2 direction, bool isMelee = true)
     {
-      if (IsAttacking) return;
+      if (isAttacking) return;
       // 애니메이션 구현
       animator.SetTrigger(TRIGGER_ATTACK);
       var prevMotion = animator.GetInteger(INT_ATTACK_MOTION);
