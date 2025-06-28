@@ -89,10 +89,11 @@ namespace ToB.Utils.UI
         {
           Debug.Log("PlayerCharacter is null");
         }
-        Debug.Log("WaitAndInit end");
+        Debug.Log("HPBar Init end");
       }
     }
-   private IEnumerator WaitAndInit()
+   /*
+    private IEnumerator WaitAndInit()
     {
       Debug.Log("WaitAndInit");
       yield return new WaitForSeconds(0.5f);
@@ -111,10 +112,12 @@ namespace ToB.Utils.UI
       }
       Debug.Log("WaitAndInit end");
     }
+    */
     private void Init()
     {
       ChangeMax(player.stat.maxHp);
       text.text = $"{player.stat.Hp} / {max}";
+      UpdateHPBar(player.stat.Hp);
       player.stat.onHpChanged.AddListener(UpdateHPBar);
     }
 

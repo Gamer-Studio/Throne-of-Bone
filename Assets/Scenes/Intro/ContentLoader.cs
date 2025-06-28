@@ -10,6 +10,7 @@ namespace ToB.Scenes.Intro
 {
   public class ContentLoader : MonoBehaviour
   {
+    /*
     public static bool isLoaded { get; private set; } = false;
     
     [SerializeField] private TMP_Text loadingText;
@@ -59,5 +60,7 @@ namespace ToB.Scenes.Intro
 
       SceneManager.LoadScene("MainMenu");
     }
+    */
   }
+  
 }
