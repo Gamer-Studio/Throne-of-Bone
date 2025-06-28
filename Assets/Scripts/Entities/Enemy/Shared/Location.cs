@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace ToB
+namespace ToB.Entities
 {
     public class Location : MonoBehaviour
     {

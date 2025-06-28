@@ -3,7 +3,7 @@ using System.Collections;
 using ToB.Player;
 using UnityEngine;
 
-namespace ToB
+namespace ToB.Entities
 {
     // [RequireComponent(typeof(EnemyStatHandler))]
     public abstract class Enemy : MonoBehaviour
@@ -100,8 +100,8 @@ namespace ToB
         {
             if ((hittableMask & (1 << other.gameObject.layer)) != 0)
             {
-                Debug.Log("플레이어 대미지(bodyDamage)");
-                other.GetComponent<PlayerCharacter>().Damage(bodyDamage, this);
+                other.Damage(bodyDamage, this);
+                other.KnockBack(10, new Vector2(transform.localScale.x, 1));
             }
         }
 

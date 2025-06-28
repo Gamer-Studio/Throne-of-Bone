@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using NaughtyAttributes;
 using UnityEngine;
 
-namespace ToB
+namespace ToB.Entities
 {
     public class EnemyPhysics : MonoBehaviour
     {

@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace ToB
+namespace ToB.Entities
 {
     public abstract class EnemyPattern
     {
