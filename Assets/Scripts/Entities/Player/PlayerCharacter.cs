@@ -15,6 +15,7 @@ namespace ToB.Player
   {
     private static readonly int INT_STATE = Animator.StringToHash("State");
     private static readonly int BOOL_FALLING = Animator.StringToHash("Falling");
+    private static readonly int TRIGGER_FALL = Animator.StringToHash("Fall");
     private static readonly int TRIGGER_JUMP = Animator.StringToHash("Jump");
     private static readonly int TRIGGER_DASH = Animator.StringToHash("Dash");
     private static readonly int INT_DASH_STATE = Animator.StringToHash("DashState");
@@ -58,7 +59,7 @@ namespace ToB.Player
     [FormerlySerializedAs("isWater")] [Tooltip("물속인지")] public bool inWater = false;
 
     [Header("Attack State")] 
-    [Tooltip("최대 원거리 공격 스택")] public int maxRangedAttack = 5;
+    [Tooltip("최대 원거리 공격 스택")] public int maxRangedAttack = 3;
     [Tooltip("원거리 공격 스택"), SerializeField, ReadOnly] private int availableRangedAttack = 5;
     [Tooltip("원거리 공격 스택 재생 시간(초)")] public float rangedAttackRegenTime = 1;
     [Tooltip("원거리 공격 딜레이")] public float rangedAttackDelay = 0.2f;
@@ -113,9 +114,7 @@ namespace ToB.Player
     /// <summary>
     /// 공격 모션이 재생되고 있는지 여부를 반환합니다.
     /// </summary>
-    public bool IsAttacking => animator.GetCurrentAnimatorStateInfo(0).IsName("Slash0") ||
-                               animator.GetCurrentAnimatorStateInfo(0).IsName("Slash1") ||
-                               animator.GetCurrentAnimatorStateInfo(0).IsName("Slash2");
+    [] public bool isAttacking = false; 
     
     public bool IsDashing => animator.GetCurrentAnimatorStateInfo(0).IsName("Dash") || dashCoroutine != null;
     
@@ -155,6 +154,10 @@ namespace ToB.Player
       if (animator.GetBool(BOOL_FALLING) != enterFallingAnim)
       {
         animator.SetBool(BOOL_FALLING, enterFallingAnim);
+        if (enterFallingAnim)
+        {
+          animator.SetTrigger(TRIGGER_FALL);
+        }
       }
       
       // isMoving이 true일떄 이동합니다.
@@ -300,6 +303,8 @@ namespace ToB.Player
     #endregion Dash Feature
     
     #region Attack Feature
+
+    private Coroutine rangedRegen = null;
     
     /// <summary>
     /// direction 방향으로 공격합니다.
@@ -342,7 +347,8 @@ namespace ToB.Player
     {
       
     }
-
+    
+    
     
     #endregion Attack Feature
 
@@ -361,6 +367,7 @@ namespace ToB.Player
     /// <param name="direction">넉백 방향입니다.</param>
     public void KnockBack(float value, Vector2 direction)
     {
+      Debug.Log("넉백");
       body.AddForce(direction.normalized * value, ForceMode2D.Impulse);
     }
     
