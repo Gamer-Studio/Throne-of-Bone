@@ -34,7 +34,7 @@ namespace ToB.Entities
 
         IEnumerator Dig()
         {
-            enemy.bodyDamage = 20;
+            enemy.bodyDamage = sewerRat.DataSO.RollDamage;;
             enemy.Animator.SetBool(EnemyAnimationString.Roll, true);
             enemy.Physics.collisionEnabled = false;
             enemy.Physics.gravityEnabled = false;
@@ -66,9 +66,7 @@ namespace ToB.Entities
             strategy.GroundRubble.gameObject.SetActive(true);
             strategy.GroundRubble.Play();
             
-            const float ascendHeightPower = 32;
-            
-            enemy.Physics.velocityY = ascendHeightPower;
+            enemy.Physics.velocityY = sewerRat.DataSO.AscendPower;
             enemy.Physics.gravityEnabled = true;
             strategy.LookPlayer();
            
@@ -88,7 +86,7 @@ namespace ToB.Entities
             enemy.Physics.gravityEnabled = false;
             enemy.Physics.collisionEnabled =true;
             
-            const float tackleSpeed = 40;
+            float tackleSpeed = sewerRat.DataSO.TackleSpeed;
             
             Vector2 fixedDirection = (destination - (Vector2)enemy.transform.position).normalized;  // 단순 플레이어 방향 방식이 궤도 오차가 심했어서 레이로
             
@@ -110,7 +108,7 @@ namespace ToB.Entities
             yield return new WaitUntil(() => enemy.IsGrounded);
             enemy.Animator.SetBool(EnemyAnimationString.Jump, false);
 
-            enemy.bodyDamage = enemy.EnemyData.ATK;
+            enemy.bodyDamage = sewerRat.DataSO.BodyDamage;
             Exit();
         }
         

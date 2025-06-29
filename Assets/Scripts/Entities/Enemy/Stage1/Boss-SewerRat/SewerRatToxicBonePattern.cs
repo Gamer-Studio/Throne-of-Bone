@@ -60,7 +60,7 @@ namespace ToB.Entities
             enemy.Animator.SetBool("Bark", true);
             for (int i = 0; i < 3; i++)
             {
-                float speed = 10;
+                float speed = sewerRat.DataSO.ToxicBoneSpeed;
                 
                 GameObject boneObj = Object.Instantiate(strategy.ToxicBonePrefab);
                 boneObj.transform.position = enemy.transform.position + new Vector3(0, 2, 0);
@@ -70,7 +70,7 @@ namespace ToB.Entities
                 bone.LinearMovement.Init(direction, speed);
                 bone.SimpleRotate.SetRotationSpeed(enemy.IsTargetLeft ? -360 : 360);
                 
-                yield return new WaitForSeconds(0.27f);
+                yield return new WaitForSeconds(sewerRat.DataSO.ToxicBoneInterval);
             }
 
             enemy.Animator.SetBool("Bark", false);

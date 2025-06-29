@@ -35,24 +35,25 @@ namespace ToB.Entities
             if(!enemy.target) yield break;
             
             enemy.Animator.SetBool("Roll", true);
-            
-            enemy.bodyDamage = 20;  // 대쉬 시 충돌 데미지
+
+            enemy.bodyDamage = sewerRat.DataSO.RollDamage; 
             Vector2 dashDirection = enemy.GetTargetDirection();
             dashDirection.y = 0;
             dashDirection.Normalize();
 
-            float dashSpeed = 20f;
-            float dashDuration = 0.3f;
+            float dashSpeed = sewerRat.DataSO.DashSpeed;
+            float dashDuration = sewerRat.DataSO.DashDuration;
             
             enemy.Physics.velocity = dashDirection * dashSpeed;
             
             yield return new WaitForSeconds(dashDuration);
 
+            // 대쉬 후 반동과 상태 복구
             enemy.Physics.velocity = new Vector2(0, enemy.Physics.velocityY);
 
             coroutine = enemy.StartCoroutine(Scratch());
             enemy.Animator.SetBool("Roll", false);
-            enemy.bodyDamage = enemy.EnemyData.ATK;
+            enemy.bodyDamage = sewerRat.DataSO.BodyDamage;
         }
 
         IEnumerator Scratch()

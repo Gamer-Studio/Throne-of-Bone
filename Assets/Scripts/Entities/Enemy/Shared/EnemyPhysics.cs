@@ -89,7 +89,7 @@ namespace ToB.Entities
             }
             
             // 속도가 거의 0이면 이동하지 않음
-            if (velocity.sqrMagnitude < 0.001f)
+            if (totalVelocity.sqrMagnitude < 0.001f)
             {
                 return;
             }
@@ -99,7 +99,7 @@ namespace ToB.Entities
             {
                 PerformBoxCastMovement();
             }
-            else rb.position += velocity * Time.fixedDeltaTime; 
+            else rb.position += totalVelocity * Time.fixedDeltaTime; 
         }
 
         private void PerformBoxCastMovement()
