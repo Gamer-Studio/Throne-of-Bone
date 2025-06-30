@@ -9,17 +9,13 @@ namespace ToB.Player
   {
     #region State
     
-    [Header("Attack State")] 
-    [Tooltip("공격 모션 재생 여부")] public bool isAttacking = false; 
-    /// <summary>
-    /// 0번 인덱스는 모션 리셋 시간입니다.
-    /// </summary>
-    [Tooltip("근접 공격 딜레이")] public float[] meleeAttackDelay = {1, 0.3f, 0.3f, 1f};
-    [Tooltip("근접 공격 피해 계수")] public float[] meleeAttackDamageMultiplier = {1, 1, 2};
-    [Tooltip("최대 원거리 공격 스택")] public int maxRangedAttack = 3;
-    [Tooltip("원거리 공격 스택"), SerializeField, ReadOnly] private int availableRangedAttack = 5;
-    [Tooltip("원거리 공격 스택 재생 시간(초)")] public float rangedAttackRegenTime = 1;
-    [Tooltip("원거리 공격 딜레이")] public float rangedAttackDelay = 0.2f;
+    [Label("공격 모션 재생 여부"), Foldout("Attack State")] public bool isAttacking = false; 
+    [Label("근접 공격 딜레이"), Tooltip("0번 인덱스는 모션 리셋 시간 / 나머지는 모션의 대기 시간입니다."), Foldout("Attack State")] public float[] meleeAttackDelay = {1, 0.3f, 0.3f, 1f};
+    [Label("근접 공격 피해 계수"), Tooltip("기본 캐릭터 공격력에 비례한 모션당 피해 계수입니다."), Foldout("Attack State")] public float[] meleeAttackDamageMultiplier = {1, 1, 2};
+    [Label("최대 원거리 공격 횟수"), Tooltip("원거리 공격의 충전되는 최대 횟수입니다."), Foldout("Attack State")] public int maxRangedAttack = 3;
+    [Label("원거리 공격 스택"), Foldout("Attack State"), SerializeField, ReadOnly] private int availableRangedAttack = 5;
+    [Label("원거리 공격 스택 재생 시간(초)"), Foldout("Attack State")] public float rangedAttackRegenTime = 1;
+    [Label("원거리 공격 딜레이"), Foldout("Attack State")] public float rangedAttackDelay = 0.2f;
     
     // 현재 원거리 공격 가능 횟수입니다.
     public int AvailableRangedAttack
@@ -65,25 +61,17 @@ namespace ToB.Player
       {
         if(meleeAttackCoroutine != null) StopCoroutine(meleeAttackCoroutine);
         meleeAttackCoroutine = StartCoroutine(MeleeAttackWaiter(direction, meleeAttackDelay[prevMeleeAttackMotion + 1]));
-      }
-      
-      animator.SetInteger(INT_ATTACK_MOTION, prevMeleeAttackMotion);
-      prevMeleeAttackMotion = prevMeleeAttackMotion == 2 ? 0 : prevMeleeAttackMotion + 1;
-      animator.SetTrigger(TRIGGER_ATTACK);
-      
-      
-      if (direction.x > 0)
-      {
-          
-      }
-      else
-      {
-          
+        
+        animator.SetInteger(INT_ATTACK_MOTION, prevMeleeAttackMotion);
+        prevMeleeAttackMotion = prevMeleeAttackMotion == 2 ? 0 : prevMeleeAttackMotion + 1;
+        animator.SetTrigger(TRIGGER_ATTACK);
       }
 
       // 원거리 공격 구현
       if (!isMelee && AvailableRangedAttack > 0)
       {
+        
+        
         // 탄환? 관리
         AvailableRangedAttack--;
         if (rangedCoroutine == null) 
