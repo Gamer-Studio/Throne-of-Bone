@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using NaughtyAttributes;
+using ToB.Entities;
+using ToB.Entities.Projectiles;
 using UnityEngine;
 
 namespace ToB.Player
@@ -12,6 +14,7 @@ namespace ToB.Player
     [Label("공격 모션 재생 여부"), Foldout("Attack State")] public bool isAttacking = false; 
     [Label("근접 공격 딜레이"), Tooltip("0번 인덱스는 모션 리셋 시간 / 나머지는 모션의 대기 시간입니다."), Foldout("Attack State")] public float[] meleeAttackDelay = {1, 0.3f, 0.3f, 1f};
     [Label("근접 공격 피해 계수"), Tooltip("기본 캐릭터 공격력에 비례한 모션당 피해 계수입니다."), Foldout("Attack State")] public float[] meleeAttackDamageMultiplier = {1, 1, 2};
+    
     [Label("최대 원거리 공격 횟수"), Tooltip("원거리 공격의 충전되는 최대 횟수입니다."), Foldout("Attack State")] public int maxRangedAttack = 3;
     [Label("원거리 공격 스택"), Foldout("Attack State"), SerializeField, ReadOnly] private int availableRangedAttack = 5;
     [Label("원거리 공격 스택 재생 시간(초)"), Foldout("Attack State")] public float rangedAttackRegenTime = 1;
@@ -35,6 +38,13 @@ namespace ToB.Player
     
     #endregion
 
+    #region Binding
+
+    [Label("검기 프리팹"), SerializeField] private GameObject swordEffect;
+
+    #endregion
+    
+    
     private bool IsAttackMotion => animator.GetCurrentAnimatorStateInfo(0).IsName("Slash0") ||
                                    animator.GetCurrentAnimatorStateInfo(0).IsName("Slash1") ||
                                    animator.GetCurrentAnimatorStateInfo(0).IsName("Slash2");
@@ -57,20 +67,20 @@ namespace ToB.Player
 
       if(IsDashing) CancelDash();
       
-      if (isMelee)
-      {
-        if(meleeAttackCoroutine != null) StopCoroutine(meleeAttackCoroutine);
-        meleeAttackCoroutine = StartCoroutine(MeleeAttackWaiter(direction, meleeAttackDelay[prevMeleeAttackMotion + 1]));
-        
-        animator.SetInteger(INT_ATTACK_MOTION, prevMeleeAttackMotion);
-        prevMeleeAttackMotion = prevMeleeAttackMotion == 2 ? 0 : prevMeleeAttackMotion + 1;
-        animator.SetTrigger(TRIGGER_ATTACK);
-      }
+      if(meleeAttackCoroutine != null) StopCoroutine(meleeAttackCoroutine);
+      meleeAttackCoroutine = StartCoroutine(MeleeAttackWaiter(direction, meleeAttackDelay[prevMeleeAttackMotion + 1]));
+      animator.SetInteger(INT_ATTACK_MOTION, prevMeleeAttackMotion);
+      prevMeleeAttackMotion = prevMeleeAttackMotion == 2 ? 0 : prevMeleeAttackMotion + 1;
+      animator.SetTrigger(TRIGGER_ATTACK);
 
       // 원거리 공격 구현
       if (!isMelee && AvailableRangedAttack > 0)
       {
-        
+        var eff = swordEffect.Pooling().GetComponent<SwordEffect>();
+
+        eff.transform.position = transform.position;
+        eff.Direction = direction;
+        eff.damage = stat.atk / 2;
         
         // 탄환? 관리
         AvailableRangedAttack--;

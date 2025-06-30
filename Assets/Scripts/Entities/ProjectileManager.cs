@@ -33,6 +33,12 @@ namespace ToB
     /// <param name="obj">해제할 오브젝트입니다.</param>
     public void Release(GameObject obj)
     {
+      if(!obj.transform.parent)
+      {
+        Destroy(obj);
+        return;
+      }
+        
       var containerName = obj.transform.parent.name;
       if (pools.TryGetValue(containerName, out var pool))
         pool.Release(obj);

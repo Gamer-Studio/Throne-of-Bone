@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 1208736285591260195}
   - component: {fileID: 4571499245627795144}
   - component: {fileID: 8508471721680391115}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: GameObject
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -105,7 +105,7 @@ GameObject:
   - component: {fileID: 1067526606140988756}
   - component: {fileID: 1910508927396576283}
   - component: {fileID: 7655265317321702560}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: PlayerCharacter_SwordMaster
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -151,9 +151,9 @@ Rigidbody2D:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_Interpolate: 0
+  m_Interpolate: 2
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!70 &1067526606140988756
 CapsuleCollider2D:
@@ -214,7 +214,7 @@ MonoBehaviour:
   jumpPower: 30
   jumpTimeLimit: 0.2
   gravityAcceleration: 6
-  dashMultiplier: 350
+  dashSpeed: 50
   dashTimeLimit: 0.25
   dashDelay: 0
   dashCoolTime: 0.5
@@ -233,6 +233,7 @@ MonoBehaviour:
   body: {fileID: 1096863716109666581}
   animator: {fileID: 6425824100770376572}
   spriteRenderer: {fileID: 9050726402138752261}
+  camera: {fileID: 0}
   OnRangedAttackStackChange:
     m_PersistentCalls:
       m_Calls: []
@@ -251,6 +252,7 @@ MonoBehaviour:
   availableRangedAttack: 5
   rangedAttackRegenTime: 1
   rangedAttackDelay: 0.2
+  swordEffect: {fileID: 1664674104791670439, guid: bc76dc791a6561344bbec8478838ce65, type: 3}
 --- !u!114 &7655265317321702560
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -277,9 +279,9 @@ GameObject:
   - component: {fileID: 9050726402138752261}
   - component: {fileID: 6425824100770376572}
   - component: {fileID: 7392561602447343758}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Character
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
