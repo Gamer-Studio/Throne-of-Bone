@@ -22,7 +22,7 @@ namespace ToB.Entities
 
         }
 
-        protected override void Exit()
+        public override void Exit()
         {
             base.Exit();
             if(coroutine != null) enemy.StopCoroutine(coroutine);

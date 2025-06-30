@@ -76,7 +76,7 @@ namespace ToB.Entities
             transform.localScale = localScale;
         }
 
-        private void Update()
+        protected override void Update()
         {
             if (currentPattern != null)
             {
