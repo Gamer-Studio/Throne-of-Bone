@@ -13,6 +13,8 @@ namespace ToB.Player
     [Tooltip("시네머신 카메라"), SerializeField] protected CinemachineVirtualCamera vCam;
     [Tooltip("플레이어 캐릭터"), SerializeField] protected PlayerCharacter character;
 
+    private bool isMeleeAttacking = false;
+    
     #region Unity Event
     
 #if UNITY_EDITOR
@@ -30,6 +32,17 @@ namespace ToB.Player
       camera = Camera.main;
     }
 
+    private void FixedUpdate()
+    {
+      if (isMeleeAttacking)
+      {
+        var cursorPos = camera.ScreenToWorldPoint(Input.mousePosition).Z(0);
+        var characterPos = character.transform.position.Y(v => v);
+        
+        character.Attack((cursorPos - characterPos).normalized.Y(v => v), true);
+      }
+    }
+
     #endregion
     
     #region Input Action
@@ -42,7 +55,7 @@ namespace ToB.Player
       var input = context.ReadValue<Vector2>().x;
       if (Math.Abs(input) > 0.1f)
       {
-        character.moveDirection = input > 0 ? PlayerMoveDirection.Right : PlayerMoveDirection.Left;
+        character.MoveDirection = input > 0 ? PlayerMoveDirection.Right : PlayerMoveDirection.Left;
         character.IsMoving = true;
       }
       else
@@ -73,14 +86,7 @@ namespace ToB.Player
     /// </summary>
     public void MeleeAttack(InputAction.CallbackContext context)
     {
-      if (context.performed)
-      {
-        var cursorPos = camera.ScreenToWorldPoint(Input.mousePosition).Z(0);
-        var characterPos = character.transform.position.Y(v => v);
-        var angle = ((cursorPos - characterPos).normalized * 2);
-        
-        character.Attack(angle, true);
-      }
+      isMeleeAttacking = context.performed;
     }
 
     /// <summary>
