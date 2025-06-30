@@ -27,7 +27,7 @@ namespace ToB.Utils.Singletons
       }
     }
 
-    public void OnDestroy()
+    private void OnDestroy()
     {
       instance = null;
     }
