@@ -39,27 +39,27 @@ namespace ToB.Player
     #region State
     [Header( "State")]
     
-    [Tooltip("애니메이션 상태"), SerializeField, GetSet(nameof(AnimationState))] protected PlayerAnimationState animationState = PlayerAnimationState.Idle;
-    [Tooltip("이동속도")] public float moveSpeed = 2;
-    [Tooltip("최대 이동 속도")] public float maxMoveSpeed = 12;
-    [Tooltip("좌/우 마찰력 보정값")] public float moveResistanceForce = 1;
-    [Tooltip("이동방향 (좌/우)"), SerializeField, ReadOnly] private PlayerMoveDirection moveDirection = PlayerMoveDirection.Left;
+    [Label("애니메이션 상태"), SerializeField, GetSet(nameof(AnimationState))] protected PlayerAnimationState animationState = PlayerAnimationState.Idle;
+    [Label("이동속도")] public float moveSpeed = 2;
+    [Label("최대 이동 속도")] public float maxMoveSpeed = 12;
+    [Label("좌/우 마찰력 보정값")] public float moveResistanceForce = 1;
+    [Label("이동방향 (좌/우)"), SerializeField, ReadOnly] private PlayerMoveDirection moveDirection = PlayerMoveDirection.Left;
     // true일 때 이동합니다.
-    [Tooltip("이동 모드"), SerializeField, ReadOnly] protected bool isMoving = false;
-    [Tooltip("체공 여부"), SerializeField, ReadOnly] private bool isFlight = false;
+    [Label("이동 모드"), SerializeField, ReadOnly] protected bool isMoving = false;
+    [Label("체공 여부"), SerializeField, ReadOnly] private bool isFlight = false;
 
-    [Header("Jump State")]
-    [Tooltip("점프 파워")] public float jumpPower = 10;
-    [Tooltip("최대 점프 시간")] public float jumpTimeLimit = 0.2f;
-    [Tooltip("낙하시 중력가속도 보정값")] public float gravityAcceleration = 10;
+    [Label("점프 파워"), Foldout("Jump State")] public float jumpPower = 10;
+    [Label("최대 점프 시간"), Foldout("Jump State")] public float jumpTimeLimit = 0.2f;
+    [Label("낙하시 중력가속도 보정값"), Foldout("Jump State")] public float gravityAcceleration = 10;
     
-    [Header("Dash State")]
-    [Tooltip("대시 보정값")] public float dashMultiplier = 12;
-    [Tooltip("대시 지속시간")] public float dashTimeLimit = 0.2f;
-    [FormerlySerializedAs("isWater")] [Tooltip("물속인지")] public bool inWater = false;
+    [Label("대시 속도"), Foldout("Dash State")] public float dashMultiplier = 500;
+    [Label("대시 지속시간"), Foldout("Dash State")] public float dashTimeLimit = 0.2f;
+    [Label("대시 쿨타임 상태"), Foldout("Dash State")] public float dashDelay = 0;
+    [Label("대시 쿨타임"), Foldout("Dash State")] public float dashCoolTime = 0.5f;
+    [Label("물속인지"), Foldout("Dash State")] public bool inWater = false;
 
     // 플레이어 스텟 관리 클래스입니다.
-    public PlayerStats stat = new();
+    [Label("캐릭터 스텟")] public PlayerStats stat = new();
 
     // 이 아래는 외부 접근용 연결 필드입니다.
     public bool IsFlight => isFlight;
@@ -206,7 +206,6 @@ namespace ToB.Player
     /// Jump()를 호출하여 점프를 시작할 수 있습니다. <br/>
     /// 빠르게 CancelJump()를 호출하여 낮은 점프를 할 수 있습니다.
     /// </summary>
-    [Button]
     public void Jump()
     {
       if ((inWater || !isFlight) && !IsDashing && jumpCoroutine == null)
@@ -246,8 +245,7 @@ namespace ToB.Player
     
     #region Dash Feature
     
-    public float dashDelay = 0;
-    public float dashCoolTime = 0.5f;
+    
     private float beforeGravityScale = 0;
 
     private Coroutine dashCoroutine = null;
@@ -294,7 +292,7 @@ namespace ToB.Player
       while (dashTime < dashTimeLimit)
       {
         body.AddForce((moveDirection == PlayerMoveDirection.Left ? Vector2.left : Vector2.right) *
-                              (moveSpeed * dashMultiplier * Time.deltaTime), ForceMode2D.Impulse);
+                              (dashMultiplier * Time.deltaTime), ForceMode2D.Impulse);
         dashTime += Time.deltaTime;
         yield return new WaitForFixedUpdate();
       }
