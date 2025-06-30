@@ -52,7 +52,7 @@ namespace ToB.Player
     [Label("최대 점프 시간"), Foldout("Jump State")] public float jumpTimeLimit = 0.2f;
     [Label("낙하시 중력가속도 보정값"), Foldout("Jump State")] public float gravityAcceleration = 10;
     
-    [Label("대시 속도"), Foldout("Dash State")] public float dashMultiplier = 500;
+    [Label("대시 속도"), Foldout("Dash State")] public float dashSpeed = 500;
     [Label("대시 지속시간"), Foldout("Dash State")] public float dashTimeLimit = 0.2f;
     [Label("대시 쿨타임 상태"), Foldout("Dash State")] public float dashDelay = 0;
     [Label("대시 쿨타임"), Foldout("Dash State")] public float dashCoolTime = 0.5f;
@@ -112,6 +112,7 @@ namespace ToB.Player
     [Tooltip("캐릭터 바디")] public Rigidbody2D body;
     [Tooltip("캐릭터 애니메이터"), SerializeField] protected Animator animator;
     [Tooltip("캐릭터 스프라이트"), SerializeField] protected SpriteRenderer spriteRenderer;
+    [SerializeField] private new Camera camera;
     
     #endregion
 
@@ -124,6 +125,7 @@ namespace ToB.Player
       if (!body) body = GetComponent<Rigidbody2D>();
       if (!animator) animator = GetComponentInChildren<Animator>();
       if (!spriteRenderer) spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+      if (!camera) camera = Camera.main;
     }
     
 #endif
@@ -154,9 +156,7 @@ namespace ToB.Player
         if (Math.Abs(body.linearVelocityX) < maxMoveSpeed)
         {
           var dir = moveDirection == PlayerMoveDirection.Left ? Vector2.left : Vector2.right;
-          var ray = Physics2D.Raycast(transform.position, Vector2.right, 2, LayerMask.GetMask("Ground"));
 
-          Debug.DrawLine(transform.position, ray.point);
           body.AddForce(dir * moveSpeed, ForceMode2D.Impulse);
         }
       }
@@ -291,8 +291,8 @@ namespace ToB.Player
       var dashTime = 0f;
       while (dashTime < dashTimeLimit)
       {
-        body.AddForce((moveDirection == PlayerMoveDirection.Left ? Vector2.left : Vector2.right) *
-                              (dashMultiplier * Time.deltaTime), ForceMode2D.Impulse);
+        body.linearVelocityX = (moveDirection == PlayerMoveDirection.Left ? -1 : 1) * dashSpeed;
+        
         dashTime += Time.deltaTime;
         yield return new WaitForFixedUpdate();
       }
