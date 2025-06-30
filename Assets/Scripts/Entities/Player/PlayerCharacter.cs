@@ -11,7 +11,7 @@ using UnityEngine.Serialization;
 
 namespace ToB.Player
 {
-  public class PlayerCharacter : MonoBehaviour, IDamageable, IKnockBackable
+  public partial class PlayerCharacter : MonoBehaviour, IDamageable, IKnockBackable
   {
     private static readonly int INT_STATE = Animator.StringToHash("State");
     private static readonly int BOOL_FALLING = Animator.StringToHash("Falling");
@@ -43,7 +43,7 @@ namespace ToB.Player
     [Tooltip("이동속도")] public float moveSpeed = 2;
     [Tooltip("최대 이동 속도")] public float maxMoveSpeed = 12;
     [Tooltip("좌/우 마찰력 보정값")] public float moveResistanceForce = 1;
-    [Tooltip("이동방향 (좌/우)")] public PlayerMoveDirection moveDirection = PlayerMoveDirection.Left;
+    [Tooltip("이동방향 (좌/우)"), SerializeField, ReadOnly] private PlayerMoveDirection moveDirection = PlayerMoveDirection.Left;
     // true일 때 이동합니다.
     [Tooltip("이동 모드"), SerializeField, ReadOnly] protected bool isMoving = false;
     [Tooltip("체공 여부"), SerializeField, ReadOnly] private bool isFlight = false;
@@ -58,33 +58,11 @@ namespace ToB.Player
     [Tooltip("대시 지속시간")] public float dashTimeLimit = 0.2f;
     [FormerlySerializedAs("isWater")] [Tooltip("물속인지")] public bool inWater = false;
 
-    [Header("Attack State")] 
-    [Tooltip("최대 원거리 공격 스택")] public int maxRangedAttack = 3;
-    [Tooltip("원거리 공격 스택"), SerializeField, ReadOnly] private int availableRangedAttack = 5;
-    [Tooltip("원거리 공격 스택 재생 시간(초)")] public float rangedAttackRegenTime = 1;
-    [Tooltip("원거리 공격 딜레이")] public float rangedAttackDelay = 0.2f;
-
     // 플레이어 스텟 관리 클래스입니다.
     public PlayerStats stat = new();
 
     // 이 아래는 외부 접근용 연결 필드입니다.
     public bool IsFlight => isFlight;
-
-    // 현재 원거리 공격 가능 횟수입니다.
-    public int AvailableRangedAttack
-    {
-      get => availableRangedAttack;
-      set
-      {
-        var input = Math.Min(maxRangedAttack, Math.Max(value, 0));
-
-        if (input != availableRangedAttack)
-        {
-          availableRangedAttack = input;
-          OnRangedAttackStackChange.Invoke(availableRangedAttack);
-        }
-      }
-    }
 
     protected PlayerAnimationState AnimationState
     {
@@ -110,13 +88,21 @@ namespace ToB.Player
         AnimationState = value ? PlayerAnimationState.Run : PlayerAnimationState.Idle;
       }
     }
-
-    /// <summary>
-    /// 공격 모션이 재생되고 있는지 여부를 반환합니다.
-    /// </summary>
-    [] public bool isAttacking = false; 
     
+    /// <summary>
+    /// 플레이어가 대시하고 있는지 여부입니다.
+    /// </summary>
     public bool IsDashing => animator.GetCurrentAnimatorStateInfo(0).IsName("Dash") || dashCoroutine != null;
+
+    public PlayerMoveDirection MoveDirection
+    {
+      get => moveDirection;
+      set
+      {
+        moveDirection = value;
+        transform.eulerAngles = new Vector3(0, value == PlayerMoveDirection.Left ? 180 : 0, 0);
+      }
+    }
     
     #endregion
     
@@ -149,7 +135,7 @@ namespace ToB.Player
 
       var inDash = animator.GetCurrentAnimatorStateInfo(0).IsName("Dash");
       var enterFallingAnim = body.linearVelocityY < -0.1f && !inWater &&
-                          !inDash && !IsAttacking;
+                          !inDash && !isAttacking;
       
       if (animator.GetBool(BOOL_FALLING) != enterFallingAnim)
       {
@@ -161,14 +147,18 @@ namespace ToB.Player
       }
       
       // isMoving이 true일떄 이동합니다.
-      if(isMoving && !inDash)
+      if(isMoving && !inDash &&
+         (isFlight || !IsAttackMotion))
       {
-        transform.eulerAngles = new Vector3(0, moveDirection == PlayerMoveDirection.Left ? 180 : 0, 0);
-        
         // 최대이동속도 설정 및 이동 구현
         if (Math.Abs(body.linearVelocityX) < maxMoveSpeed)
-          body.AddForce(moveDirection == PlayerMoveDirection.Left ? Vector2.left * moveSpeed : Vector2.right * moveSpeed,
-            ForceMode2D.Impulse);
+        {
+          var dir = moveDirection == PlayerMoveDirection.Left ? Vector2.left : Vector2.right;
+          var ray = Physics2D.Raycast(transform.position, Vector2.right, 2, LayerMask.GetMask("Ground"));
+
+          Debug.DrawLine(transform.position, ray.point);
+          body.AddForce(dir * moveSpeed, ForceMode2D.Impulse);
+        }
       }
       
       // 이동시 마찰력 보정
@@ -258,6 +248,7 @@ namespace ToB.Player
     
     public float dashDelay = 0;
     public float dashCoolTime = 0.5f;
+    private float beforeGravityScale = 0;
 
     private Coroutine dashCoroutine = null;
     /// <summary>
@@ -269,14 +260,32 @@ namespace ToB.Player
       {
         dashDelay = 20;
         CancelJump();
-        StartCoroutine(DashCoroutine());
+        dashCoroutine = StartCoroutine(DashCoroutine());
+      }
+    }
+
+    public void CancelDash()
+    {
+      if(dashCoroutine != null)
+      {
+        StopCoroutine(dashCoroutine);
+        dashCoroutine = null;
+        
+        animator.SetInteger(INT_DASH_STATE, 1);
+        body.gravityScale = beforeGravityScale;
+        body.linearVelocityX = 0;
+        body.linearVelocityY = -0.1f;
+        isFlight = true;
+        dashCoroutine = null;
+
+        dashDelay = dashCoolTime;
       }
     }
 
     private IEnumerator DashCoroutine()
     {
       animator.SetTrigger(TRIGGER_DASH);
-      var beforeGravityScale = body.gravityScale;
+      beforeGravityScale = body.gravityScale;
       body.gravityScale = 0;
       body.linearVelocity = Vector2.zero;
       
@@ -301,56 +310,6 @@ namespace ToB.Player
     }
     
     #endregion Dash Feature
-    
-    #region Attack Feature
-
-    private Coroutine rangedRegen = null;
-    
-    /// <summary>
-    /// direction 방향으로 공격합니다.
-    /// isMelee를 false로 하여 원거리 공격을 할 수 있습니다.
-    /// </summary>
-    /// <param name="direction">공격 방향입니다.</param>
-    /// <param name="isMelee">근거리/원거리 공격 방향입니다.</param>
-    public void Attack(Vector2 direction, bool isMelee = true)
-    {
-      if (IsAttacking) return;
-      // 애니메이션 구현
-      animator.SetTrigger(TRIGGER_ATTACK);
-      var prevMotion = animator.GetInteger(INT_ATTACK_MOTION);
-      prevMotion = prevMotion == 2 ? 0 : prevMotion + 1;
-      animator.SetInteger(INT_ATTACK_MOTION, prevMotion);
-      
-      var dir = direction.x > 0 ? PlayerMoveDirection.Right : PlayerMoveDirection.Left;
-      
-      if (direction.x > 0)
-      {
-          
-      }
-      else
-      {
-          
-      }
-
-      // 원거리 공격 구현
-      if (!isMelee && AvailableRangedAttack > 0)
-      {
-        
-        AvailableRangedAttack--;
-      }
-    }
-
-    /// <summary>
-    /// 이벤트 트리거에요. 호출하지 말아주세요!
-    /// </summary>
-    public void AttackEnd()
-    {
-      
-    }
-    
-    
-    
-    #endregion Attack Feature
 
     /// <summary>
     /// 플레이어에게 방어력을 반영한 체력 피해를 줍니다.<br/>
