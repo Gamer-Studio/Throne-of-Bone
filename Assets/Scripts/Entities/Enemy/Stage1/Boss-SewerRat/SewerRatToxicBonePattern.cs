@@ -8,10 +8,13 @@ namespace ToB.Entities
     public class SewerRatToxicBonePattern : SewerRatPattern
     {
         Coroutine coroutine;
-        /// <inheritdoc/>
-        public SewerRatToxicBonePattern(Enemy enemy, SewerRatStrategy strategy, Action EndCallback) : base(enemy, strategy, EndCallback)
+
+        public SewerRatToxicBonePattern(EnemyStrategy strategy, Action EndCallback) : base(strategy, EndCallback)
         {
         }
+
+        /// <inheritdoc/>
+     
 
         public override void Enter()
         {
@@ -62,7 +65,7 @@ namespace ToB.Entities
             {
                 float speed = sewerRat.DataSO.ToxicBoneSpeed;
                 
-                GameObject boneObj = Object.Instantiate(strategy.ToxicBonePrefab);
+                GameObject boneObj = Object.Instantiate(ratStrategy.ToxicBonePrefab);
                 boneObj.transform.position = enemy.transform.position + new Vector3(0, 2, 0);
                 ToxicBone bone = boneObj.GetComponent<ToxicBone>();         // 양이 많지 않아서 굳이 풀링하지 않고 있습니다.
                 

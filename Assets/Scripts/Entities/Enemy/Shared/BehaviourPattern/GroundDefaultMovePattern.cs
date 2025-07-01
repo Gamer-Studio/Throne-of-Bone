@@ -7,7 +7,7 @@ namespace ToB.Entities
     {
         private readonly string MoveKey = "Move";
         private readonly float baseMoveSpeed;
-        public GroundDefaultMovePattern(Enemy enemy, float moveSpeed, Action EndCallback = null) : base(enemy, EndCallback)
+        public GroundDefaultMovePattern(EnemyStrategy strategy, float moveSpeed, Action EndCallback = null) : base(strategy, EndCallback)
         {
             baseMoveSpeed = moveSpeed;
         }

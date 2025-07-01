@@ -5,20 +5,20 @@ namespace ToB.Entities
 {
     public class SmolSlimeFSM : EnemyStrategy
     {
-        private SmolSlime owner;
+        public SmolSlime Owner { get; private set; }
         public SmolSlimeMovePattern movePattern;
         public SmolSlimeChasePattern chasePattern;
         
         protected override void Awake()
         {
             base.Awake();
-            owner = enemy as SmolSlime;
+            Owner = enemy as SmolSlime;
         }
 
         public override void Init()
         {
-            movePattern = new SmolSlimeMovePattern(owner, owner.DataSO.MoveSpeed);
-            chasePattern = new SmolSlimeChasePattern(owner, owner.DataSO.ChaseSpeed);
+            movePattern = new SmolSlimeMovePattern(this, Owner.DataSO.MoveSpeed);
+            chasePattern = new SmolSlimeChasePattern(this, Owner.DataSO.ChaseSpeed);
             
             currentPattern = movePattern;
         }

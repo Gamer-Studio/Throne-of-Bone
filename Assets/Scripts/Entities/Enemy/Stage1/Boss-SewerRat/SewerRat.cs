@@ -17,6 +17,7 @@ namespace ToB.Entities
         
         [SerializeField] private ParticleSystem deathBleed;
         [SerializeField] private ParticleSystem deathExplode;
+        [field:SerializeField] public EnemyBody EnemyBody { get; private set; }
 
         protected override void Awake()
         {
@@ -28,6 +29,8 @@ namespace ToB.Entities
             }
 
             if (!Knockback) Knockback = GetComponent<EnemyKnockback>();
+            if (!EnemyBody) EnemyBody = GetComponentInChildren<EnemyBody>();
+            
             deathBleed.gameObject.SetActive(false);
             deathExplode.gameObject.SetActive(false);
         }
@@ -37,6 +40,7 @@ namespace ToB.Entities
             Strategy.Init();
             Knockback.Init(this, DataSO.KnockbackMultiplier);
             stat.Init(this, DataSO.HP, DataSO.DEF);
+            EnemyBody.Init(this, DataSO.BodyDamage);
         }
 
         protected override void Die()

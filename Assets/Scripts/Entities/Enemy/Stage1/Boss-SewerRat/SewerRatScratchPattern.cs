@@ -7,11 +7,12 @@ namespace ToB.Entities
     public class SewerRatScratchPattern : SewerRatPattern
     {
         Coroutine coroutine;
-        /// <inheritdoc/>
-        public SewerRatScratchPattern(Enemy enemy, SewerRatStrategy strategy, Action EndCallback) : base(enemy, strategy, EndCallback)
+
+        public SewerRatScratchPattern(EnemyStrategy strategy, Action EndCallback) : base(strategy, EndCallback)
         {
         }
 
+        /// <inheritdoc/>
         public override void Enter()
         {
             coroutine = enemy.StartCoroutine(Dash());
@@ -26,7 +27,7 @@ namespace ToB.Entities
         {
             base.Exit();
             if(coroutine != null) enemy.StopCoroutine(coroutine);
-            strategy.ScratchEffect.gameObject.SetActive(false);
+            ratStrategy.ScratchEffect.gameObject.SetActive(false);
 
         }
 
@@ -36,7 +37,7 @@ namespace ToB.Entities
             
             enemy.Animator.SetBool("Roll", true);
 
-            enemy.bodyDamage = sewerRat.DataSO.RollDamage; 
+            sewerRat.EnemyBody.ChangeDamage(sewerRat.DataSO.RollDamage); 
             Vector2 dashDirection = enemy.GetTargetDirection();
             dashDirection.y = 0;
             dashDirection.Normalize();
@@ -53,14 +54,14 @@ namespace ToB.Entities
 
             coroutine = enemy.StartCoroutine(Scratch());
             enemy.Animator.SetBool("Roll", false);
-            enemy.bodyDamage = sewerRat.DataSO.BodyDamage;
+            sewerRat.EnemyBody.ChangeDamage(sewerRat.DataSO.BodyDamage);
         }
 
         IEnumerator Scratch()
         {
             // TODO : 스크래치 애니메이션과 함께 판정 처리
             enemy.Animator.SetBool("Bark", true);
-            strategy.ScratchEffect.gameObject.SetActive(true);
+            ratStrategy.ScratchEffect.gameObject.SetActive(true);
             yield return new WaitForSeconds(0.59f); // 애니메이션 클립 시간 
             enemy.Animator.SetBool("Bark", false);
             Exit();
