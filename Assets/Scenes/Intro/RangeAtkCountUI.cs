@@ -24,7 +24,7 @@ namespace ToB.Scenes.Intro
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            if (scene.name == "Stage" || scene.name == "Stage0623Copy")
+            if (scene.name != "Intro" && scene.name != "MainMenu")
             {
                 gameObject.SetActive(true);
                 player = PlayerCharacter.GetInstance();

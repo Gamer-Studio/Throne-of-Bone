@@ -297,6 +297,7 @@ namespace ToB.Player
     public void KnockBack(float value, Vector2 direction)
     {
       if(IsImmune) return;
+      
       body.AddForce(direction.normalized * value, ForceMode2D.Impulse);
     }
     

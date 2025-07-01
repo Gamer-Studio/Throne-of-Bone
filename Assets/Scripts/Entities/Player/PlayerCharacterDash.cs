@@ -78,7 +78,6 @@ namespace ToB.Player
         body.linearVelocityX = (moveDirection == PlayerMoveDirection.Left ? -1 : 1) * dashSpeed;
         
         dashTime += Time.deltaTime;
-
         if (!immuned && dashTime > dashImmuneStartTime)
         {
           immuned = true;

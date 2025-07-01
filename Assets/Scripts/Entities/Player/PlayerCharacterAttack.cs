@@ -78,8 +78,7 @@ namespace ToB.Player
     }
     
     private static readonly Vector2[] directions = { Vector2.right, Vector2.left, Vector2.down };
-
-    
+   
     /// <summary>
     /// direction 방향으로 공격합니다.
     /// isMelee를 false로 하여 원거리 공격을 할 수 있습니다.

@@ -28,10 +28,12 @@ namespace ToB.Entities
 
         [Header("현재 속도")] 
         public Vector2 velocity;
-        
-        public Dictionary<string, Vector2> externalVelocity = new Dictionary<string, Vector2>();
+        public readonly Dictionary<string, Vector2> externalVelocity = new Dictionary<string, Vector2>();
         
         public bool HasCollided { get; private set; }
+
+        public bool IsWallLeft;
+        public bool IsWallRight;
 
         public float velocityX
         {
@@ -71,6 +73,7 @@ namespace ToB.Entities
 
         void FixedUpdate()
         {
+            ClearCollideResults();
             if (collisionEnabled)
             {
                 FixPenetratedCollision();
@@ -78,9 +81,15 @@ namespace ToB.Entities
             MoveToNextPosition();
         }
 
-        private void MoveToNextPosition()
+        private void ClearCollideResults()
         {
             HasCollided = false;
+            IsWallLeft = false;
+            IsWallRight = false;
+        }
+
+        private void MoveToNextPosition()
+        {
             totalVelocity = velocity;
 
             foreach (var element in externalVelocity)
@@ -89,7 +98,7 @@ namespace ToB.Entities
             }
             
             // 속도가 거의 0이면 이동하지 않음
-            if (velocity.sqrMagnitude < 0.001f)
+            if (totalVelocity.sqrMagnitude < 0.001f)
             {
                 return;
             }
@@ -99,7 +108,7 @@ namespace ToB.Entities
             {
                 PerformBoxCastMovement();
             }
-            else rb.position += velocity * Time.fixedDeltaTime; 
+            else rb.position += totalVelocity * Time.fixedDeltaTime; 
         }
 
         private void PerformBoxCastMovement()
@@ -116,6 +125,9 @@ namespace ToB.Entities
 
                 if (hit.normal.y < 0.5f) // 벽에 닿은 경우
                 {
+                    if(totalVelocity.x > 0) IsWallRight = true;
+                    else IsWallLeft = true;
+                    
                     resultMoveDelta.y = moveDelta.y;
                     int leftRightNum = totalVelocity.x > 0 ? 1 : -1;
                     resultMoveDelta.x -= leftRightNum * skinWidth;
@@ -153,9 +165,6 @@ namespace ToB.Entities
             if (hasFixed)
             {
                 rb.position += fixPos - fixDirection * skinWidth; 
-                // Debug.Log("충돌 픽스 : " + Time.frameCount + velocity) ;
-                // if (fixPos.x != 0) velocityX = 0;
-                // else if (fixPos.y != 0) velocityY = 0;
             }
         }
 
@@ -203,19 +212,42 @@ namespace ToB.Entities
             return isGrounded;
         }
 
-
         private bool CheckCollision(Vector2 direction)
         {
-            Vector2 center = (Vector2)transform.position +
+            Vector2 origin = (Vector2)transform.position +
                              (Vector2)terrainSensor.gameObject.transform.localPosition +
                              terrainSensor.offset;
             
             Vector2 castSize = terrainSensor.size;
             if(direction.x != 0) castSize.y -= skinWidth;
        
-            RaycastHit2D hit = Physics2D.BoxCast(center, castSize, 0, direction, skinWidth*2f, terrainLayer);
+            RaycastHit2D hit = Physics2D.BoxCast(origin, castSize, 0, direction, skinWidth*2f, terrainLayer);
        
             return hit.collider;
+        }
+
+        public bool IsLedgeBelow()
+        {
+            Vector2 origin = (Vector2)transform.position +
+                             new Vector2(0, skinWidth);
+
+            float rayDistance = 0.1f;
+            
+            RaycastHit2D hit = Physics2D.Raycast(origin, Vector2.down, rayDistance, terrainLayer);
+
+            return !hit.collider;
+        }
+        
+        public bool IsLedgeOnSide(Vector2 direction)
+        {
+            Vector2 origin = (Vector2)transform.position +
+                             direction * terrainSensor.size.x / 2f +
+                             new Vector2(0, skinWidth);
+
+            float rayDistance = 0.1f;
+            
+            RaycastHit2D hit = Physics2D.Raycast(origin, Vector2.down, rayDistance, terrainLayer);
+            return !hit.collider;
         }
     }
 }
