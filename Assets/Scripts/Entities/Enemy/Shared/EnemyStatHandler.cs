@@ -38,6 +38,7 @@ namespace ToB.Entities
         {
             float actualDamage = damage * (100 - def) / 100;
             ChangeHP(-actualDamage);
+            enemy.OnTakeDamage(sender);
             
             StartCoroutine(DamageColorOverlay());
         }

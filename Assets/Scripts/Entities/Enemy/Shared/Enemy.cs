@@ -28,13 +28,12 @@ namespace ToB.Entities
         public Transform target;
         
         [Header("속성")]
-        [SerializeField] LayerMask hittableMask;
         [SerializeField] private bool isAlive;
+        [field:SerializeField] public bool ReactOnDamage { get; private set; }
         public bool IsAlive => isAlive;
         
         protected virtual void Awake()
         {
-            hittableMask = LayerMask.GetMask("Player");
             if(!Rb) rb = GetComponent<Rigidbody2D>();
             if(!Physics) Physics = GetComponent<EnemyPhysics>();
             if(!Animator) Animator = GetComponentInChildren<Animator>();
@@ -45,7 +44,6 @@ namespace ToB.Entities
 
         protected virtual void Reset()
         {
-            hittableMask = LayerMask.GetMask("Player");
             rb = GetComponent<Rigidbody2D>();
             Physics = GetComponent<EnemyPhysics>();
             Animator = GetComponentInChildren<Animator>();
@@ -57,10 +55,20 @@ namespace ToB.Entities
             isAlive = true;
         }
 
-        public void LookTarget()
+        public void OnTakeDamage(MonoBehaviour sender)
+        {
+            if (!sender || !ReactOnDamage) return;
+            bool isSenderLeft = sender.transform.position.x < transform.position.x;
+            bool isLookingLeft = LookDirectionHorizontal == Vector2.left;
+            
+            if (isSenderLeft != isLookingLeft)
+                FlipBody();
+        }
+
+        private void FlipBody()
         {
             Vector3 localScale = transform.localScale;
-            localScale.x = LookDirectionHorizontal.x;
+            localScale.x *= -1;
             transform.localScale = localScale;
         }
         
@@ -68,8 +76,6 @@ namespace ToB.Entities
         {
             isAlive = false;
         }
-        
-       
 
         public float GetTargetDistanceSQR()
         {

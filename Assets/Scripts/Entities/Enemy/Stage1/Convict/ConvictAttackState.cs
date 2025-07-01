@@ -22,6 +22,7 @@ namespace ToB.Entities
         {
             base.Execute();
             
+            // Attack bool 값 변경은 애니메이터에서 StateMachineBehaviour 스크립트가 직접 핸들링합니다
             if (!owner.Animator.GetBool(EnemyAnimationString.Attack))
             {
                 owner.FSM.ChangePattern(owner.FSM.IdleState);

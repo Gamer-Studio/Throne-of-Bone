@@ -13,6 +13,12 @@ namespace ToB.Entities
             convict = fsm.Owner;
         }
 
+        public override void Enter()
+        {
+            base.Enter();
+            convict.Animator.SetTrigger(EnemyAnimationString.Move);
+        }
+
         public override void FixedExecute()
         {
             base.FixedExecute();
