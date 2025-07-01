@@ -367,7 +367,6 @@ namespace ToB.Player
     /// <param name="direction">넉백 방향입니다.</param>
     public void KnockBack(float value, Vector2 direction)
     {
-      Debug.Log("넉백");
       body.AddForce(direction.normalized * value, ForceMode2D.Impulse);
     }
     

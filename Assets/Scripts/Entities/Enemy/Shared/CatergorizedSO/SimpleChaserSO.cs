@@ -3,8 +3,8 @@ using UnityEngine;
 
 namespace ToB.Entities
 {
-    [CreateAssetMenu(fileName = "SlimeSO", menuName = "Scriptable Objects/SlimeSO")]
-    public class SmolSlimeSO : EnemySO
+    [CreateAssetMenu(fileName = "SimpleChaserSO", menuName = "Scriptable Objects/Enemy/Categorized/SimpleChaserSO")]
+    public class SimpleChaserSO : EnemySO
     {
         [field: SerializeField] public float HP { get; private set; }
         [field: SerializeField] public float ATK { get; private set; }

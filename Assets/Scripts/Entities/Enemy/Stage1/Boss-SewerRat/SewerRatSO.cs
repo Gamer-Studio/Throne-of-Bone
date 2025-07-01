@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace ToB.Entities
 {
-    [CreateAssetMenu(fileName = "SewerRatSO", menuName = "Scriptable Objects/SewerRatSO")]
+    [CreateAssetMenu(fileName = "SewerRatSO", menuName = "Scriptable Objects/Enemy/Stage1/SewerRatSO")]
     public class SewerRatSO : EnemySO
     {
         [field: SerializeField] public float HP { get; private set; }

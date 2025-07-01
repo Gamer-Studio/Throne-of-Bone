@@ -1,25 +1,21 @@
-using System;
 using NaughtyAttributes;
-using ToB.Entities;
 using UnityEngine;
 
 namespace ToB.Entities
 {
     [RequireComponent(typeof(EnemyKnockback))]
     [RequireComponent(typeof(EnemyStatHandler))]
-    [RequireComponent(typeof(SmolSlimeFSM))]
-    public class SmolSlime : Enemy
+    public class Convict : Enemy
     {
-        [Header("슬라임")] 
+        [Header("죄수")] 
         [Expandable]
         [SerializeField] private SimpleChaserSO dataSO;
         public SimpleChaserSO DataSO => dataSO;
+        
         [field:SerializeField] public EnemyKnockback EnemyKnockBack { get; private set; }
         [field:SerializeField] public EnemyStatHandler Stat { get; private set; }
-        [field:SerializeField] public SmolSlimeFSM FSM {get; private set;}
+        // [field:SerializeField] public SmolSlimeFSM FSM {get; private set;}
         [field:SerializeField] public EnemySightSensor SightSensor {get; private set;}
-        
-        
         protected override void Awake()
         {
             base.Awake();
@@ -28,7 +24,7 @@ namespace ToB.Entities
 
         private void Start()
         {
-            FSM.Init();
+            // FSM.Init();
         }
 
         protected override void Reset()
@@ -36,7 +32,6 @@ namespace ToB.Entities
             base.Reset();
             InitProperties();
         }
-
         private void InitProperties()
         {
             EnemyKnockBack = GetComponent<EnemyKnockback>();
@@ -49,13 +44,9 @@ namespace ToB.Entities
             bodyDamage = DataSO.ATK;
         }
 
-
         protected override void Die()
         {
             base.Die();
-            Animator.SetTrigger(EnemyAnimationString.Die);
-            Hitbox.enabled = false;
-            FSM.ChangePattern(null);
         }
     }
 }
