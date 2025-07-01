@@ -22,6 +22,7 @@ namespace ToB.Player
     [Label("원거리 공격 스택"), Foldout("Attack State"), SerializeField, ReadOnly] private int availableRangedAttack = 5;
     [Label("원거리 공격 스택 재생 시간(초)"), Foldout("Attack State")] public float rangedAttackRegenTime = 1;
     [Label("원거리 공격 딜레이"), Foldout("Attack State")] public float rangedAttackDelay = 0.2f;
+    [Label("원거리 공격 발사 대기시간"), Foldout("Attack State")] public float shootDelay = 0.1f;
     
     // 현재 원거리 공격 가능 횟수입니다.
     public int AvailableRangedAttack
@@ -76,6 +77,8 @@ namespace ToB.Player
       attackGaugeBar.Value = 0;
     }
     
+    private static readonly Vector2[] directions = { Vector2.right, Vector2.left, Vector2.down };
+   
     /// <summary>
     /// direction 방향으로 공격합니다.
     /// isMelee를 false로 하여 원거리 공격을 할 수 있습니다.
@@ -84,44 +87,66 @@ namespace ToB.Player
     /// <param name="isMelee">근거리/원거리 공격 방향입니다.</param>
     public void Attack(Vector2 direction, bool isMelee = true)
     {
-      if (isAttacking || AvailableRangedAttack <= 0) return;
-      // 애니메이션 구현
-      isAttacking = true;
-
-      if(IsDashing) CancelDash();
+      var minDist = float.MaxValue;
+      var closest = Vector2.zero;
       
+      foreach (var d in directions)
+      {
+        var dist = Vector2.Distance(direction, d);
+        if (dist < minDist)
+        {
+          minDist = dist;
+          closest = d;
+        }
+      }
+      if (closest == Vector2.down) animator.SetInteger(INT_ATTACK_MOTION, 3);
+      
+      if (isAttacking || AvailableRangedAttack <= 0) return;
+      if(IsDashing) CancelDash();
       if(attackCoroutine != null) StopCoroutine(attackCoroutine);
 
-      var pam = isMelee ? prevAttackMotion : 3;
+      isAttacking = true;
       
-      attackCoroutine = StartCoroutine(AttackWaiter(direction, attackDelay[pam + 1]));
-      animator.SetInteger(INT_ATTACK_MOTION, pam);
+      if (closest != Vector2.down)
+      {
+        var pam = isMelee ? prevAttackMotion : 3;
+        attackCoroutine = StartCoroutine(AttackWaiter(direction, attackDelay[pam + 1]));
+        animator.SetInteger(INT_ATTACK_MOTION, pam);
       
-      prevAttackMotion = prevAttackMotion == 2 ? 0 : prevAttackMotion + 1;
+        prevAttackMotion = prevAttackMotion == 2 ? 0 : prevAttackMotion + 1;
+      }
+      else 
+        attackCoroutine = StartCoroutine(AttackWaiter(direction, 0.1f));
+      
       animator.SetTrigger(TRIGGER_ATTACK);
 
       // 원거리 공격 구현
       if (!isMelee)
       {
-        var eff = swordEffect.Pooling().GetComponent<SwordEffect>();
-
-        eff.transform.position = transform.position;
-        eff.Direction = direction;
-        eff.damage = stat.atk / 2;
-        
-        // 탄환? 관리
-        AvailableRangedAttack--;
-        if (rangedCoroutine == null) 
-          rangedCoroutine = StartCoroutine(RegenRangedAttack());
+        StartCoroutine(Shoot(direction));
       }
     }
-
+    
     /// <summary>
     /// 이벤트 트리거에요. 호출하지 말아주세요!
     /// </summary>
     public void AttackEnd()
     {
       transform.eulerAngles = new Vector3(0, MoveDirection == PlayerMoveDirection.Left ? 180 : 0, 0);
+    }
+
+    private IEnumerator Shoot(Vector2 direction)
+    {
+      yield return new WaitForSeconds(shootDelay);
+      var eff = swordEffect.Pooling().GetComponent<SwordEffect>();
+
+      eff.transform.position = transform.position;
+      eff.Direction = direction;
+      eff.damage = stat.atk / 2;
+        
+      // 탄환? 관리
+      AvailableRangedAttack--;
+      rangedCoroutine ??= StartCoroutine(RegenRangedAttack());
     }
 
     private void SetMeleeAttackDelay(float value)
