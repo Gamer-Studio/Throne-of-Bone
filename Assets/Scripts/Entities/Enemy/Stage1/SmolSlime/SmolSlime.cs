@@ -12,8 +12,8 @@ namespace ToB.Entities
     {
         [Header("슬라임")] 
         [Expandable]
-        [SerializeField] private SimpleChaserSO dataSO;
-        public SimpleChaserSO DataSO => dataSO;
+        [SerializeField] private SmolSlimeSO dataSO;
+        public SmolSlimeSO DataSO => dataSO;
         [field:SerializeField] public EnemyKnockback EnemyKnockBack { get; private set; }
         [field:SerializeField] public EnemyStatHandler Stat { get; private set; }
         [field:SerializeField] public SmolSlimeFSM FSM {get; private set;}

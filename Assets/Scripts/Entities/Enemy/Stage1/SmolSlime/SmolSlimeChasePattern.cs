@@ -28,11 +28,17 @@ namespace ToB.Entities
         {
             float deltaPosX = enemy.transform.position.x - prevPosX;
             base.FixedExecute();
-            if (destinationX - enemy.transform.position.x < 0.01f || deltaPosX < 0.003f)
+            
+            if (Mathf.Abs(destinationX - enemy.transform.position.x) < 0.003f || !enemy.target)
             {
                 slime.FSM.ChangePattern(slime.FSM.movePattern);
             }
-            
+
+            if (enemy.Physics.IsLedgeBelow())
+            {
+                enemy.Physics.externalVelocity[ChaseKey] = Vector2.zero;
+            }
+                
             prevPosX = enemy.transform.position.x;
         }
     
