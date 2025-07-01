@@ -14,6 +14,7 @@ namespace ToB.Player
     [Tooltip("플레이어 캐릭터"), SerializeField] protected PlayerCharacter character;
 
     private bool isMeleeAttacking = false;
+    private bool isRangedAttacking = false;
     
     #region Unity Event
     
@@ -40,6 +41,14 @@ namespace ToB.Player
         var characterPos = character.transform.position.Y(v => v);
         
         character.Attack((cursorPos - characterPos).normalized.Y(v => v), true);
+      }
+      else if (isRangedAttacking)
+      {
+        var cursorPos = camera.ScreenToWorldPoint(Input.mousePosition).Z(0);
+        var characterPos = character.transform.position.Y(v => v);
+        var angle = (cursorPos - characterPos).normalized.Y(v => v);
+        
+        character.Attack(angle, false);
       }
     }
 
@@ -94,14 +103,7 @@ namespace ToB.Player
     /// </summary>
     public void RangedAttack(InputAction.CallbackContext context)
     {
-      if (context.performed)
-      {
-        var cursorPos = camera.ScreenToWorldPoint(Input.mousePosition).Z(0);
-        var characterPos = character.transform.position.Y(v => v);
-        var angle = (cursorPos - characterPos).normalized.Y(v => v);
-        
-        character.Attack(angle, false);
-      }
+      isRangedAttacking = context.performed;
     }
     
     #endregion
