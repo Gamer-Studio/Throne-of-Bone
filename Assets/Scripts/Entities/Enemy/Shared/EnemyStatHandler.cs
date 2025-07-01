@@ -1,34 +1,59 @@
+using System.Collections;
+using Unity.Collections;
 using UnityEngine;
 
 namespace ToB.Entities
 {
     
     // 지금은 안 쓰고 적군이 방어력 버프를 쓰는 등 처리가 복잡해질 때를 감안해서 보류
-    public class EnemyStatHandler : MonoBehaviour
+    public class EnemyStatHandler : MonoBehaviour, IDamageable
     {
         private Enemy enemy;
-        public float MaxHP { get; private set; }
+        
+        [SerializeField, ReadOnly] private float MaxHP;
+        [SerializeField, ReadOnly] private float currentHP;
+        [SerializeField, ReadOnly] private float def;
+        public float CurrentHP => currentHP;
 
-        [SerializeField] private float currentHP;
-        public float CurrentHP { get; private set; }
-
-        [SerializeField] private float atk;
-        public float ATK { get; private set; }
-
-        public void Init(Enemy enemy)
+        public void Init(Enemy enemy, float hp, float def)
         {
             this.enemy = enemy;
-            MaxHP = enemy.EnemyData.HP;
-            atk = enemy.EnemyData.ATK;
-            // 필요하면 위 패턴 참고해서 초기화 예정
-            
+            MaxHP = hp;
             currentHP = MaxHP;
+            this.def = def;
         }
         
-        public void ChangeHP(float delta)
+        private void ChangeHP(float delta)
         {
-            CurrentHP += delta;
-            CurrentHP = Mathf.Clamp(CurrentHP, 0, MaxHP);
+            currentHP += delta;
+            currentHP = Mathf.Clamp(CurrentHP, 0, MaxHP);
+
+            if (currentHP <= 0)
+            {
+                enemy.PartDestroyed(this);
+            }
+        }
+
+        public void Damage(float damage, MonoBehaviour sender = null)
+        {
+            float actualDamage = damage * (100 - def) / 100;
+            ChangeHP(-actualDamage);
+            
+            StartCoroutine(DamageColorOverlay());
+        }
+        
+        IEnumerator DamageColorOverlay()
+        {
+            enemy.Sprite.material.SetFloat("_Alpha", 1);
+            float duration = 0.3f;
+            float remainedTime = duration;
+
+            while (remainedTime > 0)
+            {
+                yield return null;
+                remainedTime -= Time.deltaTime;
+                enemy.Sprite.material.SetFloat("_Alpha", remainedTime / duration);
+            }
         }
     }
 }

@@ -5,106 +5,81 @@ using UnityEngine;
 
 namespace ToB.Entities
 {
-    // [RequireComponent(typeof(EnemyStatHandler))]
+    [RequireComponent(typeof(EnemyPhysics))]
+    [RequireComponent(typeof(Rigidbody2D))]
+    [RequireComponent(typeof(BoxCollider2D))]
     public abstract class Enemy : MonoBehaviour
     {
-        [Header("기본 참조")]
-        [field:SerializeField] public EnemyData EnemyData { get; private set; }
-        [field:SerializeField] public Rigidbody2D rb { get; private set; }
+        [Header("기본 참조")]      
+        [SerializeField] private Rigidbody2D rb;
+        public Rigidbody2D Rb => rb;
         [field:SerializeField] public EnemyPhysics Physics { get; private set; }
         [field:SerializeField] public Animator Animator { get; private set; }
-        [field:SerializeField] public EnemyKnockback Knockback { get; private set; }
         [field:SerializeField] public SpriteRenderer Sprite { get; private set; }
+        [field:SerializeField] public EnemyKnockback Knockback { get; protected set; }
+        [field:SerializeField] public BoxCollider2D Hitbox { get; private set; }
 
         private Coroutine damageColorCoroutine;
-        // 스탯 핸들러는 스탯이 복잡해지면 다룰 예정. 현재는 HP 밖에 없음
-        // [field:SerializeField] public EnemyStatHandler EnemyStatHandler { get; private set; }
         
         public bool IsGrounded => Physics.IsGrounded();
+        
         public bool IsTargetLeft => GetTargetDirection().x < 0;
+        public Vector2 LookDirectionHorizontal => transform.localScale.x < 0 ? Vector2.left : Vector2.right;
         
         [Header("타겟")]
         public Transform target;
         
         [Header("속성")]
         public float bodyDamage;    // 충돌 시 데미지. 적군 상태에 따라 너무 유동적이기 쉬워서 public으로 함
-
-        public float BaseHP => EnemyData.HP;
-        public float currentHP;
-        
         [SerializeField] LayerMask hittableMask;
+        [SerializeField] private bool isAlive;
+        public bool IsAlive => isAlive;
+        
         protected virtual void Awake()
         {
             hittableMask = LayerMask.GetMask("Player");
-            if(!rb) rb = GetComponent<Rigidbody2D>();
+            if(!Rb) rb = GetComponent<Rigidbody2D>();
             if(!Physics) Physics = GetComponent<EnemyPhysics>();
             if(!Animator) Animator = GetComponentInChildren<Animator>();
-            currentHP = EnemyData.HP;
-            //if(!EnemyStatHandler) EnemyStatHandler = GetComponent<EnemyStatHandler>();
-
-            //EnemyStatHandler.Init(this);
-            bodyDamage = EnemyData.ATK;
+            if(!Sprite) Sprite = GetComponent<SpriteRenderer>();
+            if(!Hitbox) Hitbox = GetComponent<BoxCollider2D>();
+            
+            isAlive = true;
         }
 
-        private void Reset()
+        protected virtual void Reset()
         {
             hittableMask = LayerMask.GetMask("Player");
             rb = GetComponent<Rigidbody2D>();
             Physics = GetComponent<EnemyPhysics>();
             Animator = GetComponentInChildren<Animator>();
-            //EnemyStatHandler = GetComponent<EnemyStatHandler>();
-            bodyDamage = EnemyData.ATK;
+            Sprite = GetComponent<SpriteRenderer>();
+            Hitbox = GetComponent<BoxCollider2D>();
+            
+            isAlive = true;
         }
 
+        public void LookTarget()
+        {
+            Vector3 localScale = transform.localScale;
+            localScale.x = LookDirectionHorizontal.x;
+            transform.localScale = localScale;
+        }
         
-        // 인터페이스화 할 예정
-        public virtual void OnTakeDamage(float damage)
-        {
-            float actualDamage = damage * (1 - EnemyData.DEF / 100);
-            ChangeHP(-actualDamage);
-            
-            if (currentHP <= 0)
-            {
-                Die();
-            }
-            
-            if(damageColorCoroutine != null) StopCoroutine(damageColorCoroutine);
-            damageColorCoroutine = StartCoroutine(DamageColorOverlay());
-
-        }
-
-        IEnumerator DamageColorOverlay()
-        {
-            Sprite.material.SetFloat("_Alpha", 1);
-            float duration = 0.3f;
-            float remainedTime = duration;
-
-            while (remainedTime > 0)
-            {
-                yield return null;
-                remainedTime -= Time.deltaTime;
-                Sprite.material.SetFloat("_Alpha", remainedTime / duration);
-            }
-        }
-
-        public void ApplyKnockback(Vector2 direction, float force)
-        {
-            Knockback?.ApplyKnockback(direction, force);
-        }
-
         protected virtual void Die()
         {
+            isAlive = false;
         }
         
         private void OnTriggerStay2D(Collider2D other)
         {
+            if (!isAlive) return;
             if ((hittableMask & (1 << other.gameObject.layer)) != 0)
             {
                 other.Damage(bodyDamage, this);
-                other.KnockBack(10, new Vector2(transform.localScale.x, 1));
+                other.KnockBack(5, new Vector2(transform.localScale.x, 0.5f));
             }
         }
-
 
         public float GetTargetDistanceSQR()
         {
@@ -127,11 +102,18 @@ namespace ToB.Entities
             
             Debug.DrawRay(origin, dir, Color.cyan);
         }
-        
-        public void ChangeHP(float delta)
+
+        public virtual void PartDestroyed(EnemyStatHandler _)
         {
-            currentHP += delta;
-            currentHP = Mathf.Clamp(currentHP, 0, BaseHP);
+            // 대부분은 몸체가 파괴되면 그대로 죽음
+            Die();
+        }
+
+        public void LookHorizontal(Vector2 direction)
+        {
+            Vector3 scale = transform.localScale;
+            scale.x = direction.x;
+            transform.localScale = scale;
         }
     }
 }

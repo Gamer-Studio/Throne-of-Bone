@@ -10079,6 +10079,7 @@ GameObject:
   - component: {fileID: 3561393089025230842}
   - component: {fileID: 7113956458467217894}
   - component: {fileID: 2616744361585327019}
+  - component: {fileID: 145729976608772567}
   m_Layer: 0
   m_Name: Boss1
   m_TagString: Untagged
@@ -10120,20 +10121,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ac671beddd203b4eb5bab039c208f54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <EnemyData>k__BackingField: {fileID: 11400000, guid: fe5cc8a158a39a54e8e5f2b84ce29dba, type: 2}
   <rb>k__BackingField: {fileID: 3561393089025230842}
   <Physics>k__BackingField: {fileID: 3274423059247459717}
   <Animator>k__BackingField: {fileID: 8307894112172803428}
-  <Knockback>k__BackingField: {fileID: 7113956458467217894}
   <Sprite>k__BackingField: {fileID: 6221600684614603251}
+  <Knockback>k__BackingField: {fileID: 7113956458467217894}
   target: {fileID: 0}
   bodyDamage: 0
   currentHP: 0
   hittableMask:
     serializedVersion: 2
     m_Bits: 64
-  <BossData>k__BackingField: {fileID: 11400000, guid: fe5cc8a158a39a54e8e5f2b84ce29dba, type: 2}
-  <EnemyStrategy>k__BackingField: {fileID: 9076656960145260971}
+  <DataSO>k__BackingField: {fileID: 11400000, guid: fe5cc8a158a39a54e8e5f2b84ce29dba, type: 2}
+  <Strategy>k__BackingField: {fileID: 9076656960145260971}
+  stat: {fileID: 145729976608772567}
   deathBleed: {fileID: 6080410680826482338}
   deathExplode: {fileID: 6035450806633962828}
 --- !u!114 &9076656960145260971
@@ -10220,6 +10221,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92d8ad092d081fb43b9b6acd740d4dac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemy: {fileID: 0}
+  knockbackMultiplier: 0
 --- !u!61 &2616744361585327019
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -10266,6 +10269,21 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 3.7, y: 1.33}
   m_EdgeRadius: 0
+--- !u!114 &145729976608772567
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3081770651317235590}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53ab476cda1b5a342a8c9589483b3fc8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MaxHP: 0
+  currentHP: 0
+  def: 0
 --- !u!1 &5742384321724983965
 GameObject:
   m_ObjectHideFlags: 0
