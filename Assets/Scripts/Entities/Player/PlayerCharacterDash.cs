@@ -13,6 +13,7 @@ namespace ToB.Player
     [Label("대시 쿨타임 상태"), Foldout("Dash State")] private float dashDelay = 0;
     [Label("대시 쿨타임"), Foldout("Dash State")] public float dashCoolTime = 0.5f;
     [Label("물속인지"), Foldout("Dash State")] public bool inWater = false;
+    [Label("대시 무적 시간 시점"), Foldout("Dash State")] public float dashImmuneStartTime = 0f; 
 
     public float DashDelay
     {
@@ -63,6 +64,8 @@ namespace ToB.Player
 
     private IEnumerator DashCoroutine()
     {
+      var immuned = false;
+      
       animator.SetTrigger(TRIGGER_DASH);
       beforeGravityScale = body.gravityScale;
       body.gravityScale = 0;
@@ -75,6 +78,13 @@ namespace ToB.Player
         body.linearVelocityX = (moveDirection == PlayerMoveDirection.Left ? -1 : 1) * dashSpeed;
         
         dashTime += Time.deltaTime;
+
+        if (!immuned && dashTime > dashImmuneStartTime)
+        {
+          immuned = true;
+          dashImmuneTime = dashMaxImmuneTime;
+        }
+        
         yield return new WaitForFixedUpdate();
       }
 

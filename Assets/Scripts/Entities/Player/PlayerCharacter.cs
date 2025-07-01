@@ -8,13 +8,13 @@ using ToB.Utils.UI;
 using ToB.Worlds;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Serialization;
 
 namespace ToB.Player
 {
   public partial class PlayerCharacter : MonoBehaviour, IDamageable, IKnockBackable
   {
     private static readonly int INT_STATE = Animator.StringToHash("State");
+    private static readonly int BOOL_IMMUNE = Animator.StringToHash("Immune");
     private static readonly int BOOL_FALLING = Animator.StringToHash("Falling");
     private static readonly int TRIGGER_FALL = Animator.StringToHash("Fall");
     private static readonly int TRIGGER_JUMP = Animator.StringToHash("Jump");
@@ -38,23 +38,29 @@ namespace ToB.Player
     }
     
     #region State
-    [Header( "State")]
-    
-    [Label("애니메이션 상태"), SerializeField, GetSet(nameof(AnimationState))] protected PlayerAnimationState animationState = PlayerAnimationState.Idle;
-    [Label("이동속도")] public float moveSpeed = 2;
-    [Label("최대 이동 속도")] public float maxMoveSpeed = 12;
-    [Label("좌/우 마찰력 보정값")] public float moveResistanceForce = 1;
-    [Label("이동방향 (좌/우)"), SerializeField, ReadOnly] private PlayerMoveDirection moveDirection = PlayerMoveDirection.Left;
-    // true일 때 이동합니다.
-    [Label("이동 모드"), SerializeField, ReadOnly] protected bool isMoving = false;
-    // [Label("체공 여부"), SerializeField, ReadOnly] private bool isFlight = false;
 
+    [Label("애니메이션 상태"), Foldout("State"), SerializeField, GetSet(nameof(AnimationState))] protected PlayerAnimationState animationState = PlayerAnimationState.Idle;
+    [Label("이동속도"), Foldout("State")] public float moveSpeed = 2;
+    [Label("최대 이동 속도"), Foldout("State")] public float maxMoveSpeed = 12;
+    [Label("좌/우 마찰력 보정값"), Foldout("State")] public float moveResistanceForce = 1;
+    [Label("이동방향 (좌/우)"), Foldout("State"), SerializeField, ReadOnly] private PlayerMoveDirection moveDirection = PlayerMoveDirection.Left;
+    // true일 때 이동합니다.
+    [Label("이동 모드"), Foldout("State"), SerializeField, ReadOnly] protected bool isMoving = false;
+    // Immune State
+    [Label("현재 무적 시간"), Foldout("State")] public float immuneTime = 0f;
+    [Label("피격시 무적 시간"), Foldout("State")] public float damageImmuneTime = 0.3f;
+    [Label("현재 대시 무적 시간"), Foldout("State")] public float dashImmuneTime = 0f;
+    [Label("대시시 무적 시간"), Foldout("State")] public float dashMaxImmuneTime = 0.1f;
+    public bool IsImmune => isDamageImmune || dashImmuneTime > 0;
+    private bool isDamageImmune = false;
+    
+    // 플레이어 스텟 관리 클래스입니다.
+    [Label("캐릭터 스텟"), Foldout("State")] public PlayerStats stat = new();
+
+    // Jump State
     [Label("점프 파워"), Foldout("Jump State")] public float jumpPower = 10;
     [Label("최대 점프 시간"), Foldout("Jump State")] public float jumpTimeLimit = 0.2f;
     [Label("낙하시 중력가속도 보정값"), Foldout("Jump State")] public float gravityAcceleration = 10;
-
-    // 플레이어 스텟 관리 클래스입니다.
-    [Label("캐릭터 스텟")] public PlayerStats stat = new();
 
     // 이 아래는 외부 접근용 연결 필드입니다.
     // 캐릭터가 공중인지 여부입니다.
@@ -133,6 +139,29 @@ namespace ToB.Player
     
     private void FixedUpdate()
     {
+      if (dashImmuneTime > 0) dashImmuneTime -= Time.deltaTime;
+      else dashImmuneTime = 0;
+      
+      if (immuneTime > 0)
+      {
+        immuneTime -= Time.deltaTime;
+
+        if (!isDamageImmune)
+        {
+          isDamageImmune = true;
+          animator.SetBool(BOOL_IMMUNE, true);
+        }
+      }
+      else
+      {
+        immuneTime = 0;
+        if (isDamageImmune)
+        {
+          isDamageImmune = false;
+          animator.SetBool(BOOL_IMMUNE, true);
+        }
+      }
+      
       if (!IsFlight)
       {
         if (DashDelay > 0) DashDelay -= Time.deltaTime;
@@ -250,7 +279,15 @@ namespace ToB.Player
     /// 0이 될 시 stats.onDeath 이벤트를 호출합니다.
     /// </summary>
     /// <param name="value">피해량입니다.</param>
-    public void Damage(float value, MonoBehaviour sender) => stat.Damage(value);
+    /// <param name="sender">피해량을 주는 주체입니다.</param>
+    public void Damage(float value, MonoBehaviour sender)
+    {
+      if(IsImmune) return;
+      
+      stat.Damage(value);
+
+      if (sender != null) immuneTime = damageImmuneTime;
+    }
 
     /// <summary>
     /// 플레이어를 넉백시킵니다.
@@ -259,7 +296,6 @@ namespace ToB.Player
     /// <param name="direction">넉백 방향입니다.</param>
     public void KnockBack(float value, Vector2 direction)
     {
-      Debug.Log("넉백");
       body.AddForce(direction.normalized * value, ForceMode2D.Impulse);
     }
     
