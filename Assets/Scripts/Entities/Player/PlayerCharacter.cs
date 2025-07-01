@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using NaughtyAttributes;
 using ToB.Entities;
 using ToB.Utils;
+using ToB.Utils.UI;
 using ToB.Worlds;
 using UnityEngine;
 using UnityEngine.Events;
@@ -11,7 +12,7 @@ using UnityEngine.Serialization;
 
 namespace ToB.Player
 {
-  public class PlayerCharacter : MonoBehaviour, IDamageable, IKnockBackable
+  public partial class PlayerCharacter : MonoBehaviour, IDamageable, IKnockBackable
   {
     private static readonly int INT_STATE = Animator.StringToHash("State");
     private static readonly int BOOL_FALLING = Animator.StringToHash("Falling");
@@ -39,52 +40,25 @@ namespace ToB.Player
     #region State
     [Header( "State")]
     
-    [Tooltip("애니메이션 상태"), SerializeField, GetSet(nameof(AnimationState))] protected PlayerAnimationState animationState = PlayerAnimationState.Idle;
-    [Tooltip("이동속도")] public float moveSpeed = 2;
-    [Tooltip("최대 이동 속도")] public float maxMoveSpeed = 12;
-    [Tooltip("좌/우 마찰력 보정값")] public float moveResistanceForce = 1;
-    [Tooltip("이동방향 (좌/우)")] public PlayerMoveDirection moveDirection = PlayerMoveDirection.Left;
+    [Label("애니메이션 상태"), SerializeField, GetSet(nameof(AnimationState))] protected PlayerAnimationState animationState = PlayerAnimationState.Idle;
+    [Label("이동속도")] public float moveSpeed = 2;
+    [Label("최대 이동 속도")] public float maxMoveSpeed = 12;
+    [Label("좌/우 마찰력 보정값")] public float moveResistanceForce = 1;
+    [Label("이동방향 (좌/우)"), SerializeField, ReadOnly] private PlayerMoveDirection moveDirection = PlayerMoveDirection.Left;
     // true일 때 이동합니다.
-    [Tooltip("이동 모드"), SerializeField, ReadOnly] protected bool isMoving = false;
-    [Tooltip("체공 여부"), SerializeField, ReadOnly] private bool isFlight = false;
+    [Label("이동 모드"), SerializeField, ReadOnly] protected bool isMoving = false;
+    // [Label("체공 여부"), SerializeField, ReadOnly] private bool isFlight = false;
 
-    [Header("Jump State")]
-    [Tooltip("점프 파워")] public float jumpPower = 10;
-    [Tooltip("최대 점프 시간")] public float jumpTimeLimit = 0.2f;
-    [Tooltip("낙하시 중력가속도 보정값")] public float gravityAcceleration = 10;
-    
-    [Header("Dash State")]
-    [Tooltip("대시 보정값")] public float dashMultiplier = 12;
-    [Tooltip("대시 지속시간")] public float dashTimeLimit = 0.2f;
-    [FormerlySerializedAs("isWater")] [Tooltip("물속인지")] public bool inWater = false;
-
-    [Header("Attack State")] 
-    [Tooltip("최대 원거리 공격 스택")] public int maxRangedAttack = 3;
-    [Tooltip("원거리 공격 스택"), SerializeField, ReadOnly] private int availableRangedAttack = 5;
-    [Tooltip("원거리 공격 스택 재생 시간(초)")] public float rangedAttackRegenTime = 1;
-    [Tooltip("원거리 공격 딜레이")] public float rangedAttackDelay = 0.2f;
+    [Label("점프 파워"), Foldout("Jump State")] public float jumpPower = 10;
+    [Label("최대 점프 시간"), Foldout("Jump State")] public float jumpTimeLimit = 0.2f;
+    [Label("낙하시 중력가속도 보정값"), Foldout("Jump State")] public float gravityAcceleration = 10;
 
     // 플레이어 스텟 관리 클래스입니다.
-    public PlayerStats stat = new();
+    [Label("캐릭터 스텟")] public PlayerStats stat = new();
 
     // 이 아래는 외부 접근용 연결 필드입니다.
-    public bool IsFlight => isFlight;
-
-    // 현재 원거리 공격 가능 횟수입니다.
-    public int AvailableRangedAttack
-    {
-      get => availableRangedAttack;
-      set
-      {
-        var input = Math.Min(maxRangedAttack, Math.Max(value, 0));
-
-        if (input != availableRangedAttack)
-        {
-          availableRangedAttack = input;
-          OnRangedAttackStackChange.Invoke(availableRangedAttack);
-        }
-      }
-    }
+    // 캐릭터가 공중인지 여부입니다.
+    public bool IsFlight => !groundChecker.IsGround;
 
     protected PlayerAnimationState AnimationState
     {
@@ -110,23 +84,32 @@ namespace ToB.Player
         AnimationState = value ? PlayerAnimationState.Run : PlayerAnimationState.Idle;
       }
     }
-
-    /// <summary>
-    /// 공격 모션이 재생되고 있는지 여부를 반환합니다.
-    /// </summary>
-    public bool isAttacking = false; 
     
+    /// <summary>
+    /// 플레이어가 대시하고 있는지 여부입니다.
+    /// </summary>
     public bool IsDashing => animator.GetCurrentAnimatorStateInfo(0).IsName("Dash") || dashCoroutine != null;
+
+    public PlayerMoveDirection MoveDirection
+    {
+      get => moveDirection;
+      set
+      {
+        moveDirection = value;
+        transform.eulerAngles = new Vector3(0, value == PlayerMoveDirection.Left ? 180 : 0, 0);
+      }
+    }
     
     #endregion
     
     #region Binding
-    [Header("Bindings")]
-    
-    [Tooltip("캐릭터 바디")] public Rigidbody2D body;
-    [Tooltip("캐릭터 애니메이터"), SerializeField] protected Animator animator;
-    [Tooltip("캐릭터 스프라이트"), SerializeField] protected SpriteRenderer spriteRenderer;
-    
+
+    [Tooltip("캐릭터 바디"), Foldout("Bindings")] public Rigidbody2D body;
+    [Tooltip("캐릭터 애니메이터"), Foldout("Bindings"), SerializeField] protected Animator animator;
+    [Tooltip("캐릭터 스프라이트"), Foldout("Bindings"), SerializeField] protected SpriteRenderer spriteRenderer;
+    [Foldout("Bindings"), SerializeField] private PlayerGroundChecker groundChecker;
+    [Foldout("Bindings"), SerializeField] private WorldGaugeBar dashGaugeBar, attackGaugeBar;
+
     #endregion
 
     #region Unity Event
@@ -142,11 +125,23 @@ namespace ToB.Player
     
 #endif
 
+    private void Awake()
+    {
+      InitDash();
+      InitAttack();
+    }
+    
     private void FixedUpdate()
     {
-      dashDelay -= Time.deltaTime;
-      isFlight = Math.Abs(body.linearVelocityY) > 0.1f;
+      if (!IsFlight)
+      {
+        if (DashDelay > 0) DashDelay -= Time.deltaTime;
+        else DashDelay = 0;
+      }
 
+      if (MeleeAttackDelay > 0) MeleeAttackDelay -= Time.deltaTime;
+      else MeleeAttackDelay = 0;
+      
       var inDash = animator.GetCurrentAnimatorStateInfo(0).IsName("Dash");
       var enterFallingAnim = body.linearVelocityY < -0.1f && !inWater &&
                           !inDash && !isAttacking;
@@ -161,14 +156,16 @@ namespace ToB.Player
       }
       
       // isMoving이 true일떄 이동합니다.
-      if(isMoving && !inDash)
+      if(isMoving && !inDash &&
+         (IsFlight || !IsAttackMotion))
       {
-        transform.eulerAngles = new Vector3(0, moveDirection == PlayerMoveDirection.Left ? 180 : 0, 0);
-        
         // 최대이동속도 설정 및 이동 구현
         if (Math.Abs(body.linearVelocityX) < maxMoveSpeed)
-          body.AddForce(moveDirection == PlayerMoveDirection.Left ? Vector2.left * moveSpeed : Vector2.right * moveSpeed,
-            ForceMode2D.Impulse);
+        {
+          var dir = moveDirection == PlayerMoveDirection.Left ? Vector2.left : Vector2.right;
+
+          body.AddForce(dir * moveSpeed, ForceMode2D.Impulse);
+        }
       }
       
       // 이동시 마찰력 보정
@@ -197,12 +194,6 @@ namespace ToB.Player
     /// 플레이어의 체력이 변경될 시 호출되며, 매개변수로 현재 체력을 넘겨줍니다.
     /// </summary>
     public UnityEvent<float> OnHpChange => stat.onHpChanged;
-
-    /// <summary>
-    /// 원거리 공격 가능 횟수가 변경될 시 호출되며, 매개변수로 현재 원거리 공격가능 횟수를 넘겨줍니다.
-    /// </summary>
-    // ReSharper disable once InconsistentNaming
-    public UnityEvent<int> OnRangedAttackStackChange = new();
     
     #endregion Event
     
@@ -216,10 +207,9 @@ namespace ToB.Player
     /// Jump()를 호출하여 점프를 시작할 수 있습니다. <br/>
     /// 빠르게 CancelJump()를 호출하여 낮은 점프를 할 수 있습니다.
     /// </summary>
-    [Button]
     public void Jump()
     {
-      if ((inWater || !isFlight) && !IsDashing && jumpCoroutine == null)
+      if ((inWater || !IsFlight) && !IsDashing && jumpCoroutine == null)
       {
         jumpCoroutine = StartCoroutine(JumpCoroutine());
       }
@@ -253,104 +243,6 @@ namespace ToB.Player
     }
     
     #endregion Jump Feature
-    
-    #region Dash Feature
-    
-    public float dashDelay = 0;
-    public float dashCoolTime = 0.5f;
-
-    private Coroutine dashCoroutine = null;
-    /// <summary>
-    /// 현재 플레이어의 방향으로 돌진합니다.
-    /// </summary>
-    public void Dash()
-    {
-      if(dashDelay <= 0 && !IsDashing && body.gravityScale != 0)
-      {
-        dashDelay = 20;
-        CancelJump();
-        StartCoroutine(DashCoroutine());
-      }
-    }
-
-    private IEnumerator DashCoroutine()
-    {
-      animator.SetTrigger(TRIGGER_DASH);
-      var beforeGravityScale = body.gravityScale;
-      body.gravityScale = 0;
-      body.linearVelocity = Vector2.zero;
-      
-      animator.SetInteger(INT_DASH_STATE, 0);
-      var dashTime = 0f;
-      while (dashTime < dashTimeLimit)
-      {
-        body.AddForce((moveDirection == PlayerMoveDirection.Left ? Vector2.left : Vector2.right) *
-                              (moveSpeed * dashMultiplier * Time.deltaTime), ForceMode2D.Impulse);
-        dashTime += Time.deltaTime;
-        yield return new WaitForFixedUpdate();
-      }
-
-      animator.SetInteger(INT_DASH_STATE, 1);
-      body.gravityScale = beforeGravityScale;
-      body.linearVelocityX = 0;
-      body.linearVelocityY = -0.1f;
-      isFlight = true;
-      dashCoroutine = null;
-
-      dashDelay = dashCoolTime;
-    }
-    
-    #endregion Dash Feature
-    
-    #region Attack Feature
-
-    // private Coroutine rangedRegen = null;
-    
-    /// <summary>
-    /// direction 방향으로 공격합니다.
-    /// isMelee를 false로 하여 원거리 공격을 할 수 있습니다.
-    /// </summary>
-    /// <param name="direction">공격 방향입니다.</param>
-    /// <param name="isMelee">근거리/원거리 공격 방향입니다.</param>
-    public void Attack(Vector2 direction, bool isMelee = true)
-    {
-      if (isAttacking) return;
-      // 애니메이션 구현
-      animator.SetTrigger(TRIGGER_ATTACK);
-      var prevMotion = animator.GetInteger(INT_ATTACK_MOTION);
-      prevMotion = prevMotion == 2 ? 0 : prevMotion + 1;
-      animator.SetInteger(INT_ATTACK_MOTION, prevMotion);
-      
-      var dir = direction.x > 0 ? PlayerMoveDirection.Right : PlayerMoveDirection.Left;
-      
-      if (direction.x > 0)
-      {
-          
-      }
-      else
-      {
-          
-      }
-
-      // 원거리 공격 구현
-      if (!isMelee && AvailableRangedAttack > 0)
-      {
-        
-        AvailableRangedAttack--;
-      }
-    }
-
-    /// <summary>
-    /// 이벤트 트리거에요. 호출하지 말아주세요!
-    /// </summary>
-    public void AttackEnd()
-    {
-      
-    }
-    
-    
-    
-    #endregion Attack Feature
 
     /// <summary>
     /// 플레이어에게 방어력을 반영한 체력 피해를 줍니다.<br/>
