@@ -215,12 +215,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3847184785774516576}
-  - component: {fileID: 5736717865246494763}
-  - component: {fileID: 3206554451141578558}
   - component: {fileID: 7880734174615772850}
   - component: {fileID: 301479124839463470}
-  - component: {fileID: 3274380886826274691}
-  - component: {fileID: 1064294524328126663}
   - component: {fileID: 622100316655519153}
   m_Layer: 0
   m_Name: Convict
@@ -249,35 +245,6 @@ Transform:
   - {fileID: 1820079210465582224}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5736717865246494763
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5520806752015663448}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 92d8ad092d081fb43b9b6acd740d4dac, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  enemy: {fileID: 0}
-  knockbackMultiplier: 0
---- !u!114 &3206554451141578558
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5520806752015663448}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 53ab476cda1b5a342a8c9589483b3fc8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  MaxHP: 0
-  currentHP: 0
-  def: 0
 --- !u!114 &7880734174615772850
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -315,79 +282,6 @@ MonoBehaviour:
   velocity: {x: 0, y: 0}
   IsWallLeft: 0
   IsWallRight: 0
---- !u!50 &3274380886826274691
-Rigidbody2D:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5520806752015663448}
-  m_BodyType: 1
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDamping: 0
-  m_AngularDamping: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 0
---- !u!61 &1064294524328126663
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5520806752015663448}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_CompositeOperation: 0
-  m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 1.84}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Size: {x: 1.48, y: 3.82}
-  m_EdgeRadius: 0
 --- !u!114 &622100316655519153
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -400,18 +294,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c372b76af3ebea43971658609159e48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 3274380886826274691}
+  rb: {fileID: 0}
   <Physics>k__BackingField: {fileID: 301479124839463470}
   <Animator>k__BackingField: {fileID: 4290490366270090369}
   <Sprite>k__BackingField: {fileID: 4882132961156259559}
-  <Knockback>k__BackingField: {fileID: 5736717865246494763}
-  <Hitbox>k__BackingField: {fileID: 1064294524328126663}
+  <Knockback>k__BackingField: {fileID: 7130645549115266947}
+  <Hitbox>k__BackingField: {fileID: 1214713482362487397}
   target: {fileID: 0}
   isAlive: 1
   <ReactOnDamage>k__BackingField: 1
   dataSO: {fileID: 11400000, guid: 700a020379bd60b40a7fcdad88fc8945, type: 2}
-  <EnemyKnockBack>k__BackingField: {fileID: 5736717865246494763}
-  <Stat>k__BackingField: {fileID: 3206554451141578558}
+  <EnemyKnockBack>k__BackingField: {fileID: 0}
+  <Stat>k__BackingField: {fileID: 0}
   <SightSensor>k__BackingField: {fileID: 8653749877159154375}
   <FSM>k__BackingField: {fileID: 7880734174615772850}
   <AttackArea>k__BackingField: {fileID: 3199209153419319975}
@@ -564,7 +458,6 @@ GameObject:
   - component: {fileID: 418821679384857430}
   - component: {fileID: 5539719045425469645}
   - component: {fileID: 8653749877159154375}
-  - component: {fileID: 3444012700335225097}
   m_Layer: 8
   m_Name: SightSensor
   m_TagString: Untagged
@@ -645,33 +538,6 @@ MonoBehaviour:
   sightRange: 0
   sightAngle: 0
   targetInRange: {fileID: 0}
---- !u!50 &3444012700335225097
-Rigidbody2D:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6748602560392010484}
-  m_BodyType: 1
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDamping: 0
-  m_AngularDamping: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 0
 --- !u!1 &8540927869753657399
 GameObject:
   m_ObjectHideFlags: 0
@@ -683,6 +549,9 @@ GameObject:
   - component: {fileID: 8066548345571941926}
   - component: {fileID: 1214713482362487397}
   - component: {fileID: 757453454944704831}
+  - component: {fileID: 6221016926876640749}
+  - component: {fileID: 7130645549115266947}
+  - component: {fileID: 2592933941326981617}
   m_Layer: 0
   m_Name: BodyCollider
   m_TagString: Untagged
@@ -768,6 +637,62 @@ MonoBehaviour:
   hittableMask:
     serializedVersion: 2
     m_Bits: 64
+--- !u!50 &6221016926876640749
+Rigidbody2D:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8540927869753657399}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
+--- !u!114 &7130645549115266947
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8540927869753657399}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92d8ad092d081fb43b9b6acd740d4dac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemy: {fileID: 0}
+  knockbackMultiplier: 0
+--- !u!114 &2592933941326981617
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8540927869753657399}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53ab476cda1b5a342a8c9589483b3fc8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MaxHP: 0
+  currentHP: 0
+  def: 0
 --- !u!1 &9193367526908113617
 GameObject:
   m_ObjectHideFlags: 0

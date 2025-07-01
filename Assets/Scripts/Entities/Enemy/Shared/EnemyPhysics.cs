@@ -8,7 +8,6 @@ namespace ToB.Entities
     public class EnemyPhysics : MonoBehaviour
     {
         private Enemy enemy;
-        Rigidbody2D rb;
         [SerializeField] private float skinWidth = 0.02f;
         [SerializeField] BoxCollider2D terrainSensor;
 
@@ -50,7 +49,6 @@ namespace ToB.Entities
         private void Awake()
         {
             enemy = GetComponent<Enemy>();
-            rb = GetComponent<Rigidbody2D>();
 
             terrainLayer = LayerMask.GetMask("Ground");
         }
@@ -108,7 +106,7 @@ namespace ToB.Entities
             {
                 PerformBoxCastMovement();
             }
-            else rb.position += totalVelocity * Time.fixedDeltaTime; 
+            else enemy.transform.position += (Vector3)totalVelocity * Time.fixedDeltaTime; 
         }
 
         private void PerformBoxCastMovement()
@@ -116,7 +114,7 @@ namespace ToB.Entities
             Vector2 castBoxSize = terrainSensor.size;
                 
             Vector2 moveDelta = totalVelocity * Time.fixedDeltaTime;
-            RaycastHit2D hit = Physics2D.BoxCast(rb.position + terrainSensor.offset, castBoxSize, 0, totalVelocity.normalized, moveDelta.magnitude, terrainLayer);
+            RaycastHit2D hit = Physics2D.BoxCast((Vector2)enemy.transform.position + terrainSensor.offset, castBoxSize, 0, totalVelocity.normalized, moveDelta.magnitude, terrainLayer);
 
             if (hit.collider)
             {
@@ -141,11 +139,11 @@ namespace ToB.Entities
                     totalVelocity.y = 0;
                 }
                     
-                rb.MovePosition(rb.position + resultMoveDelta);
+                enemy.transform.position += (Vector3)resultMoveDelta;
             }
             else
             {
-                rb.MovePosition(rb.position + totalVelocity * Time.fixedDeltaTime); // MovePosition 함수 테스트
+                enemy.transform.position += (Vector3)totalVelocity * Time.fixedDeltaTime; // MovePosition 함수 테스트
             }
         }
 
@@ -164,7 +162,7 @@ namespace ToB.Entities
 
             if (hasFixed)
             {
-                rb.position += fixPos - fixDirection * skinWidth; 
+                enemy.transform.position += (Vector3)(fixPos - fixDirection * skinWidth); 
             }
         }
 

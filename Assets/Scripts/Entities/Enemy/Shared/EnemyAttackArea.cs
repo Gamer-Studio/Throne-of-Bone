@@ -35,6 +35,7 @@ namespace ToB.Entities
         {
             if ((attackTargetLayers & 1 << other.gameObject.layer) != 0)
             {
+                Debug.Log("??");
                 other.Damage(damage, owner);
                 other.KnockBack(knockBackForce, knockBackDirection * owner.LookDirectionHorizontal);
             }

@@ -3,8 +3,7 @@ using UnityEngine;
 
 namespace ToB.Entities
 {
-    [RequireComponent(typeof(EnemyKnockback))]
-    [RequireComponent(typeof(EnemyStatHandler))]
+    
     [RequireComponent(typeof(ConvictFSM))]
     public class Convict : Enemy
     {
@@ -41,8 +40,8 @@ namespace ToB.Entities
         }
         private void InitProperties()
         {
-            if(!EnemyKnockBack) EnemyKnockBack = GetComponent<EnemyKnockback>();
-            if(!Stat) Stat = GetComponent<EnemyStatHandler>();
+            if(!EnemyKnockBack) EnemyKnockBack = GetComponentInChildren<EnemyKnockback>();
+            if(!Stat) Stat = GetComponentInChildren<EnemyStatHandler>();
             if(!SightSensor) SightSensor = GetComponentInChildren<EnemySightSensor>();
             if(!AttackArea) AttackArea = GetComponentInChildren <EnemyAttackArea>();
             if (!AttackSensor) AttackSensor = GetComponentInChildren<EnemySimpleSensor>();

@@ -34,7 +34,7 @@ namespace ToB.Entities
         
         protected virtual void Awake()
         {
-            if(!Rb) rb = GetComponent<Rigidbody2D>();
+            if(!Rb) rb = GetComponentInChildren<Rigidbody2D>();
             if(!Physics) Physics = GetComponent<EnemyPhysics>();
             if(!Animator) Animator = GetComponentInChildren<Animator>();
             if(!Sprite) Sprite = GetComponent<SpriteRenderer>();
@@ -44,7 +44,7 @@ namespace ToB.Entities
 
         protected virtual void Reset()
         {
-            rb = GetComponent<Rigidbody2D>();
+            rb = GetComponentInChildren<Rigidbody2D>();
             Physics = GetComponent<EnemyPhysics>();
             Animator = GetComponentInChildren<Animator>();
             Sprite = GetComponentInChildren<SpriteRenderer>();
@@ -88,7 +88,6 @@ namespace ToB.Entities
             if(!target) return Vector2.zero;
             Vector2 posDiff = target.position - transform.position;
             
-            Debug.Log(target.position + " - " + transform.position + " = " + posDiff);
             return posDiff.normalized;
         }
         

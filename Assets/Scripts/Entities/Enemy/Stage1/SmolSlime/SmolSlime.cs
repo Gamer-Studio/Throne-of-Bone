@@ -5,8 +5,6 @@ using UnityEngine;
 
 namespace ToB.Entities
 {
-    [RequireComponent(typeof(EnemyKnockback))]
-    [RequireComponent(typeof(EnemyStatHandler))]
     [RequireComponent(typeof(SmolSlimeFSM))]
     public class SmolSlime : Enemy
     {
@@ -39,8 +37,8 @@ namespace ToB.Entities
 
         private void InitProperties()
         {
-            if (!EnemyKnockBack) EnemyKnockBack = GetComponent<EnemyKnockback>();
-            if (!Stat) Stat = GetComponent<EnemyStatHandler>();
+            if (!EnemyKnockBack) EnemyKnockBack = GetComponentInChildren<EnemyKnockback>();
+            if (!Stat) Stat = GetComponentInChildren<EnemyStatHandler>();
             if (!SightSensor) SightSensor = GetComponentInChildren<EnemySightSensor>();
             if (!EnemyBody) EnemyBody = GetComponentInChildren<EnemyBody>();
             

@@ -4,7 +4,6 @@ using UnityEngine;
 namespace ToB.Entities
 {
     [RequireComponent(typeof(CircleCollider2D))]
-    [RequireComponent(typeof(Rigidbody2D))]
     public class EnemySightSensor : MonoBehaviour
     {
         private Enemy enemy;
