@@ -12,7 +12,7 @@ namespace ToB.Entities
 
         [SerializeField] private LayerMask mask;
         [SerializeField] private Color gizmoColor;
-        public bool PlayerEntered { get; private set; }
+        [SerializeField] public bool PlayerEntered;
 
         public event Action<GameObject> OnPlayerEntered;
 

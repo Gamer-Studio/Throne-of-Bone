@@ -48,7 +48,7 @@ Grid:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 112934352110613304}
   m_Enabled: 1
-  m_CellSize: {x: 2, y: 2, z: 0}
+  m_CellSize: {x: 1, y: 1, z: 0}
   m_CellGap: {x: 0, y: 0, z: 0}
   m_CellLayout: 0
   m_CellSwizzle: 0
@@ -108,7 +108,7 @@ Transform:
   m_GameObject: {fileID: 842764361558993969}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 33, y: -37.26, z: 0}
+  m_LocalPosition: {x: 16.4, y: -19.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -132,6 +132,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   gizmoColor: {r: 1, g: 0.42698693, b: 0, a: 0.28235295}
+  PlayerEntered: 0
 --- !u!1 &1494825655686994400
 GameObject:
   m_ObjectHideFlags: 0
@@ -178,7 +179,7 @@ GameObject:
   - component: {fileID: 4483626031234596909}
   - component: {fileID: 645538489055461702}
   - component: {fileID: 3293928397389326260}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Platform
   m_TagString: Ground
   m_Icon: {fileID: 0}
@@ -3899,7 +3900,7 @@ TilemapRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 2
   m_ChunkSize: {x: 32, y: 32, z: 32}
-  m_ChunkCullingBounds: {x: 0.5, y: 0.5, z: 0}
+  m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
   m_MaxChunkCount: 16
   m_MaxFrameAge: 16
   m_SortOrder: 2
@@ -4132,7 +4133,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -96, y: 5, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8325235608250486772}
@@ -10348,7 +10349,7 @@ TilemapRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}
-  m_ChunkCullingBounds: {x: 0.5, y: 0.5, z: 0}
+  m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
   m_MaxChunkCount: 16
   m_MaxFrameAge: 16
   m_SortOrder: 2
@@ -10389,7 +10390,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 30, y: -20}
+  m_Offset: {x: 15, y: -10}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -10399,7 +10400,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 60, y: 40}
+  m_Size: {x: 30, y: 20}
   m_EdgeRadius: 0
 --- !u!114 &580206045104878017
 MonoBehaviour:
@@ -10876,7 +10877,7 @@ TilemapRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 1
   m_ChunkSize: {x: 32, y: 32, z: 32}
-  m_ChunkCullingBounds: {x: 0.5, y: 0.5, z: 0}
+  m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
   m_MaxChunkCount: 16
   m_MaxFrameAge: 16
   m_SortOrder: 2
@@ -11253,7 +11254,7 @@ TilemapRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 3
   m_ChunkSize: {x: 32, y: 32, z: 32}
-  m_ChunkCullingBounds: {x: 0.5, y: 0.5, z: 0}
+  m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
   m_MaxChunkCount: 16
   m_MaxFrameAge: 16
   m_SortOrder: 2
@@ -11270,6 +11271,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3831821988398505725}
   - component: {fileID: 4380275465020822079}
+  - component: {fileID: 7208241333997899627}
   m_Layer: 0
   m_Name: BossroomLocation
   m_TagString: Untagged
@@ -11286,7 +11288,7 @@ Transform:
   m_GameObject: {fileID: 8987943110641065743}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 33, y: -21.1, z: 0}
+  m_LocalPosition: {x: 16.4, y: -10.6, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -11310,6 +11312,53 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   gizmoColor: {r: 1, g: 0, b: 0, a: 0.28235295}
+  PlayerEntered: 0
+--- !u!61 &7208241333997899627
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8987943110641065743}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 23, y: 11}
+  m_EdgeRadius: 0
 --- !u!1001 &4246867093984909717
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11340,11 +11389,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5289137679260194401, guid: bf61dc359a881fc41823c4c99309ea43, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 133.65
+      value: 219.7
       objectReference: {fileID: 0}
     - target: {fileID: 5289137679260194401, guid: bf61dc359a881fc41823c4c99309ea43, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -36.85
+      value: -40.2
       objectReference: {fileID: 0}
     - target: {fileID: 5289137679260194401, guid: bf61dc359a881fc41823c4c99309ea43, type: 3}
       propertyPath: m_LocalPosition.z
