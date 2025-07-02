@@ -1,10 +1,8 @@
 using System.Collections;
-using System.Collections.Generic;
 using ToB.Utils.Singletons;
-using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace ToB.Scenes.Intro
+namespace ToB.UI
 {
     public enum SceneName
     {
@@ -141,24 +139,6 @@ namespace ToB.Scenes.Intro
                 return isThereActiveUI = false;
             }
         }
-
-        /*
-         public void CancelUI(InputAction.CallbackContext context)
-         
-        {
-            Debug.Log("UIManager - ESC 인식");
-            CloseActiveUI();
-        }
-
-        private void CloseActiveUI()
-        {
-            if (IsThereOverlayUI())
-            {
-                wideMapUI.gameObject.SetActive(false);
-                mainBookUI.gameObject.SetActive(false);
-            }
-        }
-        */
         #endregion
             
 

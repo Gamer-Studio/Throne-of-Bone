@@ -1,12 +1,12 @@
 using System;
-using System.Collections;
 using TMPro;
-using ToB.Player; 
+using ToB.Player;
+using ToB.Utils;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-namespace ToB.Utils.UI
+namespace ToB.UI
 {
   public class UIGaugeBar : MonoBehaviour
   {
@@ -89,7 +89,6 @@ namespace ToB.Utils.UI
         {
           Debug.Log("PlayerCharacter is null");
         }
-        Debug.Log("HPBar Init end");
       }
     }
    /*

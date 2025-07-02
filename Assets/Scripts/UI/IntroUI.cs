@@ -2,9 +2,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
-namespace ToB.Scenes.Intro
+namespace ToB.UI
 {
     public class IntroUI : MonoBehaviour
     {
@@ -56,7 +55,6 @@ namespace ToB.Scenes.Intro
         {
             if (!context.performed) return;
 
-            Debug.Log("ESC 입력 감지됨");
 
             if (uiStack.Count > 0)
                 ClosePanel();
@@ -113,7 +111,7 @@ namespace ToB.Scenes.Intro
         public void StartGame()
         {
             CloseAllPanels();
-            SceneManager.LoadScene("Stage");
+            SceneManager.LoadScene("Stage_Manager");
             Debug.Log("게임 시작");
         }
         

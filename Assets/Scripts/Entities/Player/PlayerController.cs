@@ -1,6 +1,7 @@
 using System;
 using Cinemachine;
 using NaughtyAttributes;
+using ToB.Entities.Obstacle;
 using ToB.Utils;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -104,6 +105,44 @@ namespace ToB.Player
     public void RangedAttack(InputAction.CallbackContext context)
     {
       isRangedAttacking = context.performed;
+    }
+    
+    #endregion
+    
+    #region Interaction
+    
+    [SerializeField] private float interactRadius = 1f;
+    [SerializeField] private LayerMask interactableMask;
+
+    public void Interaction(InputAction.CallbackContext context)
+    {
+      if (context.performed) Interact();
+    }
+
+    private void Interact()
+    {
+      Collider2D[] hits = Physics2D.OverlapCircleAll(character.transform.position, interactRadius, interactableMask);
+      IInteractable nearest = null;
+      float nearestDistance = Mathf.Infinity;
+
+      foreach (var hit in hits)
+      {
+        var interactable = hit.GetComponent<IInteractable>();
+        if (interactable != null && interactable.IsInteractable)
+        {
+          float distance = Vector2.Distance(character.transform.position, hit.transform.position);
+          if (distance < nearestDistance)
+          {
+            nearest = interactable;
+            nearestDistance = distance;
+          }
+        }
+      }
+
+      if (nearest != null)
+      {
+        nearest.Interact();
+      }
     }
     
     #endregion

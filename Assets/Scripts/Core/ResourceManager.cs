@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using ToB.IO;
 using ToB.Utils.Singletons;
@@ -14,6 +15,7 @@ namespace ToB.Core
         // 싱글톤 선언 : Singleton<ResourceManager>.Instance.~~로 필요 시 호출
         private int playerGold;
         private int playerMana;
+        
 
         private void OnEnable()
         {
@@ -37,6 +39,7 @@ namespace ToB.Core
             //if (세이브파일에서 시작한 게 아니면 0원 넣기: 세이브/로드 방식을 보고 조건 거는 방식을 결정하여 Init할 예정)
             PlayerGold = 0;
             PlayerMana = 0;
+            MasterKey = 0;
         }
         public int PlayerGold
         { 
@@ -133,6 +136,45 @@ namespace ToB.Core
             UsedMana += requiredMana;
             Debug.Log($"{requiredMana} 마나결정을 사용했습니다");
         }
+        #region Keys
+        
+        //public Dictionary<string, string> IndexedKey = new();
+        // 추후 특정 문에만 맞는 키가 필요한 경우 로직 추가 - 딕셔너리 혹은 리스트?
+
+        private int masterkey;
+        public UnityEvent<int> onMasterKeyChanged = new();
+
+        public int MasterKey
+        {
+            get => masterkey;
+
+            set
+            {
+                masterkey = value;
+                onMasterKeyChanged?.Invoke(masterkey);
+            }
+        }
+
+        public void GiveMasterKeyToPlayer(int value = 1)
+        {
+            MasterKey += value;
+        }
+        
+        public bool IsPlayerHaveEnoughMasterKey(int requiredKey = 1)
+        {
+            return MasterKey >= requiredKey;
+        }
+
+        public void UseMasterKey(int requiredKey = 1)
+        {
+            MasterKey -= requiredKey;
+        }
+        
+        
+        
+        #endregion
+        
+        
         #region DeathPenelty
         /* 시체 오브젝트 클래스 만들어지면 그때 주석 해제 (Corpse)
          
@@ -172,13 +214,15 @@ namespace ToB.Core
         {
             PlayerMana = json["playerMana"].Value<int>();
             PlayerGold = json["playerGold"].Value<int>();
+            MasterKey = json["masterKey"].Value<int>();
         }
 
         public JObject ToJson()
         {
             return new JObject(
                 new JProperty("playerMana", PlayerMana),
-                new JProperty("playerGold", PlayerGold)
+                new JProperty("playerGold", PlayerGold),
+                new JProperty("masterKey", MasterKey)
             );
         }
         #endregion
