@@ -17,7 +17,7 @@ namespace ToB
             playerMask = LayerMask.GetMask("Player");
         }
 
-        private void OnTriggerStay2D(Collider2D other)
+        private void OnTriggerEnter2D(Collider2D other)
         {
             if ((playerMask & 1 << other.gameObject.layer) != 0)
             {

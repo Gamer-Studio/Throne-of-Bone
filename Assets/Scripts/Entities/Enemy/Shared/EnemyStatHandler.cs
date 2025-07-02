@@ -53,6 +53,7 @@ namespace ToB.Entities
             {
                 yield return null;
                 remainedTime -= Time.deltaTime;
+                if (remainedTime < 0) remainedTime = 0;
                 enemy.Sprite.material.SetFloat("_Alpha", remainedTime / duration);
             }
         }
