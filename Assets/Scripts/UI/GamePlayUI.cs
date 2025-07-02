@@ -1,8 +1,8 @@
 using ToB.Core;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.UI;   
-namespace ToB.Scenes.Intro
+
+namespace ToB.UI
 {
     public class GamePlayUI:MonoBehaviour
     {
@@ -10,7 +10,8 @@ namespace ToB.Scenes.Intro
         [SerializeField] public TMPro.TextMeshProUGUI CurrentGoldText;
         [SerializeField] public TMPro.TextMeshProUGUI CurrentManaText;
         [SerializeField] public GameObject miniMapPanel;
-        
+        [SerializeField] public GameObject KeyUI;
+        [SerializeField] public TMPro.TextMeshProUGUI KeyText;
         private void Awake()
         {
             UIManager.Instance.Init(this);
@@ -18,8 +19,12 @@ namespace ToB.Scenes.Intro
             miniMapPanel.SetActive(true);
             ResourceManager.Instance.onGoldChanged.AddListener(UpdateGoldText);
             ResourceManager.Instance.onManaChanged.AddListener(UpdateManaText);
+            ResourceManager.Instance.onMasterKeyChanged.AddListener(UpdateKeyText);
             InitText();
         }
+
+        
+
         #region TestButton
         public void TestGoldAddButton()
         {
@@ -42,7 +47,8 @@ namespace ToB.Scenes.Intro
         private void InitText()
         {
             UpdateGoldText(ResourceManager.Instance.PlayerGold);
-            UpdateManaText(ResourceManager.Instance.PlayerMana);       
+            UpdateManaText(ResourceManager.Instance.PlayerMana);
+            UpdateKeyText(ResourceManager.Instance.MasterKey);
         }
 
         private void UpdateGoldText(int gold)
@@ -53,6 +59,19 @@ namespace ToB.Scenes.Intro
         private void UpdateManaText(int mana)
         {
             CurrentManaText.text = $"{mana.ToString()} M";
+        }
+        
+        private void UpdateKeyText(int keyAmount)
+        {
+            KeyText.text = $"{keyAmount.ToString()}";
+            if (keyAmount > 0)
+            {
+                KeyUI.SetActive(true);
+            }
+            else
+            {
+                KeyUI.SetActive(false);
+            }
         }
 
         public void ClearActiveUI(InputAction.CallbackContext context)

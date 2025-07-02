@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-namespace ToB.Scenes.Intro
+namespace ToB.UI
 {
     public class MainBookUI:MonoBehaviour
     {

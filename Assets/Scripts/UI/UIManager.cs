@@ -1,10 +1,8 @@
 using System.Collections;
-using System.Collections.Generic;
 using ToB.Utils.Singletons;
-using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace ToB.Scenes.Intro
+namespace ToB.UI
 {
     public enum SceneName
     {

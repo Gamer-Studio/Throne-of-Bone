@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace ToB.Scenes.Intro
+namespace ToB.UI
 {
     public class WideMapUI:MonoBehaviour
     {

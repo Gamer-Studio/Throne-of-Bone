@@ -1,10 +1,10 @@
+using System.Collections.Generic;
 using ToB.Player;
 using UnityEngine;
-using UnityEngine.UI;
-using System.Collections.Generic;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
-namespace ToB.Scenes.Intro
+namespace ToB.UI
 {
     public class RangeAtkCountUI : MonoBehaviour
     {
