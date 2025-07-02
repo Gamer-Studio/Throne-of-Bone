@@ -57,6 +57,7 @@ namespace ToB.Scenes.Stage
           var collider = obj.AddComponent<BoxCollider2D>();
           collider.size = box.size;
           collider.transform.localScale = collider.transform.localScale.X(v => v * roomContainer.localScale.x).Y(v => v * roomContainer.localScale.y);
+
           collider.offset = box.offset;
           collider.compositeOperation = Collider2D.CompositeOperation.Merge;
           
@@ -68,6 +69,8 @@ namespace ToB.Scenes.Stage
       {
         confiner.InvalidateCache();
       }
+      if (Camera.main) confiner.ValidateCache(Camera.main.orthographicSize);
+
     }
 
     public void RemoveCameraCollision(Collider2D coll)
@@ -77,7 +80,6 @@ namespace ToB.Scenes.Stage
         Destroy(obj);
         loadedColliders.Remove(coll);
       }
-
       if (Camera.main)
       {
         confiner.InvalidateCache();
