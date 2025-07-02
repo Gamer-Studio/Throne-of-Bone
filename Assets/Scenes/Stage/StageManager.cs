@@ -1,6 +1,7 @@
 using Cinemachine;
 using NaughtyAttributes;
 using ToB.Player;
+using ToB.Utils;
 using ToB.Utils.Singletons;
 using ToB.Worlds;
 using UnityEngine;
@@ -17,6 +18,7 @@ namespace ToB.Scenes.Stage
     [Tooltip("시네머신 Confiner 용 콜라이더입니다."), SerializeField] private CompositeCollider2D confinerBorder;
     [Label("로딩된 Confiner 콜라이더 목록"), SerializeField] private SerializableDictionary<Collider2D, GameObject> loadedColliders = new();
     [SerializeField] private CinemachineConfiner2D confiner;
+    [SerializeField] private Transform roomContainer;
     
     #region Unity Event
     
@@ -54,6 +56,7 @@ namespace ToB.Scenes.Stage
         {
           var collider = obj.AddComponent<BoxCollider2D>();
           collider.size = box.size;
+          collider.transform.localScale = collider.transform.localScale.X(v => v * roomContainer.localScale.x).Y(v => v * roomContainer.localScale.y);
           collider.offset = box.offset;
           collider.compositeOperation = Collider2D.CompositeOperation.Merge;
           
@@ -61,7 +64,10 @@ namespace ToB.Scenes.Stage
         }
       }
       
-      if (Camera.main) confiner.ValidateCache(Camera.main.orthographicSize);
+      if (Camera.main)
+      {
+        confiner.InvalidateCache();
+      }
     }
 
     public void RemoveCameraCollision(Collider2D coll)
@@ -71,8 +77,11 @@ namespace ToB.Scenes.Stage
         Destroy(obj);
         loadedColliders.Remove(coll);
       }
-      
-      if (Camera.main) confiner.ValidateCache(Camera.main.orthographicSize);
+
+      if (Camera.main)
+      {
+        confiner.InvalidateCache();
+      }
     }
     
     #endregion
