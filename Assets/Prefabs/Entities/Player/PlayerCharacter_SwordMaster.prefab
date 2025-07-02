@@ -207,9 +207,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animationState: 0
-  moveSpeed: 4
+  moveSpeed: 5
   maxMoveSpeed: 12
-  moveResistanceForce: 1
+  moveResistanceForce: 2
   moveDirection: 0
   isMoving: 0
   immuneTime: 0
@@ -227,9 +227,9 @@ MonoBehaviour:
     currentHp: 100
     def: 0
     atk: 10
-  jumpPower: 30
-  jumpTimeLimit: 0.2
-  gravityAcceleration: 6
+  jumpPower: 21
+  jumpTimeLimit: 0.1
+  gravityAcceleration: 7
   body: {fileID: 1096863716109666581}
   animator: {fileID: 6425824100770376572}
   spriteRenderer: {fileID: 9050726402138752261}
@@ -259,7 +259,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   dashSpeed: 50
-  dashTimeLimit: 0.25
+  dashTimeLimit: 0.15
   dashCoolTime: 0.5
   inWater: 0
   dashImmuneStartTime: 0
