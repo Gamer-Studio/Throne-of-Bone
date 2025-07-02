@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace ToB.Worlds
 {
+  [AddComponentMenu("Stage/Object/Water")]
   public class WaterObject : MonoBehaviour
   {
     [Tooltip("해당 물 오브젝트가 주는 피해량입니다.")] public int damage = 1;
