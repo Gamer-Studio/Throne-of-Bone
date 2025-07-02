@@ -5,8 +5,6 @@ using UnityEngine;
 
 namespace ToB.Entities
 {
-    [RequireComponent(typeof(EnemyKnockback))]
-    [RequireComponent(typeof(EnemyStatHandler))]
     [RequireComponent(typeof(SmolSlimeFSM))]
     public class SmolSlime : Enemy
     {
@@ -18,7 +16,7 @@ namespace ToB.Entities
         [field:SerializeField] public EnemyStatHandler Stat { get; private set; }
         [field:SerializeField] public SmolSlimeFSM FSM {get; private set;}
         [field:SerializeField] public EnemySightSensor SightSensor {get; private set;}
-        
+        [field:SerializeField] public EnemyBody EnemyBody { get; private set; }
         
         protected override void Awake()
         {
@@ -39,14 +37,15 @@ namespace ToB.Entities
 
         private void InitProperties()
         {
-            EnemyKnockBack = GetComponent<EnemyKnockback>();
-            Stat = GetComponent<EnemyStatHandler>();
-            SightSensor = GetComponentInChildren<EnemySightSensor>();
+            if (!EnemyKnockBack) EnemyKnockBack = GetComponentInChildren<EnemyKnockback>();
+            if (!Stat) Stat = GetComponentInChildren<EnemyStatHandler>();
+            if (!SightSensor) SightSensor = GetComponentInChildren<EnemySightSensor>();
+            if (!EnemyBody) EnemyBody = GetComponentInChildren<EnemyBody>();
             
             EnemyKnockBack.Init(this, DataSO.KnockbackApplier);
             Stat.Init(this, DataSO.HP, 0);
             SightSensor.Init(this, DataSO.SightRange, DataSO.SightAngle);
-            bodyDamage = DataSO.ATK;
+            EnemyBody.Init(this, DataSO.ATK);
         }
 
 

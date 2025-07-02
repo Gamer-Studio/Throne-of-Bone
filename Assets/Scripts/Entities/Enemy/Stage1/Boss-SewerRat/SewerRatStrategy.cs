@@ -49,9 +49,9 @@ namespace ToB.Entities
                 return;
             }
             
-            digPattern = new SewerRatDigPattern(enemy, this, PatternEnd);
-            scratchPattern = new SewerRatScratchPattern(enemy, this, PatternEnd);
-            toxicBonePattern = new SewerRatToxicBonePattern(enemy, this, PatternEnd);
+            digPattern = new SewerRatDigPattern(this, PatternEnd);
+            scratchPattern = new SewerRatScratchPattern(this, PatternEnd);
+            toxicBonePattern = new SewerRatToxicBonePattern(this, PatternEnd);
             
             ScratchEffect = GetComponentInChildren<EnemyAttackArea>();
             ScratchEffect.gameObject.SetActive(false);

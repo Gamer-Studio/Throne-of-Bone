@@ -4,9 +4,10 @@ using UnityEngine;
 
 namespace ToB.Entities
 {
+    [RequireComponent(typeof(Rigidbody2D))]
     public class EnemyAttackArea : MonoBehaviour
     {
-        [SerializeField] private MonoBehaviour owner;
+        [SerializeField] private Enemy owner;
         [SerializeField] private float damage;
         [SerializeField] private float knockBackForce;
         
@@ -15,15 +16,17 @@ namespace ToB.Entities
         
         [SerializeField] private LayerMask attackTargetLayers;
 
-
-        private void Awake()
+        private Rigidbody2D rb;
+        
+        private void Reset()
         {
+            rb.bodyType = RigidbodyType2D.Kinematic;
             attackTargetLayers = LayerMask.GetMask("Player");
         }
 
-        public void Init(MonoBehaviour character, float damage, float knockBackForce, Vector2 knockBackDirection)
+        public void Init(Enemy character, float damage, float knockBackForce, Vector2 knockBackDirection)
         {
-            this.owner = character;
+            owner = character;
             this.damage = damage;
             this.knockBackForce = knockBackForce;
             this.knockBackDirection = knockBackDirection;
@@ -32,8 +35,9 @@ namespace ToB.Entities
         {
             if ((attackTargetLayers & 1 << other.gameObject.layer) != 0)
             {
+                Debug.Log("??");
                 other.Damage(damage, owner);
-                other.KnockBack(knockBackForce, knockBackDirection);
+                other.KnockBack(knockBackForce, knockBackDirection * owner.LookDirectionHorizontal);
             }
         }
     }

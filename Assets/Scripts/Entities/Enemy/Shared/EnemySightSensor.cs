@@ -35,6 +35,7 @@ namespace ToB.Entities
             playerMask = LayerMask.GetMask("Player");       
             rayMask = LayerMask.GetMask("Player", "Ground");
             
+            circleCollider.isTrigger = true;
         }
 
         public void Init(Enemy enemy, float sightRange, float sightAngle)

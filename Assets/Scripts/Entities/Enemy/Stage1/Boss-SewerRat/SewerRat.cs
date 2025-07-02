@@ -6,8 +6,6 @@ using UnityEngine;
 
 namespace ToB.Entities
 {
-    // 보스별 개성적인 연출 특성상 클래스 명이 SewerRat이 될 가능성이 높습니다
-    [RequireComponent(typeof(EnemyKnockback))]
     public class SewerRat : Enemy
     {
         [field: SerializeField] public SewerRatSO DataSO { get; private set; }
@@ -17,6 +15,9 @@ namespace ToB.Entities
         
         [SerializeField] private ParticleSystem deathBleed;
         [SerializeField] private ParticleSystem deathExplode;
+        [field:SerializeField] public EnemyBody EnemyBody { get; private set; }
+
+        [SerializeField] private GameObject specialPrefab;
 
         protected override void Awake()
         {
@@ -27,7 +28,10 @@ namespace ToB.Entities
                 Debug.LogWarning("플레이어를 직접 참조하거나 시스템을 마련해야 합니다");
             }
 
-            if (!Knockback) Knockback = GetComponent<EnemyKnockback>();
+            if (!stat) stat = GetComponentInChildren<EnemyStatHandler>();
+            if (!Knockback) Knockback = GetComponentInChildren<EnemyKnockback>();
+            if (!EnemyBody) EnemyBody = GetComponentInChildren<EnemyBody>();
+            
             deathBleed.gameObject.SetActive(false);
             deathExplode.gameObject.SetActive(false);
         }
@@ -37,6 +41,7 @@ namespace ToB.Entities
             Strategy.Init();
             Knockback.Init(this, DataSO.KnockbackMultiplier);
             stat.Init(this, DataSO.HP, DataSO.DEF);
+            EnemyBody.Init(this, DataSO.BodyDamage);
         }
 
         protected override void Die()
@@ -67,7 +72,8 @@ namespace ToB.Entities
             transform.DOKill();
             Destroy(gameObject);
             deathExplode.gameObject.SetActive(true);
-
+            Instantiate(specialPrefab, transform.position + new Vector3(0,1), Quaternion.identity);
+            
             Destroy(deathBleed.gameObject, 5f);
             Destroy(deathExplode.gameObject, 5f);
         }

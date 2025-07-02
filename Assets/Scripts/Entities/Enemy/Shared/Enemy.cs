@@ -6,8 +6,6 @@ using UnityEngine;
 namespace ToB.Entities
 {
     [RequireComponent(typeof(EnemyPhysics))]
-    [RequireComponent(typeof(Rigidbody2D))]
-    [RequireComponent(typeof(BoxCollider2D))]
     public abstract class Enemy : MonoBehaviour
     {
         [Header("기본 참조")]      
@@ -23,62 +21,60 @@ namespace ToB.Entities
         
         public bool IsGrounded => Physics.IsGrounded();
         
-        public bool IsTargetLeft => GetTargetDirection().x < 0;
+        public bool IsTargetLeft => target && GetTargetDirection().x < 0;
         public Vector2 LookDirectionHorizontal => transform.localScale.x < 0 ? Vector2.left : Vector2.right;
         
         [Header("타겟")]
         public Transform target;
         
         [Header("속성")]
-        public float bodyDamage;    // 충돌 시 데미지. 적군 상태에 따라 너무 유동적이기 쉬워서 public으로 함
-        [SerializeField] LayerMask hittableMask;
         [SerializeField] private bool isAlive;
+        [field:SerializeField] public bool ReactOnDamage { get; private set; }
         public bool IsAlive => isAlive;
         
         protected virtual void Awake()
         {
-            hittableMask = LayerMask.GetMask("Player");
-            if(!Rb) rb = GetComponent<Rigidbody2D>();
+            if(!Rb) rb = GetComponentInChildren<Rigidbody2D>();
             if(!Physics) Physics = GetComponent<EnemyPhysics>();
             if(!Animator) Animator = GetComponentInChildren<Animator>();
             if(!Sprite) Sprite = GetComponent<SpriteRenderer>();
-            if(!Hitbox) Hitbox = GetComponent<BoxCollider2D>();
             
             isAlive = true;
         }
 
         protected virtual void Reset()
         {
-            hittableMask = LayerMask.GetMask("Player");
-            rb = GetComponent<Rigidbody2D>();
+            rb = GetComponentInChildren<Rigidbody2D>();
             Physics = GetComponent<EnemyPhysics>();
             Animator = GetComponentInChildren<Animator>();
-            Sprite = GetComponent<SpriteRenderer>();
-            Hitbox = GetComponent<BoxCollider2D>();
+            Sprite = GetComponentInChildren<SpriteRenderer>();
+
+            rb.bodyType = RigidbodyType2D.Kinematic;
+            Hitbox.isTrigger = true;
             
             isAlive = true;
         }
 
-        public void LookTarget()
+        public void OnTakeDamage(MonoBehaviour sender)
+        {
+            if (!sender || !ReactOnDamage) return;
+            bool isSenderLeft = sender.transform.position.x < transform.position.x;
+            bool isLookingLeft = LookDirectionHorizontal == Vector2.left;
+            
+            if (isSenderLeft != isLookingLeft)
+                FlipBody();
+        }
+
+        private void FlipBody()
         {
             Vector3 localScale = transform.localScale;
-            localScale.x = LookDirectionHorizontal.x;
+            localScale.x *= -1;
             transform.localScale = localScale;
         }
         
         protected virtual void Die()
         {
             isAlive = false;
-        }
-        
-        private void OnTriggerStay2D(Collider2D other)
-        {
-            if (!isAlive) return;
-            if ((hittableMask & (1 << other.gameObject.layer)) != 0)
-            {
-                other.Damage(bodyDamage, this);
-                other.KnockBack(5, new Vector2(transform.localScale.x, 0.5f));
-            }
         }
 
         public float GetTargetDistanceSQR()
@@ -89,7 +85,9 @@ namespace ToB.Entities
         
         public Vector2 GetTargetDirection()
         {
+            if(!target) return Vector2.zero;
             Vector2 posDiff = target.position - transform.position;
+            
             return posDiff.normalized;
         }
         

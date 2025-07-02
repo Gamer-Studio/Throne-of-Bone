@@ -5,12 +5,12 @@ namespace ToB.Entities
 {
     public class SewerRatPattern:EnemyPattern
     {
-        protected readonly SewerRatStrategy strategy;
+        protected readonly SewerRatStrategy ratStrategy;
         protected SewerRat sewerRat;
 
-        protected SewerRatPattern(Enemy enemy, SewerRatStrategy strategy, Action EndCallback) : base(enemy, EndCallback)
+        protected SewerRatPattern(EnemyStrategy strategy, Action EndCallback) : base(strategy, EndCallback)
         {
-            this.strategy = strategy;
+            this.ratStrategy = strategy as SewerRatStrategy;
             sewerRat = enemy as SewerRat;
         }
 
