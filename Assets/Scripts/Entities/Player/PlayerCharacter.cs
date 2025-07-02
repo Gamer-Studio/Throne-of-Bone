@@ -15,6 +15,7 @@ namespace ToB.Player
   {
     private static readonly int INT_STATE = Animator.StringToHash("State");
     private static readonly int BOOL_IMMUNE = Animator.StringToHash("Immune");
+    private static readonly int BOOL_ISFLIGHT = Animator.StringToHash("IsFlight");
     private static readonly int BOOL_FALLING = Animator.StringToHash("Falling");
     private static readonly int TRIGGER_FALL = Animator.StringToHash("Fall");
     private static readonly int TRIGGER_JUMP = Animator.StringToHash("Jump");
@@ -136,6 +137,14 @@ namespace ToB.Player
     {
       InitDash();
       InitAttack();
+
+      if (groundChecker)
+      {
+        groundChecker.onLanding.AddListener(() =>
+        {
+          animator.SetBool(BOOL_ISFLIGHT, false);
+        });
+      }
     }
     
     private void FixedUpdate()
@@ -167,6 +176,10 @@ namespace ToB.Player
       {
         if (DashDelay > 0) DashDelay -= Time.deltaTime;
         else DashDelay = 0;
+      }
+      else
+      {
+        animator.SetBool(BOOL_ISFLIGHT, true);
       }
 
       if (MeleeAttackDelay > 0) MeleeAttackDelay -= Time.deltaTime;

@@ -17,7 +17,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1208736285591260195
 Transform:
   m_ObjectHideFlags: 0
@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 2659842704424178094}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.4491, y: 1.4646, z: 0}
+  m_LocalPosition: {x: -1.82, y: 0.12, z: 0}
   m_LocalScale: {x: 1.0778105, y: 0.4705827, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -67,7 +67,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: -0.022551537, y: 1.0503781}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -77,7 +77,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 5.12, y: 5.13}
+  m_Size: {x: 3.481049, y: 3.029244}
   m_EdgeRadius: 0
 --- !u!114 &8508471721680391115
 MonoBehaviour:
@@ -498,6 +498,9 @@ MonoBehaviour:
       m_Calls: []
   <IsGround>k__BackingField: 0
   grounds: []
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 128
 --- !u!1 &4297988166282513549
 GameObject:
   m_ObjectHideFlags: 0

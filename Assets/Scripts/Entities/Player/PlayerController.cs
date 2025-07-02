@@ -100,7 +100,7 @@ namespace ToB.Player
     /// </summary>
     public void MeleeAttack(InputAction.CallbackContext context)
     {
-      if (!character.IsFalling || !context.performed)
+      if (!character.IsFlight || !context.performed)
       {
         isMeleeAttacking = context.performed;
         return;
@@ -125,7 +125,6 @@ namespace ToB.Player
       
       if (closest == Vector2.down)
       {
-        Debug.Log("Down");
         character.Attack(direction, true, true);
       }
       else
