@@ -108,7 +108,11 @@ namespace ToB.Player
 
       isAttacking = true;
       
-      if (closest != Vector2.down)
+      if(closest == Vector2.down && IsFlight)
+      {
+        attackCoroutine = StartCoroutine(AttackWaiter(direction, 0.1f));
+      }
+      else
       {
         var pam = isMelee ? prevAttackMotion : 3;
         attackCoroutine = StartCoroutine(AttackWaiter(direction, attackDelay[pam + 1]));
@@ -116,8 +120,6 @@ namespace ToB.Player
       
         prevAttackMotion = prevAttackMotion == 2 ? 0 : prevAttackMotion + 1;
       }
-      else 
-        attackCoroutine = StartCoroutine(AttackWaiter(direction, 0.1f));
       
       animator.SetTrigger(TRIGGER_ATTACK);
 

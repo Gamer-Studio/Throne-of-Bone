@@ -39,9 +39,9 @@ namespace ToB.Player
       if (isMeleeAttacking)
       {
         var cursorPos = camera.ScreenToWorldPoint(Input.mousePosition).Z(0);
-        var characterPos = character.transform.position.Y(v => v);
+        var characterPos = character.transform.position;
         
-        character.Attack((cursorPos - characterPos).normalized.Y(v => v), true);
+        character.Attack((cursorPos - characterPos).normalized, true);
       }
       else if (isRangedAttacking)
       {
@@ -62,6 +62,8 @@ namespace ToB.Player
     /// </summary>
     public void Move(InputAction.CallbackContext context)
     {
+      if(!character) return;
+      
       var input = context.ReadValue<Vector2>().x;
       if (Math.Abs(input) > 0.1f)
       {
@@ -91,12 +93,37 @@ namespace ToB.Player
       if (context.performed) character.Dash();
     }
 
+    private static readonly Vector2[] directions = { Vector2.right, Vector2.left, Vector2.down };
+    
     /// <summary>
     /// Input Action 용 메서드입니다. 호출하지 말아주세요!
     /// </summary>
     public void MeleeAttack(InputAction.CallbackContext context)
     {
-      isMeleeAttacking = context.performed;
+      if (!character.IsFlight || !context.performed)
+      {
+        isMeleeAttacking = context.performed;
+        return;
+      }
+      
+      var cursorPos = camera.ScreenToWorldPoint(Input.mousePosition).Z(0);
+      var characterPos = character.transform.position.Y(v => v);
+      var direction = (cursorPos - characterPos).normalized;
+      
+      var minDist = float.MaxValue;
+      var closest = Vector2.zero;
+      
+      foreach (var d in directions)
+      {
+        var dist = Vector2.Distance(direction, d);
+        if (dist < minDist)
+        {
+          minDist = dist;
+          closest = d;
+        }
+      }
+      
+      character.Attack(direction, true);
     }
 
     /// <summary>

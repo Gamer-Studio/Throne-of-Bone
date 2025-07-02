@@ -41,6 +41,7 @@ namespace ToB.Scenes.Stage
 
     public void AddCameraCollision(Collider2D coll)
     {
+      if(unloaded) return;
       if(loadedColliders.ContainsKey(coll)) return;
       if(!player || player.stat.Hp == 0) return;
       
@@ -74,6 +75,7 @@ namespace ToB.Scenes.Stage
 
     public void RemoveCameraCollision(Collider2D coll)
     {
+      if(unloaded) return;
       if(!player || player.stat.Hp == 0) return;
 
       if(loadedColliders.TryGetValue(coll, out var obj))
@@ -85,6 +87,13 @@ namespace ToB.Scenes.Stage
       {
         confiner.InvalidateCache();
       }
+    }
+
+    private bool unloaded = false;
+    
+    private void OnDestroy()
+    {
+      unloaded = true;
     }
     
     #endregion

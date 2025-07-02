@@ -592,12 +592,6 @@ AnimatorController:
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 9100000}
-  - m_Name: Immune
-    m_Type: 4
-    m_DefaultFloat: 0
-    m_DefaultInt: 0
-    m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
   m_AnimatorLayers:
   - serializedVersion: 5
     m_Name: Base Layer
@@ -859,16 +853,12 @@ AnimatorStateMachine:
   - serializedVersion: 1
     m_State: {fileID: -3813851443291127030}
     m_Position: {x: -480, y: 420, z: 0}
-  - serializedVersion: 1
-    m_State: {fileID: -5760849371109698291}
-    m_Position: {x: -1350, y: 250, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions:
   - {fileID: -2690685347751353714}
   - {fileID: -4435454455665650537}
   - {fileID: -5747813998441204608}
   - {fileID: -62628625720045239}
-  - {fileID: 2790091421908111747}
   m_EntryTransitions: []
   m_StateMachineTransitions: {}
   m_StateMachineBehaviours: []
@@ -995,7 +985,7 @@ AnimatorStateTransition:
     m_EventTreshold: 0
   - m_ConditionMode: 6
     m_ConditionEvent: AttackMotion
-    m_EventTreshold: 3
+    m_EventTreshold: 4
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 1453814322228083333}
   m_Solo: 0

@@ -354,9 +354,23 @@ CompositeCollider2D:
   m_GeometryType: 1
   m_GenerationType: 0
   m_EdgeRadius: 0
-  m_ColliderPaths: []
+  m_ColliderPaths:
+  - m_Collider: {fileID: 1882854528}
+    m_ColliderPaths:
+    - - X: 2577540352
+        Y: 297877440
+      - X: -45144348
+        Y: 297877440
+      - X: -45144348
+        Y: -565091392
+      - X: 2577540352
+        Y: -565091392
   m_CompositePaths:
-    m_Paths: []
+    m_Paths:
+    - - {x: 257.754, y: -56.50914}
+      - {x: 257.754, y: 29.787745}
+      - {x: -4.514435, y: 29.787716}
+      - {x: -4.5144057, y: -56.50914}
   m_VertexDistance: 0.0005
   m_OffsetDistance: 0.00005
   m_UseDelaunayMesh: 0
@@ -682,7 +696,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!61 &1882854528
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -847,6 +861,10 @@ MonoBehaviour:
   camera: {fileID: 0}
   vCam: {fileID: 1499905404}
   character: {fileID: 1428411840665200070}
+  interactRadius: 1
+  interactableMask:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!114 &1950366134
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1032,6 +1050,10 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: e61fd35c-2604-48ab-92b3-2cb13fcd67ff
     m_ActionName: 'Stage/QuestUIToggle[/Keyboard/j]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 55a5b456-3ebb-4da6-a582-8d885ecee137
+    m_ActionName: 'Player/Interaction[/Keyboard/e]'
   m_NeverAutoSwitchControlSchemes: 1
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
