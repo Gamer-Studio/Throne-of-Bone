@@ -55,7 +55,6 @@ namespace ToB.UI
         {
             if (!context.performed) return;
 
-            Debug.Log("ESC 입력 감지됨");
 
             if (uiStack.Count > 0)
                 ClosePanel();

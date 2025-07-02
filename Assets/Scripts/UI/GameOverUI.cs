@@ -35,7 +35,6 @@ namespace ToB.UI
                 {
                     Debug.Log("PlayerCharacter is null");
                 }
-                Debug.Log("GameOver Scene Ready");
             }
         }
 

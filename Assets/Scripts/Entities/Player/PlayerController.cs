@@ -122,7 +122,6 @@ namespace ToB.Player
     private void Interact()
     {
       Collider2D[] hits = Physics2D.OverlapCircleAll(character.transform.position, interactRadius, interactableMask);
-      Debug.Log(transform.position);
       IInteractable nearest = null;
       float nearestDistance = Mathf.Infinity;
 

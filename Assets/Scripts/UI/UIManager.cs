@@ -139,24 +139,6 @@ namespace ToB.UI
                 return isThereActiveUI = false;
             }
         }
-
-        /*
-         public void CancelUI(InputAction.CallbackContext context)
-         
-        {
-            Debug.Log("UIManager - ESC 인식");
-            CloseActiveUI();
-        }
-
-        private void CloseActiveUI()
-        {
-            if (IsThereOverlayUI())
-            {
-                wideMapUI.gameObject.SetActive(false);
-                mainBookUI.gameObject.SetActive(false);
-            }
-        }
-        */
         #endregion
             
 

@@ -89,7 +89,6 @@ namespace ToB.UI
         {
           Debug.Log("PlayerCharacter is null");
         }
-        Debug.Log("HPBar Init end");
       }
     }
    /*

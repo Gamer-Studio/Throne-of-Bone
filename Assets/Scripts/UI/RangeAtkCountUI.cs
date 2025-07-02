@@ -36,7 +36,6 @@ namespace ToB.UI
                 {
                     Debug.Log("PlayerCharacter is null");
                 }
-                Debug.Log("RACounter Init end");
             }
         }
 

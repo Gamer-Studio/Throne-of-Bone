@@ -78,10 +78,8 @@ namespace ToB.UI
         {
             if (context.performed)
             {
-                Debug.Log("ClearActiveUI 실행됨");
                 if (UIManager.Instance.IsThereOverlayUI())
                 {
-                    Debug.Log("활성화된 UI 존재함. UI 닫음.");
                     UIManager.Instance.wideMapUI.gameObject.SetActive(false);
                     UIManager.Instance.mainBookUI.gameObject.SetActive(false);
                 }
