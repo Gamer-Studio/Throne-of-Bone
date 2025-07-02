@@ -5,6 +5,7 @@ using ToB.Entities;
 using ToB.Entities.Projectiles;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
 
 namespace ToB.Player
