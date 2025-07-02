@@ -8,7 +8,7 @@ namespace ToB
     {
         private Rigidbody2D rb;
         [SerializeField] private Vector2 direction;
-        private float speed;
+        [SerializeField]private float speed;
         
         private void Awake()
         {
@@ -19,11 +19,7 @@ namespace ToB
         {
             this.direction = direction.normalized;
             this.speed = speed;
-        }
-
-        private void Start()
-        {
-            rb.linearVelocity = direction * speed;
+            rb.linearVelocity = this.direction * speed;
         }
     }
 }

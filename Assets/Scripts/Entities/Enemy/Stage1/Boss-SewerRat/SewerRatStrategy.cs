@@ -78,6 +78,7 @@ namespace ToB.Entities
 
         protected override void Update()
         {
+            if (!enemy.target) return; 
             if (currentPattern != null)
             {
                 currentPattern.Execute();
