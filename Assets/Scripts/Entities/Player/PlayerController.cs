@@ -10,9 +10,9 @@ namespace ToB.Player
 {
   public class PlayerController : MonoBehaviour
   {
-    [Tooltip("활성화된 메인 카메라"), SerializeField, ReadOnly] private new Camera camera;
-    [Tooltip("시네머신 카메라"), SerializeField] protected CinemachineVirtualCamera vCam;
-    [Tooltip("플레이어 캐릭터"), SerializeField] protected PlayerCharacter character;
+    [Label("활성화된 메인 카메라"), SerializeField, ReadOnly] private new Camera camera;
+    [Label("시네머신 카메라"), SerializeField] protected CinemachineVirtualCamera vCam;
+    [Label("플레이어 캐릭터"), SerializeField] protected PlayerCharacter character;
 
     private bool isMeleeAttacking = false;
     private bool isRangedAttacking = false;
@@ -143,38 +143,44 @@ namespace ToB.Player
     
     #region Interaction
     
-    [SerializeField] private float interactRadius = 1f;
-    [SerializeField] private LayerMask interactableMask;
+    [Label("상호작용 범위 반지름"), SerializeField] private float interactRadius = 1f;
+    [Label("상호작용 레이어 마스크"), SerializeField] private LayerMask interactableMask;
 
+    /// <summary>
+    /// Input Action 용 메서드입니다. 호출하지 말아주세요!
+    /// </summary>
     public void Interaction(InputAction.CallbackContext context)
     {
-      if (context.performed) Interact();
+      if (context.performed)
+      {
+        var hits = Physics2D.OverlapCircleAll(character.transform.position, interactRadius, interactableMask);
+        var nearestDistance = Mathf.Infinity;
+        IInteractable nearest = null;
+
+        foreach (var hit in hits)
+        {
+          if (hit.TryGetComponent<IInteractable>(out var interactable) &&
+              interactable is not { IsInteractable: true }) continue;
+        
+          var distance = Vector2.Distance(character.transform.position, hit.transform.position);
+
+          if (distance >= nearestDistance) continue;
+        
+          nearest = interactable;
+          nearestDistance = distance;
+        }
+
+        Interact(nearest);
+      }
     }
 
-    private void Interact()
+    /// <summary>
+    /// interactable에 상호작용합니다.
+    /// </summary>
+    /// <param name="interactable">상호작용할 대상입니다.</param>
+    public void Interact(IInteractable interactable)
     {
-      Collider2D[] hits = Physics2D.OverlapCircleAll(character.transform.position, interactRadius, interactableMask);
-      IInteractable nearest = null;
-      float nearestDistance = Mathf.Infinity;
-
-      foreach (var hit in hits)
-      {
-        var interactable = hit.GetComponent<IInteractable>();
-        if (interactable != null && interactable.IsInteractable)
-        {
-          float distance = Vector2.Distance(character.transform.position, hit.transform.position);
-          if (distance < nearestDistance)
-          {
-            nearest = interactable;
-            nearestDistance = distance;
-          }
-        }
-      }
-
-      if (nearest != null)
-      {
-        nearest.Interact();
-      }
+      interactable.Interact();
     }
     
     #endregion
