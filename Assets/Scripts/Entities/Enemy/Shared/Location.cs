@@ -11,7 +11,7 @@ namespace ToB.Entities
         [SerializeField] private float height;
 
         [SerializeField] private LayerMask mask;
-
+        [SerializeField] private Color gizmoColor;
         public bool PlayerEntered { get; private set; }
 
         public event Action<GameObject> OnPlayerEntered;
@@ -30,7 +30,7 @@ namespace ToB.Entities
         
         private void OnDrawGizmos()
         {
-            Gizmos.color = Color.red.WithAlpha(0.7f);
+            Gizmos.color = gizmoColor;
             Gizmos.DrawCube(transform.position, new Vector3(width, height, 0));
         }
 
