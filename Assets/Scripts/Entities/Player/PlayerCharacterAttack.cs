@@ -86,21 +86,9 @@ namespace ToB.Player
     /// </summary>
     /// <param name="direction">공격 방향입니다.</param>
     /// <param name="isMelee">근거리/원거리 공격 방향입니다.</param>
-    public void Attack(Vector2 direction, bool isMelee = true)
+    public void Attack(Vector2 direction, bool isMelee = true, bool bottomAttack = false)
     {
-      var minDist = float.MaxValue;
-      var closest = Vector2.zero;
-      
-      foreach (var d in directions)
-      {
-        var dist = Vector2.Distance(direction, d);
-        if (dist < minDist)
-        {
-          minDist = dist;
-          closest = d;
-        }
-      }
-      if (closest == Vector2.down) animator.SetInteger(INT_ATTACK_MOTION, 3);
+      if (bottomAttack) animator.SetInteger(INT_ATTACK_MOTION, 4);
       
       if (isAttacking || AvailableRangedAttack <= 0) return;
       if(IsDashing) CancelDash();
@@ -108,7 +96,7 @@ namespace ToB.Player
 
       isAttacking = true;
       
-      if(closest == Vector2.down && IsFlight)
+      if(bottomAttack && IsFlight)
       {
         attackCoroutine = StartCoroutine(AttackWaiter(direction, 0.1f));
       }

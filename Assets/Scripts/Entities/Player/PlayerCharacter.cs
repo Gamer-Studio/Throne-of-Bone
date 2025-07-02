@@ -65,6 +65,7 @@ namespace ToB.Player
     // 이 아래는 외부 접근용 연결 필드입니다.
     // 캐릭터가 공중인지 여부입니다.
     public bool IsFlight => !groundChecker.IsGround;
+    public bool IsFalling => animator.GetBool(BOOL_FALLING);
 
     protected PlayerAnimationState AnimationState
     {
