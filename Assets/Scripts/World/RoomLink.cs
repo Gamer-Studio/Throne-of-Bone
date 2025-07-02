@@ -2,6 +2,7 @@ using UnityEngine;
 
 namespace ToB.Worlds
 {
+  [AddComponentMenu("Stage/Room Link")]
   public class RoomLink : MonoBehaviour
   {
     public int connectedStageId = 1;
