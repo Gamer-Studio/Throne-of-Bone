@@ -3,11 +3,13 @@ using UnityEngine;
 
 namespace ToB.Entities
 {
-    public class ConvictChaseState:GroundDefaultChasePattern
+    public class ConvictChaseState : GroundDefaultChasePattern
     {
         private readonly Convict convict;
         private ConvictFSM fsm;
-        public ConvictChaseState(EnemyStrategy strategy, float chaseSpeed, Action EndCallback = null) : base(strategy, chaseSpeed, EndCallback)
+
+        public ConvictChaseState(EnemyStrategy strategy, float chaseSpeed, Action EndCallback = null) : base(strategy,
+            chaseSpeed, EndCallback)
         {
             fsm = strategy as ConvictFSM;
             convict = fsm.Owner;
@@ -22,7 +24,7 @@ namespace ToB.Entities
         public override void FixedExecute()
         {
             base.FixedExecute();
-            
+
             if (!enemy.target)
             {
                 convict.FSM.ChangePattern(convict.FSM.patrolState);
@@ -31,9 +33,16 @@ namespace ToB.Entities
             {
                 convict.FSM.ChangePattern(convict.FSM.attackState);
             }
-            else if (enemy.Physics.IsLedgeBelow())
+            else
             {
-                enemy.Physics.externalVelocity[ChaseKey] = Vector2.zero;
+                if (enemy.Physics.IsLedgeBelow())
+                {
+                    enemy.Physics.externalVelocity[ChaseKey] = Vector2.zero;
+                }
+                else
+                {
+                    enemy.Physics.externalVelocity[ChaseKey] = chaseSpeed * enemy.LookDirectionHorizontal;
+                }
             }
         }
     }

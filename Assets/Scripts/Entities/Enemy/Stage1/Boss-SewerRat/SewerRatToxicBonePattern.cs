@@ -65,7 +65,8 @@ namespace ToB.Entities
             {
                 float speed = sewerRat.DataSO.ToxicBoneSpeed;
                 
-                GameObject boneObj = Object.Instantiate(ratStrategy.ToxicBonePrefab);
+                // GameObject boneObj = Object.Instantiate(ratStrategy.ToxicBonePrefab);
+                GameObject boneObj = ratStrategy.ToxicBonePrefab.Pooling();
                 boneObj.transform.position = enemy.transform.position + new Vector3(0, 2, 0);
                 ToxicBone bone = boneObj.GetComponent<ToxicBone>();         // 양이 많지 않아서 굳이 풀링하지 않고 있습니다.
                 
