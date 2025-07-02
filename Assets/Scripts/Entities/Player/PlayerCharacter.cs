@@ -158,7 +158,7 @@ namespace ToB.Player
         if (isDamageImmune)
         {
           isDamageImmune = false;
-          animator.SetBool(BOOL_IMMUNE, true);
+          animator.SetBool(BOOL_IMMUNE, false);
         }
       }
       

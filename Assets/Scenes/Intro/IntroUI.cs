@@ -113,7 +113,7 @@ namespace ToB.Scenes.Intro
         public void StartGame()
         {
             CloseAllPanels();
-            SceneManager.LoadScene("Stage");
+            SceneManager.LoadScene("Stage_Manager");
             Debug.Log("게임 시작");
         }
         

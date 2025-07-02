@@ -22,7 +22,7 @@ namespace ToB.Scenes.Intro
         
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            if (scene.name == "Stage" || scene.name == "Stage0623Copy")
+            if (scene.name != "Intro" && scene.name != "MainMenu")
             {
                 player = PlayerCharacter.GetInstance();
                 if (player != null)

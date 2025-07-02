@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 1208736285591260195}
   - component: {fileID: 4571499245627795144}
   - component: {fileID: 8508471721680391115}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: GameObject
-  m_TagString: Player
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -212,9 +212,10 @@ MonoBehaviour:
   moveResistanceForce: 1
   moveDirection: 0
   isMoving: 0
-  jumpPower: 30
-  jumpTimeLimit: 0.2
-  gravityAcceleration: 6
+  immuneTime: 0
+  damageImmuneTime: 0.3
+  dashImmuneTime: 0
+  dashMaxImmuneTime: 0.1
   stat:
     onHpChanged:
       m_PersistentCalls:
@@ -226,6 +227,9 @@ MonoBehaviour:
     currentHp: 100
     def: 0
     atk: 10
+  jumpPower: 30
+  jumpTimeLimit: 0.2
+  gravityAcceleration: 6
   body: {fileID: 1096863716109666581}
   animator: {fileID: 6425824100770376572}
   spriteRenderer: {fileID: 9050726402138752261}
@@ -249,6 +253,7 @@ MonoBehaviour:
   availableRangedAttack: 5
   rangedAttackRegenTime: 1
   rangedAttackDelay: 0.2
+  shootDelay: 0.1
   swordEffect: {fileID: 1664674104791670439, guid: bc76dc791a6561344bbec8478838ce65, type: 3}
   OnRangedAttackStackChange:
     m_PersistentCalls:
@@ -257,6 +262,7 @@ MonoBehaviour:
   dashTimeLimit: 0.25
   dashCoolTime: 0.5
   inWater: 0
+  dashImmuneStartTime: 0
 --- !u!114 &7655265317321702560
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -347,9 +353,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingLayerID: -1261954813
+  m_SortingLayer: -2
+  m_SortingOrder: 1000
   m_Sprite: {fileID: 979583201266836553, guid: 876899b46f9204b418539e331273efdf, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
