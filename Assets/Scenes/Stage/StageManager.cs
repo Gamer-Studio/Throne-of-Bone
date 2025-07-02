@@ -42,7 +42,7 @@ namespace ToB.Scenes.Stage
     public void AddCameraCollision(Collider2D coll)
     {
       if(loadedColliders.ContainsKey(coll)) return;
-      if(player.stat.Hp == 0) return;
+      if(!player || player.stat.Hp == 0) return;
       
       var obj = loadedColliders[coll] = new GameObject(coll.name);
       obj.transform.SetParent(confinerBorder.transform);
@@ -74,7 +74,7 @@ namespace ToB.Scenes.Stage
 
     public void RemoveCameraCollision(Collider2D coll)
     {
-      if(player.stat.Hp == 0) return;
+      if(!player || player.stat.Hp == 0) return;
 
       if(loadedColliders.TryGetValue(coll, out var obj))
       {

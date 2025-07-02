@@ -354,23 +354,9 @@ CompositeCollider2D:
   m_GeometryType: 1
   m_GenerationType: 0
   m_EdgeRadius: 0
-  m_ColliderPaths:
-  - m_Collider: {fileID: 1882854528}
-    m_ColliderPaths:
-    - - X: 2577540352
-        Y: 297877440
-      - X: -45144348
-        Y: 297877440
-      - X: -45144348
-        Y: -565091392
-      - X: 2577540352
-        Y: -565091392
+  m_ColliderPaths: []
   m_CompositePaths:
-    m_Paths:
-    - - {x: 257.754, y: -56.50914}
-      - {x: 257.754, y: 29.787745}
-      - {x: -4.514435, y: 29.787716}
-      - {x: -4.5144057, y: -56.50914}
+    m_Paths: []
   m_VertexDistance: 0.0005
   m_OffsetDistance: 0.00005
   m_UseDelaunayMesh: 0
@@ -583,6 +569,7 @@ GameObject:
   - component: {fileID: 1499905405}
   - component: {fileID: 1499905404}
   - component: {fileID: 1499905406}
+  - component: {fileID: 1499905407}
   m_Layer: 0
   m_Name: Virtual Camera
   m_TagString: Untagged
@@ -658,9 +645,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BoundingShape2D: {fileID: 1119994215}
-  m_Damping: 0.5
+  m_Damping: 0
   m_MaxWindowSize: -1
   m_Padding: 0
+--- !u!114 &1499905407
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1499905403}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a8a05de0ac134f4f9d01bef6b9da077, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &1594412829 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6794847435369601014, guid: 18fe5ad9a39f75346b3ae7ad95745446, type: 3}
@@ -683,7 +682,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!61 &1882854528
 BoxCollider2D:
   m_ObjectHideFlags: 0
