@@ -99,10 +99,10 @@ namespace ToB.Scenes.Intro
                     gameOverUI.gameObject.SetActive(false);
                     break;
                 
-                case "Stage":
+                case "Intro":
                     introUI.gameObject.SetActive(false);
-                    crossHairUI.gameObject.SetActive(true);
-                    gamePlayUI.gameObject.SetActive(true);
+                    crossHairUI.gameObject.SetActive(false);
+                    gamePlayUI.gameObject.SetActive(false);
                     mainBookUI.gameObject.SetActive(false);
                     wideMapUI.gameObject.SetActive(false);
                     gameOverUI.gameObject.SetActive(false);
@@ -119,8 +119,8 @@ namespace ToB.Scenes.Intro
                 
                 default:
                     introUI.gameObject.SetActive(false);
-                    crossHairUI.gameObject.SetActive(false);
-                    gamePlayUI.gameObject.SetActive(false);
+                    crossHairUI.gameObject.SetActive(true);
+                    gamePlayUI.gameObject.SetActive(true);
                     mainBookUI.gameObject.SetActive(false);
                     wideMapUI.gameObject.SetActive(false);
                     gameOverUI.gameObject.SetActive(false);
