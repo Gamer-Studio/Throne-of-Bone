@@ -214,6 +214,7 @@ GameObject:
   - component: {fileID: 7398618763622413336}
   - component: {fileID: 6100593733163253891}
   - component: {fileID: 1101973382748098917}
+  - component: {fileID: 4462746819144977101}
   m_Layer: 0
   m_Name: BodyCollider
   m_TagString: Untagged
@@ -341,6 +342,20 @@ MonoBehaviour:
   MaxHP: 0
   currentHP: 0
   def: 0
+--- !u!114 &4462746819144977101
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2507445231334073099}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92d8ad092d081fb43b9b6acd740d4dac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemy: {fileID: 0}
+  knockbackMultiplier: 0
 --- !u!1 &2841746823565301905
 GameObject:
   m_ObjectHideFlags: 0
@@ -417,7 +432,7 @@ MonoBehaviour:
   <Physics>k__BackingField: {fileID: 3936453283081302514}
   <Animator>k__BackingField: {fileID: 6185246956509188522}
   <Sprite>k__BackingField: {fileID: 1438753944917636297}
-  <Knockback>k__BackingField: {fileID: 0}
+  <Knockback>k__BackingField: {fileID: 4462746819144977101}
   <Hitbox>k__BackingField: {fileID: 5975298565926061390}
   target: {fileID: 0}
   isAlive: 0
@@ -443,3 +458,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <enemy>k__BackingField: {fileID: 2245216067650363785}
   currentPatternString: 
+  lastAttackTime: 0

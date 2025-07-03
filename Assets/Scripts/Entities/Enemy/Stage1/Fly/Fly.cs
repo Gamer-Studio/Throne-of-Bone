@@ -29,6 +29,8 @@ namespace ToB.Entities
             base.Awake();
             Body.Init(this, DataSO.ATK);
             SightSensor.Init(this, DataSO.SightRange, DataSO.SightAngle);
+            Knockback = GetComponentInChildren<EnemyKnockback>();
+            Knockback.Init(this, DataSO.KnockbackApplier);;
         }
 
         public void Init(Hive hive)
