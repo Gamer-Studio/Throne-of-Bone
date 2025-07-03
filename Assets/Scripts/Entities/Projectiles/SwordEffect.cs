@@ -10,6 +10,8 @@ namespace ToB.Entities.Projectiles
     [Label("피해량")] public float damage;
     [Label("발사 방향")] private Vector2 direction = Vector2.zero;
     [Label("속도")] public float speed = 1;
+    [Label("넉백 세기")] public float knockBackForce = 15;
+    
     public LayerMask hitLayers;
     
     [SerializeField] private Rigidbody2D body;
@@ -40,9 +42,11 @@ namespace ToB.Entities.Projectiles
     {
       if ((hitLayers & 1 << other.gameObject.layer) == 0) return;
       
+      other.KnockBack(knockBackForce, direction);
+      
       if (other.TryGetComponent<IDamageable>(out var damageable))
       {
-        damageable.Damage(damage);
+        damageable.Damage(damage, this);
         gameObject.Release();
       }
     }

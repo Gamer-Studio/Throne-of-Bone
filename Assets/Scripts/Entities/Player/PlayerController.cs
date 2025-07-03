@@ -1,6 +1,7 @@
 using System;
 using Cinemachine;
 using NaughtyAttributes;
+using ToB.Entities.Obstacle;
 using ToB.Utils;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -9,9 +10,9 @@ namespace ToB.Player
 {
   public class PlayerController : MonoBehaviour
   {
-    [Tooltip("활성화된 메인 카메라"), SerializeField, ReadOnly] private new Camera camera;
-    [Tooltip("시네머신 카메라"), SerializeField] protected CinemachineVirtualCamera vCam;
-    [Tooltip("플레이어 캐릭터"), SerializeField] protected PlayerCharacter character;
+    [Label("활성화된 메인 카메라"), SerializeField, ReadOnly] private new Camera camera;
+    [Label("시네머신 카메라"), SerializeField] protected CinemachineVirtualCamera vCam;
+    [Label("플레이어 캐릭터"), SerializeField] protected PlayerCharacter character;
 
     private bool isMeleeAttacking = false;
     private bool isRangedAttacking = false;
@@ -38,9 +39,9 @@ namespace ToB.Player
       if (isMeleeAttacking)
       {
         var cursorPos = camera.ScreenToWorldPoint(Input.mousePosition).Z(0);
-        var characterPos = character.transform.position.Y(v => v);
+        var characterPos = character.transform.position;
         
-        character.Attack((cursorPos - characterPos).normalized.Y(v => v), true);
+        character.Attack((cursorPos - characterPos).normalized, true);
       }
       else if (isRangedAttacking)
       {
@@ -61,6 +62,8 @@ namespace ToB.Player
     /// </summary>
     public void Move(InputAction.CallbackContext context)
     {
+      if(!character) return;
+      
       var input = context.ReadValue<Vector2>().x;
       if (Math.Abs(input) > 0.1f)
       {
@@ -90,12 +93,42 @@ namespace ToB.Player
       if (context.performed) character.Dash();
     }
 
+    private static readonly Vector2[] directions = { Vector2.right, Vector2.left, Vector2.down };
+    
     /// <summary>
     /// Input Action 용 메서드입니다. 호출하지 말아주세요!
     /// </summary>
     public void MeleeAttack(InputAction.CallbackContext context)
     {
-      isMeleeAttacking = context.performed;
+      if (!character.IsFlight || !context.performed)
+      {
+        isMeleeAttacking = context.performed;
+        return;
+      }
+      
+      var cursorPos = camera.ScreenToWorldPoint(Input.mousePosition).Z(0);
+      var characterPos = character.transform.position.Y(v => v);
+      var direction = (cursorPos - characterPos).normalized;
+      
+      var minDist = float.MaxValue;
+      var closest = Vector2.zero;
+      
+      foreach (var d in directions)
+      {
+        var dist = Vector2.Distance(direction, d);
+        if (dist < minDist)
+        {
+          minDist = dist;
+          closest = d;
+        }
+      }
+      
+      if (closest == Vector2.down)
+      {
+        character.Attack(direction, true, true);
+      }
+      else
+        isMeleeAttacking = context.performed;
     }
 
     /// <summary>
@@ -104,6 +137,50 @@ namespace ToB.Player
     public void RangedAttack(InputAction.CallbackContext context)
     {
       isRangedAttacking = context.performed;
+    }
+    
+    #endregion
+    
+    #region Interaction
+    
+    [Label("상호작용 범위 반지름"), SerializeField] private float interactRadius = 1f;
+    [Label("상호작용 레이어 마스크"), SerializeField] private LayerMask interactableMask;
+
+    /// <summary>
+    /// Input Action 용 메서드입니다. 호출하지 말아주세요!
+    /// </summary>
+    public void Interaction(InputAction.CallbackContext context)
+    {
+      if (context.performed)
+      {
+        var hits = Physics2D.OverlapCircleAll(character.transform.position, interactRadius, interactableMask);
+        var nearestDistance = Mathf.Infinity;
+        IInteractable nearest = null;
+
+        foreach (var hit in hits)
+        {
+          if (hit.TryGetComponent<IInteractable>(out var interactable) &&
+              interactable is not { IsInteractable: true }) continue;
+        
+          var distance = Vector2.Distance(character.transform.position, hit.transform.position);
+
+          if (distance >= nearestDistance) continue;
+        
+          nearest = interactable;
+          nearestDistance = distance;
+        }
+
+        Interact(nearest);
+      }
+    }
+
+    /// <summary>
+    /// interactable에 상호작용합니다.
+    /// </summary>
+    /// <param name="interactable">상호작용할 대상입니다.</param>
+    public void Interact(IInteractable interactable)
+    {
+      interactable.Interact();
     }
     
     #endregion

@@ -1,7 +1,9 @@
 using ToB.Player;
+using ToB.Scenes.Intro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-namespace ToB.Scenes.Intro
+
+namespace ToB.UI
 {
     public class GameOverUI : MonoBehaviour
     {
@@ -22,7 +24,7 @@ namespace ToB.Scenes.Intro
         
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            if (scene.name == "Stage" || scene.name == "Stage0623Copy")
+            if (scene.name != "Intro" && scene.name != "MainMenu")
             {
                 player = PlayerCharacter.GetInstance();
                 if (player != null)
@@ -33,7 +35,6 @@ namespace ToB.Scenes.Intro
                 {
                     Debug.Log("PlayerCharacter is null");
                 }
-                Debug.Log("GameOver Scene Ready");
             }
         }
 

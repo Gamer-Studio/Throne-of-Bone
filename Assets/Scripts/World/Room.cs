@@ -11,7 +11,7 @@ namespace ToB.Worlds
   [AddComponentMenu("Stage/Room")]
   public class Room : MonoBehaviour
   {
-    [Label("일반 적 소환 정보")] public SerializableDictionary<Vector2, GameObject> normalEnemyTable = new();
+    [Label("일반 적 소환 정보")] public SerializableDictionary<Transform, GameObject> normalEnemyTable = new();
     [ContextMenuItem("내부 링크 찾기", nameof(FindLinks))]
 
     #region Binding
@@ -103,7 +103,7 @@ namespace ToB.Worlds
       onEnter?.Invoke();
       foreach (var pair in normalEnemyTable)
       {
-        entities.Add(Instantiate(pair.Value, pair.Key, Quaternion.identity, entityContainer));
+        entities.Add(Instantiate(pair.Value, pair.Key.position, Quaternion.identity, entityContainer));
       }
     }
 

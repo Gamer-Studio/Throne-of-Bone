@@ -1,7 +1,6 @@
-using System.Collections.Generic;
 using UnityEngine;
 
-namespace ToB.Scenes.Intro
+namespace ToB.UI
 {
     public class CrossHairUI : MonoBehaviour
     {

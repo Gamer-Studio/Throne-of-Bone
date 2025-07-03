@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace ToB.Scenes.Intro
+namespace ToB.UI
 {
     public class IntroToMenuTemp : MonoBehaviour
     {
