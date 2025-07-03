@@ -64,7 +64,6 @@ namespace ToB.Entities
 
         private void Update()
         {
-            
             enemy.target = null;
             
             if (!targetInRange) return;
