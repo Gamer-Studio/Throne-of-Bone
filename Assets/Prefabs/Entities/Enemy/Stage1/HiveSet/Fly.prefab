@@ -56,7 +56,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: 00973b81481db1c479e78cad3207a170, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -74,9 +74,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingLayerID: -1261954813
+  m_SortingLayer: -2
+  m_SortingOrder: 700
   m_Sprite: {fileID: 4609064008142439521, guid: 30692b8ba0640074a9c16e9c9d2fc354, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -213,6 +213,7 @@ GameObject:
   - component: {fileID: 5975298565926061390}
   - component: {fileID: 7398618763622413336}
   - component: {fileID: 6100593733163253891}
+  - component: {fileID: 1101973382748098917}
   m_Layer: 0
   m_Name: BodyCollider
   m_TagString: Untagged
@@ -325,6 +326,21 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &1101973382748098917
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2507445231334073099}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53ab476cda1b5a342a8c9589483b3fc8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MaxHP: 0
+  currentHP: 0
+  def: 0
 --- !u!1 &2841746823565301905
 GameObject:
   m_ObjectHideFlags: 0
@@ -336,6 +352,7 @@ GameObject:
   - component: {fileID: 567601014020743563}
   - component: {fileID: 3936453283081302514}
   - component: {fileID: 2245216067650363785}
+  - component: {fileID: 8877133992337474133}
   m_Layer: 0
   m_Name: Fly
   m_TagString: Untagged
@@ -407,5 +424,22 @@ MonoBehaviour:
   <ReactOnDamage>k__BackingField: 1
   <DataSO>k__BackingField: {fileID: 11400000, guid: 9b60a89763b2a46489da20b46d7ee80f, type: 2}
   <Hive>k__BackingField: {fileID: 0}
+  <FSM>k__BackingField: {fileID: 8877133992337474133}
   <Body>k__BackingField: {fileID: 7398618763622413336}
   <SightSensor>k__BackingField: {fileID: 3425772747055143234}
+  <Stat>k__BackingField: {fileID: 1101973382748098917}
+  StingPrefab: {fileID: 4157416632355595692, guid: e28b3341e0e25ad4a81419759c6ed485, type: 3}
+--- !u!114 &8877133992337474133
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2841746823565301905}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5738053fc9ffd143a8c89c18b453b2d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <enemy>k__BackingField: {fileID: 2245216067650363785}
+  currentPatternString: 
