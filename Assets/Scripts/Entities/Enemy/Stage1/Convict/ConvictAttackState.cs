@@ -14,7 +14,6 @@ namespace ToB.Entities
         public override void Enter()
         {
             base.Enter();
-            owner.lastAttackTime = 0;
             owner.Animator.SetBool(EnemyAnimationString.Attack, true);
         }
 

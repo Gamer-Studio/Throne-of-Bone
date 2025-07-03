@@ -20,8 +20,6 @@ namespace ToB.Entities
         [field:SerializeField] public EnemySimpleSensor AttackSensor { get; private set; }
         [field:SerializeField] public EnemyBody EnemyBody { get; private set; }
         
-        public float lastAttackTime;
-        
         protected override void Awake()
         {
             base.Awake();

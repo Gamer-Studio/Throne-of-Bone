@@ -9,6 +9,8 @@ namespace ToB.Entities
         [SerializeField] private Enemy owner;
         [SerializeField] private float bodyDamage;
         [SerializeField] LayerMask hittableMask;
+        
+        private BoxCollider2D boxCollider;
 
         public void Init(Enemy enemy, float bodyDamage)
         {
@@ -19,6 +21,8 @@ namespace ToB.Entities
         private void Reset()
         {
             hittableMask = LayerMask.GetMask("Player");
+            boxCollider = GetComponent<BoxCollider2D>();
+            boxCollider.isTrigger = true;
         }
 
         private void OnTriggerStay2D(Collider2D other)
