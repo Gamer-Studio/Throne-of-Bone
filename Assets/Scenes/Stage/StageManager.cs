@@ -3,9 +3,7 @@ using NaughtyAttributes;
 using ToB.Player;
 using ToB.Utils;
 using ToB.Utils.Singletons;
-using ToB.Worlds;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 
 namespace ToB.Scenes.Stage
 {
@@ -43,7 +41,9 @@ namespace ToB.Scenes.Stage
 
     public void AddCameraCollision(Collider2D coll)
     {
+      if(unloaded) return;
       if(loadedColliders.ContainsKey(coll)) return;
+      if(!player || player.stat.Hp == 0) return;
       
       var obj = loadedColliders[coll] = new GameObject(coll.name);
       obj.transform.SetParent(confinerBorder.transform);
@@ -75,6 +75,9 @@ namespace ToB.Scenes.Stage
 
     public void RemoveCameraCollision(Collider2D coll)
     {
+      if(unloaded) return;
+      if(!player || player.stat.Hp == 0) return;
+
       if(loadedColliders.TryGetValue(coll, out var obj))
       {
         Destroy(obj);
@@ -84,6 +87,13 @@ namespace ToB.Scenes.Stage
       {
         confiner.InvalidateCache();
       }
+    }
+
+    private bool unloaded = false;
+    
+    private void OnDestroy()
+    {
+      unloaded = true;
     }
     
     #endregion

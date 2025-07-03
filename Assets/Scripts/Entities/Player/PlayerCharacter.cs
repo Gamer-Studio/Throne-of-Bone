@@ -15,6 +15,7 @@ namespace ToB.Player
   {
     private static readonly int INT_STATE = Animator.StringToHash("State");
     private static readonly int BOOL_IMMUNE = Animator.StringToHash("Immune");
+    private static readonly int BOOL_ISFLIGHT = Animator.StringToHash("IsFlight");
     private static readonly int BOOL_FALLING = Animator.StringToHash("Falling");
     private static readonly int TRIGGER_FALL = Animator.StringToHash("Fall");
     private static readonly int TRIGGER_JUMP = Animator.StringToHash("Jump");
@@ -51,6 +52,9 @@ namespace ToB.Player
     [Label("피격시 무적 시간"), Foldout("State")] public float damageImmuneTime = 0.3f;
     [Label("현재 대시 무적 시간"), Foldout("State")] public float dashImmuneTime = 0f;
     [Label("대시시 무적 시간"), Foldout("State")] public float dashMaxImmuneTime = 0.1f;
+    [Label("기본 넉백 지속 시간"), Foldout("State")] public float knockbackTime = 0.2f;
+    [Label("기본 넉백 배율"), Foldout("State")] public float knockbackMultiplier = 2f;
+    
     public bool IsImmune => isDamageImmune || dashImmuneTime > 0;
     private bool isDamageImmune = false;
     
@@ -65,6 +69,7 @@ namespace ToB.Player
     // 이 아래는 외부 접근용 연결 필드입니다.
     // 캐릭터가 공중인지 여부입니다.
     public bool IsFlight => !groundChecker.IsGround;
+    public bool IsFalling => animator.GetBool(BOOL_FALLING);
 
     protected PlayerAnimationState AnimationState
     {
@@ -135,6 +140,14 @@ namespace ToB.Player
     {
       InitDash();
       InitAttack();
+
+      if (groundChecker)
+      {
+        groundChecker.onLanding.AddListener(() =>
+        {
+          animator.SetBool(BOOL_ISFLIGHT, false);
+        });
+      }
     }
     
     private void FixedUpdate()
@@ -158,7 +171,7 @@ namespace ToB.Player
         if (isDamageImmune)
         {
           isDamageImmune = false;
-          animator.SetBool(BOOL_IMMUNE, true);
+          animator.SetBool(BOOL_IMMUNE, false);
         }
       }
       
@@ -166,6 +179,10 @@ namespace ToB.Player
       {
         if (DashDelay > 0) DashDelay -= Time.deltaTime;
         else DashDelay = 0;
+      }
+      else
+      {
+        animator.SetBool(BOOL_ISFLIGHT, true);
       }
 
       if (MeleeAttackDelay > 0) MeleeAttackDelay -= Time.deltaTime;
@@ -298,7 +315,7 @@ namespace ToB.Player
     {
       if(IsImmune) return;
       
-      body.AddForce(direction.normalized * value, ForceMode2D.Impulse);
+      StartCoroutine(KnockBackCoroutine(value, direction));
     }
     
     /// <summary>
@@ -307,6 +324,15 @@ namespace ToB.Player
     /// <param name="value">넉백 세기입니다.</param>
     /// <param name="sender">넉백을 가하는 오브젝트입니다.</param>
     public void KnockBack(float value, GameObject sender) => KnockBack(value, sender.transform.position - transform.position);
+
+    private IEnumerator KnockBackCoroutine(float value, Vector2 direction)
+    {
+      for (var time = 0f; time < knockbackTime; time += Time.deltaTime)
+      {
+        body.AddForce(direction * (value * knockbackMultiplier), ForceMode2D.Impulse);
+        yield return new WaitForFixedUpdate();
+      }
+    }
     
     #endregion Feature
     

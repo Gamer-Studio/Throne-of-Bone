@@ -18,15 +18,11 @@ namespace ToB.Entities
         [field:SerializeField] public EnemyBody EnemyBody { get; private set; }
 
         [SerializeField] private GameObject specialPrefab;
+        [SerializeField] private Location bossRoomLocation;
 
         protected override void Awake()
         {
             base.Awake();
-
-            if (!target)
-            {
-                Debug.LogWarning("플레이어를 직접 참조하거나 시스템을 마련해야 합니다");
-            }
 
             if (!stat) stat = GetComponentInChildren<EnemyStatHandler>();
             if (!Knockback) Knockback = GetComponentInChildren<EnemyKnockback>();
@@ -34,6 +30,8 @@ namespace ToB.Entities
             
             deathBleed.gameObject.SetActive(false);
             deathExplode.gameObject.SetActive(false);
+
+            bossRoomLocation.OnPlayerEntered += DetectPlayer;
         }
 
         private void Start()
@@ -76,6 +74,11 @@ namespace ToB.Entities
             
             Destroy(deathBleed.gameObject, 5f);
             Destroy(deathExplode.gameObject, 5f);
+        }
+
+        private void DetectPlayer(GameObject player)
+        {
+            target = player.transform;
         }
     }
 }

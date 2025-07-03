@@ -40,7 +40,11 @@ namespace ToB.Player
       set {
         currentHp = Math.Max(0, Math.Min(value, maxHp));
         onHpChanged?.Invoke(currentHp);
-        if (currentHp <= 0) onDeath?.Invoke();
+        if (currentHp <= 0)
+        {
+          Debug.Log("Player Death");
+          onDeath?.Invoke();
+        }
       }
     }
 
