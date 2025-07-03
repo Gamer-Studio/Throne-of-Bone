@@ -17,7 +17,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1208736285591260195
 Transform:
   m_ObjectHideFlags: 0
@@ -216,6 +216,8 @@ MonoBehaviour:
   damageImmuneTime: 0.3
   dashImmuneTime: 0
   dashMaxImmuneTime: 0.1
+  knockbackTime: 0.1
+  knockbackMultiplier: 0.3
   stat:
     onHpChanged:
       m_PersistentCalls:

@@ -52,6 +52,9 @@ namespace ToB.Player
     [Label("피격시 무적 시간"), Foldout("State")] public float damageImmuneTime = 0.3f;
     [Label("현재 대시 무적 시간"), Foldout("State")] public float dashImmuneTime = 0f;
     [Label("대시시 무적 시간"), Foldout("State")] public float dashMaxImmuneTime = 0.1f;
+    [Label("기본 넉백 지속 시간"), Foldout("State")] public float knockbackTime = 0.2f;
+    [Label("기본 넉백 배율"), Foldout("State")] public float knockbackMultiplier = 2f;
+    
     public bool IsImmune => isDamageImmune || dashImmuneTime > 0;
     private bool isDamageImmune = false;
     
@@ -312,7 +315,7 @@ namespace ToB.Player
     {
       if(IsImmune) return;
       
-      body.AddForce(direction.normalized * value, ForceMode2D.Impulse);
+      StartCoroutine(KnockBackCoroutine(value, direction));
     }
     
     /// <summary>
@@ -322,9 +325,13 @@ namespace ToB.Player
     /// <param name="sender">넉백을 가하는 오브젝트입니다.</param>
     public void KnockBack(float value, GameObject sender) => KnockBack(value, sender.transform.position - transform.position);
 
-    private IEnumerator KnockBackCoroutine()
+    private IEnumerator KnockBackCoroutine(float value, Vector2 direction)
     {
-      yield break;
+      for (var time = 0f; time < knockbackTime; time += Time.deltaTime)
+      {
+        body.AddForce(direction * (value * knockbackMultiplier), ForceMode2D.Impulse);
+        yield return new WaitForFixedUpdate();
+      }
     }
     
     #endregion Feature
