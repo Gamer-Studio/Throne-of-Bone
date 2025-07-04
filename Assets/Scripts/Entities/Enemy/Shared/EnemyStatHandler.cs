@@ -15,7 +15,7 @@ namespace ToB.Entities
         [SerializeField, ReadOnly] private float def;
         public float CurrentHP => currentHP;
 
-        public void Init(Enemy enemy, float hp, float def)
+        public void Init(Enemy enemy, float hp, float def = 0)
         {
             this.enemy = enemy;
             MaxHP = hp;
@@ -53,6 +53,7 @@ namespace ToB.Entities
             {
                 yield return null;
                 remainedTime -= Time.deltaTime;
+                if (remainedTime < 0) remainedTime = 0;
                 enemy.Sprite.material.SetFloat("_Alpha", remainedTime / duration);
             }
         }
