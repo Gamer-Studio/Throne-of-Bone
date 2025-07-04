@@ -7,7 +7,7 @@ namespace ToB.Entities.Obstacle
     public class KeyDoor: MonoBehaviour, IInteractable
     {
         [SerializeField] public TMP_Text interactionText;
-        [SerializeField] public Image keySprite;
+        //[SerializeField] public Image keySprite;
         public bool IsInteractable { get; set; }
         public bool isOpened;
         private void Awake()
@@ -17,7 +17,7 @@ namespace ToB.Entities.Obstacle
             // 상호작용 가능 여부, 상호작용 가능 여부는 추후 세이브-로드에서 받아올 것
             InitState();
             interactionText.text = "";
-            keySprite.enabled = false;
+            //keySprite.enabled = false;
         }
 
         private void InitState()
@@ -68,7 +68,7 @@ namespace ToB.Entities.Obstacle
             {
                 interactionText.text = "\nF";
                 interactionText.color = Color.black;
-                keySprite.enabled = true;
+                //keySprite.enabled = true;
             }
         }
         
@@ -77,7 +77,7 @@ namespace ToB.Entities.Obstacle
             if (other.CompareTag("Player"))
             {
                 interactionText.text = "";
-                keySprite.enabled = false;
+                //keySprite.enabled = false;
             }
         }
 

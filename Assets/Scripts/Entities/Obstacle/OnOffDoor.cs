@@ -6,7 +6,7 @@ namespace ToB.Entities.Obstacle
     {
        [SerializeField] public bool isOpened;
        [SerializeField] private SpriteRenderer DoorImage;
-       [SerializeField] private GameObject shadow;
+       //[SerializeField] private GameObject shadow;
        private Collider2D _collider;
        private void Awake()
        {
@@ -25,7 +25,7 @@ namespace ToB.Entities.Obstacle
        {
            DoorImage.color = isOpened ? Color.white : Color.yellow;
            _collider.enabled = !isOpened;
-           shadow.SetActive(!isOpened);
+           //shadow.SetActive(!isOpened);
        }
 
     }
