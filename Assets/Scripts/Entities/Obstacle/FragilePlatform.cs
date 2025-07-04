@@ -24,6 +24,7 @@ namespace ToB.Entities.Obstacle
             rb.gravityScale = 0f;
             rb.constraints = RigidbodyConstraints2D.FreezeAll;
             hitbox = GetComponent<Collider2D>();
+            // 여기서 isActivated 변수를 세이브-로드해 와야 함
             if(isActivated) gameObject.SetActive(false);
         }
 
@@ -79,9 +80,14 @@ namespace ToB.Entities.Obstacle
             rb.constraints = RigidbodyConstraints2D.FreezeRotation;
             hitbox.enabled = false;
             StopShaking();
-            yield return new WaitForSeconds(2f);
-            transform.position = initialPos;
-            gameObject.SetActive(false);
+            yield return new WaitForSeconds(0.1f);
+            while (rb.linearVelocity.magnitude > 0)
+            {
+                yield return new WaitForSeconds(0.2f);
+                transform.position = initialPos;
+                gameObject.SetActive(false);
+                yield return null;
+            }
         }
     }
 }
