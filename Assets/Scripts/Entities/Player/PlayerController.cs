@@ -159,8 +159,8 @@ namespace ToB.Player
 
         foreach (var hit in hits)
         {
-          if (hit.TryGetComponent<IInteractable>(out var interactable) &&
-              interactable is not { IsInteractable: true }) continue;
+          if (!hit.TryGetComponent<IInteractable>(out var interactable)) continue;
+          if (!interactable.IsInteractable) continue;
         
           var distance = Vector2.Distance(character.transform.position, hit.transform.position);
 
@@ -170,7 +170,7 @@ namespace ToB.Player
           nearestDistance = distance;
         }
 
-        Interact(nearest);
+        if (nearest != null) Interact(nearest);
       }
     }
 
