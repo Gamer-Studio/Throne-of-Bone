@@ -16,13 +16,24 @@ namespace ToB.Entities
         [field:SerializeField] public SpriteRenderer Sprite { get; private set; }
         [field:SerializeField] public EnemyKnockback Knockback { get; protected set; }
         [field:SerializeField] public BoxCollider2D Hitbox { get; private set; }
-
-        private Coroutine damageColorCoroutine;
         
         public bool IsGrounded => Physics.IsGrounded();
         
         public bool IsTargetLeft => target && GetTargetDirection().x < 0;
         public Vector2 LookDirectionHorizontal => transform.localScale.x < 0 ? Vector2.left : Vector2.right;
+
+        /// <summary>
+        /// 타겟 위치에 따라 Vector2.Right나 Vector2.Left를 반환합니다.
+        /// </summary>
+        public Vector2 TargetDirectionHorizontal
+        {
+            get
+            {
+                if (!target) return Vector2.zero;
+                Vector2 posDiff = target.position - transform.position;
+                return posDiff.x > 0 ? Vector2.right : Vector2.left;
+            }
+        }
         
         [Header("타겟")]
         public Transform target;
@@ -110,8 +121,15 @@ namespace ToB.Entities
         public void LookHorizontal(Vector2 direction)
         {
             Vector3 scale = transform.localScale;
-            scale.x = direction.x;
+            scale.x = direction.x > 0 ? 1 : -1;;
             transform.localScale = scale;
+        }
+
+        public void LookTarget()
+        {
+            if (!target) return;
+            Vector2 dir = target.position - transform.position;
+            LookHorizontal(dir);
         }
     }
 }

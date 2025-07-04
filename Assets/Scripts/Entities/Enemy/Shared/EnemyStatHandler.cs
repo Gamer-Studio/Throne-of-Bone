@@ -1,5 +1,6 @@
+using System;
 using System.Collections;
-using Unity.Collections;
+using NaughtyAttributes;
 using UnityEngine;
 
 namespace ToB.Entities
@@ -15,6 +16,8 @@ namespace ToB.Entities
         [SerializeField, ReadOnly] private float def;
         public float CurrentHP => currentHP;
 
+        public Coroutine DamageEffectCoroutine { get; private set; }
+        public bool OnDamageEffect { get; private set; }
         public void Init(Enemy enemy, float hp, float def = 0)
         {
             this.enemy = enemy;
@@ -40,11 +43,12 @@ namespace ToB.Entities
             ChangeHP(-actualDamage);
             enemy.OnTakeDamage(sender);
             
-            StartCoroutine(DamageColorOverlay());
+            DamageEffectCoroutine = StartCoroutine(DamageColorOverlay());
         }
         
         IEnumerator DamageColorOverlay()
         {
+            OnDamageEffect = true;
             enemy.Sprite.material.SetFloat("_Alpha", 1);
             float duration = 0.3f;
             float remainedTime = duration;
@@ -56,6 +60,12 @@ namespace ToB.Entities
                 if (remainedTime < 0) remainedTime = 0;
                 enemy.Sprite.material.SetFloat("_Alpha", remainedTime / duration);
             }
+            OnDamageEffect = false;
+        }
+
+        private void OnDestroy()
+        {
+            if(DamageEffectCoroutine != null) StopCoroutine(DamageEffectCoroutine);
         }
     }
 }

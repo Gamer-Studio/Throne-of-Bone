@@ -5,20 +5,22 @@ using UnityEngine;
 
 namespace ToB.Entities
 {
-    
     public class EnemyKnockback : MonoBehaviour, IKnockBackable
     {
-        [SerializeField, ReadOnly]private Enemy enemy;
+        [SerializeField, ReadOnly] private Enemy enemy;
 
-        private readonly string KnockbackHash  = "Knockback";
+        private readonly string KnockbackHash = "Knockback";
         [SerializeField, ReadOnly] private float knockbackMultiplier;
-        
+
         Coroutine knockbackCoroutine;
-        
+
+        public bool isActive;
+
         public void Init(Enemy enemy, float knockbackMultiplier)
         {
             this.enemy = enemy;
             this.knockbackMultiplier = knockbackMultiplier;
+            isActive = true;
         }
 
         public void KnockBack(float force, Vector2 direction)
@@ -28,10 +30,12 @@ namespace ToB.Entities
                 Debug.Log("넉백 컴포넌트를 초기화해주세요 : " + gameObject.name);
                 return;
             }
-            Vector2 knockbackVector = direction * force * knockbackMultiplier;
-           
+
+            if (!isActive) return;
             
-            if(knockbackCoroutine != null) StopCoroutine(knockbackCoroutine);
+            Vector2 knockbackVector = direction * force * knockbackMultiplier;
+
+            if (knockbackCoroutine != null) StopCoroutine(knockbackCoroutine);
             knockbackCoroutine = StartCoroutine(Knockback(knockbackVector));
         }
 
@@ -42,14 +46,16 @@ namespace ToB.Entities
             float elapsedTime = 0;
             while (elapsedTime < duration)
             {
-                enemy.Physics.externalVelocity[KnockbackHash] = Vector2.Lerp(enemy.Physics.externalVelocity[KnockbackHash], Vector2.zero, elapsedTime / duration);
+                enemy.Physics.externalVelocity[KnockbackHash] =
+                    Vector2.Lerp(enemy.Physics.externalVelocity[KnockbackHash], Vector2.zero, elapsedTime / duration);
                 elapsedTime += Time.fixedDeltaTime;
                 yield return new WaitForFixedUpdate();
             }
+
             enemy.Physics.externalVelocity.Remove(KnockbackHash);
         }
 
-        public void KnockBack(float value, GameObject sender) => KnockBack(value, transform.position - sender.transform.position);
-
+        public void KnockBack(float value, GameObject sender) =>
+            KnockBack(value, transform.position - sender.transform.position);
     }
 }

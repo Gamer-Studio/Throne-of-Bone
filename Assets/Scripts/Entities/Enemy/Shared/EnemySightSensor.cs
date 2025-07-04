@@ -1,4 +1,5 @@
 using System;
+using UnityEditor;
 using UnityEngine;
 
 namespace ToB.Entities
@@ -16,6 +17,7 @@ namespace ToB.Entities
 
         [SerializeField] private Transform targetInRange;
 
+        public Transform TargetInRange => targetInRange;
         private void Awake()
         {
             if (!circleCollider) circleCollider = GetComponent<CircleCollider2D>();
@@ -68,18 +70,36 @@ namespace ToB.Entities
             
             if (!targetInRange) return;
 
-            Vector2 rayDirection = (targetInRange.position - transform.position).normalized;
+            Vector2 posDiff = targetInRange.position - transform.position;
+            float distance = posDiff.magnitude;
+
+            if (distance < 1f)
+            {
+                enemy.target = targetInRange;
+                return;
+            }
+            
+            Vector2 rayDirection = posDiff.normalized;
+            
             Debug.DrawRay(transform.position, rayDirection * sightRange, Color.red);
 
             RaycastHit2D hit = Physics2D.Raycast(transform.position, rayDirection, sightRange, rayMask);
 
-            if (!hit) return;
+            if (!hit)
+            {
+                EditorApplication.isPaused = true;
+                return;
+            }
 
             if ((1 << hit.collider.gameObject.layer & playerMask) == 0) return;
             
             // 시야 각도 계산
             float angle = Mathf.Abs(Vector2.SignedAngle(enemy.LookDirectionHorizontal, rayDirection));
-            if (angle > sightAngle / 2) return;
+            if (angle > sightAngle / 2)
+            {
+                Debug.Log("각도 안에 없음");
+                return;
+            }
             
             enemy.target = targetInRange;
         }

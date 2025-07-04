@@ -12,7 +12,10 @@ namespace ToB.Entities
         public static readonly int Dash = Animator.StringToHash("Dash");
         public static readonly int Attack = Animator.StringToHash("Attack");
         public static readonly int Die = Animator.StringToHash("Die");
-
+        public static readonly int Sleep = Animator.StringToHash("Sleep");
+        public static readonly int WakeUp = Animator.StringToHash("WakeUp");
+        public static readonly int Bark = Animator.StringToHash("Bark");
+        
         public static readonly int MotionCancel = Animator.StringToHash("MotionCancel");
     }
 }
