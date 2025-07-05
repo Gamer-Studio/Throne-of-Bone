@@ -65,6 +65,7 @@ namespace ToB.Player
     [Label("점프 파워"), Foldout("Jump State")] public float jumpPower = 10;
     [Label("최대 점프 시간"), Foldout("Jump State")] public float jumpTimeLimit = 0.2f;
     [Label("낙하시 중력가속도 보정값"), Foldout("Jump State")] public float gravityAcceleration = 10;
+    [Label("낙하시 시작 중력값"), Foldout("Jump State")] public float gravityStart = -10;
 
     // 이 아래는 외부 접근용 연결 필드입니다.
     // 캐릭터가 공중인지 여부입니다.
@@ -269,6 +270,7 @@ namespace ToB.Player
       if(jumpCoroutine != null)
       {
         StopCoroutine(jumpCoroutine);
+        body.linearVelocityY = gravityStart;
         jumpCoroutine = null;
       }
     }
@@ -280,10 +282,12 @@ namespace ToB.Player
       var jumpTime = 0f;
       while (jumpTime < jumpTimeLimit)
       {
-        body.AddRelativeForce(Vector2.up * (jumpPower * (Time.deltaTime / jumpTimeLimit)), ForceMode2D.Impulse);
+        body.linearVelocityY = jumpPower;
         jumpTime += Time.deltaTime;
         yield return new WaitForFixedUpdate();
       }
+      
+      body.linearVelocityY = gravityStart;
       
       jumpCoroutine = null;
     }
