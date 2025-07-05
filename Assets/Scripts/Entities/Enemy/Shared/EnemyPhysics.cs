@@ -212,8 +212,7 @@ namespace ToB.Entities
 
         private bool CheckCollision(Vector2 direction)
         {
-            Vector2 origin = (Vector2)transform.position +
-                             (Vector2)terrainSensor.gameObject.transform.localPosition +
+            Vector2 origin = (Vector2)terrainSensor.gameObject.transform.position +
                              terrainSensor.offset;
             
             Vector2 castSize = terrainSensor.size;

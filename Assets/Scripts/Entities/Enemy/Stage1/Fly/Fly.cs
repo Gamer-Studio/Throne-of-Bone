@@ -8,7 +8,7 @@ namespace ToB.Entities
 {
     public class Fly : Enemy
     {
-        [field:SerializeField] public FlySO DataSO { get; private set; }
+        public FlySO DataSO => EnemySO as FlySO;
         [field:SerializeField] public Hive Hive { get; private set; }
         
         [field:SerializeField] public FlyFSM FSM { get; private set; }
@@ -20,7 +20,7 @@ namespace ToB.Entities
 
         public bool IsInPatrolArea =>
             (Hive.PatrolRange.gameObject.transform.position - transform.position).sqrMagnitude <
-            Mathf.Pow(Hive.Data.PatrolRange, 2);
+            Mathf.Pow(Hive.DataSO.PatrolRange, 2);
 
         public bool TargetInAttackRange => (target.position - transform.position).sqrMagnitude < Mathf.Pow(DataSO.AttackRange, 2);
 
@@ -28,15 +28,15 @@ namespace ToB.Entities
         {
             base.Awake();
             Body.Init(this, DataSO.ATK);
-            RangeBaseSightSensor.Init(this, DataSO.SightRange, DataSO.SightAngle);
+            RangeBaseSightSensor.Init(this);
             Knockback = GetComponentInChildren<EnemyKnockback>();
-            Knockback.Init(this, DataSO.KnockbackApplier);;
+            Knockback.Init(this);
         }
 
         public void Init(Hive hive)
         {
             Hive = hive;
-            Stat.Init(this, DataSO.HP, 0);;
+            Stat.Init(this, DataSO);
             isAlive = true;
             Hitbox.enabled = true;
             FSM.Init();
@@ -65,7 +65,7 @@ namespace ToB.Entities
             
             stingObj.transform.position = transform.position;
             sting.LinearMovement.Init(direction, DataSO.StingSpeed);
-            sting.ContactDamage.Init(DataSO.ATK, DataSO.StingKnockbackPower, direction);
+            sting.ContactDamage.Init(DataSO, direction);
         }
     }
 }

@@ -151,6 +151,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b42831d272bb7e74a9d1e3cd122a0d7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemySO: {fileID: 11400000, guid: 48ad9d678d74fd14ca00258232724fbb, type: 2}
   rb: {fileID: 6882952686591417601}
   <Physics>k__BackingField: {fileID: 2188469504794650615}
   <Animator>k__BackingField: {fileID: 4826098411650096919}
@@ -160,7 +161,6 @@ MonoBehaviour:
   target: {fileID: 0}
   isAlive: 1
   <ReactOnDamage>k__BackingField: 0
-  dataSO: {fileID: 11400000, guid: 48ad9d678d74fd14ca00258232724fbb, type: 2}
   <EnemyKnockBack>k__BackingField: {fileID: 4655889773774227985}
   <Stat>k__BackingField: {fileID: 4112973784899966955}
   <FSM>k__BackingField: {fileID: 7580693195618307299}
@@ -268,8 +268,6 @@ MonoBehaviour:
   rayMask:
     serializedVersion: 2
     m_Bits: 192
-  sightRange: 0
-  sightAngle: 0
   targetInRange: {fileID: 0}
 --- !u!1 &7889824204698654960
 GameObject:
@@ -411,7 +409,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemy: {fileID: 0}
-  knockbackMultiplier: 0
   isActive: 0
 --- !u!114 &4112973784899966955
 MonoBehaviour:
@@ -425,9 +422,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53ab476cda1b5a342a8c9589483b3fc8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxHP: 0
   currentHP: 0
-  def: 0
 --- !u!1 &8551193108162088175
 GameObject:
   m_ObjectHideFlags: 0

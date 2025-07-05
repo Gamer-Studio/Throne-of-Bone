@@ -198,8 +198,6 @@ MonoBehaviour:
   rayMask:
     serializedVersion: 2
     m_Bits: 192
-  sightRange: 0
-  sightAngle: 0
   targetInRange: {fileID: 0}
 --- !u!1 &2507445231334073099
 GameObject:
@@ -340,9 +338,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53ab476cda1b5a342a8c9589483b3fc8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxHP: 0
   currentHP: 0
-  def: 0
 --- !u!114 &4462746819144977101
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -356,7 +352,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemy: {fileID: 0}
-  knockbackMultiplier: 0
   isActive: 0
 --- !u!1 &2841746823565301905
 GameObject:
@@ -430,6 +425,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ab8efcb8b020384da7cba03c54bd079, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemySO: {fileID: 11400000, guid: 9b60a89763b2a46489da20b46d7ee80f, type: 2}
   rb: {fileID: 6100593733163253891}
   <Physics>k__BackingField: {fileID: 3936453283081302514}
   <Animator>k__BackingField: {fileID: 6185246956509188522}
@@ -439,7 +435,6 @@ MonoBehaviour:
   target: {fileID: 0}
   isAlive: 0
   <ReactOnDamage>k__BackingField: 1
-  <DataSO>k__BackingField: {fileID: 11400000, guid: 9b60a89763b2a46489da20b46d7ee80f, type: 2}
   <Hive>k__BackingField: {fileID: 0}
   <FSM>k__BackingField: {fileID: 8877133992337474133}
   <Body>k__BackingField: {fileID: 7398618763622413336}

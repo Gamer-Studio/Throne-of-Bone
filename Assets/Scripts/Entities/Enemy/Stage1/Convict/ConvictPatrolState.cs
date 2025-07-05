@@ -8,7 +8,7 @@ namespace ToB.Entities
         private readonly Convict owner;
         ConvictFSM ownerFSM;
 
-        public ConvictPatrolState(EnemyStrategy strategy, float moveSpeed, Action EndCallback = null) : base(strategy, moveSpeed, EndCallback)
+        public ConvictPatrolState(EnemyStrategy strategy, Action EndCallback = null) : base(strategy, EndCallback)
         {
             ownerFSM = strategy as ConvictFSM;
            owner = ownerFSM.Owner;

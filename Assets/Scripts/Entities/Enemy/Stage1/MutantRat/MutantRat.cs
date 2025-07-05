@@ -7,7 +7,7 @@ namespace ToB.Entities
         IEnemyHitPart
     {
         
-        [field:SerializeField] public MutantRatSO DataSO { get; private set; }
+        public MutantRatSO DataSO => EnemySO as MutantRatSO;
         [field:SerializeField] public EnemyStatHandler Stat { get; private set; }
         [field:SerializeField] public EnemyRangeBaseSightSensor RangeBaseSightSensor { get; private set; }
         [field:SerializeField] public EnemySimpleSensor AttackSensor { get; private set; }
@@ -19,9 +19,9 @@ namespace ToB.Entities
         protected override void Awake()
         {
             base.Awake();
-            Stat.Init(this, DataSO.HP, 0);
-            Knockback.Init(this, DataSO.KnockbackMultiplier);
-            RangeBaseSightSensor.Init(this, DataSO.SightRange, DataSO.SightAngle);
+            Stat.Init(this, DataSO);
+            Knockback.Init(this);
+            RangeBaseSightSensor.Init(this);
             FSM.Init();
             deathEffect.gameObject.SetActive(false);
         }

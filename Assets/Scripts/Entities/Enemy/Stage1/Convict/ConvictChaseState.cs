@@ -6,13 +6,11 @@ namespace ToB.Entities
     public class ConvictChaseState : GroundDefaultChasePattern
     {
         private readonly Convict convict;
-        private ConvictFSM fsm;
 
         public ConvictChaseState(EnemyStrategy strategy, float chaseSpeed, Action EndCallback = null) : base(strategy,
             chaseSpeed, EndCallback)
         {
-            fsm = strategy as ConvictFSM;
-            convict = fsm.Owner;
+            convict = enemy as Convict;
         }
 
         public override void Enter()

@@ -37,6 +37,7 @@ namespace ToB.Entities
                 else
                 {
                     Decelerate();
+                    
                 }
 
                 return;
@@ -75,6 +76,11 @@ namespace ToB.Entities
 
         private void Decelerate()
         {
+            if (enemy.Physics.IsLedgeOnSide( enemy.TargetDirectionHorizontal))
+            {
+                enemy.Physics.externalVelocity[ROLL_KEY] = Vector2.zero;
+                return;
+            }
             Vector2 currentVelocity = enemy.Physics.externalVelocity[ROLL_KEY];
 
             int sign = currentVelocity.x > 0 ? -1 : 1;

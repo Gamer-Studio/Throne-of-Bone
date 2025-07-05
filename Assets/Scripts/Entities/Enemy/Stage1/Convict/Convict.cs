@@ -8,9 +8,7 @@ namespace ToB.Entities
     public class Convict : Enemy
     {
         [Header("죄수")] 
-        [Expandable]
-        [SerializeField] private ConvictSO dataSO;
-        public ConvictSO DataSo => dataSO;
+        public ConvictSO DataSO => EnemySO as ConvictSO;
         
         [field:SerializeField] public EnemyKnockback EnemyKnockBack { get; private set; }
         [field:SerializeField] public EnemyStatHandler Stat { get; private set; }
@@ -45,11 +43,11 @@ namespace ToB.Entities
             if (!AttackSensor) AttackSensor = GetComponentInChildren<EnemySimpleSensor>();
             if (!EnemyBody) EnemyBody = GetComponentInChildren<EnemyBody>();
             
-            EnemyKnockBack.Init(this, DataSo.KnockbackMultiplier);
-            Stat.Init(this, DataSo.HP, 0);
-            RangeBaseSightSensor.Init(this, DataSo.SightRange, DataSo.SightAngle);
-            AttackArea.Init(this, DataSo.ATK, DataSo.ATKKnockbackForce, DataSo.ATKKnockbackDirection);
-            EnemyBody.Init(this, DataSo.BodyDamage);
+            EnemyKnockBack.Init(this);
+            Stat.Init(this, DataSO);
+            RangeBaseSightSensor.Init(this);
+            AttackArea.Init(this, DataSO.ATK, DataSO.ATKKnockbackForce, DataSO.ATKKnockbackDirection);
+            EnemyBody.Init(this, DataSO.BodyDamage);
         }
 
         protected override void Die()

@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using NaughtyAttributes;
 using ToB.Player;
 using UnityEngine;
 
@@ -8,7 +9,9 @@ namespace ToB.Entities
     [RequireComponent(typeof(EnemyPhysics))]
     public abstract class Enemy : MonoBehaviour
     {
-        [Header("기본 참조")]      
+        [Header("기본 참조")] 
+        [Expandable, SerializeField] protected EnemySO enemySO;
+        public EnemySO EnemySO => enemySO;
         [SerializeField] private Rigidbody2D rb;
         public Rigidbody2D Rb => rb;
         [field:SerializeField] public EnemyPhysics Physics { get; private set; }

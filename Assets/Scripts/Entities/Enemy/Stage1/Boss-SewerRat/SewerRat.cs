@@ -8,7 +8,7 @@ namespace ToB.Entities
 {
     public class SewerRat : Enemy
     {
-        [field: SerializeField] public SewerRatSO DataSO { get; private set; }
+        public SewerRatSO DataSO => EnemySO as SewerRatSO;
         [field: SerializeField] public SewerRatStrategy Strategy { get; private set; }
        
         [SerializeField] private EnemyStatHandler stat;
@@ -37,8 +37,8 @@ namespace ToB.Entities
         private void Start()
         {
             Strategy.Init();
-            Knockback.Init(this, DataSO.KnockbackMultiplier);
-            stat.Init(this, DataSO.HP, DataSO.DEF);
+            Knockback.Init(this);
+            stat.Init(this, DataSO);
             EnemyBody.Init(this, DataSO.BodyDamage);
         }
 

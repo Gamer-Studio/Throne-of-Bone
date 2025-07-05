@@ -20,8 +20,8 @@ namespace ToB.Entities
         public override void Init()
         {
             attackState = new ConvictAttackState(this);
-            chaseState = new ConvictChaseState(this, Owner.DataSo.ChaseSpeed);
-            patrolState = new ConvictPatrolState(this, Owner.DataSo.MoveSpeed);
+            chaseState = new ConvictChaseState(this, Owner.DataSO.ChaseSpeed);
+            patrolState = new ConvictPatrolState(this);
             IdleState = new ConvictIdleState(this);
             
             ChangePattern(patrolState);

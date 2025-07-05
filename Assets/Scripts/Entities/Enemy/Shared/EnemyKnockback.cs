@@ -8,18 +8,19 @@ namespace ToB.Entities
     public class EnemyKnockback : MonoBehaviour, IKnockBackable
     {
         [SerializeField, ReadOnly] private Enemy enemy;
+        private IEnemyKnockbackSO knockbackSO;
 
         private readonly string KnockbackHash = "Knockback";
-        [SerializeField, ReadOnly] private float knockbackMultiplier;
+        float KnockbackMultiplier => knockbackSO.KnockbackMultiplier;
 
         Coroutine knockbackCoroutine;
 
         public bool isActive;
 
-        public void Init(Enemy enemy, float knockbackMultiplier)
+        public void Init(Enemy enemy)
         {
             this.enemy = enemy;
-            this.knockbackMultiplier = knockbackMultiplier;
+            knockbackSO = enemy.EnemySO as IEnemyKnockbackSO;
             isActive = true;
         }
 
@@ -33,7 +34,7 @@ namespace ToB.Entities
 
             if (!isActive) return;
             
-            Vector2 knockbackVector = direction * force * knockbackMultiplier;
+            Vector2 knockbackVector = direction * force * KnockbackMultiplier;
 
             if (knockbackCoroutine != null) StopCoroutine(knockbackCoroutine);
             knockbackCoroutine = StartCoroutine(Knockback(knockbackVector));
