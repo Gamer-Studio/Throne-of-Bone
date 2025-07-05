@@ -10094,7 +10094,7 @@ Transform:
   m_GameObject: {fileID: 3081770651317235590}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.06, y: 0.97, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -10120,6 +10120,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ac671beddd203b4eb5bab039c208f54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemySO: {fileID: 11400000, guid: fe5cc8a158a39a54e8e5f2b84ce29dba, type: 2}
   rb: {fileID: 1086493658396314520}
   <Physics>k__BackingField: {fileID: 3274423059247459717}
   <Animator>k__BackingField: {fileID: 8307894112172803428}
@@ -10129,13 +10130,13 @@ MonoBehaviour:
   target: {fileID: 0}
   isAlive: 0
   <ReactOnDamage>k__BackingField: 0
-  <DataSO>k__BackingField: {fileID: 11400000, guid: fe5cc8a158a39a54e8e5f2b84ce29dba, type: 2}
   <Strategy>k__BackingField: {fileID: 9076656960145260971}
   stat: {fileID: 6337745576739767016}
   deathBleed: {fileID: 6080410680826482338}
   deathExplode: {fileID: 6035450806633962828}
   <EnemyBody>k__BackingField: {fileID: 7619258457699770287}
   specialPrefab: {fileID: 8371945790231750295, guid: 03a584b047ed86140a0b134742258bea, type: 3}
+  bossRoomLocation: {fileID: 0}
 --- !u!114 &9076656960145260971
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10148,7 +10149,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f929cfdca9dd56e429f3ae94bdc10b51, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <enemy>k__BackingField: {fileID: 0}
+  <enemy>k__BackingField: {fileID: 3678284196481772229}
   currentPatternString: 
   patternDistance: 2
   breathTime: 1
@@ -10316,6 +10317,7 @@ MonoBehaviour:
   hittableMask:
     serializedVersion: 2
     m_Bits: 64
+  <BoxCollider>k__BackingField: {fileID: 0}
 --- !u!50 &1086493658396314520
 Rigidbody2D:
   serializedVersion: 5
@@ -10356,7 +10358,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemy: {fileID: 0}
-  knockbackMultiplier: 0
+  isActive: 0
 --- !u!114 &6337745576739767016
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10369,9 +10371,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53ab476cda1b5a342a8c9589483b3fc8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxHP: 0
   currentHP: 0
-  def: 0
 --- !u!1 &7292867093486872287
 GameObject:
   m_ObjectHideFlags: 0

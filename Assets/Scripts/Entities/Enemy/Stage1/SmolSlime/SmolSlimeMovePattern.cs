@@ -5,12 +5,10 @@ namespace ToB.Entities
     public class SmolSlimeMovePattern:GroundDefaultMovePattern
     {
         private readonly SmolSlime slime;
-        private SmolSlimeFSM fsm;
 
-        public SmolSlimeMovePattern(EnemyStrategy strategy, float moveSpeed, Action EndCallback = null) : base(strategy, moveSpeed, EndCallback)
+        public SmolSlimeMovePattern(EnemyStrategy strategy, Action EndCallback = null) : base(strategy, EndCallback)
         {
-            fsm = strategy as SmolSlimeFSM;
-            this.slime = fsm.Owner;
+            slime = enemy as SmolSlime;
         }
 
         public override void Execute()

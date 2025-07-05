@@ -5,11 +5,12 @@ using UnityEngine;
 namespace ToB.Entities
 {
     [CreateAssetMenu(fileName = "SewerRatSO", menuName = "Scriptable Objects/Enemy/Stage1/SewerRatSO")]
-    public class SewerRatSO : EnemySO
+    public class SewerRatSO : 
+        EnemySO,
+        IEnemyHittableSO
     {
         [field: SerializeField] public float HP { get; private set; }
         [field: SerializeField] public float DEF { get; private set; }
-        
         [field: SerializeField] public float BodyDamage { get; private set; }
         [field: SerializeField] public float RollDamage { get; private set; }
 

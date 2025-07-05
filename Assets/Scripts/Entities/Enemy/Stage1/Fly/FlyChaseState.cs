@@ -17,13 +17,6 @@ namespace ToB.Entities
             fsm = strategy as FlyFSM;
         }
 
-        public override void Enter()
-        {
-            base.Enter();
-            
-            
-        }
-
         public override void Execute()
         {
             base.Execute();

@@ -48,7 +48,6 @@ namespace ToB.Entities.Projectiles
       {
         damageable.Damage(damage, this);
         gameObject.Release();
-        Debug.Log("ㅇㅅㅇ");
       }
     }
 

@@ -8,15 +8,14 @@ namespace ToB
 {
     public class Hive : Enemy
     {
-        [Expandable] [SerializeField] HiveSO data;
-        public HiveSO Data => data;
+        public HiveSO DataSO { get; private set; }
         [field: SerializeField] GameObject flyPrefab;
         [field: SerializeField] public List<GameObject> flies;
 
         [field: SerializeField] private EnemyStatHandler stat;
         [field: SerializeField] public CircleLocation PatrolRange { get; private set; }
         [field: SerializeField] public CircleLocation ChaseRange { get; private set; }
-        [field: SerializeField] public EnemySightSensor SightSensor { get; private set; }
+        [field: SerializeField] public EnemyRangeBaseSightSensor RangeBaseSightSensor { get; private set; }
 
         private float lastSummonTime;
 
@@ -25,10 +24,11 @@ namespace ToB
             base.Awake();
 
             flies = new List<GameObject>();
-            stat.Init(this, Data.HP);
-            PatrolRange.Init(Data.PatrolRange);
-            ChaseRange.Init(Data.ChaseRange);
-            SightSensor.Init(this,Data.ChaseRange,360);
+            stat.Init(this, DataSO);
+            PatrolRange.Init(DataSO.PatrolRange);
+            ChaseRange.Init(DataSO.ChaseRange);
+            RangeBaseSightSensor.Init(this);
+            DataSO = enemySO as HiveSO;
         }
 
         protected override void Reset()
@@ -41,7 +41,7 @@ namespace ToB
         {
             lastSummonTime += Time.deltaTime;
 
-            if (lastSummonTime > Data.FlyRegenTimeInterval && flies.Count < Data.FlyRegenAmount)
+            if (lastSummonTime > DataSO.FlyRegenTimeInterval && flies.Count < DataSO.FlyRegenAmount)
             {
                 SummonFly();
             }

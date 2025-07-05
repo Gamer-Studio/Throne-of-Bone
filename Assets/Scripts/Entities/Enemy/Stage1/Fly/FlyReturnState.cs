@@ -30,9 +30,7 @@ namespace ToB.Entities
             prevPosition = enemy.transform.position;
             
             enemy.LookHorizontal(direction.x > 0 ? Vector2.right : Vector2.left);
-            owner.Body.gameObject.SetActive(false);
-            
-            Debug.Log("Return");
+            owner.Body.BoxCollider.enabled = false;
         }
         public override void FixedExecute()
         {
@@ -53,8 +51,8 @@ namespace ToB.Entities
         {
             base.Exit();
             enemy.Physics.externalVelocity.Remove(RETURN_KEY);
-            owner.Body.gameObject.SetActive(true);
-            owner.Stat.Init(owner, owner.DataSO.HP);
+            owner.Body.BoxCollider.enabled = true;
+            owner.Stat.SetDefault();
         }
     }
 }

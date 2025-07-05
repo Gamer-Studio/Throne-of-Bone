@@ -8,15 +8,14 @@ namespace ToB.Entities
         private const string ChaseKey = "Chase";
         private readonly SmolSlime slime;
         private SmolSlimeFSM fsm;
-        private readonly float chaseSpeed;
+        private float ChaseSpeed => slime.DataSO.ChaseSpeed;
         float destinationX;
 
-        public SmolSlimeChasePattern(EnemyStrategy strategy, float chaseSpeed, Action EndCallback = null) : base(strategy, EndCallback)
+        public SmolSlimeChasePattern(EnemyStrategy strategy, Action EndCallback = null) : base(strategy, EndCallback)
         {
             fsm = strategy as SmolSlimeFSM;;
             slime = fsm.Owner;
             slime = enemy as SmolSlime;
-            this.chaseSpeed = chaseSpeed;
         }
 
 
@@ -24,7 +23,7 @@ namespace ToB.Entities
         public override void Enter()
         {
             base.Enter();
-            enemy.Physics.externalVelocity[ChaseKey] = enemy.LookDirectionHorizontal * chaseSpeed;
+            enemy.Physics.externalVelocity[ChaseKey] = enemy.LookDirectionHorizontal * ChaseSpeed;
             destinationX = enemy.target.transform.position.x;
         }
 

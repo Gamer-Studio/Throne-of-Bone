@@ -6,8 +6,10 @@ namespace ToB.Entities
 {
     public class ContactDamage : MonoBehaviour
     {
-        
-        public float damage;
+        private IConatactDamageSO attackSO;
+        public float ATK => attackSO?.ATK ?? nonSODamage;
+
+        public float nonSODamage;
         public float knockBackPower;
         public Vector2 knockBackDirection;
         
@@ -20,10 +22,14 @@ namespace ToB.Entities
             playerMask = LayerMask.GetMask("Player");
         }
 
-        public void Init(float damage, float knockBackPower, Vector2 knockBackDirection = default, bool fixedDirection = true)
+        private void Awake()
         {
-            this.damage = damage;
-            this.knockBackPower = knockBackPower;
+            directional = true;
+        }
+
+        public void Init(IConatactDamageSO attackSO = null, Vector2 knockBackDirection = default, bool fixedDirection = true)
+        {
+            this.attackSO = attackSO;
             this.knockBackDirection = knockBackDirection;
             directional = fixedDirection;
         }
@@ -34,7 +40,7 @@ namespace ToB.Entities
         {
             if ((playerMask & 1 << other.gameObject.layer) != 0)
             {
-                other.Damage(damage);
+                other.Damage(ATK);
                 if(directional) other.KnockBack(knockBackPower, knockBackDirection);
                 else other.KnockBack(knockBackPower, gameObject);
             }

@@ -6,10 +6,10 @@ namespace ToB.Entities
     public class GroundDefaultMovePattern:EnemyPattern
     {
         private readonly string MoveKey = "Move";
-        private readonly float baseMoveSpeed;
-        public GroundDefaultMovePattern(EnemyStrategy strategy, float moveSpeed, Action EndCallback = null) : base(strategy, EndCallback)
+        private float BaseMoveSpeed => ((IEnemyGroundMoveSO)enemy.EnemySO).MoveSpeed;
+        public GroundDefaultMovePattern(EnemyStrategy strategy, Action EndCallback = null) : base(strategy, EndCallback)
         {
-            baseMoveSpeed = moveSpeed;
+
         }
         
         public override void FixedExecute()
@@ -37,7 +37,7 @@ namespace ToB.Entities
                     enemy.LookHorizontal(Vector2.left);
                 }
             }
-            enemy.Physics.externalVelocity[MoveKey] = enemy.LookDirectionHorizontal * baseMoveSpeed;   
+            enemy.Physics.externalVelocity[MoveKey] = enemy.LookDirectionHorizontal * BaseMoveSpeed;   
             
         }
 
