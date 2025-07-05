@@ -8,7 +8,7 @@ namespace ToB.Entities
     public class Convict : Enemy
     {
         [Header("죄수")] 
-        public ConvictSO DataSO => EnemySO as ConvictSO;
+        public ConvictSO DataSO { get; private set; }
         
         [field:SerializeField] public EnemyKnockback EnemyKnockBack { get; private set; }
         [field:SerializeField] public EnemyStatHandler Stat { get; private set; }
@@ -22,6 +22,7 @@ namespace ToB.Entities
         {
             base.Awake();
             InitProperties();
+            DataSO = enemySO as ConvictSO;
         }
 
         private void Start()

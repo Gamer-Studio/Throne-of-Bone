@@ -7,7 +7,7 @@ namespace ToB.Entities
         IEnemyHitPart
     {
         
-        public MutantRatSO DataSO => EnemySO as MutantRatSO;
+        public MutantRatSO DataSO { get; private set; }
         [field:SerializeField] public EnemyStatHandler Stat { get; private set; }
         [field:SerializeField] public EnemyRangeBaseSightSensor RangeBaseSightSensor { get; private set; }
         [field:SerializeField] public EnemySimpleSensor AttackSensor { get; private set; }
@@ -24,6 +24,7 @@ namespace ToB.Entities
             RangeBaseSightSensor.Init(this);
             FSM.Init();
             deathEffect.gameObject.SetActive(false);
+            DataSO = enemySO as MutantRatSO;
         }
         protected override void Reset()
         {

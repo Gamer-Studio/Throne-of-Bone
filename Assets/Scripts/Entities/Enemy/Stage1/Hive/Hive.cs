@@ -8,7 +8,7 @@ namespace ToB
 {
     public class Hive : Enemy
     {
-        public HiveSO DataSO => enemySO as HiveSO;
+        public HiveSO DataSO { get; private set; }
         [field: SerializeField] GameObject flyPrefab;
         [field: SerializeField] public List<GameObject> flies;
 
@@ -28,6 +28,7 @@ namespace ToB
             PatrolRange.Init(DataSO.PatrolRange);
             ChaseRange.Init(DataSO.ChaseRange);
             RangeBaseSightSensor.Init(this);
+            DataSO = enemySO as HiveSO;
         }
 
         protected override void Reset()

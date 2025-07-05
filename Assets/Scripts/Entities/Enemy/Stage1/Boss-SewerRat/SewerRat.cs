@@ -8,7 +8,7 @@ namespace ToB.Entities
 {
     public class SewerRat : Enemy
     {
-        public SewerRatSO DataSO => EnemySO as SewerRatSO;
+        public SewerRatSO DataSO { get; private set; }
         [field: SerializeField] public SewerRatStrategy Strategy { get; private set; }
        
         [SerializeField] private EnemyStatHandler stat;
@@ -30,6 +30,7 @@ namespace ToB.Entities
             
             deathBleed.gameObject.SetActive(false);
             deathExplode.gameObject.SetActive(false);
+            DataSO = enemySO as SewerRatSO;
 
             bossRoomLocation.OnPlayerEntered += DetectPlayer;
         }

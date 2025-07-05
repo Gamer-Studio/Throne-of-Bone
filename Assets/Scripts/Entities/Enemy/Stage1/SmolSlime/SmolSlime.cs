@@ -9,7 +9,7 @@ namespace ToB.Entities
     public class SmolSlime : Enemy
     {
         [Header("슬라임")] 
-        public SmolSlimeSO DataSO => EnemySO as SmolSlimeSO;
+        public SmolSlimeSO DataSO { get; private set; }
         [field:SerializeField] public EnemyKnockback EnemyKnockBack { get; private set; }
         [field:SerializeField] public EnemyStatHandler Stat { get; private set; }
         [field:SerializeField] public SmolSlimeFSM FSM {get; private set;}
@@ -20,6 +20,7 @@ namespace ToB.Entities
         {
             base.Awake();
             InitProperties();
+            DataSO = enemySO as SmolSlimeSO;
         }
 
         private void Start()

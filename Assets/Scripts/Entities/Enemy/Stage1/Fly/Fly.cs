@@ -8,7 +8,7 @@ namespace ToB.Entities
 {
     public class Fly : Enemy
     {
-        public FlySO DataSO => EnemySO as FlySO;
+        public FlySO DataSO { get; private set; }
         [field:SerializeField] public Hive Hive { get; private set; }
         
         [field:SerializeField] public FlyFSM FSM { get; private set; }
@@ -31,6 +31,7 @@ namespace ToB.Entities
             RangeBaseSightSensor.Init(this);
             Knockback = GetComponentInChildren<EnemyKnockback>();
             Knockback.Init(this);
+            DataSO = enemySO as FlySO;
         }
 
         public void Init(Hive hive)
