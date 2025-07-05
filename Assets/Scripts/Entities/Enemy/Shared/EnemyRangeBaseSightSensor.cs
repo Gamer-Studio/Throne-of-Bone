@@ -107,7 +107,6 @@ namespace ToB.Entities
             float angle = Mathf.Abs(Vector2.SignedAngle(enemy.LookDirectionHorizontal, rayDirection));
             if (angle > SightAngle / 2)
             {
-                Debug.Log("각도 안에 없음");
                 return;
             }
             
