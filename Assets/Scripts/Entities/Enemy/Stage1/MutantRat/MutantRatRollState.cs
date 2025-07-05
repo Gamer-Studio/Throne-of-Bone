@@ -37,7 +37,6 @@ namespace ToB.Entities
                 else
                 {
                     Decelerate();
-                    
                 }
 
                 return;
@@ -54,7 +53,8 @@ namespace ToB.Entities
             Vector2 targetDirHorizontal = enemy.TargetDirectionHorizontal;
 
             // 진행 방향 낭떠러지 감지시 더 가지 않기
-            if (enemy.Physics.IsLedgeOnSide(targetDirHorizontal))
+            if (enemy.Physics.externalVelocity[ROLL_KEY].x != 0 &&
+                enemy.Physics.IsLedgeOnSide(enemy.Physics.externalVelocity[ROLL_KEY].x > 0 ? Vector2.right : Vector2.left))
             {
                 enemy.Physics.externalVelocity[ROLL_KEY] = Vector2.zero;
             }
@@ -76,7 +76,8 @@ namespace ToB.Entities
 
         private void Decelerate()
         {
-            if (enemy.Physics.IsLedgeOnSide( enemy.TargetDirectionHorizontal))
+            if (enemy.Physics.externalVelocity[ROLL_KEY].x != 0 &&
+                enemy.Physics.IsLedgeOnSide(enemy.Physics.externalVelocity[ROLL_KEY].x > 0 ? Vector2.right : Vector2.left))
             {
                 enemy.Physics.externalVelocity[ROLL_KEY] = Vector2.zero;
                 return;
