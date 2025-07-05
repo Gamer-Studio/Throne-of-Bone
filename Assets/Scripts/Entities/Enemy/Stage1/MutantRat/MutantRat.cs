@@ -9,7 +9,8 @@ namespace ToB.Entities
         
         [field:SerializeField] public MutantRatSO DataSO { get; private set; }
         [field:SerializeField] public EnemyStatHandler Stat { get; private set; }
-        [field:SerializeField] public EnemySightSensor SightSensor { get; private set; }
+        [field:SerializeField] public EnemyRangeBaseSightSensor RangeBaseSightSensor { get; private set; }
+        [field:SerializeField] public EnemySimpleSensor AttackSensor { get; private set; }
         [field:SerializeField] public MutantRatFSM FSM { get; private set; }
         
         [field:SerializeField] public ParticleSystem deathEffect { get; private set; }
@@ -20,7 +21,7 @@ namespace ToB.Entities
             base.Awake();
             Stat.Init(this, DataSO.HP, 0);
             Knockback.Init(this, DataSO.KnockbackMultiplier);
-            SightSensor.Init(this, DataSO.SightRange, DataSO.SightAngle);
+            RangeBaseSightSensor.Init(this, DataSO.SightRange, DataSO.SightAngle);
             FSM.Init();
             deathEffect.gameObject.SetActive(false);
         }

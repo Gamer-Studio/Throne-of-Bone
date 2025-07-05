@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace ToB
+namespace ToB.Entities
 {
     public class EnemySimpleSensor : MonoBehaviour
     {

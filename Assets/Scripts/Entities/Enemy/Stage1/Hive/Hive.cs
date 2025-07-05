@@ -16,7 +16,7 @@ namespace ToB
         [field: SerializeField] private EnemyStatHandler stat;
         [field: SerializeField] public CircleLocation PatrolRange { get; private set; }
         [field: SerializeField] public CircleLocation ChaseRange { get; private set; }
-        [field: SerializeField] public EnemySightSensor SightSensor { get; private set; }
+        [field: SerializeField] public EnemyRangeBaseSightSensor RangeBaseSightSensor { get; private set; }
 
         private float lastSummonTime;
 
@@ -28,7 +28,7 @@ namespace ToB
             stat.Init(this, Data.HP);
             PatrolRange.Init(Data.PatrolRange);
             ChaseRange.Init(Data.ChaseRange);
-            SightSensor.Init(this,Data.ChaseRange,360);
+            RangeBaseSightSensor.Init(this,Data.ChaseRange,360);
         }
 
         protected override void Reset()

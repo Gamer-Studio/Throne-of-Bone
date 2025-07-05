@@ -8,9 +8,10 @@ namespace ToB.Entities
     {
         private readonly MutantRat owner;
         private MutantRatFSM fsm;
-        
+
         const string ROLL_KEY = "Roll";
         private static readonly int ROLL_STATE_HASH = Animator.StringToHash("Base Layer.Roll");
+
         public MutantRatRollState(EnemyStrategy strategy, Action EndCallback = null) : base(strategy, EndCallback)
         {
             owner = enemy as MutantRat;
@@ -29,14 +30,19 @@ namespace ToB.Entities
         {
             base.Execute();
 
-            if (!enemy.target)
+            if (!enemy.target || !owner.AttackSensor.TargetInArea)
             {
-                Debug.Log(owner.SightSensor.transform.position + " || " + owner.SightSensor.TargetInRange.position);;
-                fsm.ChangePattern(fsm.idleState);
+                if (enemy.Physics.externalVelocity[ROLL_KEY] == Vector2.zero)
+                    fsm.ChangePattern(fsm.idleState);
+                else
+                {
+                    Decelerate();
+                }
+
                 return;
             }
-  
-            
+
+
             if (enemy.Animator.GetCurrentAnimatorStateInfo(0).fullPathHash != ROLL_STATE_HASH)
             {
                 return;
@@ -45,7 +51,7 @@ namespace ToB.Entities
             enemy.LookTarget();
 
             Vector2 targetDirHorizontal = enemy.TargetDirectionHorizontal;
-            
+
             // 진행 방향 낭떠러지 감지시 더 가지 않기
             if (enemy.Physics.IsLedgeOnSide(targetDirHorizontal))
             {
@@ -54,27 +60,34 @@ namespace ToB.Entities
             else
             {
                 // 타겟과 본인의 x값이 너무 가까우면 타겟과 x위치 통일
-                if (Mathf.Abs(enemy.target.transform.position.x - enemy.transform.position.x) < Mathf.Pow(owner.DataSO.MoveSpeedWhileRoll * Time.fixedDeltaTime, 2))
+                if (Mathf.Abs(owner.RangeBaseSightSensor.TargetRB.position.x - enemy.transform.position.x) <
+                    owner.DataSO.MoveSpeedWhileRoll * Time.fixedDeltaTime)
                 {
-                    ForcePositionXtoTarget();
+                    enemy.Physics.externalVelocity[ROLL_KEY] =
+                        new Vector2(owner.RangeBaseSightSensor.TargetRB.position.x - enemy.transform.position.x, 0);
                 }
                 else
                 {
                     enemy.Physics.externalVelocity[ROLL_KEY] = targetDirHorizontal * owner.DataSO.MoveSpeedWhileRoll;
                 }
-
             }
-            
-            
         }
 
-        private void ForcePositionXtoTarget()
+        private void Decelerate()
         {
-            enemy.Physics.externalVelocity[ROLL_KEY] = Vector2.zero;
+            Vector2 currentVelocity = enemy.Physics.externalVelocity[ROLL_KEY];
+
+            int sign = currentVelocity.x > 0 ? -1 : 1;
+
+            currentVelocity.x += sign * owner.DataSO.DecelerationSpeed * Time.deltaTime;
             
-            Vector3 ownerPos = enemy.transform.position;
-            ownerPos.x = enemy.target.position.x;
-            enemy.transform.position = ownerPos;
+            if (currentVelocity.x < 0
+                != enemy.Physics.externalVelocity[ROLL_KEY].x < 0)
+            {
+                currentVelocity.x = 0;
+            }
+            
+            enemy.Physics.externalVelocity[ROLL_KEY] = currentVelocity;
         }
 
         public override void Exit()

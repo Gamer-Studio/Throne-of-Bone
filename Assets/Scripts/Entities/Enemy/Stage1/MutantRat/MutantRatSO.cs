@@ -18,6 +18,7 @@ namespace ToB.Entities
         [field: SerializeField] public float RollDamage { get; private set; }
         // [field: SerializeField] public float DefaultMoveSpeed { get; private set; }
         [field: SerializeField] public float MoveSpeedWhileRoll { get; private set; }
+        [field: SerializeField] public float DecelerationSpeed { get; private set; }
         
         [field: SerializeField] public float AwakeTime { get; private set; }
         

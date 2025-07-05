@@ -4,7 +4,7 @@ using UnityEngine;
 namespace ToB.Entities
 {
     [CreateAssetMenu(fileName = "ConvictSO", menuName = "Scriptable Objects/Enemy/Stage1/ConvictSO")]
-    public class ConvictEnemyKnockbackEnemyMainBodySo : EnemySO, IEnemyMainBodySO, IEnemyKnockbackSO
+    public class ConvictSO : EnemySO, IEnemyMainBodySO, IEnemyKnockbackSO
     {
         [field: SerializeField] public float HP { get; private set; }
         [field: SerializeField] public float ATK { get; private set; }

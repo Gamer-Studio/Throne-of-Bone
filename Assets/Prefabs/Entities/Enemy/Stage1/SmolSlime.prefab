@@ -151,7 +151,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b42831d272bb7e74a9d1e3cd122a0d7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
+  rb: {fileID: 6882952686591417601}
   <Physics>k__BackingField: {fileID: 2188469504794650615}
   <Animator>k__BackingField: {fileID: 4826098411650096919}
   <Sprite>k__BackingField: {fileID: 8351901578374689499}
@@ -161,10 +161,10 @@ MonoBehaviour:
   isAlive: 1
   <ReactOnDamage>k__BackingField: 0
   dataSO: {fileID: 11400000, guid: 48ad9d678d74fd14ca00258232724fbb, type: 2}
-  <EnemyKnockBack>k__BackingField: {fileID: 0}
-  <Stat>k__BackingField: {fileID: 0}
+  <EnemyKnockBack>k__BackingField: {fileID: 4655889773774227985}
+  <Stat>k__BackingField: {fileID: 4112973784899966955}
   <FSM>k__BackingField: {fileID: 7580693195618307299}
-  <SightSensor>k__BackingField: {fileID: 402477997594788952}
+  <RangeBaseSightSensor>k__BackingField: {fileID: 402477997594788952}
   <EnemyBody>k__BackingField: {fileID: 5110981683781667191}
 --- !u!114 &7580693195618307299
 MonoBehaviour:
@@ -370,6 +370,7 @@ MonoBehaviour:
   hittableMask:
     serializedVersion: 2
     m_Bits: 64
+  <BoxCollider>k__BackingField: {fileID: 0}
 --- !u!50 &6882952686591417601
 Rigidbody2D:
   serializedVersion: 5
@@ -411,6 +412,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemy: {fileID: 0}
   knockbackMultiplier: 0
+  isActive: 0
 --- !u!114 &4112973784899966955
 MonoBehaviour:
   m_ObjectHideFlags: 0

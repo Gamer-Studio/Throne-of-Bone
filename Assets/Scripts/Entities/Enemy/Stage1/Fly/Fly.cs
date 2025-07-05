@@ -13,7 +13,7 @@ namespace ToB.Entities
         
         [field:SerializeField] public FlyFSM FSM { get; private set; }
         [field:SerializeField] public EnemyBody Body { get; private set; }
-        [field:SerializeField] public EnemySightSensor SightSensor { get; private set; }
+        [field:SerializeField] public EnemyRangeBaseSightSensor RangeBaseSightSensor { get; private set; }
         [field:SerializeField] public EnemyStatHandler Stat { get; private set; }
         
         [field:SerializeField] public GameObject StingPrefab;
@@ -28,7 +28,7 @@ namespace ToB.Entities
         {
             base.Awake();
             Body.Init(this, DataSO.ATK);
-            SightSensor.Init(this, DataSO.SightRange, DataSO.SightAngle);
+            RangeBaseSightSensor.Init(this, DataSO.SightRange, DataSO.SightAngle);
             Knockback = GetComponentInChildren<EnemyKnockback>();
             Knockback.Init(this, DataSO.KnockbackApplier);;
         }

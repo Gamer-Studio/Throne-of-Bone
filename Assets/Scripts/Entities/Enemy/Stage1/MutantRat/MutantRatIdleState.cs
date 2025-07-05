@@ -33,9 +33,13 @@ namespace ToB.Entities
             stateElapsedTime += Time.deltaTime;
             enemy.LookTarget();
 
+            if(owner.Stat.OnDamageEffect)
+                stateElapsedTime = 0;
+            
             if (owner.target)
             {
-                fsm.ChangePattern(fsm.rollState);
+                if(owner.AttackSensor.TargetInArea)
+                    fsm.ChangePattern(fsm.rollState);
             }
             else if (stateElapsedTime >= owner.DataSO.AwakeTime)
             {

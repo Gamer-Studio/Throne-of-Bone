@@ -5,7 +5,7 @@ using UnityEngine;
 namespace ToB.Entities
 {
     [RequireComponent(typeof(CircleCollider2D))]
-    public class EnemySightSensor : MonoBehaviour
+    public class EnemyRangeBaseSightSensor : MonoBehaviour
     {
         private Enemy enemy;
         
@@ -16,6 +16,7 @@ namespace ToB.Entities
         [SerializeField] private float sightAngle;
 
         [SerializeField] private Transform targetInRange;
+        public Rigidbody2D TargetRB { get; private set; }
 
         public Transform TargetInRange => targetInRange;
         private void Awake()
@@ -54,6 +55,7 @@ namespace ToB.Entities
             if ((playerMask & 1 << other.gameObject.layer) != 0)
             {
                 targetInRange = other.transform;
+                TargetRB = other.GetComponent<Rigidbody2D>();
             }
         }
         private void OnTriggerExit2D(Collider2D other)
@@ -61,6 +63,7 @@ namespace ToB.Entities
             if ((playerMask & 1 << other.gameObject.layer) != 0)
             {
                 targetInRange = null;
+                TargetRB = null;
             }
         }
 
@@ -70,7 +73,7 @@ namespace ToB.Entities
             
             if (!targetInRange) return;
 
-            Vector2 posDiff = targetInRange.position - transform.position;
+            Vector2 posDiff = (Vector2)targetInRange.position - TargetRB.position;
             float distance = posDiff.magnitude;
 
             if (distance < 1f)

@@ -15,7 +15,7 @@ namespace ToB.Entities
         [field:SerializeField] public EnemyKnockback EnemyKnockBack { get; private set; }
         [field:SerializeField] public EnemyStatHandler Stat { get; private set; }
         [field:SerializeField] public SmolSlimeFSM FSM {get; private set;}
-        [field:SerializeField] public EnemySightSensor SightSensor {get; private set;}
+        [field:SerializeField] public EnemyRangeBaseSightSensor RangeBaseSightSensor {get; private set;}
         [field:SerializeField] public EnemyBody EnemyBody { get; private set; }
         
         protected override void Awake()
@@ -39,12 +39,12 @@ namespace ToB.Entities
         {
             if (!EnemyKnockBack) EnemyKnockBack = GetComponentInChildren<EnemyKnockback>();
             if (!Stat) Stat = GetComponentInChildren<EnemyStatHandler>();
-            if (!SightSensor) SightSensor = GetComponentInChildren<EnemySightSensor>();
+            if (!RangeBaseSightSensor) RangeBaseSightSensor = GetComponentInChildren<EnemyRangeBaseSightSensor>();
             if (!EnemyBody) EnemyBody = GetComponentInChildren<EnemyBody>();
             
             EnemyKnockBack.Init(this, DataSO.KnockbackApplier);
             Stat.Init(this, DataSO.HP, 0);
-            SightSensor.Init(this, DataSO.SightRange, DataSO.SightAngle);
+            RangeBaseSightSensor.Init(this, DataSO.SightRange, DataSO.SightAngle);
             EnemyBody.Init(this, DataSO.ATK);
         }
 

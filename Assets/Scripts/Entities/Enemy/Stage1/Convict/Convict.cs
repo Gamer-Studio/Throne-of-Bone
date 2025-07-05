@@ -9,12 +9,12 @@ namespace ToB.Entities
     {
         [Header("죄수")] 
         [Expandable]
-        [SerializeField] private ConvictEnemyKnockbackEnemyMainBodySo dataEnemyKnockbackEnemyMainBodySo;
-        public ConvictEnemyKnockbackEnemyMainBodySo DataEnemyKnockbackEnemyMainBodySo => dataEnemyKnockbackEnemyMainBodySo;
+        [SerializeField] private ConvictSO dataSO;
+        public ConvictSO DataSo => dataSO;
         
         [field:SerializeField] public EnemyKnockback EnemyKnockBack { get; private set; }
         [field:SerializeField] public EnemyStatHandler Stat { get; private set; }
-        [field:SerializeField] public EnemySightSensor SightSensor {get; private set;}
+        [field:SerializeField] public EnemyRangeBaseSightSensor RangeBaseSightSensor {get; private set;}
         [field:SerializeField] public ConvictFSM FSM {get; private set;}
         [field:SerializeField] public EnemyAttackArea AttackArea { get; private set; }
         [field:SerializeField] public EnemySimpleSensor AttackSensor { get; private set; }
@@ -40,16 +40,16 @@ namespace ToB.Entities
         {
             if(!EnemyKnockBack) EnemyKnockBack = GetComponentInChildren<EnemyKnockback>();
             if(!Stat) Stat = GetComponentInChildren<EnemyStatHandler>();
-            if(!SightSensor) SightSensor = GetComponentInChildren<EnemySightSensor>();
+            if(!RangeBaseSightSensor) RangeBaseSightSensor = GetComponentInChildren<EnemyRangeBaseSightSensor>();
             if(!AttackArea) AttackArea = GetComponentInChildren <EnemyAttackArea>();
             if (!AttackSensor) AttackSensor = GetComponentInChildren<EnemySimpleSensor>();
             if (!EnemyBody) EnemyBody = GetComponentInChildren<EnemyBody>();
             
-            EnemyKnockBack.Init(this, DataEnemyKnockbackEnemyMainBodySo.KnockbackMultiplier);
-            Stat.Init(this, DataEnemyKnockbackEnemyMainBodySo.HP, 0);
-            SightSensor.Init(this, DataEnemyKnockbackEnemyMainBodySo.SightRange, DataEnemyKnockbackEnemyMainBodySo.SightAngle);
-            AttackArea.Init(this, DataEnemyKnockbackEnemyMainBodySo.ATK, DataEnemyKnockbackEnemyMainBodySo.ATKKnockbackForce, DataEnemyKnockbackEnemyMainBodySo.ATKKnockbackDirection);
-            EnemyBody.Init(this, DataEnemyKnockbackEnemyMainBodySo.BodyDamage);
+            EnemyKnockBack.Init(this, DataSo.KnockbackMultiplier);
+            Stat.Init(this, DataSo.HP, 0);
+            RangeBaseSightSensor.Init(this, DataSo.SightRange, DataSo.SightAngle);
+            AttackArea.Init(this, DataSo.ATK, DataSo.ATKKnockbackForce, DataSo.ATKKnockbackDirection);
+            EnemyBody.Init(this, DataSo.BodyDamage);
         }
 
         protected override void Die()
