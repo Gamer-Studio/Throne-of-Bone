@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using System.Collections;
 using Unity.AppUI.UI;
@@ -7,23 +8,42 @@ namespace ToB.Entities.Obstacle
     public class WaterValve : MonoBehaviour
     {
         [SerializeField] public Transform waterSpriteTransform;
-        [SerializeField] public float moveSpeed = 20f; // 물줄기 내려오는 속도
-        [SerializeField] public float ValveCloseTargetY = -50f; // 물 끊길 때 물 내려가는 위치
-        [SerializeField] public float ValveOpenTargetY = 50f; // 물 틀 때 시작하는 위치
+        [SerializeField] public float moveSpeed; // 물줄기 내려오는 속도
+        [SerializeField] public float Height;
+        [SerializeField] public float Width;
+        private float ValveCloseTargetY; // 물 끊길 때 물 내려가는 위치
+        private float ValveOpenTargetY; // 물 틀 때 시작하는 위치
         [SerializeField] public Lever LinkedLever;
+        [SerializeField] public RectTransform WaterMask;
         
         public bool isValveActivated;
         
         private Coroutine ValveCloseCoroutine;
         private Coroutine ValveOpenCoroutine;
         
+#if UNITY_EDITOR
+        private void OnValidate()
+        {
+            SetWaterSize();
+        }
+
+#endif
+        private void SetWaterSize()
+        {
+            WaterMask.transform.localScale = new Vector3(Width * 2, Height, 1);
+            waterSpriteTransform.localScale = new Vector3(Width , Height, 1);
+            ValveCloseTargetY = -Height;
+            ValveOpenTargetY = Height;
+        }
+
         private void Awake()
         {
             isValveActivated = false;
+            SetWaterSize();
             InitPosition();
             // 추후 여기서 벨브가 열렸는지 안 열렸는지 Load해 오기
         }
-
+        
         private void InitPosition()
         {
             if (isValveActivated)

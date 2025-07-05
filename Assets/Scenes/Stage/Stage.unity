@@ -3278,6 +3278,11 @@ MonoBehaviour:
   player: {fileID: 111914290}
   <CurrentStageIndex>k__BackingField: 1
   <CurrentRoomIndex>k__BackingField: 1
+  confinerBorder: {fileID: 0}
+  loadedColliders:
+    array: []
+  confiner: {fileID: 0}
+  roomContainer: {fileID: 0}
 --- !u!4 &1022047602
 Transform:
   m_ObjectHideFlags: 0
@@ -3413,6 +3418,10 @@ MonoBehaviour:
   camera: {fileID: 0}
   vCam: {fileID: 1499905404}
   character: {fileID: 111914290}
+  interactRadius: 1
+  interactableMask:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!114 &1950366134
 MonoBehaviour:
   m_ObjectHideFlags: 0

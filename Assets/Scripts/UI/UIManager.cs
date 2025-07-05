@@ -1,5 +1,6 @@
 using System.Collections;
 using ToB.Utils.Singletons;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace ToB.UI
@@ -79,7 +80,7 @@ namespace ToB.UI
 
         private IEnumerator WaitForInits()
         {
-            yield return null;
+            yield return new WaitForSeconds(0.2f);
         }
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
