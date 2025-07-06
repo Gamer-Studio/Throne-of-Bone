@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Threading.Tasks;
 using NUnit.Framework;
 using ToB.IO;
 using UnityEngine.TestTools;
@@ -20,6 +21,12 @@ namespace ToB.Editor
       test.Node("Table1", true).Node("Child3", true);
       
       test.Save();
+    }
+
+    [Test]
+    public async Task SAVELoadTest()
+    {
+      var save = await SAVE.Load("Test");
     }
   }
 }
