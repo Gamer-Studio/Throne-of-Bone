@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace ToB.Utils
 {
@@ -103,6 +105,26 @@ namespace ToB.Utils
       
       Symbols.Remove(this);
       onRelease?.Invoke();
+    }
+
+    /// <summary>
+    /// 심볼이 활성화상태일때 로그를 찍습니다.
+    /// </summary>
+    public void Log(object message)
+    {
+      if (!isActive) return;
+      
+      Debug.Log(message);
+    }
+    
+    /// <summary>
+    /// 심볼이 활성화상태일때 로그를 찍습니다.
+    /// </summary>
+    public void Log(object message, Object context)
+    {
+      if (!isActive) return;
+      
+      Debug.Log(message, context);
     }
     
     #region Operator
