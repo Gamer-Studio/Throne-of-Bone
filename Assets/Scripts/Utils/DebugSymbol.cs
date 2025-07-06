@@ -57,7 +57,7 @@ namespace ToB.Utils
     /// <param name="name">가져올 심볼의 명칭입니다.</param>
     /// <param name="force">true일 경우 디버그 심볼이 없으면 생성합니다.</param>
     /// <param name="dontDestroy">false일 경우 심볼을 메모리에서 해제가 불가능합니다.</param>
-    public static DebugSymbol Get(string name, bool force = false, bool dontDestroy = false)
+    public static DebugSymbol Get(string name, bool force = true, bool dontDestroy = false)
     {
       var result = Symbols.FirstOrDefault(x => x.name == name);
 

@@ -38,7 +38,6 @@ namespace ToB.Editor
       {
         DebugSymbol.Get(tempText, true, false);
       }
-
     }
   }
 }

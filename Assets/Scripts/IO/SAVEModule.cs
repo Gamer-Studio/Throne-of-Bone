@@ -63,10 +63,6 @@ namespace ToB.IO
         jsonWriter.Formatting = Formatting.Indented;
         WriteTo(jsonWriter);
 
-#if UNITY_EDITOR
-        // Debug.Log($"[SAVE-{name}] saved to {path}");
-#endif
-
         jsonWriter.Close();
       }
 
