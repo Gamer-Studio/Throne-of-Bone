@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-#if UNITY_EDITOR
-
 namespace ToB.Utils
 {
   public class DebugSymbol
@@ -115,5 +113,3 @@ namespace ToB.Utils
     #endregion
   }
 }
-
-#endif
