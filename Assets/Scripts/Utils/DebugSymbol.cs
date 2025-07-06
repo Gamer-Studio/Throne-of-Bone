@@ -8,22 +8,41 @@ namespace ToB.Utils
 {
   public class DebugSymbol
   {
+    /// <summary>
+    /// 미리 정의해놓는 디버그 심볼 목록입니다.
+    /// </summary>
     #region Definition
 
     public static readonly HashSet<DebugSymbol> Symbols = new();
-    
-    public static readonly DebugSymbol 
-      Editor = new ("EDITOR"),
-      UI = new ("UI"),
-      Save = new ("SAVE");
+    public static DebugSymbol Editor { get; private set; } = new("EDITOR") { onRelease = () => Editor = null };
+    public static DebugSymbol UI { get; private set; } = new("UI") { onRelease = () => UI = null };
+    public static DebugSymbol Save { get; private set; } = new ("SAVE") { onRelease = () => Save = null };
     
     #endregion
 
+    /// <summary>
+    /// 심볼의 명칭입니다.
+    /// </summary>
     public readonly string name;
+    
+    /// <summary>
+    /// 심볼의 파괴가능 여부입니다.
+    /// </summary>
     public readonly bool dontDestroy;
+    
+    /// <summary>
+    /// 심볼이 현재 활성화되어있는지 여부입니다.
+    /// </summary>
     public bool isActive = false;
+    
+    /// <summary>
+    /// 심볼이 메모리에서 해제됬을 떄 호출되는 이벤트입니다.
+    /// </summary>
     public event Action onRelease;
     
+    /// <summary>
+    /// 심볼을 새로 생성합니다. Get 또는 Create 를 사용해주세요.
+    /// </summary>
     private DebugSymbol(string name, bool dontDestroy = true)
     {
       this.name = name;
@@ -32,7 +51,13 @@ namespace ToB.Utils
       Symbols.Add(this);
     }
 
-    public static DebugSymbol Get(string name, bool force = false)
+    /// <summary>
+    /// 심볼을 가져오거나 생성합니다.
+    /// </summary>
+    /// <param name="name">가져올 심볼의 명칭입니다.</param>
+    /// <param name="force">true일 경우 디버그 심볼이 없으면 생성합니다.</param>
+    /// <param name="dontDestroy">false일 경우 심볼을 메모리에서 해제가 불가능합니다.</param>
+    public static DebugSymbol Get(string name, bool force = false, bool dontDestroy = false)
     {
       var result = Symbols.FirstOrDefault(x => x.name == name);
 
@@ -40,22 +65,15 @@ namespace ToB.Utils
       
       if (!force) return null;
       
-      var newSymbol = new DebugSymbol(name);
-      Symbols.Add(newSymbol);
-      return newSymbol;
-    }
-
-    public static DebugSymbol Create(string name, bool dontDestroy = false)
-    {
-      var result = Symbols.FirstOrDefault(x => x.name == name);
-
-      if (result != null) return result;
-      
       var newSymbol = new DebugSymbol(name, dontDestroy);
       Symbols.Add(newSymbol);
       return newSymbol;
     }
 
+    /// <summary>
+    /// 심볼들이 활성화상태인지 체크합니다.
+    /// </summary>
+    /// <param name="symbols">활성화 여부를 검사할 심볼들입니다.</param>
     public static bool IsActive(params string[] symbols)
     {
       var active = true;
@@ -77,8 +95,14 @@ namespace ToB.Utils
       return active;
     }
 
+    /// <summary>
+    /// 심볼을 메모리에서 해제합니다.
+    /// dontDestroy가 true일 경우 불가능합니다.
+    /// </summary>
     public void Release()
     {
+      if(dontDestroy) return;
+      
       Symbols.Remove(this);
       onRelease?.Invoke();
     }

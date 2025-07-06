@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using ToB.Utils;
 using UnityEditor;
@@ -37,7 +36,7 @@ namespace ToB.Editor
       tempText = EditorGUILayout.TextField(tempText);
       if (GUILayout.Button("디버그 심볼 추가"))
       {
-        DebugSymbol.Create(tempText, true);
+        DebugSymbol.Get(tempText, true, false);
       }
 
     }
