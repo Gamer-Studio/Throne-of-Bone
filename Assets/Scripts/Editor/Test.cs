@@ -13,7 +13,12 @@ namespace ToB.Editor
     {
       var test = new SAVE("Test");
       
-      test.Node("Table1", true);
+      var table1 = test.Node("Table1", true);
+      
+      table1["Child1"] = 1;
+      table1["da"] = "1";
+      table1["Chidv"] = true;
+      
       test.Node("Table2", true);
       test.Node("Table3", true);
       test.Node("Table1", true).Node("Child1", true);

@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using NaughtyAttributes;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using ToB.Utils;
 using UnityEngine;
 
 namespace ToB.IO
@@ -71,9 +73,74 @@ namespace ToB.IO
       writer.Close();
     }
 
-    public void Load(string parentPath)
+    public virtual void Read(JObject data)
     {
+      foreach (var (key, value) in data)
+      {
+        if (value is null) continue;
+        
+        this[key] = value;
+      }
       
+      var loadSymbol = DebugSymbol.Get("Load");
+      loadSymbol.Log($"[SAVE-{name}] loaded");
+      loadSymbol.Log(ToString());
+    }
+
+    /// <summary>
+    /// 내부 데이터 로딩용 메소드입니다. 호출하지 말아주세요!
+    /// </summary>
+    /// <param name="path"></param>
+    /// <param name="chainLoading"></param>
+    public async Task Load(string path, bool chainLoading)
+    {
+      var isRoot = name == SAVE.RootName;
+      var filename = isRoot ? System.IO.Path.Combine(path, name + ".json") : path + ".json";
+
+      try
+      {
+        using var reader = File.OpenText(filename);
+        using var jsonReader = new JsonTextReader(reader);
+        var data = await ReadFromAsync(jsonReader);
+        Read((JObject)data);
+      }
+      catch (JsonReaderException e)
+      {
+        #if UNITY_EDITOR
+        if (DebugSymbol.Save)
+        {
+          Debug.LogWarning($"[SAVE-{name}] Error while loading {filename}.");
+          Debug.LogException(e);
+        }
+        #endif
+      }
+      
+      DebugSymbol.Save.Log($"[SAVE-{name}] loaded from {filename}");
+
+      if (chainLoading && Directory.Exists(path))
+      {
+        foreach (var child in Directory.GetFiles(path))
+        {
+          var childInfo = new FileInfo(child);
+          
+          if (!childInfo.Extension.Equals(".json"))
+          {
+            DebugSymbol.Save.Log($"[SAVE-{name}] {childInfo.Name} is not json. skipping...");
+            continue;
+          }
+          
+          var fileName = childInfo.Name.Replace(childInfo.Extension, "");
+
+          if (fileName == name)
+          {
+            DebugSymbol.Save.Log($"[SAVE-{name}] {childInfo.Name} is root. skipping...");
+            continue;
+          }
+
+          var childModule = Node(fileName, true);
+          await childModule.Load(System.IO.Path.Combine(path, fileName), true);
+        }
+      }
     }
 
     /// <summary>
@@ -129,10 +196,10 @@ namespace ToB.IO
             return value.Value<string>();
           }
           
-          Debug.LogWarning($"[SAVE-{name}] value is not string: {key}\n type is {token.Type}");
+          DebugSymbol.Save.Log($"[SAVE-{name}] value is not string: {key}\n type is {token.Type}");
         }
         
-        Debug.LogWarning($"[SAVE-{name}] key not found: {key} ");
+        DebugSymbol.Save.Log($"[SAVE-{name}] key not found: {key} ");
         
         return defaultValue;
       }
@@ -149,10 +216,10 @@ namespace ToB.IO
             return value.Value<int>();
           }
           
-          Debug.LogWarning($"[SAVE-{name}] value is not integer: {key}\n type is {token.Type}");
+          DebugSymbol.Save.Log($"[SAVE-{name}] value is not integer: {key}\n type is {token.Type}");
         }
         
-        Debug.LogWarning($"[SAVE-{name}] key not found: {key} ");
+        DebugSymbol.Save.Log($"[SAVE-{name}] key not found: {key} ");
         
         return defaultValue;
       }
@@ -169,10 +236,10 @@ namespace ToB.IO
             return value.Value<float>();
           }
           
-          Debug.LogWarning($"[SAVE-{name}] value is not float: {key}\n type is {token.Type}");
+          DebugSymbol.Save.Log($"[SAVE-{name}] value is not float: {key}\n type is {token.Type}");
         }
         
-        Debug.LogWarning($"[SAVE-{name}] key not found: {key} ");
+        DebugSymbol.Save.Log($"[SAVE-{name}] key not found: {key} ");
         
         return defaultValue;
       }
@@ -189,10 +256,10 @@ namespace ToB.IO
             return value.Value<bool>();
           }
           
-          Debug.LogWarning($"[SAVE-{name}] value is not boolean: {key}\n type is {token.Type}");
+          DebugSymbol.Save.Log($"[SAVE-{name}] value is not boolean: {key}\n type is {token.Type}");
         }
         
-        Debug.LogWarning($"[SAVE-{name}] key not found: {key} ");
+        DebugSymbol.Save.Log($"[SAVE-{name}] key not found: {key} ");
         
         return defaultValue;
       }

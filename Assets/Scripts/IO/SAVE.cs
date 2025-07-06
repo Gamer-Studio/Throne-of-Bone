@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using Unity.Collections;
 using UnityEngine;
@@ -12,9 +13,9 @@ namespace ToB.IO
     public static readonly string SavePath = Path.Combine(Application.persistentDataPath, "Saves");
     public static SAVE Current = null;
     public const string RootName = "root";
-    public const string CurrentVersion = "Alpha-0.1";
+    public const int CurrentVersion = 1;
     
-    [field: SerializeField] public string Version { get; private set; }
+    [field: SerializeField] public int Version { get; private set; }
     [field: SerializeField] public SAVEModule Data { get; private set; }
     public string name;
     
@@ -56,11 +57,38 @@ namespace ToB.IO
     
     public SAVEModule Node(string key, bool force = false) => Data.Node(key, force);
 
-    public static void Load(string name)
+    /// <summary>
+    /// 저장 파일의 유효성 체크
+    /// </summary>
+    /// <param name="path"></param>
+    public static bool Validate(string savePath)
+    {
+      return true;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="data"></param>
+    /// <returns></returns>
+    public static SAVE Update(SAVE data)
+    {
+      return data;
+    }
+    
+    public static async Task<SAVE> Load(string name)
     {
       var rootPath = Path.Combine(SavePath, name);
-
+      // 저장 데이터 유효성 검사
+      if (!Directory.Exists(rootPath)) throw new Exception($"Save file not found: {rootPath}");
+      if (!Validate(rootPath)) throw new Exception($"Save file is invalid: {rootPath}");
       
+      // 데이터 로드
+      
+      var result = new SAVE(name);
+      await result.Data.Load(rootPath, true);
+
+      return result;
     }
   }
 }
