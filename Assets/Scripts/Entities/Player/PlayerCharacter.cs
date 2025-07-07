@@ -270,7 +270,7 @@ namespace ToB.Player
       if(jumpCoroutine != null)
       {
         StopCoroutine(jumpCoroutine);
-        body.linearVelocityY = gravityStart;
+        if(gravityStart != 0) body.linearVelocityY = gravityStart;
         jumpCoroutine = null;
       }
     }
@@ -287,7 +287,7 @@ namespace ToB.Player
         yield return new WaitForFixedUpdate();
       }
       
-      body.linearVelocityY = gravityStart;
+      if(gravityStart != 0) body.linearVelocityY = gravityStart;
       
       jumpCoroutine = null;
     }
