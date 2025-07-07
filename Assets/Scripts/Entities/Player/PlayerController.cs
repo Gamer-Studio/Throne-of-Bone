@@ -152,35 +152,33 @@ namespace ToB.Player
     public void Interaction(InputAction.CallbackContext context)
     {
       if (context.performed)
-      {
-        var hits = Physics2D.OverlapCircleAll(character.transform.position, interactRadius, interactableMask);
-        var nearestDistance = Mathf.Infinity;
-        IInteractable nearest = null;
-
-        foreach (var hit in hits)
-        {
-          if (!hit.TryGetComponent<IInteractable>(out var interactable)) continue;
-          if (!interactable.IsInteractable) continue;
-        
-          var distance = Vector2.Distance(character.transform.position, hit.transform.position);
-
-          if (distance >= nearestDistance) continue;
-        
-          nearest = interactable;
-          nearestDistance = distance;
-        }
-
-        if (nearest != null) Interact(nearest);
-      }
+        Interact();
     }
 
     /// <summary>
     /// interactable에 상호작용합니다.
     /// </summary>
     /// <param name="interactable">상호작용할 대상입니다.</param>
-    public void Interact(IInteractable interactable)
-    {
-      interactable.Interact();
+    public void Interact()
+    { 
+      var hits = Physics2D.OverlapCircleAll(character.transform.position, interactRadius, interactableMask);
+      var nearestDistance = Mathf.Infinity;
+      IInteractable nearest = null;
+      
+      foreach (var hit in hits)
+      {
+        if (hit.TryGetComponent<IInteractable>(out var interactable) && 
+            interactable is not { IsInteractable: true }) continue;
+        
+        var distance = Vector2.Distance(character.transform.position, hit.transform.position);
+
+        if (distance >= nearestDistance) continue;
+        
+        nearest = interactable;
+        nearestDistance = distance;
+      }
+
+      nearest?.Interact();
     }
     
     #endregion
