@@ -35,7 +35,7 @@ namespace ToB.Entities
             if ((playerMask & 1 << other.gameObject.layer) != 0)
             {
                 if (state != State.Opened) return;
-                Debug.Log("Bear Trap");
+                
                 other.Damage(10, this);
                 other.KnockBack(5, new Vector2(other.transform.eulerAngles.y == 0 ? 1 : -1, 1));
                 animator.SetTrigger(ObstacleAnimationString.Activate);

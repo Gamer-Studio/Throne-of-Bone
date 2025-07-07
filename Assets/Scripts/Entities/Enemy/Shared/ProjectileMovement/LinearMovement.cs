@@ -20,6 +20,8 @@ namespace ToB
             this.direction = direction.normalized;
             this.speed = speed;
             rb.linearVelocity = this.direction * speed;
+            
+            transform.eulerAngles = new Vector3(0,0,Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg);
         }
     }
 }

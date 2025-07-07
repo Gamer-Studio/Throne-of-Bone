@@ -106,7 +106,7 @@ Transform:
   m_GameObject: {fileID: 1730173166060172182}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.58, y: 0.24, z: -0.08754978}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -151,7 +151,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b42831d272bb7e74a9d1e3cd122a0d7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
+  enemySO: {fileID: 11400000, guid: 48ad9d678d74fd14ca00258232724fbb, type: 2}
+  rb: {fileID: 6882952686591417601}
   <Physics>k__BackingField: {fileID: 2188469504794650615}
   <Animator>k__BackingField: {fileID: 4826098411650096919}
   <Sprite>k__BackingField: {fileID: 8351901578374689499}
@@ -160,11 +161,10 @@ MonoBehaviour:
   target: {fileID: 0}
   isAlive: 1
   <ReactOnDamage>k__BackingField: 0
-  dataSO: {fileID: 11400000, guid: 48ad9d678d74fd14ca00258232724fbb, type: 2}
-  <EnemyKnockBack>k__BackingField: {fileID: 0}
-  <Stat>k__BackingField: {fileID: 0}
+  <EnemyKnockBack>k__BackingField: {fileID: 4655889773774227985}
+  <Stat>k__BackingField: {fileID: 4112973784899966955}
   <FSM>k__BackingField: {fileID: 7580693195618307299}
-  <SightSensor>k__BackingField: {fileID: 402477997594788952}
+  <RangeBaseSightSensor>k__BackingField: {fileID: 402477997594788952}
   <EnemyBody>k__BackingField: {fileID: 5110981683781667191}
 --- !u!114 &7580693195618307299
 MonoBehaviour:
@@ -268,8 +268,6 @@ MonoBehaviour:
   rayMask:
     serializedVersion: 2
     m_Bits: 192
-  sightRange: 0
-  sightAngle: 0
   targetInRange: {fileID: 0}
 --- !u!1 &7889824204698654960
 GameObject:
@@ -370,6 +368,7 @@ MonoBehaviour:
   hittableMask:
     serializedVersion: 2
     m_Bits: 64
+  <BoxCollider>k__BackingField: {fileID: 0}
 --- !u!50 &6882952686591417601
 Rigidbody2D:
   serializedVersion: 5
@@ -410,7 +409,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemy: {fileID: 0}
-  knockbackMultiplier: 0
+  isActive: 0
 --- !u!114 &4112973784899966955
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -423,9 +422,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53ab476cda1b5a342a8c9589483b3fc8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxHP: 0
   currentHP: 0
-  def: 0
 --- !u!1 &8551193108162088175
 GameObject:
   m_ObjectHideFlags: 0

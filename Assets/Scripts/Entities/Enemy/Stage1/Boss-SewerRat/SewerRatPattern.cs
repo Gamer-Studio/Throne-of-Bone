@@ -6,7 +6,7 @@ namespace ToB.Entities
     public class SewerRatPattern:EnemyPattern
     {
         protected readonly SewerRatStrategy ratStrategy;
-        protected SewerRat sewerRat;
+        protected readonly SewerRat sewerRat;
 
         protected SewerRatPattern(EnemyStrategy strategy, Action EndCallback) : base(strategy, EndCallback)
         {

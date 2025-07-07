@@ -21,7 +21,7 @@ namespace ToB.Entities
         {
             attackState = new ConvictAttackState(this);
             chaseState = new ConvictChaseState(this, Owner.DataSO.ChaseSpeed);
-            patrolState = new ConvictPatrolState(this, Owner.DataSO.MoveSpeed);
+            patrolState = new ConvictPatrolState(this);
             IdleState = new ConvictIdleState(this);
             
             ChangePattern(patrolState);

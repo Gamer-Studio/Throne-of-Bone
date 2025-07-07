@@ -212,16 +212,54 @@ namespace ToB.Entities
 
         private bool CheckCollision(Vector2 direction)
         {
-            Vector2 origin = (Vector2)transform.position +
-                             (Vector2)terrainSensor.gameObject.transform.localPosition +
+            Vector2 origin = (Vector2)terrainSensor.gameObject.transform.position +
                              terrainSensor.offset;
             
             Vector2 castSize = terrainSensor.size;
-            if(direction.x != 0) castSize.y -= skinWidth;
+            
+            castSize.x -= skinWidth;
+            castSize.y -= skinWidth;
        
             RaycastHit2D hit = Physics2D.BoxCast(origin, castSize, 0, direction, skinWidth*2f, terrainLayer);
+            
+            if(direction == Vector2.down)  // 디버그 시각화
+                DrawBoxCast(origin, castSize, direction.normalized, skinWidth*2f, Color.Lerp(Color.red, Color.yellow, 0.5f));
+
        
             return hit.collider;
+        }
+        
+        private void DrawBoxCast(Vector2 origin, Vector2 size, Vector2 direction, float distance, Color color)
+        {
+            // 중심점에서 방향으로 이동한 target 위치
+            Vector2 castCenter = origin + direction * distance;
+
+            // 네 개의 꼭짓점 계산 (회전 없음)
+            Vector2 halfSize = size * 0.5f;
+
+            Vector2[] cornersStart = new Vector2[4]
+            {
+                origin + new Vector2(-halfSize.x, -halfSize.y),
+                origin + new Vector2(-halfSize.x,  halfSize.y),
+                origin + new Vector2( halfSize.x,  halfSize.y),
+                origin + new Vector2( halfSize.x, -halfSize.y)
+            };
+
+            Vector2[] cornersEnd = new Vector2[4]
+            {
+                castCenter + new Vector2(-halfSize.x, -halfSize.y),
+                castCenter + new Vector2(-halfSize.x,  halfSize.y),
+                castCenter + new Vector2( halfSize.x,  halfSize.y),
+                castCenter + new Vector2( halfSize.x, -halfSize.y)
+            };
+
+            // 사각형 테두리 그리기
+            for (int i = 0; i < 4; i++)
+            {
+                Debug.DrawLine(cornersStart[i], cornersStart[(i + 1) % 4], color);
+                Debug.DrawLine(cornersEnd[i], cornersEnd[(i + 1) % 4], color);
+                Debug.DrawLine(cornersStart[i], cornersEnd[i], color);
+            }
         }
 
         public bool IsLedgeBelow()

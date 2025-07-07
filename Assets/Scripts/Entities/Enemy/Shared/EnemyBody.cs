@@ -7,8 +7,13 @@ namespace ToB.Entities
     public class EnemyBody:MonoBehaviour
     {
         [SerializeField] private Enemy owner;
-        [SerializeField] private float bodyDamage;
+        
+        // 몬스터의 상태에따라 가변적이기에 SO 참조를 내려놓고 필드에 담았습니다 ex) 보스 1 구르기
+        [SerializeField] private float bodyDamage;      
+        
         [SerializeField] LayerMask hittableMask;
+        
+        [field:SerializeField] public BoxCollider2D BoxCollider { get; private set; }
 
         public void Init(Enemy enemy, float bodyDamage)
         {
@@ -19,6 +24,8 @@ namespace ToB.Entities
         private void Reset()
         {
             hittableMask = LayerMask.GetMask("Player");
+            BoxCollider = GetComponent<BoxCollider2D>();
+            BoxCollider.isTrigger = true;
         }
 
         private void OnTriggerStay2D(Collider2D other)

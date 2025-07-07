@@ -17,8 +17,8 @@ namespace ToB.Entities
 
         public override void Init()
         {
-            movePattern = new SmolSlimeMovePattern(this, Owner.DataSO.MoveSpeed);
-            chasePattern = new SmolSlimeChasePattern(this, Owner.DataSO.ChaseSpeed);
+            movePattern = new SmolSlimeMovePattern(this);
+            chasePattern = new SmolSlimeChasePattern(this);
             
             currentPattern = movePattern;
         }
