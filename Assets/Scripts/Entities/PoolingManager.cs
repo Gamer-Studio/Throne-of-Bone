@@ -6,7 +6,7 @@ using UnityEngine.Pool;
 
 namespace ToB
 {
-  public class ProjectileManager : Singleton<ProjectileManager>
+  public class PoolingManager : Singleton<PoolingManager>
   {
     private readonly Dictionary<string, ObjectPool<GameObject>> pools = new();
     private readonly Dictionary<string, Transform> releasedContainers = new();

@@ -2,9 +2,9 @@ using UnityEngine;
 
 namespace ToB.Entities
 {
-  public static class ProjectileHelper
+  public static class PoolingHelper
   {
-    private static ProjectileManager Manager => ProjectileManager.Instance;
+    private static PoolingManager Manager => PoolingManager.Instance;
     
     /// <summary>
     /// 프리팹의 오브젝트 풀을 없으면 생성해서 풀링합니다.
