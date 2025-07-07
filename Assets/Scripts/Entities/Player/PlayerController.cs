@@ -152,7 +152,9 @@ namespace ToB.Player
     public void Interaction(InputAction.CallbackContext context)
     {
       if (context.performed)
+      {
         Interact();
+      }
     }
 
     /// <summary>
@@ -162,8 +164,10 @@ namespace ToB.Player
     public void Interact()
     { 
       var hits = Physics2D.OverlapCircleAll(character.transform.position, interactRadius, interactableMask);
+      
       var nearestDistance = Mathf.Infinity;
       IInteractable nearest = null;
+      Vector3? nearestPos = null;
       
       foreach (var hit in hits)
       {
@@ -176,11 +180,34 @@ namespace ToB.Player
         
         nearest = interactable;
         nearestDistance = distance;
+        nearestPos = hit.transform.position;
       }
+      
+      // 디버그: 오버랩 반경 그리기 (씬 뷰에서만 보임)
+      DebugDrawCircle(character.transform.position, interactRadius, Color.cyan, 0.5f);
 
+      if (nearest != null && nearestPos.HasValue)
+      {
+        // 디버그: 가장 가까운 대상까지 선
+        Debug.DrawLine(character.transform.position, nearestPos.Value, Color.green, 0.5f);
+      }
+      
+      Debug.Log(nearest);
       nearest?.Interact();
     }
-    
+    void DebugDrawCircle(Vector3 center, float radius, Color color, float duration = 0.1f, int segments = 32)
+    {
+      float angleStep = 360f / segments;
+      Vector3 prevPoint = center + Quaternion.Euler(0, 0, 0) * Vector3.right * radius;
+
+      for (int i = 1; i <= segments; i++)
+      {
+        float angle = angleStep * i;
+        Vector3 nextPoint = center + Quaternion.Euler(0, 0, angle) * Vector3.right * radius;
+        Debug.DrawLine(prevPoint, nextPoint, color, duration);
+        prevPoint = nextPoint;
+      }
+    }
     #endregion
   }
 }
