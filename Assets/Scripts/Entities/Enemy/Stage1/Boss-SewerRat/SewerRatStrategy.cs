@@ -53,6 +53,11 @@ namespace ToB.Entities
             scratchPattern = new SewerRatScratchPattern(this, PatternEnd);
             toxicBonePattern = new SewerRatToxicBonePattern(this, PatternEnd);
             
+            
+        }
+
+        private void Start()
+        {
             ScratchEffect = GetComponentInChildren<EnemyAttackArea>();
             ScratchEffect.gameObject.SetActive(false);
             ScratchEffect.Init(enemy, sewerRat.DataSO.ScratchDamage, sewerRat.DataSO.ScratchKnockBackForce, Vector2.right);

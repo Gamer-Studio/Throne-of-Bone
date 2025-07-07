@@ -216,6 +216,8 @@ MonoBehaviour:
   damageImmuneTime: 0.3
   dashImmuneTime: 0
   dashMaxImmuneTime: 0.1
+  knockbackTime: 0.2
+  knockbackMultiplier: 2
   stat:
     onHpChanged:
       m_PersistentCalls:
@@ -229,7 +231,8 @@ MonoBehaviour:
     atk: 10
   jumpPower: 30
   jumpTimeLimit: 0.2
-  gravityAcceleration: 6
+  gravityAcceleration: 1
+  gravityStart: -10
   body: {fileID: 1096863716109666581}
   animator: {fileID: 6425824100770376572}
   spriteRenderer: {fileID: 9050726402138752261}
@@ -413,7 +416,7 @@ GameObject:
   - component: {fileID: 851533618291194163}
   - component: {fileID: 1789467588929255059}
   - component: {fileID: 1539824326341321533}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: GroundChecker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -498,6 +501,9 @@ MonoBehaviour:
       m_Calls: []
   <IsGround>k__BackingField: 0
   grounds: []
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 128
 --- !u!1 &4297988166282513549
 GameObject:
   m_ObjectHideFlags: 0

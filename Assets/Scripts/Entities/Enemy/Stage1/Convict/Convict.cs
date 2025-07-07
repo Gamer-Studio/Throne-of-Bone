@@ -21,12 +21,13 @@ namespace ToB.Entities
         protected override void Awake()
         {
             base.Awake();
-            InitProperties();
             DataSO = enemySO as ConvictSO;
         }
 
         private void Start()
         {
+            InitProperties();
+            
             FSM.Init();
         }
 
