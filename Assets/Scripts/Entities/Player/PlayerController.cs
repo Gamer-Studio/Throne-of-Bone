@@ -68,6 +68,7 @@ namespace ToB.Player
       if (Math.Abs(input) > 0.1f)
       {
         character.MoveDirection = input > 0 ? PlayerMoveDirection.Right : PlayerMoveDirection.Left;
+        Debug.Log("입력받는 중");
         character.IsMoving = true;
       }
       else
