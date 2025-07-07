@@ -1,6 +1,7 @@
 using UnityEngine;
 using DG.Tweening;
 using ToB.Player;
+using UnityEngine.ResourceManagement;
 using UnityEngine.SceneManagement;
 
 namespace ToB.Entities.Effect
@@ -9,12 +10,11 @@ namespace ToB.Entities.Effect
     {
         private Rigidbody2D rb;
         private bool isCollected = false;
-        public float jumpForce = 3f;
-        public float autoCollectDelay = 1.5f;
-        public float collectMoveDuration = 0.5f;
+        [SerializeField] public float jumpForce = 3f;
+        [SerializeField] public float autoCollectDelay = 1.5f;
+        [SerializeField] public float collectMoveDuration = 0.5f;
         
         private PlayerCharacter player;
-        private Sequence seq;
         
         private void Awake()
         {
@@ -23,7 +23,6 @@ namespace ToB.Entities.Effect
         }
         private void OnDestroy()
         {
-            seq?.Kill();
             SceneManager.sceneLoaded -= OnSceneLoaded;
         }
         
@@ -50,7 +49,7 @@ namespace ToB.Entities.Effect
             {
                 // 바닥에 닿으면 멈춤
                 rb.linearVelocity = Vector2.zero;
-                rb.isKinematic = true;
+                rb.bodyType = RigidbodyType2D.Kinematic;
                 rb.simulated = false;
             }
         }
@@ -66,7 +65,7 @@ namespace ToB.Entities.Effect
                 .SetEase(Ease.InQuad)
                 .OnComplete(() =>
                 {
-                    // 골드 지급 처리 가능
+                    Core.ResourceManager.Instance.GiveGoldToPlayer(10);
                     Destroy(gameObject);
                 });
         }
