@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
+using ToB.Entities;
+using ToB.Entities.Effect;
 using ToB.IO;
 using ToB.Utils.Singletons;
 using UnityEngine;
@@ -8,8 +10,12 @@ using UnityEngine.SceneManagement;
 
 namespace ToB.Core
 {
-    
-    
+    public enum InfiniteResourceType
+    {
+        Gold,
+        Mana
+    }
+
     public class ResourceManager : DDOLSingleton<ResourceManager>, IJsonSerializable
     {
         // 싱글톤 선언 : Singleton<ResourceManager>.Instance.~~로 필요 시 호출
@@ -65,6 +71,50 @@ namespace ToB.Core
 
         public UnityEvent<int> onGoldChanged = new();
         public UnityEvent<int> onManaChanged = new();
+        
+        [SerializeField] public GameObject goldPrefab;
+        [SerializeField] public GameObject manaPrefab;
+        [SerializeField] private int ResourcePerObject = 20;
+        [SerializeField] private int maxPrefabCount = 10;
+
+        /// <summary>
+        /// 몬스터, 상자 등에서 자신의 위치를 중심으로 입력한 만큼의 자원이 튀어나오게 합니다.
+        /// 자원 20당 1개의 구슬이 생성됩니다,
+        /// </summary>
+        /// <param name="자원 타입 - Gold / Mana "></param>
+        /// <param name="드랍할 자원의 양"></param>
+        /// <param name="드랍할 지점"></param>
+        public void SpawnResources(InfiniteResourceType type, int resourceAmount, Transform spawnPoint)
+        {
+            //자원 오브젝트 생성할 수량 및 그 안에 들어갈 값 할당
+            int prefabCount = Mathf.Clamp((resourceAmount / ResourcePerObject)+1, 1, maxPrefabCount);
+            int resourceLeft = resourceAmount;
+            // 자원 종류에 따라 프리펩 설정
+            GameObject prefab = (type == InfiniteResourceType.Gold) ? goldPrefab : manaPrefab;
+            // 생성 위치를 살짝 랜덤하게(몬스터 위치에서 반경 0.2)
+            Vector2 randomPos = (Vector2)spawnPoint.position + Random.insideUnitCircle * 0.2f;
+            
+            for (int i = 0; i < prefabCount; i++)
+            {
+                GameObject obj = prefab.Pooling();
+                obj.transform.position = randomPos;
+                obj.transform.rotation = Quaternion.identity;
+                ResourceDropping resourceDropping = obj.GetComponent<ResourceDropping>();
+                if (resourceLeft >= ResourcePerObject)
+                {
+                    resourceDropping.amount = ResourcePerObject;
+                    resourceDropping.resourceType = type;
+                }
+                else
+                {
+                    resourceDropping.amount = resourceLeft;
+                    resourceDropping.resourceType = type;
+                }
+
+                resourceLeft -= ResourcePerObject;
+            }
+        }
+        
         /// <summary>
         /// 플레이어에게 골드를 줍니다.
         /// </summary>

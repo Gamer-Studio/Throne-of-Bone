@@ -1,56 +1,74 @@
 using UnityEngine;
 using DG.Tweening;
+using ToB.Core;
 using ToB.Player;
-using UnityEngine.ResourceManagement;
-using UnityEngine.SceneManagement;
 
 namespace ToB.Entities.Effect
 {
     public class ResourceDropping : MonoBehaviour
     {
-        private Rigidbody2D rb;
-        private bool isCollected = false;
-        [SerializeField] public float jumpForce = 3f;
-        [SerializeField] public float autoCollectDelay = 1.5f;
-        [SerializeField] public float collectMoveDuration = 0.5f;
         
+        private bool isCollected = false;
+        private bool isCollectableByPlayer = false;
+        
+        public int amount;
+        public InfiniteResourceType resourceType;
+        
+        [SerializeField] public float jumpForce = 25f;
+        [SerializeField] public float autoCollectDelay = 2f;
+        [SerializeField] private float collectSpeed = 10f;
+        [SerializeField] private float collectAcceleration = 50f;
+        //[SerializeField] public float collectMoveDuration = 1f;
+
+        private Rigidbody2D rb;
+        private Collider2D _collider;
+        private Vector2 currentVelocity;
         private PlayerCharacter player;
         
         private void Awake()
         {
-            SceneManager.sceneLoaded += OnSceneLoaded;
             rb = GetComponent<Rigidbody2D>();
+            player = PlayerCharacter.GetInstance();
+            _collider = GetComponent<Collider2D>();
         }
-        private void OnDestroy()
-        {
-            SceneManager.sceneLoaded -= OnSceneLoaded;
-        }
-        
-        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-        {
-            if (scene.name != "Intro" && scene.name != "MainMenu")
-            {
-                gameObject.SetActive(true);
-                player = PlayerCharacter.GetInstance();
-            }
-        }
-
         private void Start()
         {
-            // 살짝 위로 튀어오르며 생성
-            rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
-            // 일정 시간 후 자동 수집
-            Invoke(nameof(AutoCollect), autoCollectDelay);
+      
         }
 
-        private void OnCollisionEnter2D(Collision2D collision)
+        private void OnEnable()
         {
-            if (!isCollected && collision.gameObject.CompareTag("Ground"))
+            float angle = Random.Range(-15f, 15f);
+            float rad = angle * Mathf.Deg2Rad;
+            float force = Random.Range(0.8f, 1.2f) * jumpForce;
+            Vector2 direction = new Vector2(Mathf.Sin(rad), Mathf.Cos(rad)).normalized;
+            rb.AddForce(direction * force, ForceMode2D.Impulse);
+            Invoke(nameof(AutoCollect), autoCollectDelay);
+        }
+        private void OnDisable()
+        {
+            isCollected = false;
+            isCollectableByPlayer = false;
+            rb.simulated = true;
+            _collider.isTrigger = false;
+        }
+
+        private void Update()
+        {
+            if (isCollectableByPlayer)
             {
-                // 바닥에 닿으면 멈춤
-                rb.linearVelocity = Vector2.zero;
-                rb.bodyType = RigidbodyType2D.Kinematic;
-                rb.simulated = false;
+                Vector2 direction = (player.transform.position - transform.position);
+                if (direction.sqrMagnitude < 0.1f)
+                {
+                    if (resourceType == InfiniteResourceType.Gold)
+                        Core.ResourceManager.Instance.GiveGoldToPlayer(amount);
+                    else
+                        Core.ResourceManager.Instance.GiveManaToPlayer(amount);
+                    gameObject.Release();
+                }
+                
+                currentVelocity = Vector2.Lerp(currentVelocity, direction * collectSpeed, collectAcceleration * Time.deltaTime);
+                transform.position += (Vector3)(currentVelocity * Time.deltaTime);
             }
         }
 
@@ -58,26 +76,14 @@ namespace ToB.Entities.Effect
         {
             if (isCollected) return;
             isCollected = true;
+
             rb.simulated = false; // 물리 비활성화
+            _collider.isTrigger = true;
+            isCollectableByPlayer = true; 
 
-            // DOTween으로 플레이어에게 흡수
-            transform.DOMove(player.transform.position, collectMoveDuration)
-                .SetEase(Ease.InQuad)
-                .OnComplete(() =>
-                {
-                    Core.ResourceManager.Instance.GiveGoldToPlayer(10);
-                    Destroy(gameObject);
-                });
+            Vector2 direction = (player.transform.position - transform.position).normalized;
+            currentVelocity = direction * collectSpeed * 0.2f;
         }
-
-        private void OnTriggerEnter2D(Collider2D other)
-        {
-            if (!isCollected && other.CompareTag("Player"))
-            {
-                AutoCollect();
-            }
-        }
-
         
     }
 }
