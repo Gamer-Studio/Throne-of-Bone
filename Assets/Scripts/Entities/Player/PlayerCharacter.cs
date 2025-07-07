@@ -207,7 +207,7 @@ namespace ToB.Player
         isClimbing = true;
         animator.SetBool(BOOL_CLIMB, true);
         
-        // if (body.linearVelocityY < 0) body.linearVelocityY = Mathf.Max(body.linearVelocityY, wallEnduringSpeed);
+        if (body.linearVelocityY < 0) body.linearVelocityY = Mathf.Max(body.linearVelocityY, wallEnduringSpeed);
       }
       else
       {
@@ -338,7 +338,7 @@ namespace ToB.Player
       {
         Vector2 kickReactionDir = moveDirection == PlayerMoveDirection.Left ? Vector2.right : Vector2.left;
         
-        body.AddForce(kickReactionDir * wallJumpPower, ForceMode2D.Impulse);
+        body.AddForce(kickReactionDir * (wallJumpPower * 1.4f), ForceMode2D.Impulse);   // 1.4는 약 루트2, 벽차기 약간 더 강하게
         transform.eulerAngles = new Vector3(0, kickReactionDir.x > 0 ? 0 : 180, 0);
         
         // 벽 반동에 의해 동작을 못하는 시간이라는 의미지만 반동 직후 사망시 코루틴에 의해 사망 컨트롤 락이 되어야 하는데 풀려버린다던가
