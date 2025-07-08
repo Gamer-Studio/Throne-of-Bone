@@ -3,10 +3,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using ToB.Core;
-using ToB.Utils;
-using Unity.Collections;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace ToB.IO
 {
@@ -98,10 +95,10 @@ namespace ToB.IO
 
     private void InitMetaData()
     {
-      MetaData["name"] = name;
-      MetaData["gold"] = gold;
-      MetaData["saveTime"] = SaveTime;
-      MetaData["version"] = Version;
+      MetaData[nameof(name)] = name;
+      MetaData[nameof(gold)] = gold;
+      MetaData[nameof(SaveTime)] = SaveTime;
+      MetaData[nameof(Version)] = Version;
     }
     
     public SAVEModule Node(string key, bool force = false) => Data.Node(key, force);
@@ -126,7 +123,14 @@ namespace ToB.IO
       for (var i = 0; i < result.Length; i++)
       {
         var name = "save_" + i;
-        result[i] = Exists(name) ? await Load(name) : new SAVE(name);
+        var target = result[i] = Exists(name) ? await Load(name) : new SAVE(name);
+        
+        // 메타데이터 불러오기
+        
+        target.name = target.MetaData.Get(nameof(name), target.name);
+        target.gold = target.MetaData.Get(nameof(gold), target.gold);
+        target.SaveTime = target.MetaData.Get(nameof(SaveTime), target.SaveTime);
+        target.Version = target.MetaData.Get(nameof(Version), CurrentVersion);
       }
       
       return result;
@@ -147,8 +151,13 @@ namespace ToB.IO
     /// </summary>
     public async Task LoadAll()
     {
-      await Data.Load(Path.Combine(SavePath, fileName), true);
-
+      var rootPath = Path.Combine(SavePath, name);
+      if (Directory.Exists(rootPath) && Validate(rootPath))
+      {
+        Debug.Log($"Loading save file: {rootPath}");
+        await Data.Load(Path.Combine(SavePath, fileName), true);
+      }
+        
       Current = this;
       
       OnCurrentLoad.Invoke(this);

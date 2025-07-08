@@ -24,10 +24,6 @@ namespace ToB.IO
 
     #endregion
 
-#if UNITY_EDITOR
-    [Label("데이터"), SerializeField, ReadOnly] private SerializableDictionary<string, SAVEModule> inspectorChildren = new();
-#endif
-
     /// <summary>
     /// 새로운 SAVE 데이터 모듈을 생성합니다.
     /// name으로 root를 명시적으로 지정하지 마세요. 
@@ -77,14 +73,10 @@ namespace ToB.IO
     {
       foreach (var (key, value) in data)
       {
-        if (value is null || key == "metaData") continue;
+        if (value is null) continue;
         
         this[key] = value;
       }
-      
-      var loadSymbol = DebugSymbol.Get("Load");
-      loadSymbol.Log($"[SAVE-{name}] loaded");
-      loadSymbol.Log(ToString());
     }
     
     /// <summary>
