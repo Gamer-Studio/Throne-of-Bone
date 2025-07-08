@@ -18,6 +18,7 @@ namespace ToB.Entities.FieldObject
         {
             base.LoadJson(json);
             isDiscovered = json.Get(nameof(isDiscovered), false);
+            IsInteractable = json.Get(nameof(IsInteractable), true);
         }
 
         public override void OnLoad()
@@ -29,6 +30,7 @@ namespace ToB.Entities.FieldObject
         {
             JObject json = base.ToJson();
             json.Add(nameof(isDiscovered), isDiscovered);
+            json.Add(nameof(IsInteractable), IsInteractable);
             return json;
         }
 
