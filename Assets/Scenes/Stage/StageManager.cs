@@ -1,5 +1,6 @@
 using Cinemachine;
 using NaughtyAttributes;
+using ToB.Core;
 using ToB.Player;
 using ToB.Utils;
 using ToB.Utils.Singletons;
@@ -7,6 +8,11 @@ using UnityEngine;
 
 namespace ToB.Scenes.Stage
 {
+  public enum GameState
+  {
+    Play,
+    UI
+  }
   public class StageManager : Singleton<StageManager>
   {
     [Label("플레이어"), Tooltip("현재 활성화된 Player 태그가 붙은 플레이어 캐릭터입니다.")] public PlayerCharacter player;
@@ -17,6 +23,8 @@ namespace ToB.Scenes.Stage
     [Label("로딩된 Confiner 콜라이더 목록"), SerializeField] private SerializableDictionary<Collider2D, GameObject> loadedColliders = new();
     [SerializeField] private CinemachineConfiner2D confiner;
     [SerializeField] private Transform roomContainer;
+    
+    [field:SerializeField] public GameState State { get; private set; } = GameState.Play;
     
     #region Unity Event
     
@@ -95,7 +103,24 @@ namespace ToB.Scenes.Stage
     {
       unloaded = true;
     }
-    
+
+
+    public void ChangeGameState(GameState state)
+    {
+      switch (state)
+      {
+        case GameState.Play:
+          State = GameState.Play;
+          InputManager.Instance.SetActionMap(InputActionMaps.Player);
+          break;
+        case GameState.UI:
+          State = GameState.UI;
+          InputManager.Instance.SetActionMap(InputActionMaps.UI);
+          break;
+        default:
+          throw new System.ArgumentOutOfRangeException(nameof(state), state, null);
+      }
+    }
     #endregion
   }
 }

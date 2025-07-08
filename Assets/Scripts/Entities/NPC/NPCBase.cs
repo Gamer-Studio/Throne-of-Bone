@@ -1,5 +1,7 @@
 using System;
+using Cinemachine;
 using ToB.Entities.Obstacle;
+using ToB.Scenes.Stage;
 using UnityEngine;
 
 namespace ToB.Entities.NPC
@@ -8,12 +10,21 @@ namespace ToB.Entities.NPC
     {
         public bool IsInteractable { get; set; }
 
+        private bool focused = false;
+
         private void Awake()
         {
             IsInteractable = true;
         }
 
 
-        public abstract void Interact();
+        public virtual void Interact()
+        {
+            if (!focused)
+            {
+                focused = true;
+                StageManager.Instance.ChangeGameState(GameState.UI);
+            }
+        }
     }
 }

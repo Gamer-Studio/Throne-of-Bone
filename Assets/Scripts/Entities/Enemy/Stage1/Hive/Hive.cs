@@ -24,6 +24,7 @@ namespace ToB
             base.Awake();
 
             flies = new List<GameObject>();
+            
             stat.Init(this, DataSO);
             PatrolRange.Init(DataSO.PatrolRange);
             ChaseRange.Init(DataSO.ChaseRange);

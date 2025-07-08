@@ -173,11 +173,11 @@ namespace ToB.Player
       {
         if (hit.TryGetComponent<IInteractable>(out var interactable) && 
             interactable is not { IsInteractable: true }) continue;
-        
+
         var distance = Vector2.Distance(character.transform.position, hit.transform.position);
 
         if (distance >= nearestDistance) continue;
-        
+
         nearest = interactable;
         nearestDistance = distance;
         nearestPos = hit.transform.position;
