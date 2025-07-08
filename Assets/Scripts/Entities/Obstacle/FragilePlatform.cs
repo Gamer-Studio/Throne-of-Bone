@@ -28,7 +28,7 @@ namespace ToB.Entities.Obstacle
             if(isActivated) gameObject.SetActive(false);
         }
 
-        private void OnCollisionStay2D(Collision2D other)
+        private void OnTriggerStay2D(Collider2D other)
         {
             if (other.gameObject.CompareTag("Player") && !isActivated)
             {
@@ -39,16 +39,17 @@ namespace ToB.Entities.Obstacle
                     StopShaking();
                     ActivateFall();
                 }
+                if ((shakeTween == null || !shakeTween.IsActive()) && !isActivated)
+                {
+                    shakeTween = spriteTransform.DOLocalMoveY(initialLocalPosition.y + 0.1f, 0.1f)
+                        .SetLoops(-1, LoopType.Yoyo)
+                        .SetEase(Ease.InOutSine);
+                }
             }
-            if ((shakeTween == null || !shakeTween.IsActive()) && !isActivated)
-            {
-                shakeTween = spriteTransform.DOLocalMoveY(initialLocalPosition.y + 0.1f, 0.1f)
-                    .SetLoops(-1, LoopType.Yoyo)
-                    .SetEase(Ease.InOutSine);
-            }
+            
         }
 
-        private void OnCollisionExit2D(Collision2D other)
+        private void OnTriggerExit2D(Collider2D other)
         {
             if (other.gameObject.CompareTag("Player"))
             {
@@ -84,10 +85,10 @@ namespace ToB.Entities.Obstacle
             while (rb.linearVelocity.magnitude > 0)
             {
                 yield return new WaitForSeconds(0.2f);
-                transform.position = initialPos;
-                gameObject.SetActive(false);
-                yield return null;
             }
+            transform.position = initialPos;
+            gameObject.SetActive(false);
+            yield return null;
         }
     }
 }
