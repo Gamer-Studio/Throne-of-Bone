@@ -33,7 +33,7 @@ namespace ToB.Entities
 
             if (hittableSO == null)
             {
-                Debug.Log("SO가 hittable 인터페이스를 상속받지 못했습니다. " + gameObject.name);
+                Debug.Log("SO가 hittable 인터페이스를 상속받지 못했습니다. " + enemy.gameObject.name);
                 return;
             }
             this.hittableSO = hittableSO;
