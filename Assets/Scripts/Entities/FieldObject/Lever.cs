@@ -1,11 +1,12 @@
-using UnityEngine;
+using Newtonsoft.Json.Linq;
 using TMPro;
-using UnityEditor.ShaderGraph.Serialization;
+using ToB.IO;
+using UnityEngine;
 using UnityEngine.Events;
 
-namespace ToB.Entities.Obstacle
+namespace ToB.Entities.FieldObject
 {
-    public class Lever : MonoBehaviour, IInteractable
+    public class Lever : FieldObjectProgress, IInteractable
     {
         [SerializeField] public TMP_Text interactionText;
         [SerializeField] public SpriteRenderer LeverSR;
@@ -15,26 +16,39 @@ namespace ToB.Entities.Obstacle
         public bool IsInteractable { get; set; }
         public bool isLeverActivated;
         
-        // 외부에서 레버의 IsInteractable을 접근?
-        private void Awake()
+        #region SaveLoad
+        public override void LoadJson(JObject json)
         {
-            IsInteractable = true;
-            interactionText.text = "";
+            base.LoadJson(json);
+            isLeverActivated = json.Get(nameof(isLeverActivated), false);
+            IsInteractable = json.Get(nameof(IsInteractable), true);
         }
         
+        public override void OnLoad()
+        {
+            interactionText.text = "";
+        }
+        public override JObject ToJson()
+        {
+            JObject json = base.ToJson();
+            json.Add(nameof(isLeverActivated), isLeverActivated);
+            json.Add(nameof(IsInteractable), IsInteractable);
+            return json;
+        }
+      
+        #endregion
+
         /// <summary>
         /// OFF였으면 On으로, On이었으면 Off로
         /// </summary>
         public void Interact()
         {
-            Debug.Log("interact");
             isLeverActivated = !isLeverActivated;
             LeverSR.sprite = sprites[isLeverActivated ? 1 : 0];
             UpdateLeverText();
             if (IsInteractable)
             {
                 onLeverInteract?.Invoke(isLeverActivated);
-                Debug.Log($"레버 이벤트 Invoke : {isLeverActivated}");
             }
         }
 
@@ -44,8 +58,6 @@ namespace ToB.Entities.Obstacle
             else interactionText.text = "F : 끄기";
         }
 
-
-
         private void OnTriggerEnter2D(Collider2D other)
         {
             if (other.CompareTag("Player"))
@@ -53,7 +65,6 @@ namespace ToB.Entities.Obstacle
                 UpdateLeverText();
             }
         }
-        
         private void OnTriggerExit2D(Collider2D other)
         {
             if (other.CompareTag("Player"))
@@ -61,6 +72,8 @@ namespace ToB.Entities.Obstacle
                 interactionText.text = "";
             }
         }
+
+
         
         
     }

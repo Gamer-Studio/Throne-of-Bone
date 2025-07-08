@@ -1,4 +1,4 @@
-namespace ToB.Entities.Obstacle
+namespace ToB.Entities
 {
     public interface IInteractable
     {

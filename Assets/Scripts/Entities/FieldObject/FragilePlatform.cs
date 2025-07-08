@@ -1,10 +1,12 @@
 using System.Collections;
-using UnityEngine;
 using DG.Tweening;
+using Newtonsoft.Json.Linq;
+using ToB.IO;
+using UnityEngine;
 
-namespace ToB.Entities.Obstacle
+namespace ToB.Entities.FieldObject
 {
-    public class FragilePlatform : MonoBehaviour
+    public class FragilePlatform : FieldObjectProgress
     {
         [SerializeField] public float fallCountdown = 3f;
         [SerializeField] private float fallTimer;
@@ -16,19 +18,46 @@ namespace ToB.Entities.Obstacle
         private Tween shakeTween;
         private Vector3 initialLocalPosition;
         private Collider2D hitbox;
-        private void Awake()
+
+       
+        #region SaveLoad
+        public override void LoadJson(JObject json)
         {
-            rb = GetComponent<Rigidbody2D>();
+            base.LoadJson(json);
+            isActivated = json.Get(nameof(isActivated), false);
+        }
+        
+        public override void OnLoad()
+        {
+            if (rb ==null) rb = GetComponent<Rigidbody2D>();
             initialPos = transform.position;
             initialLocalPosition = spriteTransform.localPosition;
             rb.gravityScale = 0f;
             rb.constraints = RigidbodyConstraints2D.FreezeAll;
-            hitbox = GetComponent<Collider2D>();
-            // 여기서 isActivated 변수를 세이브-로드해 와야 함
-            if(isActivated) gameObject.SetActive(false);
+            if (hitbox ==null) hitbox = GetComponent<Collider2D>();
+            gameObject.SetActive(!isActivated);
+        }
+        public override JObject ToJson()
+        {
+            JObject json = base.ToJson();
+            json.Add(nameof(isActivated), isActivated);
+            return json;
+        }
+        
+        #endregion
+
+        private void Awake()
+        {
+            if (rb ==null) rb = GetComponent<Rigidbody2D>();
+            initialPos = transform.position;
+            initialLocalPosition = spriteTransform.localPosition;
+            rb.gravityScale = 0f;
+            rb.constraints = RigidbodyConstraints2D.FreezeAll;
+            if (hitbox ==null) hitbox = GetComponent<Collider2D>();
+            gameObject.SetActive(!isActivated);
         }
 
-        private void OnCollisionStay2D(Collision2D other)
+        private void OnTriggerStay2D(Collider2D other)
         {
             if (other.gameObject.CompareTag("Player") && !isActivated)
             {
@@ -39,16 +68,18 @@ namespace ToB.Entities.Obstacle
                     StopShaking();
                     ActivateFall();
                 }
+                
+                if ((shakeTween == null || !shakeTween.IsActive()) && !isActivated)
+                {
+                    shakeTween = spriteTransform.DOLocalMoveY(initialLocalPosition.y + 0.1f, 0.1f)
+                        .SetLoops(-1, LoopType.Yoyo)
+                        .SetEase(Ease.InOutSine);
+                }
             }
-            if ((shakeTween == null || !shakeTween.IsActive()) && !isActivated)
-            {
-                shakeTween = spriteTransform.DOLocalMoveY(initialLocalPosition.y + 0.1f, 0.1f)
-                    .SetLoops(-1, LoopType.Yoyo)
-                    .SetEase(Ease.InOutSine);
-            }
+            
         }
 
-        private void OnCollisionExit2D(Collision2D other)
+        private void OnTriggerExit2D(Collider2D other)
         {
             if (other.gameObject.CompareTag("Player"))
             {
@@ -80,14 +111,16 @@ namespace ToB.Entities.Obstacle
             rb.constraints = RigidbodyConstraints2D.FreezeRotation;
             hitbox.enabled = false;
             StopShaking();
-            yield return new WaitForSeconds(0.1f);
-            while (rb.linearVelocity.magnitude > 0)
+            yield return new WaitForSeconds(0.2f);
+            while (rb.linearVelocity.magnitude > 0.02f)
             {
                 yield return new WaitForSeconds(0.2f);
-                transform.position = initialPos;
-                gameObject.SetActive(false);
-                yield return null;
             }
+            transform.position = initialPos;
+            gameObject.SetActive(false);
+            yield return null;
         }
+        
+
     }
 }

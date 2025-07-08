@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using TMPro;
 using ToB.IO;
 using ToB.Utils;
+using TMPro;
+using UnityEngine.UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -21,12 +23,24 @@ namespace ToB.UI
         
         [Header("Save Slot Panel")]
         [SerializeField] public GameObject ConformPanel;
+        [SerializeField] public Button[] saveSlotButtons;
+        private string saveFileNameCashing = "";
         
         private void Awake()
         {
-            UIManager.Instance.Init(this);            
+            UIManager.Instance.Init(this);
         }
-        
+
+        private void SaveSlotsInit()
+        {
+            for (int i = 0; i < saveSlotButtons.Length; i++)
+            {
+                int index = i;
+                saveSlotButtons[i].onClick.AddListener(() => SaveSlotSelected(index));
+                saveSlotButtons[i].GetComponentInChildren<TextMeshProUGUI>().text = $"Save Slot {i + 1}";
+            }
+        }
+
         #region UIStack
         
         private Stack<GameObject> uiStack = new Stack<GameObject>();
@@ -137,6 +151,8 @@ namespace ToB.UI
 
         public async void SaveSlotPanelOn()
         {
+            SaveSlotsInit();       
+            OpenPanel(SaveSlotPanel);      
             try
             {
                 OpenPanel(SaveSlotPanel);
@@ -168,23 +184,23 @@ namespace ToB.UI
             }
         }
 
-        public void SaveSlotSelected(int selected)
+        public void SaveSlotSelected(int slotIndex)
         {
+            saveFileNameCashing = $"save_slot_{slotIndex + 1}.json";
             OpenPanel(ConformPanel);
-            //ConformPanel.SetActive(true);       
         }
 
         public void ConfirmSlotCancel()
         {
             ClosePanel();       
-            //ConformPanel.SetActive(false);   
         }
 
         public void ConfirmSlotConfirmed()
         {
             CloseAllPanels();
-            // 저장 방식에 따라서 각 세이브파일을 로드하는 방식 변경 예정
-            LoadGame();
+            Debug.Log($"{saveFileNameCashing} 선택됨");
+            // 저장 방식에 따라서 각 세이브파일을 로드하는 방식 변경
+            // LoadGame(saveFileNameCashing);       
         }
         public void ExitGame()
         {

@@ -4,11 +4,21 @@ using UnityEngine;
 
 namespace ToB.Entities
 {
-  public class ObstacleTemp : MonoBehaviour, IJsonSerializable
+  public class FieldObjectProgress : MonoBehaviour, IJsonSerializable
   {
-    public ObstacleResetType type;
+    public FieldObjectProgressResetType type;
     
     public virtual void LoadJson(JObject json)
+    {
+      
+    }
+
+    public virtual void OnLoad()
+    {
+      
+    }
+
+    public virtual void OnUnLoad()
     {
       
     }
@@ -22,7 +32,7 @@ namespace ToB.Entities
     }
   }
 
-  public enum ObstacleResetType
+  public enum FieldObjectProgressResetType
   {
     // 방을 나가거나 들어오면 리셋됩니다.
     Room,

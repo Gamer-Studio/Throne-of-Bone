@@ -1,7 +1,8 @@
 using System;
 using Cinemachine;
 using NaughtyAttributes;
-using ToB.Entities.Obstacle;
+using ToB.Entities;
+using ToB.Entities.FieldObject;
 using ToB.Utils;
 using UnityEngine;
 using UnityEngine.InputSystem;

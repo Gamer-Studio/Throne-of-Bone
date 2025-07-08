@@ -1,4 +1,5 @@
 using ToB.Core;
+using ToB.Player;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -42,6 +43,18 @@ namespace ToB.UI
         {
             ResourceManager.Instance.IsPlayerHaveEnoughResources(10,50);       
         }
+
+        public void TestKeyAddButton()
+        {
+            ResourceManager.Instance.GiveMasterKeyToPlayer(1);
+        }
+
+        public void TestHPAddButton()
+        {
+            PlayerCharacter player = PlayerCharacter.GetInstance();
+            player.stat.Hp = player.stat.maxHp;
+        }
+
         #endregion
 
         private void InitText()
