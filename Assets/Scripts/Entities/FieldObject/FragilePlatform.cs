@@ -45,8 +45,19 @@ namespace ToB.Entities.FieldObject
         }
         
         #endregion
-        
-        private void OnCollisionStay2D(Collision2D other)
+
+        private void Awake()
+        {
+            if (rb ==null) rb = GetComponent<Rigidbody2D>();
+            initialPos = transform.position;
+            initialLocalPosition = spriteTransform.localPosition;
+            rb.gravityScale = 0f;
+            rb.constraints = RigidbodyConstraints2D.FreezeAll;
+            if (hitbox ==null) hitbox = GetComponent<Collider2D>();
+            gameObject.SetActive(!isActivated);
+        }
+
+        private void OnTriggerStay2D(Collider2D other)
         {
             if (other.gameObject.CompareTag("Player") && !isActivated)
             {
@@ -57,16 +68,18 @@ namespace ToB.Entities.FieldObject
                     StopShaking();
                     ActivateFall();
                 }
+                
+                if ((shakeTween == null || !shakeTween.IsActive()) && !isActivated)
+                {
+                    shakeTween = spriteTransform.DOLocalMoveY(initialLocalPosition.y + 0.1f, 0.1f)
+                        .SetLoops(-1, LoopType.Yoyo)
+                        .SetEase(Ease.InOutSine);
+                }
             }
-            if ((shakeTween == null || !shakeTween.IsActive()) && !isActivated)
-            {
-                shakeTween = spriteTransform.DOLocalMoveY(initialLocalPosition.y + 0.1f, 0.1f)
-                    .SetLoops(-1, LoopType.Yoyo)
-                    .SetEase(Ease.InOutSine);
-            }
+            
         }
 
-        private void OnCollisionExit2D(Collision2D other)
+        private void OnTriggerExit2D(Collider2D other)
         {
             if (other.gameObject.CompareTag("Player"))
             {
@@ -98,14 +111,14 @@ namespace ToB.Entities.FieldObject
             rb.constraints = RigidbodyConstraints2D.FreezeRotation;
             hitbox.enabled = false;
             StopShaking();
-            yield return new WaitForSeconds(0.1f);
-            while (rb.linearVelocity.magnitude > 0)
+            yield return new WaitForSeconds(0.2f);
+            while (rb.linearVelocity.magnitude > 0.02f)
             {
                 yield return new WaitForSeconds(0.2f);
-                transform.position = initialPos;
-                gameObject.SetActive(false);
-                yield return null;
             }
+            transform.position = initialPos;
+            gameObject.SetActive(false);
+            yield return null;
         }
         
 

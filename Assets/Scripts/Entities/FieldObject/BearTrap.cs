@@ -14,6 +14,8 @@ namespace ToB.Entities.FieldObject
         [SerializeField] private Animator animator;
         private LayerMask playerMask;
         [SerializeField] State state;
+        [SerializeField] private float knockBackPower;
+        [SerializeField] private float damage;
 
         [SerializeField] private float resetDuration = 3;
          
@@ -35,8 +37,8 @@ namespace ToB.Entities.FieldObject
             {
                 if (state != State.Opened) return;
                 
-                other.Damage(10, this);
-                other.KnockBack(5, new Vector2(other.transform.eulerAngles.y == 0 ? 1 : -1, 1));
+                other.Damage(damage, this);
+                other.KnockBack(knockBackPower, new Vector2(other.transform.eulerAngles.y == 0 ? 1 : -1, 1));
                 animator.SetTrigger(ObstacleAnimationString.Activate);
                 state = State.Closed;
                 StartCoroutine(ResetTrap());
