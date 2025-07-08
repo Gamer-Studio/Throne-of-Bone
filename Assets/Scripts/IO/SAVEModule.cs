@@ -113,7 +113,6 @@ namespace ToB.IO
         #endif
       }
       
-      DebugSymbol.Save.Log($"[SAVE-{name}] loaded from {filename}");
 
       if (chainLoading && Directory.Exists(path))
       {

@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using ToB.Core;
 using UnityEngine;
@@ -15,7 +16,7 @@ namespace ToB.IO
     /// </summary>
     public static event Action<SAVE> OnCurrentLoad = save =>
     {
-      ResourceManager.Instance.LoadJson(save.Node(nameof(ResourceManager)));
+      ResourceManager.Instance.LoadJson(save.Node(nameof(ResourceManager), true));
     };
 
     /// <summary>
@@ -149,13 +150,12 @@ namespace ToB.IO
     /// <summary>
     /// 해당 세이브로 게임을 시작하기 전에 호출해주세요.
     /// </summary>
-    public async Task LoadAll()
+    public async UniTask LoadAll()
     {
-      var rootPath = Path.Combine(SavePath, name);
+      var rootPath = Path.Combine(SavePath, fileName);
       if (Directory.Exists(rootPath) && Validate(rootPath))
       {
-        Debug.Log($"Loading save file: {rootPath}");
-        await Data.Load(Path.Combine(SavePath, fileName), true);
+        await Data.Load(rootPath, true);
       }
         
       Current = this;

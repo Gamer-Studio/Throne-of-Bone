@@ -1,12 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using NaughtyAttributes;
 using TMPro;
 using ToB.IO;
 using ToB.Utils;
-using TMPro;
 using UnityEngine.UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
