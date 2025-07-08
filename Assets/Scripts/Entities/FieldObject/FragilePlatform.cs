@@ -45,18 +45,6 @@ namespace ToB.Entities.FieldObject
         }
         
         #endregion
-
-        private void Awake()
-        {
-            if (rb ==null) rb = GetComponent<Rigidbody2D>();
-            initialPos = transform.position;
-            initialLocalPosition = spriteTransform.localPosition;
-            rb.gravityScale = 0f;
-            rb.constraints = RigidbodyConstraints2D.FreezeAll;
-            if (hitbox ==null) hitbox = GetComponent<Collider2D>();
-            gameObject.SetActive(!isActivated);
-        }
-
         private void OnTriggerStay2D(Collider2D other)
         {
             if (other.gameObject.CompareTag("Player") && !isActivated)
