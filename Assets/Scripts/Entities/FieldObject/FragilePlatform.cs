@@ -1,10 +1,12 @@
 using System.Collections;
-using UnityEngine;
 using DG.Tweening;
+using Newtonsoft.Json.Linq;
+using ToB.IO;
+using UnityEngine;
 
-namespace ToB.Entities.Obstacle
+namespace ToB.Entities.FieldObject
 {
-    public class FragilePlatform : MonoBehaviour
+    public class FragilePlatform : FieldObjectProgress
     {
         [SerializeField] public float fallCountdown = 3f;
         [SerializeField] private float fallTimer;
@@ -16,18 +18,34 @@ namespace ToB.Entities.Obstacle
         private Tween shakeTween;
         private Vector3 initialLocalPosition;
         private Collider2D hitbox;
-        private void Awake()
+
+       
+        #region SaveLoad
+        public override void LoadJson(JObject json)
         {
-            rb = GetComponent<Rigidbody2D>();
+            base.LoadJson(json);
+            isActivated = json.Get(nameof(isActivated), false);
+        }
+        
+        public override void OnLoad()
+        {
+            if (rb ==null) rb = GetComponent<Rigidbody2D>();
             initialPos = transform.position;
             initialLocalPosition = spriteTransform.localPosition;
             rb.gravityScale = 0f;
             rb.constraints = RigidbodyConstraints2D.FreezeAll;
-            hitbox = GetComponent<Collider2D>();
-            // 여기서 isActivated 변수를 세이브-로드해 와야 함
-            if(isActivated) gameObject.SetActive(false);
+            if (hitbox ==null) hitbox = GetComponent<Collider2D>();
+            gameObject.SetActive(!isActivated);
         }
-
+        public override JObject ToJson()
+        {
+            JObject json = base.ToJson();
+            json.Add(nameof(isActivated), isActivated);
+            return json;
+        }
+        
+        #endregion
+        
         private void OnCollisionStay2D(Collision2D other)
         {
             if (other.gameObject.CompareTag("Player") && !isActivated)
@@ -89,5 +107,7 @@ namespace ToB.Entities.Obstacle
                 yield return null;
             }
         }
+        
+
     }
 }

@@ -1,11 +1,11 @@
-using System;
-using UnityEngine;
 using System.Collections;
-using Unity.AppUI.UI;
+using Newtonsoft.Json.Linq;
+using ToB.IO;
+using UnityEngine;
 
-namespace ToB.Entities.Obstacle
+namespace ToB.Entities.FieldObject
 {
-    public class WaterValve : MonoBehaviour
+    public class WaterValve : FieldObjectProgress
     {
         [SerializeField] public Transform waterSpriteTransform;
         [SerializeField] public float moveSpeed; // 물줄기 내려오는 속도
@@ -35,15 +35,30 @@ namespace ToB.Entities.Obstacle
             ValveCloseTargetY = -Height;
             ValveOpenTargetY = Height;
         }
+        
+        #region SaveLoad
 
-        private void Awake()
+        public override void LoadJson(JObject json)
         {
-            isValveActivated = false;
+            base.LoadJson(json);
+            isValveActivated = json.Get(nameof(isValveActivated), false);
+        }
+
+        public override void OnLoad()
+        {
             SetWaterSize();
             InitPosition();
-            // 추후 여기서 벨브가 열렸는지 안 열렸는지 Load해 오기
         }
         
+        public override JObject ToJson()
+        {
+            JObject json = base.ToJson();
+            json.Add(nameof(isValveActivated), isValveActivated);
+            return json;
+        }
+        
+        #endregion
+       
         private void InitPosition()
         {
             if (isValveActivated)
@@ -62,10 +77,12 @@ namespace ToB.Entities.Obstacle
             if (!leverState)
             {
                 DeactivateValve();
+                // 벨브 비활성화 = 벨브를 열기 = 물이 나오기 = 수위 상승
             }
             else
             {
                 ActivateValve();
+                // 벨브 활성화 = 벨브 잠그기 = 물이 안 나옴 = 수위 하락
             }
         }
 
@@ -94,7 +111,6 @@ namespace ToB.Entities.Obstacle
                 waterSpriteTransform.localPosition.z);
             waterSpriteTransform.localPosition = startPos;
             
-                // 물 내려오기 (이어짐)
                 while (Vector3.Distance(waterSpriteTransform.localPosition, targetPos) > 0.01f)
                 {
                     waterSpriteTransform.localPosition = Vector3.MoveTowards(waterSpriteTransform.localPosition,

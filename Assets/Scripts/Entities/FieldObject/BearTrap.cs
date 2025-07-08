@@ -1,8 +1,7 @@
-using System;
 using System.Collections;
 using UnityEngine;
 
-namespace ToB.Entities
+namespace ToB.Entities.FieldObject
 {
     public class BearTrap : MonoBehaviour
     {

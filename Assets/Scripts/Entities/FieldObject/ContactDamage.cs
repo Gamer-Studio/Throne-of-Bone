@@ -1,8 +1,6 @@
-using System;
-using ToB.Entities;
 using UnityEngine;
 
-namespace ToB.Entities
+namespace ToB.Entities.FieldObject
 {
     public class ContactDamage : MonoBehaviour
     {

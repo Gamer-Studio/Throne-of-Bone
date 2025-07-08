@@ -1,5 +1,5 @@
 using ToB.Core;
-using ToB.Entities.Obstacle;
+using ToB.Entities.FieldObject;
 using UnityEngine;
 
 namespace ToB.Entities
