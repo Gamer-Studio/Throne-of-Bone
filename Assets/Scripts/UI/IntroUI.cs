@@ -1,4 +1,10 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using TMPro;
+using ToB.IO;
+using ToB.Utils;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -127,14 +133,44 @@ namespace ToB.UI
             OpenPanel(SettingPanel);
         }
 
-        public void SaveSlotPanelOn()
+        [SerializeField] private SAVE[] saves; 
+
+        public async void SaveSlotPanelOn()
         {
-            OpenPanel(SaveSlotPanel);      
+            try
+            {
+                OpenPanel(SaveSlotPanel);
+
+                saves = await SAVE.GetAllSaves();
+            
+                var textList = (from tmp in SaveSlotPanel.GetComponentsInChildren<TMP_Text>()
+                    where tmp.transform.parent.parent.parent.name == "SaveSlots"
+                    select tmp).ToArray();
+
+                for (var i = 0; i < textList.Length; i++)
+                {
+                    var save = saves[i];
+                    if(save.name != "empty")
+                    {
+                        // 빈 슬롯이 아닐 때
+                        textList[i].text = $"세이브 슬롯 {i + 1} - {save.name}\n날짜 : {save.SaveTime}\n보유 골드 : {save.gold}";
+                    }
+                    else
+                    {
+                        // 빈 슬롯일 때
+                        textList[i].text = $"세이브 슬롯 {i + 1} - EMPTY";
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                throw; // TODO 예외 처리
+            }
         }
 
-        public void SaveSlotSelected()
+        public void SaveSlotSelected(int selected)
         {
-            OpenPanel(ConformPanel);       
+            OpenPanel(ConformPanel);
             //ConformPanel.SetActive(true);       
         }
 
@@ -148,7 +184,7 @@ namespace ToB.UI
         {
             CloseAllPanels();
             // 저장 방식에 따라서 각 세이브파일을 로드하는 방식 변경 예정
-            LoadGame();       
+            LoadGame();
         }
         public void ExitGame()
         {

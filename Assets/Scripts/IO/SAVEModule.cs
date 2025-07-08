@@ -20,7 +20,7 @@ namespace ToB.IO
 
     private Dictionary<string, SAVEModule> children;
     public string[] ChildNames => children.Keys.ToArray();
-    public JObject MetaData { get; private set; }
+    public JObject MetaData => (JObject)this["metaData"];
 
     #endregion
 
@@ -37,7 +37,7 @@ namespace ToB.IO
     {
       this.name = name;
       children = new Dictionary<string, SAVEModule>();
-      this["metaData"] = MetaData = new JObject();
+      this["metaData"] = new JObject();
     }
 
     public void Save(string parentPath)
@@ -68,12 +68,16 @@ namespace ToB.IO
 
       writer.Close();
     }
-
+    
+    /// <summary>
+    /// JObject에서 데이터를 읽어옵니다.
+    /// </summary>
+    /// <param name="data"></param>
     public virtual void Read(JObject data)
     {
       foreach (var (key, value) in data)
       {
-        if (value is null) continue;
+        if (value is null || key == "metaData") continue;
         
         this[key] = value;
       }
@@ -82,6 +86,12 @@ namespace ToB.IO
       loadSymbol.Log($"[SAVE-{name}] loaded");
       loadSymbol.Log(ToString());
     }
+    
+    /// <summary>
+    /// IJsonSerializable 오브젝트에서 데이터를 읽어옵니다.
+    /// </summary>
+    /// <param name="data"></param>
+    public virtual void Read(IJsonSerializable data) => Read(data.ToJson());
 
     /// <summary>
     /// 내부 데이터 로딩용 메소드입니다. 호출하지 말아주세요!

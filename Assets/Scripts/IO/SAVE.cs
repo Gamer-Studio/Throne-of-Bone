@@ -2,33 +2,72 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
+using ToB.Core;
+using ToB.Utils;
 using Unity.Collections;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace ToB.IO
 {
   [Serializable]
   public class SAVE
   {
+    /// <summary>
+    /// SAVE.Current에 저장 파일이 로딩될 때 호출됩니다.
+    /// </summary>
+    public static event Action<SAVE> OnCurrentLoad = save =>
+    {
+      ResourceManager.Instance.LoadJson(save.Node(nameof(ResourceManager)));
+    };
+
+    /// <summary>
+    /// SAVE.Current가 저장될 때 호출됩니다.
+    /// </summary>
+    public static event Action<SAVE> OnCurrentSave = save =>
+    {
+      save.Node(nameof(ResourceManager)).Read(ResourceManager.Instance);
+    };
+    
     public static readonly string SavePath = Path.Combine(Application.persistentDataPath, "Saves");
     public static SAVE Current = null;
     public const string RootName = "root";
     public const int CurrentVersion = 1;
+
+    /// <summary>
+    /// 해당 저장파일이 저장될 때 호출됩니다.
+    /// </summary>
+    public event Action OnSave;
     
-    [field: SerializeField] public int Version { get; private set; }
     [field: SerializeField] public SAVEModule Data { get; private set; }
-    public string name;
     
-    public SAVE(string name)
+    #region MetaData
+    
+    public JObject MetaData => Data.MetaData;
+    public string fileName;
+    public string name = "empty";
+    public int gold = 0;
+    [field: SerializeField] public string SaveTime { get; private set; }
+    [field: SerializeField] public int Version { get; private set; }
+
+    #endregion
+    
+    public SAVE(string fileName)
     {
-      this.name = name;
+      this.fileName = fileName;
       Version = CurrentVersion;
       Data = new SAVEModule(RootName);
+      
+      SaveTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+      OnSave += () => { if (Current == this) OnCurrentSave.Invoke(this); };
+      InitMetaData();
     }
 
     public void Save()
     {
-      var rootPath = Path.Combine(SavePath, name);
+      SaveTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+      
+      var rootPath = Path.Combine(SavePath, fileName);
       var dir = new DirectoryInfo(rootPath);
 
       // 폴더가 이미 존재할 시 원활한 저장을 위해 초기화
@@ -49,16 +88,26 @@ namespace ToB.IO
         }
       }
       else dir.Create();
-      
-      Data.MetaData["version"] = CurrentVersion;
+
+      InitMetaData();
 
       Data.Save(rootPath);
+      
+      OnSave?.Invoke();
+    }
+
+    private void InitMetaData()
+    {
+      MetaData["name"] = name;
+      MetaData["gold"] = gold;
+      MetaData["saveTime"] = SaveTime;
+      MetaData["version"] = Version;
     }
     
     public SAVEModule Node(string key, bool force = false) => Data.Node(key, force);
 
     /// <summary>
-    /// 저장 파일의 유효성 체크
+    /// TODO 저장 파일의 유효성 체크
     /// </summary>
     /// <param name="path"></param>
     public static bool Validate(string savePath)
@@ -67,13 +116,48 @@ namespace ToB.IO
     }
 
     /// <summary>
-    /// 
+    /// 모든 저장 파일을 가져옵니다.
+    /// </summary>
+    /// <returns></returns>
+    public static async Task<SAVE[]> GetAllSaves()
+    {
+      var result = new SAVE[3];
+
+      for (var i = 0; i < result.Length; i++)
+      {
+        var name = "save_" + i;
+        result[i] = Exists(name) ? await Load(name) : new SAVE(name);
+      }
+      
+      return result;
+    }
+    
+    /// <summary>
+    /// 구버전 데이터일 경우 최신버전으로 업데이트시킵니다.
     /// </summary>
     /// <param name="data"></param>
     /// <returns></returns>
     public static SAVE Update(SAVE data)
     {
       return data;
+    }
+
+    /// <summary>
+    /// 해당 세이브로 게임을 시작하기 전에 호출해주세요.
+    /// </summary>
+    public async Task LoadAll()
+    {
+      await Data.Load(Path.Combine(SavePath, fileName), true);
+
+      Current = this;
+      
+      OnCurrentLoad.Invoke(this);
+    }
+
+    public static bool Exists(string name)
+    {
+      var rootPath = Path.Combine(SavePath, name);
+      return Directory.Exists(rootPath);
     }
     
     public static async Task<SAVE> Load(string name)
@@ -86,7 +170,15 @@ namespace ToB.IO
       // 데이터 로드
       
       var result = new SAVE(name);
-      await result.Data.Load(rootPath, true);
+      await result.Data.Load(rootPath, false);
+      
+      // 메타 데이터 세팅
+      var meta = result.MetaData;
+      
+      result.name = meta.Get("name", "empty");
+      result.gold = meta.Get("gold", 0);
+      result.SaveTime = meta.Get("saveTime", "not saved");
+      result.Version = meta.Get("version", CurrentVersion);
 
       return result;
     }
