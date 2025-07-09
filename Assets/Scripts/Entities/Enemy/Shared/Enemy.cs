@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using NaughtyAttributes;
+using ToB.Core;
 using ToB.Player;
 using UnityEngine;
 
@@ -88,6 +89,8 @@ namespace ToB.Entities
         
         protected virtual void Die()
         {
+            Core.ResourceManager.Instance.SpawnResources(InfiniteResourceType.Gold,enemySO.DropGold,transform);
+            Core.ResourceManager.Instance.SpawnResources(InfiniteResourceType.Mana,enemySO.DropMana,transform);
             isAlive = false;
         }
 
