@@ -1,27 +1,40 @@
+using Newtonsoft.Json.Linq;
 using TMPro;
+using ToB.IO;
 using UnityEngine;
-using UnityEngine.UI;
 
-namespace ToB.Entities.Obstacle
+namespace ToB.Entities.FieldObject
 {
-    public class KeyDoor: MonoBehaviour, IInteractable
+    public class KeyDoor: FieldObjectProgress, IInteractable
     {
         [SerializeField] public TMP_Text interactionText;
-        //[SerializeField] public Image keySprite;
         public bool IsInteractable { get; set; }
         public bool isOpened;
-        private void Awake()
-        {
-            IsInteractable = true;
-            isOpened = false;
-            // 상호작용 가능 여부, 상호작용 가능 여부는 추후 세이브-로드에서 받아올 것
-            InitState();
-            interactionText.text = "";
-            //keySprite.enabled = false;
-        }
+        
+        #region SaveLoad
 
+        public override void LoadJson(JObject json)
+        {
+            base.LoadJson(json);
+            isOpened = json.Get(nameof(isOpened), false);
+            IsInteractable = json.Get(nameof(IsInteractable), true);
+        }
+        
+        public override void OnLoad()
+        {
+            InitState();
+        }
+        public override JObject ToJson()
+        {
+            JObject json = base.ToJson();
+            json.Add(nameof(isOpened), isOpened);
+            json.Add(nameof(IsInteractable), IsInteractable);
+            return json;
+        }
+        #endregion
         private void InitState()
         {
+            interactionText.text = "";
             if (isOpened)
             {
                 IsInteractable = false;
@@ -40,12 +53,10 @@ namespace ToB.Entities.Obstacle
         /// </summary>
         public void Interact()
         {
-            Debug.Log("Interact");
             if (ToB.Core.ResourceManager.Instance.IsPlayerHaveEnoughMasterKey())
             {
                 ToB.Core.ResourceManager.Instance.UseMasterKey();
                 OpenedDoorProcess();
-                //Destroy(gameObject);
             }
             else
             {
@@ -68,7 +79,6 @@ namespace ToB.Entities.Obstacle
             {
                 interactionText.text = "\nF";
                 interactionText.color = Color.black;
-                //keySprite.enabled = true;
             }
         }
         
@@ -77,9 +87,10 @@ namespace ToB.Entities.Obstacle
             if (other.CompareTag("Player"))
             {
                 interactionText.text = "";
-                //keySprite.enabled = false;
             }
         }
+        
+
 
   
     }

@@ -5,8 +5,6 @@ using ToB.Entities;
 using ToB.Entities.Projectiles;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.EventSystems;
-using UnityEngine.Serialization;
 
 namespace ToB.Player
 {
@@ -22,7 +20,6 @@ namespace ToB.Player
     [Label("최대 원거리 공격 횟수"), Tooltip("원거리 공격의 충전되는 최대 횟수입니다."), Foldout("Attack State")] public int maxRangedAttack = 3;
     [Label("원거리 공격 스택"), Foldout("Attack State"), SerializeField, ReadOnly] private int availableRangedAttack = 5;
     [Label("원거리 공격 스택 재생 시간(초)"), Foldout("Attack State")] public float rangedAttackRegenTime = 1;
-    [Label("원거리 공격 딜레이"), Foldout("Attack State")] public float rangedAttackDelay = 0.2f;
     [Label("원거리 공격 발사 대기시간"), Foldout("Attack State")] public float shootDelay = 0.1f;
     
     // 현재 원거리 공격 가능 횟수입니다.
@@ -134,6 +131,7 @@ namespace ToB.Player
       eff.transform.position = transform.position;
       eff.Direction = direction;
       eff.damage = stat.atk / 2;
+      eff.ClearEffect();
         
       // 탄환? 관리
       AvailableRangedAttack--;

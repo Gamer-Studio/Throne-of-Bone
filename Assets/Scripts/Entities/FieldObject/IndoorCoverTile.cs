@@ -1,8 +1,8 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Tilemaps;
-using System.Collections;
 
-namespace ToB.Entities.Obstacle
+namespace ToB.Entities.FieldObject
 {
     public class IndoorCoverTile : MonoBehaviour
     {

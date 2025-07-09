@@ -1,4 +1,5 @@
 using System;
+using Cysharp.Threading.Tasks.Triggers;
 using NaughtyAttributes;
 using UnityEngine;
 
@@ -16,6 +17,7 @@ namespace ToB.Entities.Projectiles
     
     [SerializeField] private Rigidbody2D body;
     [SerializeField] private TrailRenderer trail;
+    [SerializeField] private ParticleSystem ps;
 
     public Vector2 Direction
     {
@@ -25,6 +27,12 @@ namespace ToB.Entities.Projectiles
         direction = value;
         transform.rotation = Quaternion.Euler(0, 0, Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg);
       }
+    }
+
+    public void ClearEffect()
+    {
+      if(trail) trail.Clear();
+      if(ps) ps.Clear();
     }
     
     #region Unity Event
@@ -66,11 +74,6 @@ namespace ToB.Entities.Projectiles
       {
         gameObject.Release();
       }
-    }
-
-    private void OnDisable()
-    {
-      trail.Clear();
     }
 
     #endregion
