@@ -1,12 +1,10 @@
 using System.Collections;
-using DG.Tweening;
-using Newtonsoft.Json.Linq;
-using ToB.IO;
 using UnityEngine;
+using DG.Tweening;
 
-namespace ToB.Entities.FieldObject
+namespace ToB.Entities.Obstacle
 {
-    public class FragilePlatform : FieldObjectProgress
+    public class FragilePlatform : MonoBehaviour
     {
         [SerializeField] public float fallCountdown = 3f;
         [SerializeField] private float fallTimer;
@@ -18,33 +16,18 @@ namespace ToB.Entities.FieldObject
         private Tween shakeTween;
         private Vector3 initialLocalPosition;
         private Collider2D hitbox;
-
-       
-        #region SaveLoad
-        public override void LoadJson(JObject json)
+        private void Awake()
         {
-            base.LoadJson(json);
-            isActivated = json.Get(nameof(isActivated), false);
-        }
-        
-        public override void OnLoad()
-        {
-            if (rb ==null) rb = GetComponent<Rigidbody2D>();
+            rb = GetComponent<Rigidbody2D>();
             initialPos = transform.position;
             initialLocalPosition = spriteTransform.localPosition;
             rb.gravityScale = 0f;
             rb.constraints = RigidbodyConstraints2D.FreezeAll;
-            if (hitbox ==null) hitbox = GetComponent<Collider2D>();
-            gameObject.SetActive(!isActivated);
+            hitbox = GetComponent<Collider2D>();
+            // 여기서 isActivated 변수를 세이브-로드해 와야 함
+            if(isActivated) gameObject.SetActive(false);
         }
-        public override JObject ToJson()
-        {
-            JObject json = base.ToJson();
-            json.Add(nameof(isActivated), isActivated);
-            return json;
-        }
-        
-        #endregion
+
         private void OnTriggerStay2D(Collider2D other)
         {
             if (other.gameObject.CompareTag("Player") && !isActivated)
@@ -56,7 +39,6 @@ namespace ToB.Entities.FieldObject
                     StopShaking();
                     ActivateFall();
                 }
-                
                 if ((shakeTween == null || !shakeTween.IsActive()) && !isActivated)
                 {
                     shakeTween = spriteTransform.DOLocalMoveY(initialLocalPosition.y + 0.1f, 0.1f)
@@ -99,8 +81,8 @@ namespace ToB.Entities.FieldObject
             rb.constraints = RigidbodyConstraints2D.FreezeRotation;
             hitbox.enabled = false;
             StopShaking();
-            yield return new WaitForSeconds(0.2f);
-            while (rb.linearVelocity.magnitude > 0.02f)
+            yield return new WaitForSeconds(0.1f);
+            while (rb.linearVelocity.magnitude > 0)
             {
                 yield return new WaitForSeconds(0.2f);
             }
@@ -108,7 +90,5 @@ namespace ToB.Entities.FieldObject
             gameObject.SetActive(false);
             yield return null;
         }
-        
-
     }
 }

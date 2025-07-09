@@ -24,6 +24,10 @@ namespace ToB
             base.Awake();
             DataSO = enemySO as HiveSO;
 
+            DataSO = enemySO as HiveSO;
+            
+            if(!DataSO) Debug.LogError("HiveSO가 없습니다");
+            
             flies = new List<GameObject>();
             
             stat.Init(this, DataSO);
