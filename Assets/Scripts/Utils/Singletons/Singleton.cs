@@ -2,7 +2,7 @@ namespace ToB.Utils.Singletons
 {
   using UnityEngine;
 
-  public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
+  public class Singleton<T> : MonoBehaviour where T : Singleton<T>
   {
     private static T instance;
 
@@ -22,12 +22,17 @@ namespace ToB.Utils.Singletons
         
         // 생성된 게임 오브젝트에서 해당 컴포넌트를 instance에 저장한다.
         instance = obj.GetComponent<T>();
+        instance.OnLoad();
 
         return instance;
       }
     }
 
-    private void OnDestroy()
+    protected virtual void OnLoad()
+    {
+    }
+
+    protected virtual void OnDestroy()
     {
       instance = null;
     }
