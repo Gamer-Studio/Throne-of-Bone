@@ -206,12 +206,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 268e99958ddb406ab42093597585bc04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isControlable: 1
   animationState: 0
   moveSpeed: 4
   maxMoveSpeed: 12
   moveResistanceForce: 1
+  wallEnduringSpeed: -1
   moveDirection: 0
   isMoving: 0
+  isClimbing: 0
   immuneTime: 0
   damageImmuneTime: 0.3
   dashImmuneTime: 0
@@ -230,10 +233,13 @@ MonoBehaviour:
     def: 0
     atk: 10
   jumpPower: 30
+  wallJumpPower: 10
+  wallJumpReactionTime: 0.4
   jumpTimeLimit: 0.2
   gravityAcceleration: 1
   gravityStart: -10
   body: {fileID: 1096863716109666581}
+  bodyCollider: {fileID: 0}
   animator: {fileID: 6425824100770376572}
   spriteRenderer: {fileID: 9050726402138752261}
   groundChecker: {fileID: 1539824326341321533}
@@ -364,7 +370,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 2.5, y: 2.6}
+  m_Size: {x: 2.3, y: 2.4}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
