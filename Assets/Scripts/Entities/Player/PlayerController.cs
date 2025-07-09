@@ -193,7 +193,6 @@ namespace ToB.Player
         Debug.DrawLine(character.transform.position, nearestPos.Value, Color.green, 0.5f);
       }
       
-      Debug.Log(nearest);
       nearest?.Interact();
     }
     void DebugDrawCircle(Vector3 center, float radius, Color color, float duration = 0.1f, int segments = 32)

@@ -11,7 +11,7 @@ namespace ToB.Utils.Singletons
         Destroy(gameObject);
         return;
       }
-      Debug.Log("Hi");
+
       instance = this as T;
       
       if(transform.parent != null && transform.root != null) // 해당 오브젝트가 자식 오브젝트라면

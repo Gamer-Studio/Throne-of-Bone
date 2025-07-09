@@ -39,7 +39,8 @@ namespace ToB.Core
             
             StageManager.Instance.ChangeGameState(GameState.UI);
             UIManager.Instance.panelStack.Push(npc.DialogPanel);
-            
+
+            CurrentNPC.IsInteractable = false;
             brainCam.m_DefaultBlend.m_Time = 0.5f;
             FocusCameraToNPC();
             zoomCoroutine = StartCoroutine(ZoomInAndTalk());
@@ -51,7 +52,6 @@ namespace ToB.Core
             if(zoomCoroutine != null) StopCoroutine(zoomCoroutine);
             StageManager.Instance.ChangeGameState(GameState.Play);
             CurrentNPC.DialogPanel.gameObject.SetActive(false);
-            CurrentNPC = null;
             DefocusCamera();
 
             zoomCoroutine = StartCoroutine(ZoomOut());
@@ -83,6 +83,10 @@ namespace ToB.Core
                 UIManager.Instance.gamePlayUI.transform.localScale = new Vector3(zoomCoef, zoomCoef, zoomCoef);
                 yield return null;
             }
+            CurrentNPC.Sprite.flipX = false;
+            CurrentNPC.IsInteractable = true;
+            CurrentNPC = null;
+            
         }
 
         public void ProcessNPC()
@@ -94,6 +98,9 @@ namespace ToB.Core
         private void FocusCameraToNPC()
         {
             DialogCamera.Follow = CurrentNPC.transform;
+            DialogCamera.m_Lens.OrthographicSize = CurrentNPC.ZoomSize;
+            var transposer = DialogCamera.GetCinemachineComponent<CinemachineFramingTransposer>();
+            transposer.m_TrackedObjectOffset = new Vector3(0, 2 * (CurrentNPC.ZoomSize / camOriginalSize), 0);
             DialogCamera.Priority = 30;
         }
 

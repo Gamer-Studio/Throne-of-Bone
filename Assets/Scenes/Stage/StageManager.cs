@@ -1,3 +1,4 @@
+using System;
 using Cinemachine;
 using NaughtyAttributes;
 using ToB.Core;
@@ -45,6 +46,10 @@ namespace ToB.Scenes.Stage
       {
         player = PlayerCharacter.GetInstance();
       }
+    }
+
+    private void Start()
+    {
       InputManager.Instance.player = FindAnyObjectByType<PlayerController>();
       InputManager.Instance.SetActionMap(InputActionMaps.Player);
     }
