@@ -19,12 +19,13 @@ namespace ToB.Entities
         protected override void Awake()
         {
             base.Awake();
+            DataSO = enemySO as MutantRatSO;
+            
             Stat.Init(this, DataSO);
             Knockback.Init(this);
             RangeBaseSightSensor.Init(this);
             FSM.Init();
             deathEffect.gameObject.SetActive(false);
-            DataSO = enemySO as MutantRatSO;
         }
         protected override void Reset()
         {
