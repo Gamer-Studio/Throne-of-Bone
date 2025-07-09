@@ -21,6 +21,16 @@ namespace ToB.Entities.FieldObject
 
        
         #region SaveLoad
+
+        private void Awake()
+        {
+            if (rb ==null) rb = GetComponent<Rigidbody2D>();
+            initialPos = transform.position;
+            initialLocalPosition = spriteTransform.localPosition;
+            rb.gravityScale = 0f;
+            rb.constraints = RigidbodyConstraints2D.FreezeAll;
+            if (hitbox ==null) hitbox = GetComponent<Collider2D>();
+        }
         public override void LoadJson(JObject json)
         {
             base.LoadJson(json);
@@ -29,12 +39,6 @@ namespace ToB.Entities.FieldObject
         
         public override void OnLoad()
         {
-            if (rb ==null) rb = GetComponent<Rigidbody2D>();
-            initialPos = transform.position;
-            initialLocalPosition = spriteTransform.localPosition;
-            rb.gravityScale = 0f;
-            rb.constraints = RigidbodyConstraints2D.FreezeAll;
-            if (hitbox ==null) hitbox = GetComponent<Collider2D>();
             gameObject.SetActive(!isActivated);
         }
         public override JObject ToJson()
