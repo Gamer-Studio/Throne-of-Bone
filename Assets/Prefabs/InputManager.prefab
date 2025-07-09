@@ -80,9 +80,9 @@ MonoBehaviour:
     m_ActionName: 'Player/Look[/Mouse/delta]'
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: ToB.Player.PlayerController, Assembly-CSharp
-        m_MethodName: MeleeAttack
+      - m_Target: {fileID: 672590898898256484}
+        m_TargetAssemblyTypeName: ToB.Core.InputManager.InputManager, Assembly-CSharp
+        m_MethodName: PlayerMeleeAttack
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -160,9 +160,9 @@ MonoBehaviour:
     m_ActionName: UI/TrackedDeviceOrientation
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: ToB.Player.PlayerController, Assembly-CSharp
-        m_MethodName: Jump
+      - m_Target: {fileID: 672590898898256484}
+        m_TargetAssemblyTypeName: ToB.Core.InputManager.InputManager, Assembly-CSharp
+        m_MethodName: PlayerJump
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -176,9 +176,9 @@ MonoBehaviour:
     m_ActionName: 'Player/Jump[/Keyboard/space]'
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: ToB.Player.PlayerController, Assembly-CSharp
-        m_MethodName: Dash
+      - m_Target: {fileID: 672590898898256484}
+        m_TargetAssemblyTypeName: ToB.Core.InputManager.InputManager, Assembly-CSharp
+        m_MethodName: PlayerDash
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -192,9 +192,9 @@ MonoBehaviour:
     m_ActionName: 'Player/Dash[/Keyboard/leftShift]'
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: ToB.Player.PlayerController, Assembly-CSharp
-        m_MethodName: RangedAttack
+      - m_Target: {fileID: 672590898898256484}
+        m_TargetAssemblyTypeName: ToB.Core.InputManager.InputManager, Assembly-CSharp
+        m_MethodName: PlayerRangedAttack
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

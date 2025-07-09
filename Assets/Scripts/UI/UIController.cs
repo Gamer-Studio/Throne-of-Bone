@@ -7,7 +7,6 @@ namespace ToB.UI
     public class UIController : MonoBehaviour
     {
         private Camera _camera;
-        private InputActionAsset InputActionAsset;
         
         private void OnEnable()
         {
@@ -83,18 +82,17 @@ namespace ToB.UI
 
         public void Process(InputAction.CallbackContext context)
         {
-            if(context.started)
-                UIManager.Instance.panelStack.Peek().Process();
+            UIManager.Instance.panelStack.Peek().Process(context);
         }
         
-        public void CancelCurrentPanel()
+        public void CancelCurrentPanel(InputAction.CallbackContext context)
         {
             if (UIManager.Instance.panelStack.Count == 0)
             {
                 Debug.Log("열려있는 UI가 없는데 액션 맵이 UI 조작 상태입니다");
                 return;
             }
-            UIManager.Instance.panelStack.Pop().Cancel();
+            UIManager.Instance.panelStack.Pop().Cancel(context);
         }
     }
 }

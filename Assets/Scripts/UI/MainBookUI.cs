@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace ToB.UI
 {
-    public class MainBookUI:MonoBehaviour
+    public class MainBookUI:UIPanelBase
     {
         
         [SerializeField] public GameObject[] panels;
@@ -15,7 +15,6 @@ namespace ToB.UI
         private List<Image> panelImages = new List<Image>();
         private void Awake()
         {
-           UIManager.Instance.Init(this);
            InitButtons();
            InitPanels();
         }
@@ -183,6 +182,14 @@ namespace ToB.UI
 #endregion
 
 
+public override void Process(InputAction.CallbackContext context)
+{
+    throw new System.NotImplementedException();
+}
 
+public override void Cancel(InputAction.CallbackContext context)
+{
+    throw new System.NotImplementedException();
+}
     }
 }

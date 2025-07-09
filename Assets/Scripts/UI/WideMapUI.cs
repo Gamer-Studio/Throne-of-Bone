@@ -3,15 +3,10 @@ using UnityEngine.InputSystem;
 
 namespace ToB.UI
 {
-    public class WideMapUI:MonoBehaviour
+    public class WideMapUI:UIPanelBase
     {
         [SerializeField] private GameObject wideMapPanel;
         
-        private void Awake()
-        {
-            UIManager.Instance.Init(this);
-        }
-
         public void WideMapToggle(InputAction.CallbackContext context)
         {
             if (context.performed)
@@ -34,5 +29,14 @@ namespace ToB.UI
         }
 
 
+        public override void Process(InputAction.CallbackContext context)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override void Cancel(InputAction.CallbackContext context)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

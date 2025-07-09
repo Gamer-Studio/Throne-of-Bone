@@ -13,6 +13,26 @@ namespace ToB.Core.InputManager
             player?.Move(context);
         }
 
+        public void PlayerMeleeAttack(InputAction.CallbackContext context)
+        {
+            player?.MeleeAttack(context);
+        }
+
+        public void PlayerJump(InputAction.CallbackContext context)
+        {
+            player?.Jump(context);
+        }
+
+        public void PlayerDash(InputAction.CallbackContext context)
+        {
+            player?.Dash(context);
+        }
+
+        public void PlayerRangedAttack(InputAction.CallbackContext context)
+        {
+            player?.RangedAttack(context);
+        }
+
         public void PlayerInteract(InputAction.CallbackContext context)
         {
             if(context.performed)

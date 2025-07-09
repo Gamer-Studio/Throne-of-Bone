@@ -1,3 +1,4 @@
+using System;
 using ToB.Player;
 using ToB.Utils.Singletons;
 using UnityEngine;
@@ -21,10 +22,10 @@ namespace ToB.Core.InputManager
         public PlayerController player;
         
         [field:SerializeField] public string CurrentActionMap { get; set; }
-        private void Awake()
+        private void Start()
         {
             playerInput = GetComponent<PlayerInput>();
-            SetActionMap(InputActionMaps.Player);
+            SetActionMap(InputActionMaps.UI);
         }
 
         public void SetActionMap(InputActionMaps map)
@@ -34,6 +35,5 @@ namespace ToB.Core.InputManager
             
             playerInput.SwitchCurrentActionMap(CurrentActionMap);
         }
-
     }
 }

@@ -11,17 +11,17 @@ namespace ToB.Core.InputManager
     {
         public void UIProcess(InputAction.CallbackContext context)
         {
-            if(context.started)
-                UIManager.Instance.panelStack.Peek().Process();
+            UIManager.Instance.panelStack.Peek().Process(context);
         }
-        public void CancelCurrentPanel()
+        public void UICancel(InputAction.CallbackContext context)
         {
+            if (!context.performed) return;
             if (UIManager.Instance.panelStack.Count == 0)
             {
                 Debug.Log("열려있는 UI가 없는데 액션 맵이 UI 조작 상태입니다");
                 return;
             }
-            UIManager.Instance.panelStack.Pop().Cancel();
+            UIManager.Instance.panelStack.Peek().Cancel(context);
         }
     }
 }

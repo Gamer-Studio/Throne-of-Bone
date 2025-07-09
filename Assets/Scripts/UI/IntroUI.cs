@@ -12,7 +12,7 @@ using UnityEngine.SceneManagement;
 
 namespace ToB.UI
 {
-    public class IntroUI : MonoBehaviour
+    public class IntroUI : UIPanelBase
     {
         [SerializeField] public GameObject MainPanel;
         [SerializeField] public GameObject SaveSlotPanel;
@@ -26,10 +26,7 @@ namespace ToB.UI
         [Label("로딩된 세이브파일 목록"), Foldout("Save Slot Panel"), SerializeField] private SAVE[] saves;
         [Label("선택된 세이브파일"), Foldout("Save Slot Panel"), SerializeField] private SAVE selectedSave;
 
-        private void Awake()
-        {
-            UIManager.Instance.Init(this);
-        }
+        
 
         private async Task SaveSlotsInit()
         {
@@ -147,7 +144,8 @@ namespace ToB.UI
         public void StartGame()
         {
             CloseAllPanels();
-            SceneManager.LoadScene("Stage_Manager");
+            //SceneManager.LoadScene("Stage_Manager");
+            SceneManager.LoadScene("Stage_0707CopyFromjihwan");
             Debug.Log("게임 시작");
         }
         
@@ -214,5 +212,15 @@ namespace ToB.UI
 #endif
         }
     #endregion
+
+        public override void Process(InputAction.CallbackContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void Cancel(InputAction.CallbackContext context)
+        {
+            CloseCurrentPanel(context);
+        }
     }
 }

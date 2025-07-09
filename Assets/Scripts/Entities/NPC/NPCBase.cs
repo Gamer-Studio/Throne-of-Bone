@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Cinemachine;
 using ToB.Core;
-using ToB.Entities.Obstacle;
 using ToB.Scenes.Stage;
 using ToB.UI;
 using ToB.UI.NPC_Dialog;

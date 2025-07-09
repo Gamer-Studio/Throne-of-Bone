@@ -41,7 +41,12 @@ namespace ToB.Scenes.Stage
 
     private void Awake()
     {
-      if (!player) player = PlayerCharacter.GetInstance();
+      if (!player)
+      {
+        player = PlayerCharacter.GetInstance();
+      }
+      InputManager.Instance.player = FindAnyObjectByType<PlayerController>();
+      InputManager.Instance.SetActionMap(InputActionMaps.Player);
     }
 
     #endregion

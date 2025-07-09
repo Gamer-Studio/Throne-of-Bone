@@ -31,43 +31,6 @@ namespace ToB.UI
         //[SerializeField] public ToastUI toastUI;
         
         public readonly Stack<UIPanelBase> panelStack = new Stack<UIPanelBase>();
-
-        public void Init(IntroUI _introUI)
-        {
-            this.introUI = _introUI;
-        }
-
-        public void Init(CrossHairUI _crossHairUI)
-        {
-            this.crossHairUI = _crossHairUI;
-        }
-
-        public void Init(GamePlayUI _gamePlayUI)
-        {
-            this.gamePlayUI = _gamePlayUI;
-        }
-        
-        public void Init(MainBookUI _mainBookUI)
-        {
-            this.mainBookUI = _mainBookUI;
-        }
-        
-        public void Init(WideMapUI _wideMapUI)
-        {
-            this.wideMapUI = _wideMapUI;
-        }
-        
-        public void Init(GameOverUI _gameOverUI)
-        {
-            this.gameOverUI = _gameOverUI;
-        }
-        
-        /*
-        public void Init(ToastUI _toastUI)
-        {
-            this.toastUI = _toastUI;
-        }
-        */
         
         #endregion
 
