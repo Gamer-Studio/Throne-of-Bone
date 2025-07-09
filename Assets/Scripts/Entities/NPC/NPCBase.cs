@@ -42,7 +42,6 @@ namespace ToB.Entities.NPC
 
         public virtual void ProcessNext()
         {
-            Debug.Log("process next");
             if (Selection)
             {
                 Selection.Process();

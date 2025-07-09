@@ -1,20 +1,24 @@
+using ToB.Player;
 using ToB.Utils.Singletons;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace ToB.Core
+namespace ToB.Core.InputManager
 {
     public enum InputActionMaps
     {
         Player,
         UI,
         Stage,
-        MainMenu
+        MainMenu,
+        NULL
     }
     
-    public class InputManager : DDOLSingleton<InputManager>
+    public partial class InputManager : DDOLSingleton<InputManager>
     {
         private PlayerInput playerInput;
+
+        public PlayerController player;
         
         [field:SerializeField] public string CurrentActionMap { get; set; }
         private void Awake()
@@ -25,8 +29,11 @@ namespace ToB.Core
 
         public void SetActionMap(InputActionMaps map)
         {
-            CurrentActionMap = map.ToString();
+            if (map == InputActionMaps.NULL) CurrentActionMap = null;
+            else CurrentActionMap = map.ToString();
+            
             playerInput.SwitchCurrentActionMap(CurrentActionMap);
         }
+
     }
 }

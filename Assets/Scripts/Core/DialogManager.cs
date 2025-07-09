@@ -36,8 +36,11 @@ namespace ToB.Core
         public void StartDialogWith(NPCBase npc)
         {
             CurrentNPC = npc;
+            
             StageManager.Instance.ChangeGameState(GameState.UI);
             UIManager.Instance.panelStack.Push(npc.DialogPanel);
+            
+            brainCam.m_DefaultBlend.m_Time = 0.5f;
             FocusCameraToNPC();
             zoomCoroutine = StartCoroutine(ZoomInAndTalk());
         }
@@ -45,7 +48,6 @@ namespace ToB.Core
         
         public void CancelDialog()
         {
-            Debug.Log("CancelDialog");
             if(zoomCoroutine != null) StopCoroutine(zoomCoroutine);
             StageManager.Instance.ChangeGameState(GameState.Play);
             CurrentNPC.DialogPanel.gameObject.SetActive(false);

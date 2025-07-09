@@ -1,6 +1,7 @@
 using Cinemachine;
 using NaughtyAttributes;
 using ToB.Core;
+using ToB.Core.InputManager;
 using ToB.Player;
 using ToB.Utils;
 using ToB.Utils.Singletons;
