@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using ToB.Utils.Singletons;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -28,6 +29,8 @@ namespace ToB.UI
         public WideMapUI wideMapUI;
         public GameOverUI gameOverUI;
         //[SerializeField] public ToastUI toastUI;
+        
+        public readonly Stack<UIPanelBase> panelStack = new Stack<UIPanelBase>();
 
         public void Init(IntroUI _introUI)
         {

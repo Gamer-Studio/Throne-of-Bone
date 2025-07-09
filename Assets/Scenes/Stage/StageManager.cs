@@ -117,8 +117,6 @@ namespace ToB.Scenes.Stage
           State = GameState.UI;
           InputManager.Instance.SetActionMap(InputActionMaps.UI);
           break;
-        default:
-          throw new System.ArgumentOutOfRangeException(nameof(state), state, null);
       }
     }
     #endregion

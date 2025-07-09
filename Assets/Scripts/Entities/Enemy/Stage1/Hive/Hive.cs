@@ -22,6 +22,7 @@ namespace ToB
         protected override void Awake()
         {
             base.Awake();
+            DataSO = enemySO as HiveSO;
 
             flies = new List<GameObject>();
             
@@ -29,7 +30,6 @@ namespace ToB
             PatrolRange.Init(DataSO.PatrolRange);
             ChaseRange.Init(DataSO.ChaseRange);
             RangeBaseSightSensor.Init(this);
-            DataSO = enemySO as HiveSO;
         }
 
         protected override void Reset()

@@ -27,11 +27,12 @@ namespace ToB.Entities
         protected override void Awake()
         {
             base.Awake();
+            DataSO = enemySO as FlySO;
+            
             Body.Init(this, DataSO.ATK);
             RangeBaseSightSensor.Init(this);
             Knockback = GetComponentInChildren<EnemyKnockback>();
             Knockback.Init(this);
-            DataSO = enemySO as FlySO;
         }
 
         public void Init(Hive hive)
