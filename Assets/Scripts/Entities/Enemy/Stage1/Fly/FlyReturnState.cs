@@ -30,6 +30,7 @@ namespace ToB.Entities
             
             enemy.LookHorizontal(direction.x > 0 ? Vector2.right : Vector2.left);
             owner.Body.BoxCollider.enabled = false;
+            owner.Physics.collisionEnabled = false;
         }
         public override void FixedExecute()
         {
@@ -51,6 +52,8 @@ namespace ToB.Entities
             base.Exit();
             enemy.Physics.externalVelocity.Remove(FlyFSM.FLY_KEY);
             owner.Body.BoxCollider.enabled = true;
+            owner.Physics.collisionEnabled = true;
+            
             owner.Stat.SetDefault();
         }
     }

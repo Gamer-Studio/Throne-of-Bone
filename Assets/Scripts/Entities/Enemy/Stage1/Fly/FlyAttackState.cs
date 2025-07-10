@@ -29,10 +29,16 @@ namespace ToB.Entities
             owner.Physics.externalVelocity[FlyFSM.FLY_KEY] += dampingForce * Time.deltaTime;
             owner.LookTarget();
             base.Execute();
-            
-            if(!owner.target && !owner.Hive.target)
-                fsm.ChangePattern(fsm.returnState);
-            
+
+            if (!owner.target)
+            {
+                if (!owner.Hive.target)
+                    fsm.ChangePattern(fsm.returnState);
+                else
+                {
+                    fsm.ChangePattern(fsm.chaseState);
+                }
+            }
             else if(!owner.TargetInAttackRange) 
                 fsm.ChangePattern(fsm.chaseState);
             
