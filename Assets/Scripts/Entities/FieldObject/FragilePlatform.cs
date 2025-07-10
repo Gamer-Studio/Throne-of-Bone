@@ -1,10 +1,12 @@
 using System.Collections;
 using UnityEngine;
 using DG.Tweening;
+using Newtonsoft.Json.Linq;
+using ToB.IO;
 
 namespace ToB.Entities.Obstacle
 {
-    public class FragilePlatform : MonoBehaviour
+    public class FragilePlatform : FieldObjectProgress
     {
         [SerializeField] public float fallCountdown = 3f;
         [SerializeField] private float fallTimer;
@@ -38,6 +40,8 @@ namespace ToB.Entities.Obstacle
         {
             gameObject.SetActive(!isActivated);
         }
+        
+        #endregion
 
         private void OnTriggerStay2D(Collider2D other)
         {
