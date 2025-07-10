@@ -157,15 +157,20 @@ namespace ToB.Player
     // 
     private void FixedUpdate()
     {
-      HandleImmuneProps();                  // 사전 구현 1
-      HandleCharacterActionCooldown();      // 사전 구현 2
-      HandleAirStateAnimation();            // 사전 구햔 3
-      HandleMoveInput();                    // 사전 구현 4 - 벽타기는 여기
+      ImmunePropsHandle();                  // 사전 구현 1
+      CharacterActionCooldownHandle();      // 사전 구현 2
+      AirStateAnimationHandle();            // 사전 구햔 3
+      MoveInputHandle();                    // 사전 구현 4 - 벽타기는 여기
       TakeEnvironmentalForces();            // 사전 구현 5
-      HandleBlockFocus();                   // 플레이어 방어 이펙트 타겟팅
+      UpdateResources();
     }
 
-    private void HandleAirStateAnimation()
+    private void UpdateResources()
+    {
+      
+    }
+
+    private void AirStateAnimationHandle()
     {
       if (IsFlight)
       {
@@ -185,7 +190,7 @@ namespace ToB.Player
       }
     }
 
-    private void HandleMoveInput()
+    private void MoveInputHandle()
     {
       if (!isControlable) return;
       
@@ -229,7 +234,7 @@ namespace ToB.Player
       return false;
     }
 
-    private void HandleCharacterActionCooldown()
+    private void CharacterActionCooldownHandle()
     {
       if (!IsFlight || isClimbing)
       {
@@ -256,7 +261,7 @@ namespace ToB.Player
       }
     }
 
-    private void HandleImmuneProps()
+    private void ImmunePropsHandle()
     {
       if (dashImmuneTime > 0) dashImmuneTime -= Time.fixedDeltaTime;
       else dashImmuneTime = 0;
