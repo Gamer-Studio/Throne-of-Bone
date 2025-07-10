@@ -2,7 +2,6 @@ using System;
 using Cinemachine;
 using NaughtyAttributes;
 using ToB.Entities;
-using ToB.Entities.FieldObject;
 using ToB.Utils;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -25,7 +24,7 @@ namespace ToB.Player
     private void Reset()
     {
       if (!vCam) vCam = FindAnyObjectByType<CinemachineVirtualCamera>();
-      if (!character) character = FindAnyObjectByType<PlayerCharacter>();
+      if (!character) character = PlayerCharacter.GetInstance();
     }
     
 #endif
@@ -33,6 +32,8 @@ namespace ToB.Player
     private void Awake()
     {
       camera = Camera.main;
+      if (!vCam) vCam = FindAnyObjectByType<CinemachineVirtualCamera>();
+      if (!character) character = PlayerCharacter.GetInstance();
     }
 
     private void FixedUpdate()

@@ -34,7 +34,7 @@ namespace ToB.Entities
             if ((hittableMask & (1 << other.gameObject.layer)) != 0)
             {
                 other.Damage(bodyDamage, this);
-                other.KnockBack(5, new Vector2(other.transform.position.x < transform.position.x  ? -1 : 1, 0.5f));
+                other.KnockBack(15, new Vector2(other.transform.position.x < transform.position.x  ? -1 : 1, 0.5f));
             }
         }
 
