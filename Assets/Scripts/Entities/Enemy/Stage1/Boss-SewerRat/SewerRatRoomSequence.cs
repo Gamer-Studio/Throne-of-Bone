@@ -31,7 +31,7 @@ namespace ToB.Entities
         private CinemachineBasicMultiChannelPerlin roomCamNoise;
         
 
-        private int phaseCount;
+        public int phaseCount;
         private void Reset()
         {
             roomLocation = GetComponent<Location>();
@@ -83,6 +83,7 @@ namespace ToB.Entities
             yield return new WaitForSeconds(1f);
             roomVirtualCamera.Priority = 0;
 
+            Debug.Log("쥐? " + firstSewerRat + "|| 아니면 플레이어 ? " + StageManager.Instance.player);
             firstSewerRat.target = StageManager.Instance.player.transform;
             InputManager.Instance.SetInputActive(true);
         }
@@ -119,6 +120,8 @@ namespace ToB.Entities
             sewerRat.Animator.SetBool(EnemyAnimationString.Roll, true);
             sewerRat.Physics.gravityEnabled = false;
             sewerRat.Physics.collisionEnabled = false;
+
+            Debug.Log("중력 충돌 다 껐음");
             
             CreateDust(sewerRat);
             
