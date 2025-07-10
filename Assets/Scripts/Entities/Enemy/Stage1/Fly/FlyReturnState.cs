@@ -6,7 +6,6 @@ namespace ToB.Entities
     public class FlyReturnState:EnemyPattern
     {
         public Vector2 destination;
-        private const string RETURN_KEY = "Return";
         
         private readonly float moveTick;
         private Vector2 prevPosition;
@@ -26,7 +25,7 @@ namespace ToB.Entities
             base.Enter();
             destination = owner.Hive.PatrolRange.GetRandomPosition();
             Vector2 direction = (destination - (Vector2)enemy.transform.position).normalized;
-            enemy.Physics.externalVelocity[RETURN_KEY] = direction * ReturnSpeed;
+            enemy.Physics.externalVelocity[FlyFSM.FLY_KEY] = direction * ReturnSpeed;
             prevPosition = enemy.transform.position;
             
             enemy.LookHorizontal(direction.x > 0 ? Vector2.right : Vector2.left);
@@ -50,7 +49,7 @@ namespace ToB.Entities
         public override void Exit()
         {
             base.Exit();
-            enemy.Physics.externalVelocity.Remove(RETURN_KEY);
+            enemy.Physics.externalVelocity.Remove(FlyFSM.FLY_KEY);
             owner.Body.BoxCollider.enabled = true;
             owner.Stat.SetDefault();
         }

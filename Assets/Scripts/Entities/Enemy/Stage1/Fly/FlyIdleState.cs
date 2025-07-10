@@ -19,7 +19,14 @@ namespace ToB.Entities
         public override void Enter()
         {
             base.Enter();
+
+            if (!owner.Hive.IsFlyInPatrolArea(owner))
+            {
+                fsm.ChangePattern(fsm.returnState);
+                return;           
+            }
             idleCoroutine = enemy.StartCoroutine(ChangeToWander());
+            owner.Physics.externalVelocity[FlyFSM.FLY_KEY] = Vector2.zero;
         }
 
         IEnumerator ChangeToWander()
