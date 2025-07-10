@@ -35,18 +35,9 @@ namespace ToB.Core
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            // SaveManager가 Load를 끝내기를 기다리는 코루틴 혹은 async 필요? 보니까 알아서 해주는 것 같은데
-            // 애초에 LoadJson을 호출해 줄 필요가 없어 보이긴 하지만... 상황에 따라 Init이 필요 없을지도. 거의 외부참조용 매니저라서
-            // Init();
-        }
 
-        private void Init()
-        {
-            //if (세이브파일에서 시작한 게 아니면 0원 넣기: 세이브/로드 방식을 보고 조건 거는 방식을 결정하여 Init할 예정)
-            PlayerGold = 0;
-            PlayerMana = 0;
-            MasterKey = 0;
         }
+       
         public int PlayerGold
         { 
             get => playerGold;
@@ -262,17 +253,17 @@ namespace ToB.Core
         #region Serialization
         public void LoadJson(JObject json)
         {
-            PlayerMana = json["playerMana"].Value<int>();
-            PlayerGold = json["playerGold"].Value<int>();
-            MasterKey = json["masterKey"].Value<int>();
+            PlayerMana = json.Get(nameof(playerGold), 0);
+            PlayerGold = json.Get(nameof(playerMana), 0);
+            MasterKey = json.Get(nameof(MasterKey), 0);
         }
 
         public JObject ToJson()
         {
             return new JObject(
-                new JProperty("playerMana", PlayerMana),
-                new JProperty("playerGold", PlayerGold),
-                new JProperty("masterKey", MasterKey)
+                new JProperty(nameof(playerMana), PlayerMana),
+                new JProperty(nameof(playerGold), PlayerGold),
+                new JProperty(nameof(MasterKey), MasterKey)
             );
         }
         #endregion

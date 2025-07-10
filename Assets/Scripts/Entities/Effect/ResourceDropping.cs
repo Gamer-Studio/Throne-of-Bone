@@ -31,10 +31,6 @@ namespace ToB.Entities.Effect
             player = PlayerCharacter.GetInstance();
             _collider = GetComponent<Collider2D>();
         }
-        private void Start()
-        {
-      
-        }
 
         private void OnEnable()
         {
