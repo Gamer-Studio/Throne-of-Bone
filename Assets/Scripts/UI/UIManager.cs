@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using ToB.Utils.Singletons;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -28,43 +29,8 @@ namespace ToB.UI
         public WideMapUI wideMapUI;
         public GameOverUI gameOverUI;
         //[SerializeField] public ToastUI toastUI;
-
-        public void Init(IntroUI _introUI)
-        {
-            this.introUI = _introUI;
-        }
-
-        public void Init(CrossHairUI _crossHairUI)
-        {
-            this.crossHairUI = _crossHairUI;
-        }
-
-        public void Init(GamePlayUI _gamePlayUI)
-        {
-            this.gamePlayUI = _gamePlayUI;
-        }
         
-        public void Init(MainBookUI _mainBookUI)
-        {
-            this.mainBookUI = _mainBookUI;
-        }
-        
-        public void Init(WideMapUI _wideMapUI)
-        {
-            this.wideMapUI = _wideMapUI;
-        }
-        
-        public void Init(GameOverUI _gameOverUI)
-        {
-            this.gameOverUI = _gameOverUI;
-        }
-        
-        /*
-        public void Init(ToastUI _toastUI)
-        {
-            this.toastUI = _toastUI;
-        }
-        */
+        public readonly Stack<UIPanelBase> panelStack = new Stack<UIPanelBase>();
         
         #endregion
 

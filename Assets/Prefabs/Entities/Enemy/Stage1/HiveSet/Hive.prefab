@@ -350,9 +350,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53ab476cda1b5a342a8c9589483b3fc8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxHP: 0
   currentHP: 0
-  def: 0
 --- !u!1 &5583652885077059262
 GameObject:
   m_ObjectHideFlags: 0
@@ -461,8 +459,6 @@ MonoBehaviour:
   rayMask:
     serializedVersion: 2
     m_Bits: 64
-  sightRange: 0
-  sightAngle: 0
   targetInRange: {fileID: 0}
 --- !u!1 &6408012727292377062
 GameObject:
@@ -535,6 +531,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd80b649b3149b946989c66217cd3baf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemySO: {fileID: 11400000, guid: 21e027d4c615def4e97ae97eef1a705d, type: 2}
   rb: {fileID: 6201237309191418032}
   <Physics>k__BackingField: {fileID: 8195303909400434218}
   <Animator>k__BackingField: {fileID: 5960112351473579738}
@@ -544,7 +541,6 @@ MonoBehaviour:
   target: {fileID: 0}
   isAlive: 0
   <ReactOnDamage>k__BackingField: 0
-  data: {fileID: 11400000, guid: 21e027d4c615def4e97ae97eef1a705d, type: 2}
   flyPrefab: {fileID: 2841746823565301905, guid: ad9f164d887896c419d86936f15392ab, type: 3}
   flies: []
   stat: {fileID: 510022275375825059}

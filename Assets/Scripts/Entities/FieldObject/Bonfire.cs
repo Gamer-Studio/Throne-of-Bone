@@ -14,23 +14,26 @@ namespace ToB.Entities.FieldObject
         
         #region SaveLoad
 
-        public override void LoadJson(JObject json)
-        {
-            base.LoadJson(json);
-            isDiscovered = json.Get(nameof(isDiscovered), false);
-            IsInteractable = json.Get(nameof(IsInteractable), true);
-        }
-
-        public override void OnLoad()
+        private void Awake()
         {
             IsInteractable = true;
         }
         
+
+        public override void LoadJson(JObject json)
+        {
+            base.LoadJson(json);
+            isDiscovered = json.Get(nameof(isDiscovered), false);
+        }
+
+        public override void OnLoad()
+        {
+            
+        }
         public override JObject ToJson()
         {
             JObject json = base.ToJson();
             json.Add(nameof(isDiscovered), isDiscovered);
-            json.Add(nameof(IsInteractable), IsInteractable);
             return json;
         }
 

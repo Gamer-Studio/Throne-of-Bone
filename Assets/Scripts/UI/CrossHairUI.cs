@@ -12,7 +12,6 @@ namespace ToB.UI
 
         private void Awake()
         {
-            UIManager.Instance.Init(this);
             canvasTransform = GetComponent<RectTransform>();
         }
         //추후 씬 상황에 따라 크로스헤어가 바뀌거나 ON/OFF될 수 있도록 조절하는 메서드 추가

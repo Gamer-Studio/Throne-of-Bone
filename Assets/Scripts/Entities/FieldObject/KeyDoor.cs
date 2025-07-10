@@ -13,11 +13,15 @@ namespace ToB.Entities.FieldObject
         
         #region SaveLoad
 
+        private void Awake()
+        {
+            IsInteractable = true;
+        }
+
         public override void LoadJson(JObject json)
         {
             base.LoadJson(json);
-            isOpened = json.Get(nameof(isOpened), false);
-            IsInteractable = json.Get(nameof(IsInteractable), true);
+            isOpened = json.Get(nameof(isOpened), isOpened);;
         }
         
         public override void OnLoad()
@@ -28,7 +32,6 @@ namespace ToB.Entities.FieldObject
         {
             JObject json = base.ToJson();
             json.Add(nameof(isOpened), isOpened);
-            json.Add(nameof(IsInteractable), IsInteractable);
             return json;
         }
         #endregion

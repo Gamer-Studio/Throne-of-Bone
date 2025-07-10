@@ -1,11 +1,12 @@
 using ToB.Player;
 using ToB.Scenes.Intro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 namespace ToB.UI
 {
-    public class GameOverUI : MonoBehaviour
+    public class GameOverUI : UIPanelBase
     {
         
         private PlayerCharacter player;
@@ -14,7 +15,6 @@ namespace ToB.UI
       
         private void Awake()
         {
-            UIManager.Instance.Init(this);
             SceneManager.sceneLoaded += OnSceneLoaded;
         }
         private void OnDestroy()
@@ -58,5 +58,14 @@ namespace ToB.UI
         }
 
 
+        public override void Process(InputAction.CallbackContext context)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override void Cancel(InputAction.CallbackContext context)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

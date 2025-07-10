@@ -14,18 +14,19 @@ namespace ToB.Entities.FieldObject
         [Header("Events : 여기에 드래그해서 발동할 메서드를 호출해 주세요")]
         [SerializeField] public UnityEvent<bool> onLeverInteract;
         public bool IsInteractable { get; set; }
-        public bool isLeverActivated;
+        [SerializeField] public bool isLeverActivated;
         
         #region SaveLoad
         public override void LoadJson(JObject json)
         {
             base.LoadJson(json);
-            isLeverActivated = json.Get(nameof(isLeverActivated), false);
+            isLeverActivated = json.Get(nameof(isLeverActivated), isLeverActivated);
             IsInteractable = json.Get(nameof(IsInteractable), true);
         }
         
         public override void OnLoad()
         {
+            LeverSR.sprite = sprites[isLeverActivated ? 1 : 0];
             interactionText.text = "";
         }
         public override JObject ToJson()
@@ -72,9 +73,6 @@ namespace ToB.Entities.FieldObject
                 interactionText.text = "";
             }
         }
-
-
-        
         
     }
 }
