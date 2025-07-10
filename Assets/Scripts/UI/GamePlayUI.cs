@@ -20,7 +20,6 @@ namespace ToB.UI
         [SerializeField] public Image saveIndicator;
         private void Awake()
         {
-            UIManager.Instance.Init(this);
             playerInfoPanel.SetActive(true);
             miniMapPanel.SetActive(true);
             saveIndicatorPanel.SetActive(false);

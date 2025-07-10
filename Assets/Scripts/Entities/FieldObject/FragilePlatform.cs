@@ -1,12 +1,10 @@
 using System.Collections;
-using DG.Tweening;
-using Newtonsoft.Json.Linq;
-using ToB.IO;
 using UnityEngine;
+using DG.Tweening;
 
-namespace ToB.Entities.FieldObject
+namespace ToB.Entities.Obstacle
 {
-    public class FragilePlatform : FieldObjectProgress
+    public class FragilePlatform : MonoBehaviour
     {
         [SerializeField] public float fallCountdown = 3f;
         [SerializeField] private float fallTimer;
@@ -18,8 +16,7 @@ namespace ToB.Entities.FieldObject
         private Tween shakeTween;
         private Vector3 initialLocalPosition;
         private Collider2D hitbox;
-
-       
+        
         #region SaveLoad
 
         private void Awake()
@@ -41,14 +38,7 @@ namespace ToB.Entities.FieldObject
         {
             gameObject.SetActive(!isActivated);
         }
-        public override JObject ToJson()
-        {
-            JObject json = base.ToJson();
-            json.Add(nameof(isActivated), isActivated);
-            return json;
-        }
-        
-        #endregion
+
         private void OnTriggerStay2D(Collider2D other)
         {
             if (other.gameObject.CompareTag("Player") && !isActivated)
@@ -60,7 +50,6 @@ namespace ToB.Entities.FieldObject
                     StopShaking();
                     ActivateFall();
                 }
-                
                 if ((shakeTween == null || !shakeTween.IsActive()) && !isActivated)
                 {
                     shakeTween = spriteTransform.DOLocalMoveY(initialLocalPosition.y + 0.1f, 0.1f)
@@ -103,8 +92,8 @@ namespace ToB.Entities.FieldObject
             rb.constraints = RigidbodyConstraints2D.FreezeRotation;
             hitbox.enabled = false;
             StopShaking();
-            yield return new WaitForSeconds(0.2f);
-            while (rb.linearVelocity.magnitude > 0.02f)
+            yield return new WaitForSeconds(0.1f);
+            while (rb.linearVelocity.magnitude > 0)
             {
                 yield return new WaitForSeconds(0.2f);
             }
@@ -112,7 +101,5 @@ namespace ToB.Entities.FieldObject
             gameObject.SetActive(false);
             yield return null;
         }
-        
-
     }
 }

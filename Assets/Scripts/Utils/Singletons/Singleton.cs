@@ -1,10 +1,12 @@
+using System;
+
 namespace ToB.Utils.Singletons
 {
   using UnityEngine;
 
   public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
   {
-    private static T instance;
+    protected static T instance;
 
     public static T Instance
     {
@@ -27,9 +29,11 @@ namespace ToB.Utils.Singletons
       }
     }
 
+    public static bool HasInstance => instance;
+    
     private void OnDestroy()
     {
-      instance = null;
+      if (instance == this) instance = null;
     }
   }
 }

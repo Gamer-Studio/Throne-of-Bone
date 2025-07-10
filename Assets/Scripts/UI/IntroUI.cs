@@ -1,5 +1,10 @@
+using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using NaughtyAttributes;
 using TMPro;
+using ToB.IO;
+using ToB.Utils;
 using UnityEngine.UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -7,7 +12,7 @@ using UnityEngine.SceneManagement;
 
 namespace ToB.UI
 {
-    public class IntroUI : MonoBehaviour
+    public class IntroUI : UIPanelBase
     {
         [SerializeField] public GameObject MainPanel;
         [SerializeField] public GameObject SaveSlotPanel;
@@ -16,22 +21,36 @@ namespace ToB.UI
         [Header("Setting Panel")]
         
         [Header("Save Slot Panel")]
-        [SerializeField] public GameObject ConformPanel;
-        [SerializeField] public Button[] saveSlotButtons;
-        private string saveFileNameCashing = "";
-        
-        private void Awake()
-        {
-            UIManager.Instance.Init(this);
-        }
+        [Foldout("Save Slot Panel"), SerializeField] public GameObject ConformPanel;
+        [Foldout("Save Slot Panel"), SerializeField] public Button[] saveSlotButtons;
+        [Label("로딩된 세이브파일 목록"), Foldout("Save Slot Panel"), SerializeField] private SAVE[] saves;
+        [Label("선택된 세이브파일"), Foldout("Save Slot Panel"), SerializeField] private SAVE selectedSave;
 
-        private void SaveSlotsInit()
+        
+
+        private async Task SaveSlotsInit()
         {
-            for (int i = 0; i < saveSlotButtons.Length; i++)
+            saves = await SAVE.GetAllSaves();
+            
+            for (var i = 0; i < saveSlotButtons.Length; i++)
             {
-                int index = i;
+                var save = saves[i];
+                var index = i;
+                
                 saveSlotButtons[i].onClick.AddListener(() => SaveSlotSelected(index));
-                saveSlotButtons[i].GetComponentInChildren<TextMeshProUGUI>().text = $"Save Slot {i + 1}";
+                
+                var textField = saveSlotButtons[i].GetComponentInChildren<TMP_Text>();
+                
+                if (save.name != "empty")
+                {
+                    // 빈 슬롯이 아닐 때
+                    textField.text = $"세이브 슬롯 {i + 1} - {save.name}\n날짜 : {save.SaveTime}\n보유 골드 : {save.gold}";
+                }
+                else
+                {
+                    // 빈 슬롯일 때
+                    textField.text = $"세이브 슬롯 {i + 1} - EMPTY";
+                }
             }
         }
 
@@ -125,14 +144,15 @@ namespace ToB.UI
         public void StartGame()
         {
             CloseAllPanels();
-            SceneManager.LoadScene("Stage_Manager");
+            //SceneManager.LoadScene("Stage_Manager");
+            SceneManager.LoadScene("Stage_0707CopyFromjihwan");
             Debug.Log("게임 시작");
         }
         
         public void LoadGame()
         {
             CloseAllPanels();
-            SceneManager.LoadScene("Stage0623Copy");
+            SceneManager.LoadScene("Stage_Manager");
             Debug.Log("테스트 신 시작");       
         }
       
@@ -141,16 +161,25 @@ namespace ToB.UI
             OpenPanel(SettingPanel);
         }
 
-        public void SaveSlotPanelOn()
+
+        public async void SaveSlotPanelOn()
         {
-            SaveSlotsInit();       
-            OpenPanel(SaveSlotPanel);      
+            try
+            {
+                await SaveSlotsInit();       
+                OpenPanel(SaveSlotPanel);
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
         }
 
-        public void SaveSlotSelected(int slotIndex)
+        public void SaveSlotSelected(int selected)
         {
-            saveFileNameCashing = $"save_slot_{slotIndex + 1}.json";
             OpenPanel(ConformPanel);
+            //ConformPanel.SetActive(true);
+            selectedSave = saves[selected];
         }
 
         public void ConfirmSlotCancel()
@@ -158,12 +187,20 @@ namespace ToB.UI
             ClosePanel();       
         }
 
-        public void ConfirmSlotConfirmed()
+        public async void ConfirmSlotConfirmed()
         {
-            CloseAllPanels();
-            Debug.Log($"{saveFileNameCashing} 선택됨");
-            // 저장 방식에 따라서 각 세이브파일을 로드하는 방식 변경
-            // LoadGame(saveFileNameCashing);       
+            try
+            {
+                await selectedSave.LoadAll();
+                // 저장 방식에 따라서 각 세이브파일을 로드하는 방식 변경 예정
+                LoadGame();
+                CloseAllPanels();
+            }
+            catch (Exception e)
+            {
+                DebugSymbol.UI.Log(e);
+                // ignored
+            }
         }
         public void ExitGame()
         {
@@ -175,5 +212,15 @@ namespace ToB.UI
 #endif
         }
     #endregion
+
+        public override void Process(InputAction.CallbackContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void Cancel(InputAction.CallbackContext context)
+        {
+            CloseCurrentPanel(context);
+        }
     }
 }

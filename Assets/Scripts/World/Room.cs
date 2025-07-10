@@ -20,6 +20,7 @@ namespace ToB.Worlds
     #endif
     [Foldout("Binding")] public List<RoomLink> links = new();
     [Foldout("Binding"), SerializeField] private Transform entityContainer; 
+    [Foldout("Binding"), SerializeField] private Transform fieldObjectContainer;
     [field: Foldout("Binding"), SerializeField] public RoomBackground Background { get; private set; }
     
     #endregion
@@ -71,6 +72,9 @@ namespace ToB.Worlds
     private void Reset()
     {
       if(!Background) Background = transform.GetComponentInChildren<RoomBackground>();
+      if (fieldObjectContainer)
+      {
+      }
     }
     
     #endif
@@ -87,6 +91,7 @@ namespace ToB.Worlds
     private void OnEnable()
     {
       StageManager.Instance?.AddCameraCollision(Background.backgroundCollider);
+      
       onLoad?.Invoke();
     }
 

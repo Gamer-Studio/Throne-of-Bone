@@ -114,7 +114,7 @@ namespace ToB.Entities
             Vector2 castBoxSize = terrainSensor.size;
                 
             Vector2 moveDelta = totalVelocity * Time.fixedDeltaTime;
-            RaycastHit2D hit = Physics2D.BoxCast((Vector2)enemy.transform.position + terrainSensor.offset, castBoxSize, 0, totalVelocity.normalized, moveDelta.magnitude, terrainLayer);
+            RaycastHit2D hit = Physics2D.BoxCast((Vector2)terrainSensor.transform.position + terrainSensor.offset, castBoxSize, 0, totalVelocity.normalized, moveDelta.magnitude, terrainLayer);
 
             if (hit.collider)
             {
@@ -149,8 +149,7 @@ namespace ToB.Entities
 
         private void FixPenetratedCollision()
         {
-            Vector2 center = (Vector2)transform.position +
-                             (Vector2)terrainSensor.gameObject.transform.localPosition +
+            Vector2 center = (Vector2)terrainSensor.gameObject.transform.position +
                              terrainSensor.offset;
             
             hasFixed = false;
