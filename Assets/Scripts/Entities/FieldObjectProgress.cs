@@ -7,13 +7,18 @@ namespace ToB.Entities
   public class FieldObjectProgress : MonoBehaviour, IJsonSerializable
   {
     public FieldObjectProgressResetType type;
-    
+    public bool saveByName;
     public virtual void LoadJson(JObject json)
     {
       
     }
 
     public virtual void OnLoad()
+    {
+      
+    }
+
+    public virtual void UpdateJson(JObject json)
     {
       
     }

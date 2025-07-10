@@ -20,8 +20,7 @@ namespace ToB.Entities.FieldObject
 
         public override void OnLoad()
         {
-            if (isAcquired) gameObject.SetActive(false);
-            else gameObject.SetActive(true);
+            gameObject.SetActive(!isAcquired);
         }
 
         public override JObject ToJson()

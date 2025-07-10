@@ -1,4 +1,6 @@
+using System.Resources;
 using NaughtyAttributes;
+using ToB.Core;
 using UnityEngine;
 
 namespace ToB.Entities

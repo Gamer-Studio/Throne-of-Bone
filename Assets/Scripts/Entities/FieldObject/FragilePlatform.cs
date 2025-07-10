@@ -16,16 +16,27 @@ namespace ToB.Entities.Obstacle
         private Tween shakeTween;
         private Vector3 initialLocalPosition;
         private Collider2D hitbox;
+        
+        #region SaveLoad
+
         private void Awake()
         {
-            rb = GetComponent<Rigidbody2D>();
+            if (rb ==null) rb = GetComponent<Rigidbody2D>();
             initialPos = transform.position;
             initialLocalPosition = spriteTransform.localPosition;
             rb.gravityScale = 0f;
             rb.constraints = RigidbodyConstraints2D.FreezeAll;
-            hitbox = GetComponent<Collider2D>();
-            // 여기서 isActivated 변수를 세이브-로드해 와야 함
-            if(isActivated) gameObject.SetActive(false);
+            if (hitbox ==null) hitbox = GetComponent<Collider2D>();
+        }
+        public override void LoadJson(JObject json)
+        {
+            base.LoadJson(json);
+            isActivated = json.Get(nameof(isActivated), false);
+        }
+        
+        public override void OnLoad()
+        {
+            gameObject.SetActive(!isActivated);
         }
 
         private void OnTriggerStay2D(Collider2D other)
