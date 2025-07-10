@@ -35,7 +35,8 @@ namespace ToB.Entities
 
         IEnumerator Dig()
         {
-           sewerRat.EnemyBody.ChangeDamage(sewerRat.DataSO.RollDamage);;
+            sewerRat.Sprite.sortingOrder = -100;
+            sewerRat.EnemyBody.ChangeDamage(sewerRat.DataSO.RollDamage);;
             enemy.Animator.SetBool(EnemyAnimationString.Roll, true);
             enemy.Physics.collisionEnabled = false;
             enemy.Physics.gravityEnabled = false;
@@ -77,6 +78,8 @@ namespace ToB.Entities
         IEnumerator Tackle()
         {
             yield return new WaitForSeconds(0.4f);
+            sewerRat.Sprite.sortingOrder = 700;
+            
             Vector2 direction = (Vector2)enemy.target.transform.position - (Vector2)enemy.transform.position;
             RaycastHit2D hit = Physics2D.Raycast(enemy.transform.position, direction.normalized, 100f, ratStrategy.GroundLayer);
             
