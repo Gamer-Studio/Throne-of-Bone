@@ -23,6 +23,8 @@ namespace ToB.Entities
         protected override void Awake()
         {
             base.Awake();
+            
+            DataSO = enemySO as SewerRatSO;
 
             if (!stat) stat = GetComponentInChildren<EnemyStatHandler>();
             if (!Knockback) Knockback = GetComponentInChildren<EnemyKnockback>();
@@ -30,9 +32,6 @@ namespace ToB.Entities
             
             deathBleed.gameObject.SetActive(false);
             deathExplode.gameObject.SetActive(false);
-            DataSO = enemySO as SewerRatSO;
-
-            bossRoomLocation.OnPlayerEntered += DetectPlayer;
         }
 
         private void Start()

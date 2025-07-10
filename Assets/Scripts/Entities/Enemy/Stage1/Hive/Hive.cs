@@ -81,6 +81,10 @@ namespace ToB
             enabled = false;
         }
 
+        public bool IsFlyInPatrolArea(Fly fly)
+        {
+            return (fly.transform.position - PatrolRange.transform.position).sqrMagnitude < Mathf.Pow(DataSO.PatrolRange, 2);
+        }
         private void OnDestroy()
         {
             foreach (var fly in flies)
