@@ -14,7 +14,7 @@ namespace ToB.Entities
         [SerializeField] private Color gizmoColor;
         [SerializeField] public bool PlayerEntered;
 
-        public event Action<GameObject> OnPlayerEntered;
+        public event Action OnPlayerEntered;
 
         private void Reset()
         {
@@ -39,7 +39,7 @@ namespace ToB.Entities
             if ((mask & 1 << other.gameObject.layer) != 0)
             {
                 PlayerEntered = true;
-                OnPlayerEntered?.Invoke(other.gameObject);
+                OnPlayerEntered?.Invoke();
             }
         }
         private void OnTriggerExit2D(Collider2D other)
