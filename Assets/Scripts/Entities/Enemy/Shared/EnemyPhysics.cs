@@ -20,7 +20,6 @@ namespace ToB.Entities
         public bool gravityEnabled;
         public bool collisionEnabled;
         
-        bool hasFixed;
         private Vector2 fixPos;
         private Vector2 fixDirection;
         private Vector2 totalVelocity;
@@ -152,16 +151,15 @@ namespace ToB.Entities
             Vector2 center = (Vector2)terrainSensor.gameObject.transform.position +
                              terrainSensor.offset;
             
-            hasFixed = false;
             fixPos = Vector2.zero;
             FixSide(Vector2.down, terrainSensor.size, center);
             FixSide(Vector2.up, terrainSensor.size, center);
             FixSide(Vector2.left, terrainSensor.size, center);
             FixSide(Vector2.right, terrainSensor.size, center);
 
-            if (hasFixed)
+            if (fixPos != Vector2.zero)
             {
-                enemy.transform.position += (Vector3)(fixPos - fixDirection * skinWidth); 
+                enemy.transform.position += (Vector3)(fixPos.normalized * fixPos.magnitude + fixPos.normalized * skinWidth);
             }
         }
 
@@ -183,22 +181,11 @@ namespace ToB.Entities
             
             if (hit.collider)
             {
-                float penetration = distance - hit.distance;   
+                float penetration = distance - hit.distance;
                 if (penetration > 0.002f)
                 {
                     Vector2 penetrationVec = -direction * penetration;
-                    if (!hasFixed)
-                    {
-                        fixPos = penetrationVec;
-                        hasFixed = true;
-                        fixDirection = direction;
-                    }
-                    else if (fixPos.sqrMagnitude > penetrationVec.sqrMagnitude)
-                    {
-                        fixPos = penetrationVec;
-                        fixDirection = direction;
-                        
-                    }
+                    fixPos += penetrationVec;
                 }
             }
         }
