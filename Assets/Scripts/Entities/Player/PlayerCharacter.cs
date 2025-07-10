@@ -162,6 +162,7 @@ namespace ToB.Player
       HandleAirStateAnimation();            // 사전 구햔 3
       HandleMoveInput();                    // 사전 구현 4 - 벽타기는 여기
       TakeEnvironmentalForces();            // 사전 구현 5
+      HandleBlockFocus();                   // 플레이어 방어 이펙트 타겟팅
     }
 
     private void HandleAirStateAnimation()
@@ -230,7 +231,7 @@ namespace ToB.Player
 
     private void HandleCharacterActionCooldown()
     {
-      if (!IsFlight)
+      if (!IsFlight || isClimbing)
       {
         if (DashDelay > 0) DashDelay -= Time.fixedDeltaTime;
         else DashDelay = 0;
@@ -383,7 +384,7 @@ namespace ToB.Player
       
       stat.Damage(value);
 
-      if (sender != null) immuneTime = damageImmuneTime;
+      if (sender != null && immuneTime < damageImmuneTime) immuneTime = damageImmuneTime;
     }
 
     /// <summary>
