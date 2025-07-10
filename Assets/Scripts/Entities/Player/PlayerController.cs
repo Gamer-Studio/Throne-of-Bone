@@ -38,21 +38,20 @@ namespace ToB.Player
 
     private void FixedUpdate()
     {
+      var cursorPos = camera.ScreenToWorldPoint(Input.mousePosition).Z(0);
+      var characterPos = character.transform.position;
+      var angle = (cursorPos - characterPos).normalized;
+
       if (isMeleeAttacking)
       {
-        var cursorPos = camera.ScreenToWorldPoint(Input.mousePosition).Z(0);
-        var characterPos = character.transform.position;
-        
-        character.Attack((cursorPos - characterPos).normalized, true);
+        character.Attack(angle, true);
       }
       else if (isRangedAttacking)
       {
-        var cursorPos = camera.ScreenToWorldPoint(Input.mousePosition).Z(0);
-        var characterPos = character.transform.position.Y(v => v);
-        var angle = (cursorPos - characterPos).normalized.Y(v => v);
-        
         character.Attack(angle, false);
       }
+      
+      character.SetBlockFocus(angle);
     }
 
     #endregion
@@ -139,6 +138,12 @@ namespace ToB.Player
     public void RangedAttack(InputAction.CallbackContext context)
     {
       isRangedAttacking = context.performed;
+    }
+
+    public void Block(InputAction.CallbackContext context)
+    {
+      if (context.performed) character.StartBlock();
+      else if (context.canceled) character.CancelBlock();
     }
     
     #endregion
