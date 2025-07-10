@@ -39,6 +39,7 @@ namespace ToB.Player
     {
       if(dashDelay <= 0 && !IsDashing && body.gravityScale != 0)
       {
+        CancelBlock();
         dashDelay = 20;
         CancelJump();
         dashCoroutine = StartCoroutine(DashCoroutine());

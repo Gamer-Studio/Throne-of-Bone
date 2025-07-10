@@ -227,11 +227,16 @@ MonoBehaviour:
     onHpChanged:
       m_PersistentCalls:
         m_Calls: []
+    onBlockEnergyChanged:
+      m_PersistentCalls:
+        m_Calls: []
     onDeath:
       m_PersistentCalls:
         m_Calls: []
     maxHp: 100
     currentHp: 100
+    maxBlockEnergy: 100
+    currentBlockEnergy: 0
     def:
       onChanged:
         m_PersistentCalls:
@@ -274,8 +279,20 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   additionalDef: 50
-  currentBlockTime: 0
+  blockEnergyRequireRegenDelay: 0.5
+  blockEnergyRegenDelay: 0
+  blockEnergyRegenTime: 0.1
+  blockEnergyRegenAmount: 1
+  requireBlockEnergy: 20
+  requireKeepBlockEnergy: 20
   parryTimeLimit: 0.3
+  blockTimeLimit: 1.7
+  isParrying: 0
+  parryImmuneTime: 0.5
+  parryFreezeTime: 0.2
+  parryReward: 2
+  blockReward: 1
+  freezeBlockable: 0
   shield: {fileID: 9191730963288095252}
   dashSpeed: 50
   dashTimeLimit: 0.15

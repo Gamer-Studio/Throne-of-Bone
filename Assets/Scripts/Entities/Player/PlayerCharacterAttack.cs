@@ -85,6 +85,7 @@ namespace ToB.Player
     /// <param name="isMelee">근거리/원거리 공격 방향입니다.</param>
     public void Attack(Vector2 direction, bool isMelee = true, bool bottomAttack = false)
     {
+      CancelBlock();
       if (bottomAttack) animator.SetInteger(INT_ATTACK_MOTION, 4);
       
       if (isAttacking || AvailableRangedAttack <= 0) return;

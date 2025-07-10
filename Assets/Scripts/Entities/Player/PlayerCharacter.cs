@@ -15,10 +15,11 @@ namespace ToB.Player
   {
     private static readonly int INT_STATE = Animator.StringToHash("State");
     private static readonly int BOOL_IMMUNE = Animator.StringToHash("Immune");
-    private static readonly int BOOL_ISFLIGHT = Animator.StringToHash("IsFlight");
+    private static readonly int BOOL_IS_FLIGHT = Animator.StringToHash("IsFlight");
     private static readonly int BOOL_FALLING = Animator.StringToHash("Falling");
     private static readonly int TRIGGER_FALL = Animator.StringToHash("Fall");
     private static readonly int TRIGGER_JUMP = Animator.StringToHash("Jump");
+    private static readonly int TRIGGER_BLOCK = Animator.StringToHash("Block");
     private static readonly int BOOL_CLIMB = Animator.StringToHash("Climb");
     private static readonly int TRIGGER_DASH = Animator.StringToHash("Dash");
     private static readonly int INT_DASH_STATE = Animator.StringToHash("DashState");
@@ -58,6 +59,7 @@ namespace ToB.Player
     [Label("대시시 무적 시간"), Foldout("State")] public float dashMaxImmuneTime = 0.1f;
     [Label("기본 넉백 지속 시간"), Foldout("State")] public float knockbackTime = 0.2f;
     [Label("기본 넉백 배율"), Foldout("State")] public float knockbackMultiplier = 2f;
+    [Label("남은 정지 시간"), Foldout("State")] public float freezeTime = 0f;
     
     public bool IsImmune => isDamageImmune || dashImmuneTime > 0;
     private bool isDamageImmune = false;
@@ -98,6 +100,10 @@ namespace ToB.Player
       get => isMoving;
       set
       {
+        if (!isMoving && value)
+        {
+          CancelBlock();
+        }
         isMoving = value;
         AnimationState = value ? PlayerAnimationState.Run : PlayerAnimationState.Idle;
       }
@@ -149,32 +155,45 @@ namespace ToB.Player
       {
         groundChecker.onLanding.AddListener(() =>
         {
-          animator.SetBool(BOOL_ISFLIGHT, false);
+          animator.SetBool(BOOL_IS_FLIGHT, false);
         });
+      }
+    }
+
+    private void Update()
+    {
+      if (freezeTime > 0)
+      {
+        freezeTime -= Time.unscaledDeltaTime;
+      }
+      else if(Time.timeScale == 0)
+      {
+        Time.timeScale = 1;
+        freezeTime = 0;
       }
     }
     
     // 
     private void FixedUpdate()
     {
-      ImmunePropsHandle();                  // 사전 구현 1
-      CharacterActionCooldownHandle();      // 사전 구현 2
       AirStateAnimationHandle();            // 사전 구햔 3
       MoveInputHandle();                    // 사전 구현 4 - 벽타기는 여기
       TakeEnvironmentalForces();            // 사전 구현 5
+      ImmunePropsHandle();                  // 사전 구현 1
       UpdateResources();
     }
 
     private void UpdateResources()
     {
-      
+      UpdateBlockResource();
+      CharacterActionCooldownHandle();
     }
 
     private void AirStateAnimationHandle()
     {
       if (IsFlight)
       {
-        animator.SetBool(BOOL_ISFLIGHT, true);
+        animator.SetBool(BOOL_IS_FLIGHT, true);
       }
       
       var enterFallingAnim = body.linearVelocityY < -0.1f && !inWater &&
@@ -238,11 +257,11 @@ namespace ToB.Player
     {
       if (!IsFlight || isClimbing)
       {
-        if (DashDelay > 0) DashDelay -= Time.fixedDeltaTime;
+        if (DashDelay > 0) DashDelay -= Time.deltaTime;
         else DashDelay = 0;
       }
 
-      if (MeleeAttackDelay > 0) MeleeAttackDelay -= Time.fixedDeltaTime;
+      if (MeleeAttackDelay > 0) MeleeAttackDelay -= Time.deltaTime;
       else MeleeAttackDelay = 0;
     }
 
@@ -263,12 +282,12 @@ namespace ToB.Player
 
     private void ImmunePropsHandle()
     {
-      if (dashImmuneTime > 0) dashImmuneTime -= Time.fixedDeltaTime;
+      if (dashImmuneTime > 0) dashImmuneTime -= Time.deltaTime;
       else dashImmuneTime = 0;
 
       if (immuneTime > 0)
       {
-        immuneTime -= Time.fixedDeltaTime;
+        immuneTime -= Time.deltaTime;
 
         if (!isDamageImmune)
         {
@@ -386,10 +405,15 @@ namespace ToB.Player
     public void Damage(float value, MonoBehaviour sender)
     {
       if(IsImmune) return;
-      
-      stat.Damage(value);
 
-      if (sender != null && immuneTime < damageImmuneTime) immuneTime = damageImmuneTime;
+      if (IsBlocking && sender)
+        Block(value, sender);
+      else
+      {
+        stat.Damage(value);
+
+        if (sender != null && immuneTime < damageImmuneTime) immuneTime = damageImmuneTime;
+      }
     }
 
     /// <summary>

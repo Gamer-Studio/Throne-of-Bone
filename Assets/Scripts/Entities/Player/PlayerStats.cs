@@ -26,11 +26,6 @@ namespace ToB.Player
     /// </summary>
     public UnityEvent onDeath = new();
     
-    /// <summary>
-    /// 방어 게이지가 전부 소모됬을 때 호출됩니다.
-    /// </summary>
-    public UnityEvent onBlockEnergyAllConsumed = new();
-    
     [Label("최대 체력")] public float maxHp = 100;
     [Label("현재 체력"), SerializeField, GetSet(nameof(Hp))] private float currentHp = 100;
     [Label("최대 방어 게이지")] public float maxBlockEnergy = 100;
@@ -72,10 +67,6 @@ namespace ToB.Player
       set {
         currentBlockEnergy = Math.Max(0, Math.Min(value, maxBlockEnergy));
         onBlockEnergyChanged?.Invoke(currentBlockEnergy);
-        if (currentBlockEnergy <= 0)
-        {
-          onBlockEnergyAllConsumed?.Invoke();
-        }
       }
     }
 
@@ -100,7 +91,10 @@ namespace ToB.Player
       if(force)
         Hp -= damage;
       else
-        Hp -= damage * (1 - def / 100);
+      {
+        Hp -= damage * (1 - def.Value / 100);
+        Debug.Log(damage * (1 - def.Value / 100));
+      }
       
       return Hp;
     }
