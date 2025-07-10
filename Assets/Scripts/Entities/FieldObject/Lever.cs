@@ -1,3 +1,4 @@
+using System;
 using Newtonsoft.Json.Linq;
 using TMPro;
 using ToB.IO;
@@ -17,6 +18,14 @@ namespace ToB.Entities.FieldObject
         [SerializeField] public bool isLeverActivated;
         
         #region SaveLoad
+
+        private void Awake()
+        {
+            IsInteractable = true;
+            LeverSR.sprite = sprites[isLeverActivated ? 1 : 0];
+            interactionText.text = "";
+        }
+
         public override void LoadJson(JObject json)
         {
             base.LoadJson(json);
