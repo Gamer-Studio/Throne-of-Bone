@@ -45,6 +45,9 @@ namespace ToB.Player
       }
     }
 
+    /// <summary>
+    /// 대시하는 중이라면 대시 모션을 캔슬합니다.
+    /// </summary>
     public void CancelDash()
     {
       if(dashCoroutine != null)
