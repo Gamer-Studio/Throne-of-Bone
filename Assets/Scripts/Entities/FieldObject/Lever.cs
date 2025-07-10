@@ -14,6 +14,7 @@ namespace ToB.Entities.FieldObject
         [SerializeField] public Sprite[] sprites; // [ 0: off, 1: on]
         [Header("Events : 여기에 드래그해서 발동할 메서드를 호출해 주세요")]
         [SerializeField] public UnityEvent<bool> onLeverInteract;
+        [SerializeField] public Animator animator;
         public bool IsInteractable { get; set; }
         [SerializeField] public bool isLeverActivated;
         
@@ -31,6 +32,7 @@ namespace ToB.Entities.FieldObject
             base.LoadJson(json);
             isLeverActivated = json.Get(nameof(isLeverActivated), isLeverActivated);
             IsInteractable = json.Get(nameof(IsInteractable), true);
+            animator.SetBool("IsActivated", isLeverActivated);
         }
         
         public override void OnLoad()
@@ -54,7 +56,7 @@ namespace ToB.Entities.FieldObject
         public void Interact()
         {
             isLeverActivated = !isLeverActivated;
-            LeverSR.sprite = sprites[isLeverActivated ? 1 : 0];
+            animator.SetBool("IsActivated", isLeverActivated);
             UpdateLeverText();
             if (IsInteractable)
             {
@@ -70,7 +72,7 @@ namespace ToB.Entities.FieldObject
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            if (other.CompareTag("Player"))
+            if (other.CompareTag("Player") && IsInteractable)
             {
                 UpdateLeverText();
             }

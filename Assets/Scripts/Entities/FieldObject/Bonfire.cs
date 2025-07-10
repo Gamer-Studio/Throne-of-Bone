@@ -9,21 +9,24 @@ namespace ToB.Entities.FieldObject
     {
         public bool isDiscovered;
         [SerializeField] public TMP_Text interactionText;
+        [SerializeField] public Transform TPTransform;
         //[SerializeField] public TMP_Text TPText;
         public bool IsInteractable { get; set; }
+        [SerializeField] private Animator animator;
         
         #region SaveLoad
 
         private void Awake()
         {
             IsInteractable = true;
+            animator.SetBool("IsDiscovered", isDiscovered);
         }
         
 
         public override void LoadJson(JObject json)
         {
             base.LoadJson(json);
-            isDiscovered = json.Get(nameof(isDiscovered), false);
+            isDiscovered = json.Get(nameof(isDiscovered), isDiscovered);;
         }
 
         public override void OnLoad()
@@ -42,13 +45,19 @@ namespace ToB.Entities.FieldObject
         
         public void Interact()
         {
-            Debug.Log("저장 메서드 실행!!!");    
+            if(!isDiscovered) BonfireDiscovered();
+            else
+            {
+                Debug.Log("저장하기 실행");
+            }
+            animator.SetTrigger("IsActivated");
         }
 
         private void BonfireDiscovered()
         {
-            isDiscovered = true;                
-            Debug.Log("화톳불 발견"); 
+            isDiscovered = true;
+            animator.SetBool("IsDiscovered", isDiscovered);
+            Debug.Log("화톳불 발견");
             // 이후 TP포인트에 추가, 지도에 추가 등등
         }
 
@@ -56,9 +65,8 @@ namespace ToB.Entities.FieldObject
         private void OnTriggerEnter2D(Collider2D other)
         {
             if (other.CompareTag("Player"))
-            {
-                if(!isDiscovered) BonfireDiscovered();
-                interactionText.text = "F : 저장하기";
+            { 
+                interactionText.text = "F : 상호작용";
             }
         }
         
