@@ -6,7 +6,6 @@ namespace ToB.Entities
     public class FlyWanderState:EnemyPattern
     {
         public Vector2 destination;
-        private const string WANDER_KEY = "Wander";
         
         private readonly float moveTick;
         private Vector2 prevPosition;
@@ -26,7 +25,7 @@ namespace ToB.Entities
             base.Enter();
             destination = owner.Hive.PatrolRange.GetRandomPosition();
             Vector2 direction = (destination - (Vector2)enemy.transform.position).normalized;
-            enemy.Physics.externalVelocity[WANDER_KEY] = direction * WanderSpeed;
+            enemy.Physics.externalVelocity[FlyFSM.FLY_KEY] = direction * WanderSpeed;
 
             prevPosition = enemy.transform.position;
             enemy.LookHorizontal(direction.x > 0 ? Vector2.right : Vector2.left);
@@ -47,12 +46,6 @@ namespace ToB.Entities
 
             prevPosition = enemy.transform.position;
             
-        }
-
-        public override void Exit()
-        {
-            base.Exit();
-            enemy.Physics.externalVelocity.Remove(WANDER_KEY);
         }
     }
 }

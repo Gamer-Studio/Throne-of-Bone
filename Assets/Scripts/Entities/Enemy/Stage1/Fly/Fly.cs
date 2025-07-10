@@ -1,6 +1,7 @@
 
 
 
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -10,7 +11,7 @@ namespace ToB.Entities
     {
         public FlySO DataSO { get; private set; }
         [field:SerializeField] public Hive Hive { get; private set; }
-        
+
         [field:SerializeField] public FlyFSM FSM { get; private set; }
         [field:SerializeField] public EnemyBody Body { get; private set; }
         [field:SerializeField] public EnemyRangeBaseSightSensor RangeBaseSightSensor { get; private set; }
@@ -36,7 +37,15 @@ namespace ToB.Entities
             Knockback = GetComponentInChildren<EnemyKnockback>();
             Knockback.Init(this);
         }
-        
+
+        private void Update()
+        {
+            if (target && Hive.RangeBaseSightSensor.TargetInRange)
+            {
+                Hive.target = target;
+            }
+        }
+
 
         public void Init(Hive hive)
         {

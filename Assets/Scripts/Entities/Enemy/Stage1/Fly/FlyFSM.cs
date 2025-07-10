@@ -14,6 +14,8 @@ namespace ToB
         public FlyWanderState wanderState;
 
         public float lastAttackTime;
+        
+        public const string FLY_KEY = "Fly";
 
         public override void Init()
         {

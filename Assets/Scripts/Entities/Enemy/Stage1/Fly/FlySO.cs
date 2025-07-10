@@ -25,5 +25,10 @@ namespace ToB.Entities
         
         [field:SerializeField] public float AttackRange { get; private set; }
         
+        /// <summary>
+        /// 이 댐핑은 지금은 쫓다가 공격하는 상태에만 적용되고 복귀, 패트롤 등에는 해당 사항이 없습니다
+        /// </summary>
+        [field:SerializeField] public float FlyDamping { get; private set; }
+        
     }
 }
