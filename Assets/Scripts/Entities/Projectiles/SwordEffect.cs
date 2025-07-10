@@ -54,7 +54,8 @@ namespace ToB.Entities.Projectiles
       
       if (other.TryGetComponent<IDamageable>(out var damageable))
       {
-        damageable.Damage(damage, this);
+        if(gameObject.activeSelf)
+          damageable.Damage(damage, this);
         gameObject.Release();
       }
     }
