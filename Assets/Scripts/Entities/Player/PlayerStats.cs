@@ -1,5 +1,6 @@
 using System;
 using NaughtyAttributes;
+using ToB.Utils;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -42,7 +43,7 @@ namespace ToB.Player
         onHpChanged?.Invoke(currentHp);
         if (currentHp <= 0)
         {
-          Debug.Log("Player Death");
+          DebugSymbol.Editor.Log("Player Death");
           onDeath?.Invoke();
         }
       }

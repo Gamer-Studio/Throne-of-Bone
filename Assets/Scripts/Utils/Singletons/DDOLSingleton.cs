@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace ToB.Utils.Singletons
 {
-  public class DDOLSingleton<T> : Singleton<T> where T : MonoBehaviour
+  public class DDOLSingleton<T> : Singleton<T> where T : DDOLSingleton<T>
   {
     protected virtual void Awake()
     {
