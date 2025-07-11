@@ -135,7 +135,6 @@ namespace ToB.UI
           text.text = $"{(int)player.stat.BlockEnergy} / {(int)max}";
           UpdateBEBar(player.stat.BlockEnergy);
           player.stat.onBlockEnergyChanged.AddListener(UpdateBEBar);
-          player.stat.onBlockEnergyAllConsumed.AddListener(BEConsumed);
           break;
         default:
           Debug.Log("게이지로 나타낼 값을 지정하지 않았습니다");
@@ -157,11 +156,8 @@ namespace ToB.UI
       {
         Color = originalColor;
       }
-    }
-
-    private void BEConsumed()
-    {
-      Color = Color.gray;
+      else if (curEnergy <= 0)
+        Color = Color.gray;
     }
 
     #endregion
