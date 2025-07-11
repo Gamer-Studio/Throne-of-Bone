@@ -18,6 +18,7 @@ namespace ToB.Entities.Projectiles
     [SerializeField] private Rigidbody2D body;
     [SerializeField] private TrailRenderer trail;
     [SerializeField] private ParticleSystem ps;
+    [SerializeField] private GameObject hitEffectPrefab;
 
     public Vector2 Direction
     {
@@ -54,10 +55,33 @@ namespace ToB.Entities.Projectiles
       
       if (other.TryGetComponent<IDamageable>(out var damageable))
       {
-        if(gameObject.activeSelf)
+        if (gameObject.activeSelf)
+        {
           damageable.Damage(damage, this);
+          HitEffect(other);
+        }
+
         gameObject.Release();
       }
+    }
+
+    private void HitEffect(Collider2D other)
+    {
+      Vector2 otherCenter = other.GetComponent<Collider2D>().bounds.center;
+      Vector2 posDiff = otherCenter - (Vector2)transform.position;
+      Vector2 posDiffDir = posDiff.normalized;
+          
+      RaycastHit2D hit = Physics2D.Raycast(transform.position, posDiffDir, posDiff.magnitude, hitLayers);
+          
+      GameObject attackEffect = hitEffectPrefab.Pooling();
+      attackEffect.transform.position = hit.point;
+        
+      float angle = Mathf.Atan2(posDiffDir.y, posDiffDir.x) * Mathf.Rad2Deg;
+        
+      var ps = attackEffect.GetComponent<ParticleSystem>().main;
+      ps.startRotation = angle;
+        
+      attackEffect.gameObject.SetActive(true);
     }
 
     private void OnEnable()
