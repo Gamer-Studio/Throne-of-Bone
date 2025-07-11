@@ -11,8 +11,7 @@ namespace ToB
         [SerializeField] private RectTransform InteractShortcutIcon;
         
         RectTransform thisRectTransform;
-
-        bool needReposition = true;
+        
         private void Awake()
         {
             thisRectTransform = GetComponent<RectTransform>();

@@ -56,7 +56,6 @@ namespace ToB.Entities
             float actualDamage = damage * (100 - DEF) / 100;
             ChangeHP(-actualDamage);
             enemy.OnTakeDamage(sender);
-            
             DamageEffectCoroutine = StartCoroutine(DamageColorOverlay());
         }
         
