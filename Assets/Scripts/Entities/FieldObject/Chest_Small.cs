@@ -8,25 +8,25 @@ namespace ToB.Entities.FieldObject
         [SerializeField] private int gold;
         [SerializeField] private int mana;
         [SerializeField] private float HP;
-        
+        [SerializeField] private Animator animator;
         private Collider2D _collider;
         private Rigidbody2D _rb;
-        private SpriteRenderer _spriteRenderer;
         
         private void Awake()
         {
-            gameObject.SetActive(true);
-            _collider = GetComponent<Collider2D>();
-            _rb = GetComponent<Rigidbody2D>();
-            _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
-            _rb.constraints = RigidbodyConstraints2D.FreezeAll;
+    
         }
         
         private void OnEnable()
         {
+            gameObject.SetActive(true);
+            if (_collider == null) _collider = GetComponent<Collider2D>();
+            if (_rb == null) _rb = GetComponent<Rigidbody2D>();
+            _rb.constraints = RigidbodyConstraints2D.FreezeAll;
+            if (animator == null) animator = GetComponent<Animator>();
+            animator.SetBool("IsOpened", false);
             HP = 1;
             _collider.enabled = true;
-            _spriteRenderer.enabled = true;
         }
         public void Damage(float damage, MonoBehaviour sender = null)
         {
@@ -42,8 +42,7 @@ namespace ToB.Entities.FieldObject
             Core.ResourceManager.Instance.SpawnResources(InfiniteResourceType.Gold, gold, transform);
             Core.ResourceManager.Instance.SpawnResources(InfiniteResourceType.Mana, mana, transform);
             _collider.enabled = false;
-            _spriteRenderer.enabled = false;
-            gameObject.SetActive(false);;
+            animator.SetBool("IsOpened", true);
         }
         
     }

@@ -38,5 +38,10 @@ namespace ToB.Core.InputManager
             if(context.performed)
                 player?.Interact();
         }
+
+        public void PlayerBlock(InputAction.CallbackContext context)
+        {
+            player?.Block(context);
+        }
     }
 }

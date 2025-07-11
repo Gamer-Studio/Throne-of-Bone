@@ -38,7 +38,7 @@ namespace ToB.Entities.FieldObject
         {
             if ((playerMask & 1 << other.gameObject.layer) != 0)
             {
-                other.Damage(ATK);
+                other.Damage(ATK, this);
                 if(directional) other.KnockBack(knockBackPower, knockBackDirection);
                 else other.KnockBack(knockBackPower, gameObject);
             }

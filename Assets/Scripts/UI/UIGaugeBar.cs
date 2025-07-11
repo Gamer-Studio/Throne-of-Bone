@@ -22,17 +22,24 @@ namespace ToB.UI
       Image
     }
 
+    public enum ValueType
+    {
+      Health,
+      BlockEnergy
+    }
+
     public FillDirection fillDirection = FillDirection.Vertical;
     public FillMode fillMode = FillMode.Rect;
     public float max;
+    private Color originalColor;
     [SerializeField] [GetSet("Value")] private float value;
     [SerializeField] private RectTransform rect;
     [SerializeField] private Image image;
     [SerializeField] private TMP_Text text;
+    [SerializeField]public ValueType _valueType;
 #if UNITY_EDITOR
     [SerializeField] [GetSet("Color")] private Color color;
 #endif
-    
 
 
     public float Value
@@ -114,18 +121,45 @@ namespace ToB.UI
     */
     private void Init()
     {
-      ChangeMax(player.stat.maxHp);
-      text.text = $"{player.stat.Hp} / {max}";
-      UpdateHPBar(player.stat.Hp);
-      player.stat.onHpChanged.AddListener(UpdateHPBar);
+      switch (_valueType)
+      {
+        case ValueType.Health:
+          ChangeMax(player.stat.maxHp);
+          text.text = $"{(int)player.stat.Hp} / {(int)max}";
+          UpdateHPBar(player.stat.Hp);
+          player.stat.onHpChanged.AddListener(UpdateHPBar);
+          break;
+        case ValueType.BlockEnergy:
+          originalColor = Color;
+          ChangeMax(player.stat.maxBlockEnergy);
+          text.text = $"{(int)player.stat.BlockEnergy} / {(int)max}";
+          UpdateBEBar(player.stat.BlockEnergy);
+          player.stat.onBlockEnergyChanged.AddListener(UpdateBEBar);
+          break;
+        default:
+          Debug.Log("게이지로 나타낼 값을 지정하지 않았습니다");
+          break;
+      }
     }
 
     private void UpdateHPBar(float curHp)
     {
       Value = curHp;
-      text.text = $"{curHp} / {max}";
+      text.text = $"{(int)curHp} / {(int)max}";
     }
-    
+
+    private void UpdateBEBar(float curEnergy)
+    {
+      Value = curEnergy;
+      text.text = $"{(int)curEnergy} / {(int)max}";
+      if (curEnergy >= max)
+      {
+        Color = originalColor;
+      }
+      else if (curEnergy <= 0)
+        Color = Color.gray;
+    }
+
     #endregion
   }
 }
