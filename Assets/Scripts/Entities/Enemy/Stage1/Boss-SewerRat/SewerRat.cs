@@ -32,8 +32,6 @@ namespace ToB.Entities
             
             deathBleed.gameObject.SetActive(false);
             deathExplode.gameObject.SetActive(false);
-
-            bossRoomLocation.OnPlayerEntered += DetectPlayer;
         }
 
         private void Start()

@@ -65,6 +65,20 @@ namespace ToB.Utils
       var rad = (angle + 90f) * Mathf.Deg2Rad;
       return new Vector2(Mathf.Cos(rad), Mathf.Sin(rad)).normalized;
     }
+
+    /// <summary>
+    /// 두 각도의 모듈러 차이를 구합니다.
+    /// </summary>
+    /// <param name="angle1"></param>
+    /// <param name="angle2"></param>
+    /// <returns></returns>
+    public static float GetAngleDiff(float angle1, float angle2)
+    {
+      float diff = Mathf.Abs(angle1 - angle2) % 360f;
+      if (diff > 180f)
+        diff = 360f - diff;
+      return diff;
+    }
     
     #endregion
     

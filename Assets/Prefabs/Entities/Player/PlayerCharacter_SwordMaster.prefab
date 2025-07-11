@@ -223,15 +223,33 @@ MonoBehaviour:
   dashMaxImmuneTime: 0.1
   knockbackTime: 0.2
   knockbackMultiplier: 0.11
+  freezeTime: 0
   stat:
     onHpChanged:
       m_PersistentCalls:
         m_Calls: []
+    onBlockEnergyChanged:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1910508927396576283}
+          m_TargetAssemblyTypeName: ToB.Player.PlayerCharacter, Assembly-CSharp
+          m_MethodName: OnBlockEnergyChanged
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
     onDeath:
       m_PersistentCalls:
         m_Calls: []
     maxHp: 100
     currentHp: 100
+    maxBlockEnergy: 100
+    currentBlockEnergy: 0
     def:
       onChanged:
         m_PersistentCalls:
@@ -265,18 +283,35 @@ MonoBehaviour:
   - 1
   - 1.3
   - 0.5
+  meleeAttackDelay: 0
   maxRangedAttack: 5
   availableRangedAttack: 5
   rangedAttackRegenTime: 1
+  rangedAttackRegenAmount: 0
   shootDelay: 0.1
   swordEffect: {fileID: 1664674104791670439, guid: bc76dc791a6561344bbec8478838ce65, type: 3}
   OnRangedAttackStackChange:
     m_PersistentCalls:
       m_Calls: []
+  blockAngle: 120
   additionalDef: 50
-  currentBlockTime: 0
+  blockEnergyRequireRegenDelay: 0.5
+  blockEnergyRegenDelay: 0
+  blockEnergyRegenTime: 0.1
+  blockEnergyRegenAmount: 1
+  requireBlockEnergy: 20
+  requireKeepBlockEnergy: 20
+  blockCoolTime: 1
+  currentBlockCoolTime: 0
   parryTimeLimit: 0.3
-  shield: {fileID: 9191730963288095252}
+  blockTimeLimit: 1.7
+  isParrying: 0
+  parryImmuneTime: 0.5
+  parryFreezeTime: 0.2
+  parryReward: 2
+  blockReward: 1
+  freezeBlockable: 0
+  shield: {fileID: 4079519044668053490}
   dashSpeed: 50
   dashTimeLimit: 0.15
   dashCoolTime: 0.5
@@ -715,7 +750,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1275738203817483582
 Transform:
   m_ObjectHideFlags: 0

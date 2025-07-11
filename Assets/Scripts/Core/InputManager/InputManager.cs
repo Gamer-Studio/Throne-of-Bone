@@ -35,5 +35,10 @@ namespace ToB.Core.InputManager
             
             playerInput.SwitchCurrentActionMap(CurrentActionMap);
         }
+
+        public void SetInputActive(bool isActive)
+        {
+            playerInput.enabled = isActive;
+        }
     }
 }

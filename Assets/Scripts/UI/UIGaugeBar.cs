@@ -160,11 +160,8 @@ namespace ToB.UI
       {
         Color = originalColor;
       }
-    }
-
-    private void BEConsumed()
-    {
-      Color = Color.gray;
+      else if (curEnergy <= 0)
+        Color = Color.gray;
     }
 
     #endregion

@@ -36,7 +36,7 @@ namespace ToB.Entities
         IEnumerator Dig()
         {
             sewerRat.Sprite.sortingOrder = -100;
-            sewerRat.EnemyBody.ChangeDamage(sewerRat.DataSO.RollDamage);;
+            sewerRat.EnemyBody.ChangeDamage(sewerRat.DataSO.RollDamage);
             enemy.Animator.SetBool(EnemyAnimationString.Roll, true);
             enemy.Physics.collisionEnabled = false;
             enemy.Physics.gravityEnabled = false;

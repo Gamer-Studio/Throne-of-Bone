@@ -15,7 +15,7 @@ namespace ToB.Scenes.Stage
     Play,
     UI
   }
-  public class StageManager : Singleton<StageManager>
+  public class StageManager : ManualSingleton<StageManager>
   {
     [Label("플레이어"), Tooltip("현재 활성화된 Player 태그가 붙은 플레이어 캐릭터입니다.")] public PlayerCharacter player;
     [field: Label("스테이지 인덱스"), Tooltip("현재 스테이지 인덱스입니다."), SerializeField, ReadOnly] public int CurrentStageIndex { get; private set; } = 1;

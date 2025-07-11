@@ -10,7 +10,6 @@ namespace ToB.Blackboards
     public GraphVariable(T value)
     {
       this.value = value;
-      Unity.Behavior.BlackboardVariable<T> a;
     }
   }
 }
