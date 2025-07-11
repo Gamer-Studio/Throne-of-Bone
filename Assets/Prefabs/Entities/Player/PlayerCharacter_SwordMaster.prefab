@@ -213,7 +213,7 @@ MonoBehaviour:
   moveSpeed: 4
   maxMoveSpeed: 12
   moveResistanceForce: 1
-  wallEnduringSpeed: -1
+  wallEnduringSpeed: -6
   moveDirection: 0
   isMoving: 0
   isClimbing: 0
@@ -222,24 +222,47 @@ MonoBehaviour:
   dashImmuneTime: 0
   dashMaxImmuneTime: 0.1
   knockbackTime: 0.2
-  knockbackMultiplier: 2
+  knockbackMultiplier: 0.11
+  freezeTime: 0
   stat:
     onHpChanged:
       m_PersistentCalls:
         m_Calls: []
+    onBlockEnergyChanged:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1910508927396576283}
+          m_TargetAssemblyTypeName: ToB.Player.PlayerCharacter, Assembly-CSharp
+          m_MethodName: OnBlockEnergyChanged
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
     onDeath:
       m_PersistentCalls:
         m_Calls: []
     maxHp: 100
     currentHp: 100
-    def: 0
+    maxBlockEnergy: 100
+    currentBlockEnergy: 0
+    def:
+      onChanged:
+        m_PersistentCalls:
+          m_Calls: []
+      baseValue: 0
+    tempDef: 0
     atk: 10
-  jumpPower: 30
+  jumpPower: 18
   wallJumpPower: 10
-  wallJumpReactionTime: 0.4
-  jumpTimeLimit: 0.2
-  gravityAcceleration: 1
-  gravityStart: -10
+  wallJumpReactionTime: 0.2
+  jumpTimeLimit: 0.1
+  gravityAcceleration: 7
+  gravityStart: 0
   body: {fileID: 1096863716109666581}
   bodyCollider: {fileID: 1067526606140988756}
   animator: {fileID: 6425824100770376572}
@@ -255,27 +278,42 @@ MonoBehaviour:
   - 0.3
   - 1
   - 0.1
-  parryImmuneTime: 0.5
   attackDamageMultiplier:
+  - 0.8
   - 1
-  - 1
-  - 2
+  - 1.3
   - 0.5
+  meleeAttackDelay: 0
   maxRangedAttack: 5
   availableRangedAttack: 5
   rangedAttackRegenTime: 1
+  rangedAttackRegenAmount: 0
   shootDelay: 0.1
   swordEffect: {fileID: 1664674104791670439, guid: bc76dc791a6561344bbec8478838ce65, type: 3}
   OnRangedAttackStackChange:
     m_PersistentCalls:
       m_Calls: []
-  currentBlockTime: 0
-  blockParticleSystem: {fileID: 0}
-  test:
-    m_PersistentCalls:
-      m_Calls: []
+  blockAngle: 120
+  additionalDef: 50
+  blockEnergyRequireRegenDelay: 0.5
+  blockEnergyRegenDelay: 0
+  blockEnergyRegenTime: 0.1
+  blockEnergyRegenAmount: 1
+  requireBlockEnergy: 20
+  requireKeepBlockEnergy: 20
+  blockCoolTime: 1
+  currentBlockCoolTime: 0
+  parryTimeLimit: 0.3
+  blockTimeLimit: 1.7
+  isParrying: 0
+  parryImmuneTime: 0.5
+  parryFreezeTime: 0.2
+  parryReward: 2
+  blockReward: 1
+  freezeBlockable: 0
+  shield: {fileID: 4079519044668053490}
   dashSpeed: 50
-  dashTimeLimit: 0.25
+  dashTimeLimit: 0.15
   dashCoolTime: 0.5
   inWater: 0
   dashImmuneStartTime: 0

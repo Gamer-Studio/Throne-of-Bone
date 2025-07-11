@@ -11,6 +11,7 @@ namespace ToB.Entities.FieldObject
         [SerializeField] public int gold;
         [SerializeField] public int mana;
         [SerializeField] public TMP_Text interactionText;
+        [SerializeField] private Animator animator;
         public bool IsInteractable { get; set; }
         private bool IsOpened;
 
@@ -18,6 +19,7 @@ namespace ToB.Entities.FieldObject
         {
             IsOpened = false;
             IsInteractable = true;
+            animator.SetBool("IsOpened", IsOpened);
         }
 
         public override void LoadJson(JObject json)
@@ -29,7 +31,7 @@ namespace ToB.Entities.FieldObject
         public override void OnLoad()
         {
             IsInteractable = !IsOpened;
-            gameObject.SetActive(!IsOpened);
+            animator.SetBool("IsOpened", IsOpened);
         }
         public override JObject ToJson()
         {
@@ -44,11 +46,11 @@ namespace ToB.Entities.FieldObject
             IsOpened = true;
             IsInteractable = false;
             interactionText.text = "";
-            gameObject.SetActive(false);
+            animator.SetBool("IsOpened", IsOpened);
         }
         private void OnTriggerEnter2D(Collider2D other)
         {
-            if (other.CompareTag("Player"))
+            if (other.CompareTag("Player") && IsInteractable)
             {
                 interactionText.text = "F : 열기";
             }

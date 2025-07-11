@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -14,9 +15,8 @@ namespace ToB.Utils
 
     public RangedStat(float maxValue, float value, StatOperator<float> maxEffect = null)
     {
-      max = new Stat(maxValue);
+      max = new Stat(maxValue, maxEffect);
       Value = value;
-      MaxEffect = maxEffect;
     }
 
     public RangedStat(float maxValue) : this(maxValue, maxValue)
@@ -45,14 +45,6 @@ namespace ToB.Utils
       }
     }
 
-    public StatOperator<float> MaxEffect
-    {
-      get => max.effect;
-      set
-      {
-        max.effect = value;
-        Value = this.value;
-      }
-    }
+    public List<StatOperator<float>> MaxEffects => max.effects;
   }
 }
