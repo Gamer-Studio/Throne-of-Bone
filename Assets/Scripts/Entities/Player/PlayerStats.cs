@@ -93,7 +93,6 @@ namespace ToB.Player
       else
       {
         Hp -= damage * (1 - def.Value / 100);
-        Debug.Log(damage * (1 - def.Value / 100));
       }
       
       return Hp;
