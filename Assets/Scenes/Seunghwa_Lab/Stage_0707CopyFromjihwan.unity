@@ -437,6 +437,16 @@ Transform:
   - {fileID: 3101078555654452998}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &675862368 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7224177066034879522, guid: fc27be0f45e48b343a4bbf14018cc983, type: 3}
+  m_PrefabInstance: {fileID: 1930096391}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &675862370 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 2289983599583972738, guid: fc27be0f45e48b343a4bbf14018cc983, type: 3}
+  m_PrefabInstance: {fileID: 1930096391}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &844961203
 GameObject:
   m_ObjectHideFlags: 0
@@ -847,6 +857,38 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2903922225394110874, guid: 51516054684f6fa4487db9d27e56eead, type: 3}
   m_PrefabInstance: {fileID: 1696971405}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1412628925
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1412628926}
+  m_Layer: 6
+  m_Name: BuffEffect
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1412628926
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1412628925}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 675862368}
+  m_Father: {fileID: 8488657771356723074}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1420789878
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1591,6 +1633,79 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1119994217}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &1930096391
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1412628926}
+    m_Modifications:
+    - target: {fileID: 771883723380084726, guid: fc27be0f45e48b343a4bbf14018cc983, type: 3}
+      propertyPath: m_Name
+      value: PoisonEffect
+      objectReference: {fileID: 0}
+    - target: {fileID: 771883723380084726, guid: fc27be0f45e48b343a4bbf14018cc983, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2122385499673332893, guid: fc27be0f45e48b343a4bbf14018cc983, type: 3}
+      propertyPath: m_SortingLayer
+      value: -2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2122385499673332893, guid: fc27be0f45e48b343a4bbf14018cc983, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3500
+      objectReference: {fileID: 0}
+    - target: {fileID: 2122385499673332893, guid: fc27be0f45e48b343a4bbf14018cc983, type: 3}
+      propertyPath: m_SortingLayerID
+      value: -1261954813
+      objectReference: {fileID: 0}
+    - target: {fileID: 7224177066034879522, guid: fc27be0f45e48b343a4bbf14018cc983, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7224177066034879522, guid: fc27be0f45e48b343a4bbf14018cc983, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 2.08
+      objectReference: {fileID: 0}
+    - target: {fileID: 7224177066034879522, guid: fc27be0f45e48b343a4bbf14018cc983, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7224177066034879522, guid: fc27be0f45e48b343a4bbf14018cc983, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7224177066034879522, guid: fc27be0f45e48b343a4bbf14018cc983, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7224177066034879522, guid: fc27be0f45e48b343a4bbf14018cc983, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7224177066034879522, guid: fc27be0f45e48b343a4bbf14018cc983, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7224177066034879522, guid: fc27be0f45e48b343a4bbf14018cc983, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7224177066034879522, guid: fc27be0f45e48b343a4bbf14018cc983, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7224177066034879522, guid: fc27be0f45e48b343a4bbf14018cc983, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: fc27be0f45e48b343a4bbf14018cc983, type: 3}
 --- !u!1 &1947918992
 GameObject:
   m_ObjectHideFlags: 0
@@ -24483,6 +24598,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7655265317321702560, guid: 10339c8c4073d4b4780efaec01b6a183, type: 3}
+      propertyPath: poisonEffect
+      value: 
+      objectReference: {fileID: 675862370}
     - target: {fileID: 8508471721680391115, guid: 10339c8c4073d4b4780efaec01b6a183, type: 3}
       propertyPath: attackEffectPrefab
       value: 
@@ -24493,7 +24612,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 2108481070329244631, guid: 10339c8c4073d4b4780efaec01b6a183, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1412628926}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 10339c8c4073d4b4780efaec01b6a183, type: 3}
 --- !u!1001 &9019128697754458080
