@@ -26,7 +26,6 @@ namespace ToB.Entities.NPC
         
         protected Queue<string> dialogQueue;
         
-        private bool focused = false;
         protected bool processed = false;
 
         protected virtual void Awake()

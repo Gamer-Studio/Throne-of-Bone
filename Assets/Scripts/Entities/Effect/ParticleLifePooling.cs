@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace ToB
 {
-    public class ParticleLifeByProjectile : MonoBehaviour
+    public class ParticleLifePooling : MonoBehaviour
     {
         [SerializeField] private ParticleSystem ps;
 
