@@ -16,11 +16,12 @@ namespace ToB.Player
     [Label("공격 딜레이"), Tooltip("0번 인덱스는 모션 리셋 시간 / 1, 2, 3번은 근접 공격 대기시간, 4번은 원거리 대기 시간입니다."), Foldout("Attack State")] 
     public float[] attackDelay = {1, 0.3f, 0.3f, 0.1f};
     [Label("근접 공격 피해 계수"), Tooltip("기본 캐릭터 공격력에 비례한 모션당 피해 계수입니다."), Foldout("Attack State")] public float[] attackDamageMultiplier = {1, 1, 2, 0.5f};
-    [Label("근접 공격 대기 시간")] private float meleeAttackDelay = 0;
+    [Label("근접 공격 대기 시간"), Foldout("Attack State"), SerializeField] private float meleeAttackDelay = 0;
     [Label("최대 원거리 공격 횟수"), Tooltip("원거리 공격의 충전되는 최대 횟수입니다."), Foldout("Attack State")] public int maxRangedAttack = 3;
-    [Label("원거리 공격 스택"), Foldout("Attack State"), SerializeField, ReadOnly] private int availableRangedAttack = 5;
-    [Label("원거리 공격 스택 재생 시간(초)"), Foldout("Attack State")] public float rangedAttackRegenTime = 1;
-    [Label("원거리 공격 발사 대기시간"), Foldout("Attack State")] public float shootDelay = 0.1f;
+    [Label("검기 스택"), Foldout("Attack State"), SerializeField, ReadOnly] private int availableRangedAttack = 5;
+    [Label("검기 재생 시간(초)"), Foldout("Attack State")] public float rangedAttackRegenTime = 1;
+    [Label("검기 초당 회복량"), Foldout("Attack State")] public int rangedAttackRegenAmount = 0;
+    [Label("검기 발사 대기시간"), Foldout("Attack State")] public float shootDelay = 0.1f;
     
     // 현재 원거리 공격 가능 횟수입니다.
     public int AvailableRangedAttack
@@ -75,44 +76,75 @@ namespace ToB.Player
       attackGaugeBar.Value = 0;
     }
     
-    private static readonly Vector2[] directions = { Vector2.right, Vector2.left, Vector2.down };
-   
     /// <summary>
     /// direction 방향으로 공격합니다.
     /// isMelee를 false로 하여 원거리 공격을 할 수 있습니다.
     /// </summary>
     /// <param name="direction">공격 방향입니다.</param>
     /// <param name="isMelee">근거리/원거리 공격 방향입니다.</param>
+    /// <param name="bottomAttack"></param>
     public void Attack(Vector2 direction, bool isMelee = true, bool bottomAttack = false)
     {
-      CancelBlock();
       if (bottomAttack) animator.SetInteger(INT_ATTACK_MOTION, 4);
       
-      if (isAttacking || AvailableRangedAttack <= 0) return;
-      if(IsDashing) CancelDash();
-      if(attackCoroutine != null) StopCoroutine(attackCoroutine);
+      if (isAttacking) return;
 
-      isAttacking = true;
-      
-      if(bottomAttack && IsFlight)
-      {
-        attackCoroutine = StartCoroutine(AttackWaiter(direction, 0.1f));
-      }
-      else
-      {
-        var pam = isMelee ? prevAttackMotion : 3;
-        attackCoroutine = StartCoroutine(AttackWaiter(direction, attackDelay[pam + 1]));
-        animator.SetInteger(INT_ATTACK_MOTION, pam);
-      
-        prevAttackMotion = prevAttackMotion == 2 ? 0 : prevAttackMotion + 1;
-      }
-      
-      animator.SetTrigger(TRIGGER_ATTACK);
+      var attackCancel = true;
 
-      // 원거리 공격 구현
-      if (!isMelee)
+      if (isMelee)
       {
+        // 근거리 공격
+        CancelBlock();
+        if(IsDashing) CancelDash();
+        if(attackCoroutine != null) StopCoroutine(attackCoroutine);
+
+        isAttacking = true;
+      
+        if(bottomAttack && IsFlight)
+        {
+          attackCoroutine = StartCoroutine(AttackWaiter(direction, 0.1f));
+        }
+        else
+        {
+          var pam = prevAttackMotion;
+          attackCoroutine = StartCoroutine(AttackWaiter(direction, attackDelay[pam + 1]));
+          animator.SetInteger(INT_ATTACK_MOTION, pam);
+      
+          prevAttackMotion = prevAttackMotion == 2 ? 0 : prevAttackMotion + 1;
+        }
+        
+        attackCancel = false;
+      }
+      else if (AvailableRangedAttack > 0)
+      {
+        // 원거리 공격
+        CancelBlock();
+        if(IsDashing) CancelDash();
+        if(attackCoroutine != null) StopCoroutine(attackCoroutine);
+        
+        isAttacking = true;
+      
+        if(bottomAttack && IsFlight)
+        {
+          attackCoroutine = StartCoroutine(AttackWaiter(direction, 0.1f));
+        }
+        else
+        {
+          const int pam = 3;
+          attackCoroutine = StartCoroutine(AttackWaiter(direction, attackDelay[pam + 1]));
+          animator.SetInteger(INT_ATTACK_MOTION, pam);
+      
+          prevAttackMotion = prevAttackMotion == 2 ? 0 : prevAttackMotion + 1;
+        }
+        
+        attackCancel = false;
         StartCoroutine(Shoot(direction));
+      }
+
+      if (!attackCancel)
+      {
+        attackDirection = direction.x > 0 ? PlayerMoveDirection.Right : PlayerMoveDirection.Left;
+        animator.SetTrigger(TRIGGER_ATTACK);
       }
     }
     
@@ -121,7 +153,7 @@ namespace ToB.Player
     /// </summary>
     public void AttackEnd()
     {
-      transform.eulerAngles = new Vector3(0, MoveDirection == PlayerMoveDirection.Left ? 180 : 0, 0);
+      // transform.eulerAngles = new Vector3(0, MoveDirection == PlayerMoveDirection.Left ? 180 : 0, 0);
     }
 
     private IEnumerator Shoot(Vector2 direction)
@@ -167,7 +199,7 @@ namespace ToB.Player
       for (;availableRangedAttack < maxRangedAttack;)
       {
         yield return new WaitForSeconds(rangedAttackRegenTime);
-        AvailableRangedAttack++;
+        AvailableRangedAttack += rangedAttackRegenAmount;
       }
 
       rangedCoroutine = null;

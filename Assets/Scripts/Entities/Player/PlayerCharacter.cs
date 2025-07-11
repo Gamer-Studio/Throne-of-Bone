@@ -42,7 +42,7 @@ namespace ToB.Player
     
     #region State
 
-    [Label("조작 가능")] public bool isControlable = true;
+    [Label("조작 가능"), Foldout("State")] public bool isControlable = true;
     [Label("애니메이션 상태"), Foldout("State"), SerializeField, GetSet(nameof(AnimationState))] protected PlayerAnimationState animationState = PlayerAnimationState.Idle;
     [Label("이동속도"), Foldout("State")] public float moveSpeed = 2;
     [Label("최대 이동 속도"), Foldout("State")] public float maxMoveSpeed = 12;
@@ -114,6 +114,7 @@ namespace ToB.Player
     /// </summary>
     public bool IsDashing => animator.GetCurrentAnimatorStateInfo(0).IsName("Dash") || dashCoroutine != null;
 
+    private PlayerMoveDirection attackDirection;
     public PlayerMoveDirection MoveDirection
     {
       get => moveDirection;
@@ -214,7 +215,8 @@ namespace ToB.Player
       if (!isControlable) return;
       
       var dir = moveDirection == PlayerMoveDirection.Left ? Vector2.left : Vector2.right;
-      transform.eulerAngles = new Vector3(0, MoveDirection == PlayerMoveDirection.Left ? 180 : 0, 0);
+      transform.eulerAngles = new Vector3(0,
+        (isAttacking ? attackDirection : MoveDirection) == PlayerMoveDirection.Left ? 180 : 0, 0);
       
       // isMoving이 true일떄 이동합니다.
       if(isMoving && !IsDashing &&
@@ -447,7 +449,7 @@ namespace ToB.Player
     #endregion Feature
     
     #region Water
-    [SerializeField] private List<WaterObject> waterObjects = new();
+    [SerializeField, Foldout("State")] private List<WaterObject> waterObjects = new();
     
     private void WaterEnter(WaterObject obj)
     {

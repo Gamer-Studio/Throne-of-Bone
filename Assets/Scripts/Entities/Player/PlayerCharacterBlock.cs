@@ -28,7 +28,7 @@ namespace ToB.Player
     //
     public bool IsBlocking => blockCoroutine != null;
     public bool IsBlockable => !IsBlocking && stat.BlockEnergy > requireBlockEnergy && !freezeBlockable && currentBlockCoolTime <= 0;
-    public bool freezeBlockable = false;
+    [Foldout("Block State")] public bool freezeBlockable = false;
     
     #endregion
     
@@ -44,6 +44,11 @@ namespace ToB.Player
 
     public void Block(float damage, MonoBehaviour sender)
     {
+      // 공격 방향 구하기
+      var blockDir = (sender.transform.position - transform.position).normalized;
+      var angle = Mathf.Atan2(blockDir.y, blockDir.x) * Mathf.Rad2Deg;
+      Debug.Log(shield.transform.rotation.eulerAngles.z);
+      // 공격 방향이 문제없을 시 방어 기능 구현
       if(isParrying)
       {
         // 패링
@@ -61,7 +66,7 @@ namespace ToB.Player
       }
       
       animator.SetTrigger(TRIGGER_BLOCK);
-      CancelBlock();
+      CancelBlock(isParrying);
     }
     
     /// <summary>
@@ -78,18 +83,19 @@ namespace ToB.Player
     /// <summary>
     /// 방어 상태를 취소합니다.
     /// </summary>
-    public void CancelBlock()
+    public void CancelBlock(bool isParring = false)
     {
       if(blockCoroutine == null) return;
       
       StopCoroutine(blockCoroutine);
-      EndBlock();
+      EndBlock(isParring);
     }
 
-    private void EndBlock()
+    private void EndBlock(bool isParring = false)
     {
       stat.tempDef -= additionalDef;
       shield.SetActive(false);
+      currentBlockCoolTime = isParring ? blockCoolTime : 0.1f;
       blockEnergyRegenDelay = blockEnergyRequireRegenDelay;
       blockCoroutine = null;
     }
@@ -109,25 +115,42 @@ namespace ToB.Player
     /// Update에서 사용됩니다.
     /// </summary>
     private void UpdateBlockResource()
-    { 
-      // if (currentBlockCoolTime > 0)
-        
-      if (blockEnergyRegenDelay > 0)
+    {
+      if (currentBlockCoolTime > 0)
       {
-        blockEnergyRegenDelay -= Time.deltaTime;
-        return;
+        currentBlockCoolTime -= Time.deltaTime;
       }
-      else blockEnergyRegenDelay = 0;
-      
-      blockEnergyCurrentRegenTime += Time.deltaTime;
-      if(blockEnergyCurrentRegenTime >= blockEnergyRegenTime)
-      {
-        blockEnergyCurrentRegenTime = 0;
-        stat.BlockEnergy += blockEnergyRegenAmount;
+      else currentBlockCoolTime = 0;
 
-        if (freezeBlockable && stat.BlockEnergy >= 100)
-          freezeBlockable = false;
+      if (!IsBlocking)
+      {
+        if (blockEnergyRegenDelay > 0)
+        {
+          blockEnergyRegenDelay -= Time.deltaTime;
+        }
+        else
+        {
+          blockEnergyRegenDelay = 0;
+        
+          blockEnergyCurrentRegenTime += Time.deltaTime;
+          if(blockEnergyCurrentRegenTime >= blockEnergyRegenTime)
+          {
+            blockEnergyCurrentRegenTime = 0;
+            stat.BlockEnergy += blockEnergyRegenAmount;
+
+            if (freezeBlockable && stat.BlockEnergy >= 100)
+              freezeBlockable = false;
+          }
+        }
       }
+    }
+
+    public void OnBlockEnergyChanged(float value)
+    {
+      if (value <= 0)
+        freezeBlockable = true;
+      else if (freezeBlockable && value >= 100)
+        freezeBlockable = false;
     }
 
     private IEnumerator BlockCoroutine()
