@@ -1,5 +1,6 @@
 using System;
-using UnityEngine;
+using ToB.Core;
+using AudioType = UnityEngine.AudioType;
 
 namespace ToB.Entities
 {
@@ -17,6 +18,7 @@ namespace ToB.Entities
         public override void Enter()
         {
             owner.Animator.SetBool(EnemyAnimationString.Move, true);
+            AudioManager.Play("env_chains_03",enemy.gameObject);
         }
 
         public override void Execute()

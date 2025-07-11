@@ -1,5 +1,7 @@
 using System;
+using ToB.Core;
 using UnityEngine;
+using AudioType = ToB.Core.AudioType;
 
 namespace ToB.Entities
 {
@@ -15,6 +17,7 @@ namespace ToB.Entities
         {
             base.Enter();
             owner.Animator.SetBool(EnemyAnimationString.Attack, true);
+            //AudioManager.Play("fntgm_blade_whoosh_heavy_02",AudioType.Effect);
         }
 
         public override void Execute()

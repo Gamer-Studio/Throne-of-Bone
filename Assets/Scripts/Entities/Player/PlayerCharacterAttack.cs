@@ -1,10 +1,12 @@
 using System;
 using System.Collections;
 using NaughtyAttributes;
+using ToB.Core;
 using ToB.Entities;
 using ToB.Entities.Projectiles;
 using UnityEngine;
 using UnityEngine.Events;
+using AudioType = ToB.Core.AudioType;
 
 namespace ToB.Player
 {
@@ -103,12 +105,16 @@ namespace ToB.Player
         if(bottomAttack && IsFlight)
         {
           attackCoroutine = StartCoroutine(AttackWaiter(direction, 0.1f));
+          AudioManager.Play("fntgm_blade_whoosh_light_02",AudioType.Effect); // 아래공격 사운드
         }
         else
         {
           var pam = prevAttackMotion;
           attackCoroutine = StartCoroutine(AttackWaiter(direction, attackDelay[pam + 1]));
           animator.SetInteger(INT_ATTACK_MOTION, pam);
+          if (prevAttackMotion == 0) AudioManager.Play("fntgm_blade_whoosh_light_02",AudioType.Effect); // 1타
+          else if (prevAttackMotion == 1) AudioManager.Play("fntgm_blade_whoosh_med_03",AudioType.Effect); // 2타
+          else if (prevAttackMotion == 2) AudioManager.Play("fntgm_blade_whoosh_heavy_03",AudioType.Effect); // 3타
       
           prevAttackMotion = prevAttackMotion == 2 ? 0 : prevAttackMotion + 1;
         }
