@@ -1,5 +1,6 @@
 using System.Collections;
 using NaughtyAttributes;
+using ToB.Utils;
 using UnityEngine;
 
 namespace ToB.Player
@@ -8,6 +9,7 @@ namespace ToB.Player
   {
     #region State
 
+    [Label("방어 반경 각도"), Foldout("Block State"), SerializeField, GetSet(nameof(BlockAngle))] private float blockAngle = 120;
     [Label("방어시 방어력 증가량"), Foldout("Block State")] public float additionalDef = 50;
     [Label("방어 게이지 회복까지 요구 딜레이"), Foldout("Block State")] public float blockEnergyRequireRegenDelay = 0.5f;
     [Label("방어 게이지 회복까지 현재 딜레이"), Foldout("Block State")] public float blockEnergyRegenDelay = 0;
@@ -24,17 +26,29 @@ namespace ToB.Player
     [Label("패링시 멈추는 시간"), Foldout("Block State")] public float parryFreezeTime = 0.2f;
     [Label("패링했을 때 검기 회복량"), Foldout("Block State")] public int parryReward = 2;
     [Label("방어했을 때 검기 회복량"), Foldout("Block State")] public int blockReward = 1;
+    [Label("방어 가능 여부"), Foldout("Block State")] public bool freezeBlockable = false;
 
     //
     public bool IsBlocking => blockCoroutine != null;
     public bool IsBlockable => !IsBlocking && stat.BlockEnergy > requireBlockEnergy && !freezeBlockable && currentBlockCoolTime <= 0;
-    [Foldout("Block State")] public bool freezeBlockable = false;
+
+    public float BlockAngle
+    {
+      get => blockAngle;
+      set
+      {
+        blockAngle = value;
+        var shape = shield.shape;
+        shape.arc = value;
+        shape.rotation = shape.rotation.Z(-(value / 2));
+      }
+    }
     
     #endregion
     
     #region Binding
     
-    [Label("방어 파티클"), Foldout("Block State")] public GameObject shield;
+    [Label("방어 파티클"), Foldout("Block State")] public ParticleSystem shield;
     
     #endregion
 
@@ -46,26 +60,37 @@ namespace ToB.Player
     {
       // 공격 방향 구하기
       var blockDir = (sender.transform.position - transform.position).normalized;
-      var angle = Mathf.Atan2(blockDir.y, blockDir.x) * Mathf.Rad2Deg;
-      Debug.Log(shield.transform.rotation.eulerAngles.z);
-      // 공격 방향이 문제없을 시 방어 기능 구현
-      if(isParrying)
+      var angle = Mathf.Atan2(blockDir.y, blockDir.x) * Mathf.Rad2Deg + 360;
+      
+      if (MathUtil.GetAngleDiff(angle, shield.transform.rotation.eulerAngles.z) > blockAngle / 2)
       {
-        // 패링
-        AvailableRangedAttack += parryReward;
-        if (immuneTime < parryImmuneTime) immuneTime = parryImmuneTime;
-        
-        Time.timeScale = 0;
-        if(freezeTime < parryFreezeTime) freezeTime = parryFreezeTime;
+        stat.Damage(damage);
       }
       else
       {
-        // 일반 방어
-        AvailableRangedAttack += blockReward;
-        stat.Damage(damage);
+        // 공격 방향이 문제없을 시 방어 기능 구현
+        if(isParrying)
+        {
+          // 패링
+          AvailableRangedAttack += parryReward;
+          if (immuneTime < parryImmuneTime) immuneTime = parryImmuneTime;
+        
+          Time.timeScale = 0;
+          if(freezeTime < parryFreezeTime) freezeTime = parryFreezeTime;
+        }
+        else
+        {
+          // 일반 방어
+          AvailableRangedAttack += blockReward;
+
+          stat.tempDef += additionalDef;
+          stat.Damage(damage);
+          stat.tempDef -= additionalDef;
+        }
+      
+        animator.SetTrigger(TRIGGER_BLOCK);
       }
       
-      animator.SetTrigger(TRIGGER_BLOCK);
       CancelBlock(isParrying);
     }
     
@@ -93,8 +118,7 @@ namespace ToB.Player
 
     private void EndBlock(bool isParring = false)
     {
-      stat.tempDef -= additionalDef;
-      shield.SetActive(false);
+      shield.gameObject.SetActive(false);
       currentBlockCoolTime = isParring ? blockCoolTime : 0.1f;
       blockEnergyRegenDelay = blockEnergyRequireRegenDelay;
       blockCoroutine = null;
@@ -156,8 +180,7 @@ namespace ToB.Player
     private IEnumerator BlockCoroutine()
     {
       isParrying = true;
-      shield.SetActive(true);
-      stat.tempDef += additionalDef;
+      shield.gameObject.SetActive(true);
       
       yield return new WaitForSeconds(parryTimeLimit);
       isParrying = false;
