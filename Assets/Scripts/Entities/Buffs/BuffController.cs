@@ -5,6 +5,8 @@ namespace ToB.Entities.Buffs
   public class BuffController : MonoBehaviour
   {
     [SerializeField] private SerializableDictionary<Buff, BuffInfo> buffs = new();
+
+    [SerializeField] private ParticleSystem poisonEffect;
     
     /// <summary>
     /// 버프를 추가합니다.
@@ -18,6 +20,12 @@ namespace ToB.Entities.Buffs
       {
         buff.Apply(gameObject, info);
         buffs[buff] = info;
+
+        if (buff == Buff.Poison)
+        {
+          poisonEffect.gameObject.SetActive(true);
+          poisonEffect.Play();
+        }
       }
       else if (!force) return;
       
@@ -25,6 +33,8 @@ namespace ToB.Entities.Buffs
       currentInfo.duration = info.duration;
       currentInfo.delay = info.delay;
       currentInfo.level = info.level;
+      
+      
     }
     
     /// <summary>
@@ -35,6 +45,12 @@ namespace ToB.Entities.Buffs
     {
       buff.Remove(gameObject);
       buffs.Remove(buff);
+      
+      if (buff == Buff.Poison)
+      {
+        poisonEffect.gameObject.SetActive(false);
+        poisonEffect.Stop();
+      }
     }
 
     private void FixedUpdate()
