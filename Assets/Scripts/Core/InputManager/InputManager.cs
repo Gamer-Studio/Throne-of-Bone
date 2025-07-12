@@ -22,9 +22,16 @@ namespace ToB.Core.InputManager
         public PlayerController player;
         
         [field:SerializeField] public string CurrentActionMap { get; set; }
+
+        protected override void Awake()
+        {
+            base.Awake();
+            playerInput = GetComponent<PlayerInput>();
+            
+        }
+
         private void Start()
         {
-            playerInput = GetComponent<PlayerInput>();
             SetActionMap(InputActionMaps.Player);
         }
 
@@ -32,6 +39,7 @@ namespace ToB.Core.InputManager
         {
             if (map == InputActionMaps.NULL) CurrentActionMap = null;
             else CurrentActionMap = map.ToString();
+            
             
             playerInput.SwitchCurrentActionMap(CurrentActionMap);
         }
