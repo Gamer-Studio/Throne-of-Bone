@@ -70,7 +70,7 @@ namespace ToB.Entities
             transform.DOKill();
             Destroy(gameObject);
             deathExplode.gameObject.SetActive(true);
-            Instantiate(specialPrefab, transform.position + new Vector3(0,1), Quaternion.identity);
+            //Instantiate(specialPrefab, transform.position + new Vector3(0,1), Quaternion.identity);
             
             Destroy(deathBleed.gameObject, 5f);
             Destroy(deathExplode.gameObject, 5f);

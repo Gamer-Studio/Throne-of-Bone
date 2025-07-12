@@ -34,6 +34,9 @@ namespace ToB.Scenes.Stage
         private SerializableDictionary<Collider2D, GameObject> loadedColliders = new();
         [SerializeField] private CinemachineConfiner2D confiner;
         [SerializeField] private Transform roomContainer;
+        [Header("카메라")]
+        [field:SerializeField] public Camera MainCamera { get; private set; }
+        [field:SerializeField] public CinemachineVirtualCamera MainVirtualCamera{ get; private set; }
 
         [field: SerializeField] public GameState State { get; private set; } = GameState.Play;
 

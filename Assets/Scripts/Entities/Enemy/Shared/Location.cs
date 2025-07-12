@@ -8,7 +8,9 @@ namespace ToB.Entities
     public class Location : MonoBehaviour
     {
         [SerializeField] private float width;
+        public float Width => width;
         [SerializeField] private float height;
+        public float Height => height;
 
         [SerializeField] private LayerMask mask;
         [SerializeField] private Color gizmoColor;

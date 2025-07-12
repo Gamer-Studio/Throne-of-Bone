@@ -65,8 +65,8 @@ namespace ToB.Entities
 
         public override void Init()
         {
-            enemy.Physics.collisionEnabled = true;
-            enemy.Physics.gravityEnabled = true;
+            // enemy.Physics.collisionEnabled = true;
+            // enemy.Physics.gravityEnabled = true;
             
             coolDown = breathTime;
             currentPatternName = "";

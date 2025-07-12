@@ -6,6 +6,7 @@ using DG.Tweening;
 using ToB.Core;
 using ToB.Core.InputManager;
 using ToB.Scenes.Stage;
+using UnityEditor;
 using UnityEngine;
 
 namespace ToB.Entities
@@ -29,8 +30,8 @@ namespace ToB.Entities
         CinemachineVirtualCamera mainVirtualCamera;
         private CinemachineBasicMultiChannelPerlin mainCamNoise;
         private CinemachineBasicMultiChannelPerlin roomCamNoise;
-        
 
+        public bool hardMode;
         public int phaseCount;
         private void Reset()
         {
@@ -42,7 +43,7 @@ namespace ToB.Entities
             // TODO: 진행도에서 이미 깼으면 스스스로 파괴. 최적화 하고자 하면 보스를 사전참조하지 않고 못 깼으면 그 때 인스턴스화
             // TODO: 다만 entity 오브젝트에 스케일 맞게 끌어놓는 게 편해서 일단 이렇게 해둡니다
 
-            mainVirtualCamera = CameraHub.Instance.MainVirtualCamera;
+            mainVirtualCamera = StageManager.Instance.MainVirtualCamera;
             
             mainCamNoise = mainVirtualCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
             roomCamNoise = roomVirtualCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
@@ -69,23 +70,44 @@ namespace ToB.Entities
 
         private IEnumerator Sequence()
         {
-            // 나중에 필요하면 이 본문을 1페이즈라는 이름의 코루틴으로
+            // Phase 1 : 한 마리
             yield return StartCoroutine(FirstRatEarthQuake());
             
             yield return new WaitForSeconds(1f);
             roomVirtualCamera.Priority = 0;
             ratVirtualCamera.Priority = 50;
-            // DOTween.To(() => roomVirtualCamera.m_Lens.OrthographicSize,
-            //     x => roomVirtualCamera.m_Lens.OrthographicSize = x, 12f, 1f);
-            //
+
             yield return StartCoroutine(AscendAndLand(firstSewerRat));
             
             yield return new WaitForSeconds(1f);
             roomVirtualCamera.Priority = 0;
-
-            Debug.Log("쥐? " + firstSewerRat + "|| 아니면 플레이어 ? " + StageManager.Instance.player);
+            
             firstSewerRat.target = StageManager.Instance.player.transform;
             InputManager.Instance.SetInputActive(true);
+            
+            // Phase 2 : 두 마리
+            if(!hardMode) yield break;
+            yield return new WaitUntil(() => !firstSewerRat);
+            
+            roomVirtualCamera.Priority = 50;
+            roomVirtualCamera.m_Lens.OrthographicSize = 12f;
+            
+            SetSewerRatInGround(anotherSewerRats[0], ascendLocation.transform.position - new Vector3(ascendLocation.Width / 3, 0));
+            
+            SetSewerRatInGround(anotherSewerRats[1], ascendLocation.transform.position + new Vector3(ascendLocation.Width / 3, 0));
+            
+            yield return new WaitForSeconds(0.9f);
+            
+            StartCoroutine(AscendAndLand(anotherSewerRats[0]));
+            
+            yield return StartCoroutine(AscendAndLand(anotherSewerRats[1]));
+            
+            roomVirtualCamera.Priority = 0;
+            yield return new WaitForSeconds(0.3f);
+            
+            anotherSewerRats[0].target = StageManager.Instance.player.transform;
+            anotherSewerRats[1].target = StageManager.Instance.player.transform;
+            
         }
         private IEnumerator FirstRatEarthQuake()
         {
@@ -101,7 +123,7 @@ namespace ToB.Entities
             roomVirtualCamera.transform.position += Vector3.down * 10f;
             roomVirtualCamera.m_Lens.OrthographicSize = 8f;
             
-            SetSewerRatInGround(firstSewerRat);
+            SetSewerRatInGround(firstSewerRat, ascendLocation.transform.position);
             
             yield return new WaitForSeconds(2f);
 
@@ -112,16 +134,14 @@ namespace ToB.Entities
         }
 
         
-        private void SetSewerRatInGround(SewerRat sewerRat)
+        private void SetSewerRatInGround(SewerRat sewerRat, Vector2 position)
         {
             sewerRat.gameObject.SetActive(true);
-            sewerRat.transform.position = ascendLocation.GetRandomPosition(true, true);
+            sewerRat.transform.position = position;
             sewerRat.Sprite.sortingOrder = -100;
             sewerRat.Animator.SetBool(EnemyAnimationString.Roll, true);
             sewerRat.Physics.gravityEnabled = false;
             sewerRat.Physics.collisionEnabled = false;
-
-            Debug.Log("중력 충돌 다 껐음");
             
             CreateDust(sewerRat);
             
@@ -157,7 +177,11 @@ namespace ToB.Entities
             scale.x = sewerRat.transform.position.x > StageManager.Instance.player.transform.position.x ? -1.5f:1.5f;
             sewerRat.transform.localScale = scale;
 
+            yield return new WaitUntil(() => sewerRat.Physics.velocityY < 0f);
+            sewerRat.Physics.collisionEnabled = true;
+            
             yield return new WaitUntil(() => sewerRat.IsGrounded);
+            
             ratVirtualCamera.Priority = 0;
             roomVirtualCamera.Priority = 50;
             roomVirtualCamera.transform.position = transform.position + Vector3.down * 5f;
