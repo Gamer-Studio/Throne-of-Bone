@@ -25,7 +25,7 @@ namespace ToB.Core.InputManager
         private void Start()
         {
             playerInput = GetComponent<PlayerInput>();
-            SetActionMap(InputActionMaps.UI);
+            SetActionMap(InputActionMaps.Player);
         }
 
         public void SetActionMap(InputActionMaps map)

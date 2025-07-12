@@ -10,9 +10,9 @@ namespace ToB
         [SerializeField] private TextMeshProUGUI text;
         [SerializeField] private RectTransform InteractShortcutIcon;
         
-        RectTransform thisRectTransform;
-        
-        private void Awake()
+        [SerializeField] RectTransform thisRectTransform;
+
+        private void Reset()
         {
             thisRectTransform = GetComponent<RectTransform>();
         }
@@ -23,7 +23,7 @@ namespace ToB
             
             // 단축키 표시를 위한 강제 갱신이 많습니다
             // 이것 때문에 렉걸릴 시 NPC용 줌인줌아웃할 때 플레이어 UI를 껐다켰다 할 필요가 있지만 일단 보류합니다
-            LayoutRebuilder.ForceRebuildLayoutImmediate(thisRectTransform);
+            if(thisRectTransform) LayoutRebuilder.ForceRebuildLayoutImmediate(thisRectTransform);
             Canvas.ForceUpdateCanvases();   
             
             RePositionShortcutIcon();

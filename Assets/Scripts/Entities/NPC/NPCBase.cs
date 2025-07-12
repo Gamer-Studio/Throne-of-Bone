@@ -46,7 +46,6 @@ namespace ToB.Entities.NPC
 
         public virtual void Interact()
         {
-            StageManager.Instance.ChangeGameState(GameState.UI);
             if (StageManager.Instance.player.transform.position.x < transform.position.x)
             {
                 Sprite.flipX = true;

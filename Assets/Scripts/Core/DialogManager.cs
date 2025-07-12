@@ -20,9 +20,11 @@ namespace ToB.Core
         private float camOriginalSize;
         
         private Coroutine zoomCoroutine;
-        
+
+        private bool talking;
         private void Awake()
         {
+            talking = false;
             mainCamera = Camera.main;
             brainCam = mainCamera.GetComponent<CinemachineBrain>();
             camOriginalSize = Camera.main.orthographicSize;
@@ -35,9 +37,9 @@ namespace ToB.Core
 
         public void StartDialogWith(NPCBase npc)
         {
+            StageManager.Instance.ChangeGameState(GameState.Dialog);
             CurrentNPC = npc;
             
-            StageManager.Instance.ChangeGameState(GameState.UI);
             UIManager.Instance.panelStack.Push(npc.DialogPanel);
 
             CurrentNPC.IsInteractable = false;
@@ -52,6 +54,8 @@ namespace ToB.Core
             if(zoomCoroutine != null) StopCoroutine(zoomCoroutine);
             StageManager.Instance.ChangeGameState(GameState.Play);
             CurrentNPC.DialogPanel.gameObject.SetActive(false);
+            talking = false;
+            UIManager.Instance.panelStack.Pop();
             DefocusCamera();
 
             zoomCoroutine = StartCoroutine(ZoomOut());
@@ -70,6 +74,7 @@ namespace ToB.Core
             
             // 다이얼로그 UI 시작
             CurrentNPC.DialogPanel.gameObject.SetActive(true);
+            talking = true;
             ProcessNPC();
         }
 
@@ -91,6 +96,7 @@ namespace ToB.Core
 
         public void ProcessNPC()
         {
+            if (!talking) return;
             if (brainCam.IsBlending) return;
             CurrentNPC.ProcessNext();
         }

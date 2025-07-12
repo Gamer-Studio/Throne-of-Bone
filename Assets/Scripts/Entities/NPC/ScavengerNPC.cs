@@ -18,7 +18,7 @@ namespace ToB.Entities.NPC
         public override void ProcessNext()
         {
             base.ProcessNext();
-                
+            
             if (dialogQueue.Count > 0)
             {
                 SetText(dialogQueue.Dequeue());

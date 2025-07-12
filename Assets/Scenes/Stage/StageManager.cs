@@ -13,7 +13,8 @@ namespace ToB.Scenes.Stage
   public enum GameState
   {
     Play,
-    UI
+    UI,
+    Dialog
   }
   public class StageManager : ManualSingleton<StageManager>
   {
@@ -118,18 +119,9 @@ namespace ToB.Scenes.Stage
 
     public void ChangeGameState(GameState state)
     {
-      switch (state)
-      {
-        case GameState.Play:
-          State = GameState.Play;
-          InputManager.Instance.SetActionMap(InputActionMaps.Player);
-          break;
-        case GameState.UI:
-          State = GameState.UI;
-          InputManager.Instance.SetActionMap(InputActionMaps.UI);
-          break;
-      }
+      State = state;
     }
+
     #endregion
   }
 }

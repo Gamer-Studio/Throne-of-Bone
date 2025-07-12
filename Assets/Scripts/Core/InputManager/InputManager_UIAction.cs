@@ -1,4 +1,5 @@
 using ToB.Player;
+using ToB.Scenes.Stage;
 using ToB.UI;
 using ToB.Utils.Singletons;
 using UnityEngine;
@@ -11,6 +12,7 @@ namespace ToB.Core.InputManager
     {
         public void UIProcess(InputAction.CallbackContext context)
         {
+            if (UIManager.Instance.panelStack.Count == 0) return;
             UIManager.Instance.panelStack.Peek().Process(context);
         }
         public void UICancel(InputAction.CallbackContext context)
@@ -18,10 +20,50 @@ namespace ToB.Core.InputManager
             if (!context.performed) return;
             if (UIManager.Instance.panelStack.Count == 0)
             {
-                Debug.Log("열려있는 UI가 없는데 액션 맵이 UI 조작 상태입니다");
+                UIManager.Instance.mainBookUI.SettingUIToggle(context);
                 return;
             }
             UIManager.Instance.panelStack.Peek().Cancel(context);
+        }
+
+        public void StatisticsUIToggle(InputAction.CallbackContext context)
+        {
+            if (!CanUseUIToggles()) return;
+            UIManager.Instance.mainBookUI.StatisticsUIToggle(context);
+        }
+
+        public void SoulUIToggle(InputAction.CallbackContext context)
+        {
+            if (!CanUseUIToggles()) return;
+            UIManager.Instance.mainBookUI.SoulUIToggle(context);
+        }
+
+        public void SkillUIToggle(InputAction.CallbackContext context)
+        {
+            if (!CanUseUIToggles()) return;
+            UIManager.Instance.mainBookUI.SkillUIToggle(context);
+        }
+
+        public void CollectionUIToggle(InputAction.CallbackContext context)
+        {
+            if (!CanUseUIToggles()) return;
+            UIManager.Instance.mainBookUI.CollectionUIToggle(context);
+        }
+        
+        public void WideMapToggle(InputAction.CallbackContext context)
+        {
+            if (!CanUseUIToggles()) return;
+            UIManager.Instance.wideMapUI.WideMapToggle(context);
+        }
+
+        public void QuestUIToggle(InputAction.CallbackContext context)
+        {
+
+        }
+
+        public bool CanUseUIToggles()
+        {
+            return UIManager.Instance.panelStack.Count == 0 || UIManager.Instance.panelStack.Peek() is MainBookUI;
         }
     }
 }

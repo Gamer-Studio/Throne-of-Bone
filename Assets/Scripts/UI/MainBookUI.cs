@@ -80,7 +80,7 @@ namespace ToB.UI
             {
                 if (gameObject.activeSelf && currentPanel == panels[0])
                 {
-                    gameObject.SetActive(false);
+                    CloseBook();
                 }
                 else if (gameObject.activeSelf && currentPanel != panels[0])
                 {
@@ -89,6 +89,7 @@ namespace ToB.UI
                 else if (!gameObject.activeSelf)
                 {
                     gameObject.SetActive(true);
+                    UIManager.Instance.panelStack.Push(this);
                     UIManager.Instance.wideMapUI.gameObject.SetActive(false);
                     ShowPanel(0);
                 }
@@ -101,7 +102,7 @@ namespace ToB.UI
             {
                 if (gameObject.activeSelf && currentPanel == panels[1])
                 {
-                    gameObject.SetActive(false);
+                    CloseBook();
                 }
                 else if (gameObject.activeSelf && currentPanel != panels[1])
                 {
@@ -111,6 +112,7 @@ namespace ToB.UI
                 {
                     gameObject.SetActive(true);
                     UIManager.Instance.wideMapUI.gameObject.SetActive(false);
+                    UIManager.Instance.panelStack.Push(this);
                     ShowPanel(1);
                 }
             }
@@ -122,7 +124,7 @@ namespace ToB.UI
             {
                 if (gameObject.activeSelf && currentPanel == panels[2])
                 {
-                    gameObject.SetActive(false);
+                    CloseBook();
                 }
                 else if (gameObject.activeSelf && currentPanel != panels[2])
                 {
@@ -132,6 +134,7 @@ namespace ToB.UI
                 {
                     gameObject.SetActive(true);
                     UIManager.Instance.wideMapUI.gameObject.SetActive(false);
+                    UIManager.Instance.panelStack.Push(this);
                     ShowPanel(2);
                 }
             }
@@ -143,7 +146,7 @@ namespace ToB.UI
             {
                 if (gameObject.activeSelf && currentPanel == panels[3])
                 {
-                    gameObject.SetActive(false);
+                    CloseBook();
                 }
                 else if (gameObject.activeSelf && currentPanel != panels[3])
                 {
@@ -153,6 +156,7 @@ namespace ToB.UI
                 {
                     gameObject.SetActive(true);
                     UIManager.Instance.wideMapUI.gameObject.SetActive(false);
+                    UIManager.Instance.panelStack.Push(this);
                     ShowPanel(3);
                 }
             }
@@ -165,7 +169,7 @@ namespace ToB.UI
             {
                 if (gameObject.activeSelf && currentPanel == panels[4])
                 {
-                    gameObject.SetActive(false);
+                    CloseBook();
                 }
                 else if (gameObject.activeSelf && currentPanel != panels[4])
                 {
@@ -175,6 +179,7 @@ namespace ToB.UI
                 {
                     gameObject.SetActive(true);
                     UIManager.Instance.wideMapUI.gameObject.SetActive(false);
+                    UIManager.Instance.panelStack.Push(this);
                     ShowPanel(4);
                 }
             }
@@ -182,14 +187,20 @@ namespace ToB.UI
 #endregion
 
 
-public override void Process(InputAction.CallbackContext context)
-{
-    throw new System.NotImplementedException();
-}
+        public override void Process(InputAction.CallbackContext context)
+        {
+            throw new System.NotImplementedException();
+        }
+        
+        public override void Cancel(InputAction.CallbackContext context)
+        {
+            CloseBook();
+        }
 
-public override void Cancel(InputAction.CallbackContext context)
-{
-    throw new System.NotImplementedException();
-}
+        private void CloseBook()
+        {
+            gameObject.SetActive(false);
+            UIManager.Instance.panelStack.Pop();
+        }
     }
 }
