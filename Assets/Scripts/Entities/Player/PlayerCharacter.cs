@@ -26,17 +26,23 @@ namespace ToB.Player
     private static readonly int TRIGGER_ATTACK = Animator.StringToHash("Attack");
     private static readonly int INT_ATTACK_MOTION = Animator.StringToHash("AttackMotion");
 
-    /// <returns>현재 활성화된 Player 태그가 붙은 오브젝트의 캐릭터를 찾아옵니다.</returns>
+    private static PlayerCharacter instance;
+    
+    /// <summary>
+    /// 현재 활성화된 Player 태그가 붙은 오브젝트의 캐릭터를 찾아옵니다.
+    /// </summary>
     public static PlayerCharacter GetInstance()
     {
+      if(instance) return instance;
+      
       foreach (var obj in GameObject.FindGameObjectsWithTag("Player"))
       {
         if (obj.TryGetComponent<PlayerCharacter>(out var comp) && obj.gameObject.activeSelf)
         {
-          return comp;
+          instance = comp;
+          return instance;
         }
       }
-      Debug.Log("플레이어 인스턴스 반환 실패");
       return null;
     }
     

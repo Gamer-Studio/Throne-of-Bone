@@ -29,7 +29,7 @@ namespace ToB.Player
     [Label("최대 체력")] public float maxHp = 100;
     [Label("현재 체력"), SerializeField, GetSet(nameof(Hp))] private float currentHp = 100;
     [Label("최대 방어 게이지")] public float maxBlockEnergy = 100;
-    [Label("현재 방어 게이지"), SerializeField, GetSet(nameof(BlockEnergy))] private float currentBlockEnergy = 0;
+    [Label("현재 방어 게이지"), SerializeField, GetSet(nameof(BlockEnergy))] private float currentBlockEnergy = 100;
 
     /// <summary>
     /// 플레이어의 현재 방어력입니다. % 비율로 피해를 감소시킵니다.
