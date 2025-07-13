@@ -18,6 +18,8 @@ namespace ToB.Entities.Effect
         [SerializeField] public float autoCollectDelay = 2f;
         [SerializeField] private float collectSpeed = 10f;
         [SerializeField] private float collectAcceleration = 50f;
+        [SerializeField] private GameObject obtainEffectPrefab;
+        
         //[SerializeField] public float collectMoveDuration = 1f;
 
         private Rigidbody2D rb;
@@ -61,6 +63,8 @@ namespace ToB.Entities.Effect
                     else
                         Core.ResourceManager.Instance.GiveManaToPlayer(amount);
                     gameObject.Release();
+                    GameObject effect = obtainEffectPrefab.Pooling();
+                    effect.transform.position = player.transform.position;
                 }
                 
                 currentVelocity = Vector2.Lerp(currentVelocity, direction * collectSpeed, collectAcceleration * Time.deltaTime);

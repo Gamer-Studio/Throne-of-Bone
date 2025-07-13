@@ -397,6 +397,8 @@ namespace ToB.Player
 
     #endregion Jump Feature
 
+    
+    [Foldout("Effect"), SerializeField] private ParticleSystem damagedEffect;
     /// <summary>
     /// 플레이어에게 방어력을 반영한 체력 피해를 줍니다.<br/>
     /// 남은 체력 이상의 피해를 줄 시 자동으로 0까지만 내려가고, <br/>
@@ -413,6 +415,14 @@ namespace ToB.Player
       else
       {
         stat.Damage(value);
+
+        if (sender)
+        {
+          damagedEffect.transform.eulerAngles = Vector3.zero;
+
+          if (damagedEffect.isPlaying) damagedEffect.Stop();
+          damagedEffect.Play();
+        }
 
         if (sender != null && immuneTime < damageImmuneTime) immuneTime = damageImmuneTime;
       }

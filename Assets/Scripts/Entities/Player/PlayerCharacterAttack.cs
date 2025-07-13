@@ -54,6 +54,7 @@ namespace ToB.Player
     #region Binding
 
     [Label("검기 프리팹"), Foldout("Attack State"), SerializeField] private GameObject swordEffect;
+    [Foldout("Attack State"), SerializeField] private ParticleSystem rangeAttackGlowEffect;
 
     #endregion
     
@@ -166,6 +167,8 @@ namespace ToB.Player
       eff.damage = stat.atk / 2;
       eff.ClearEffect();
         
+      if(rangeAttackGlowEffect.isPlaying) rangeAttackGlowEffect.Stop();
+      rangeAttackGlowEffect.Play();
       // 탄환? 관리
       AvailableRangedAttack--;
       rangedCoroutine ??= StartCoroutine(RegenRangedAttack());
