@@ -19,9 +19,11 @@ namespace ToB.Core
     public const string BackgroundLabel = "Background";
     public const string UILabel = "UI";
     public const string ObjectLabel = "Object"; 
+    public const string Label = "Audio";
+
+    private static AudioListener mainListener = null;
     
     public static bool Loaded { get; private set; } = false;
-    public const string Label = "Audio";
     public static readonly Dictionary<string, AudioClip> Clips = new();
 
     private static Camera mainCamera;
@@ -46,6 +48,34 @@ namespace ToB.Core
         
       EffectSource?.Stop();
       BackgroundSource?.Stop();
+
+      mainListener = null;
+    }
+
+    public static AudioListener Main
+    {
+      get
+      {
+        if (mainListener) return mainListener;
+
+        var objs = GameObject.FindGameObjectsWithTag("MainListener");
+        var find = false;
+        
+        foreach (var obj in objs)
+        {
+          if (obj.TryGetComponent(out mainListener))
+          {
+            if (!find)
+              find = true;
+            else
+              Debug.LogWarning("Multiple MainListener is found.");
+          }
+        }
+
+        if(mainListener) return mainListener;
+        else throw new InvalidOperationException("MainListener is not found.");
+      }
+      set => mainListener = value;
     }
 
     #region Volumes
@@ -141,16 +171,16 @@ namespace ToB.Core
     {
       get
       {
-        if (mainCamera == null) return null;
+        if (!Main) return null;
         
-        if (effectSource && effectSource.gameObject == mainCamera.gameObject)
+        if (effectSource && effectSource.gameObject == Main.gameObject)
           return effectSource;
         
-        effectSource = mainCamera.GetComponents<AudioSource>().FirstOrDefault(s => s.outputAudioMixerGroup == effectGroup);
+        effectSource = Main.GetComponents<AudioSource>().FirstOrDefault(s => s.outputAudioMixerGroup == effectGroup);
 
         if (effectSource) return effectSource;
         
-        effectSource = mainCamera.gameObject.AddComponent<AudioSource>();
+        effectSource = Main.gameObject.AddComponent<AudioSource>();
         effectSource.outputAudioMixerGroup = effectGroup;
         effectSource.volume = (EffectVolume / 100) * (MasterVolume / 100);
 
@@ -162,16 +192,16 @@ namespace ToB.Core
     {
       get
       {
-        if (!mainCamera) return null;
+        if (!Main) return null;
         
-        if (backgroundSource && backgroundSource.gameObject == mainCamera.gameObject)
+        if (backgroundSource && backgroundSource.gameObject == Main.gameObject)
           return backgroundSource;
         
-        backgroundSource = mainCamera.GetComponents<AudioSource>().FirstOrDefault(s => s.outputAudioMixerGroup == backgroundGroup);
+        backgroundSource = Main.GetComponents<AudioSource>().FirstOrDefault(s => s.outputAudioMixerGroup == backgroundGroup);
 
         if (backgroundSource) return backgroundSource;
         
-        backgroundSource = mainCamera.gameObject.AddComponent<AudioSource>();
+        backgroundSource = Main.gameObject.AddComponent<AudioSource>();
         backgroundSource.loop = true;
         backgroundSource.outputAudioMixerGroup = backgroundGroup;
         backgroundSource.volume = (BackgroundVolume / 100) * (MasterVolume / 100);
