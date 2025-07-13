@@ -1,9 +1,10 @@
 using System;
 using System.Collections;
 using NaughtyAttributes;
-using ToB.Entities;
 using ToB.Entities.Projectiles;
+using ToB.Utils;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
 
 namespace ToB.Player
@@ -53,7 +54,7 @@ namespace ToB.Player
 
     #region Binding
 
-    [Label("검기 프리팹"), Foldout("Attack State"), SerializeField] private GameObject swordEffect;
+    [Label("검기 프리팹 주소"), Foldout("Attack State"), SerializeField] private AssetReference swordEffect;
     [Foldout("Attack State"), SerializeField] private ParticleSystem rangeAttackGlowEffect;
 
     #endregion

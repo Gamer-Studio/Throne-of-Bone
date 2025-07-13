@@ -1,11 +1,10 @@
-using System;
-using Cysharp.Threading.Tasks.Triggers;
 using NaughtyAttributes;
+using ToB.Utils;
 using UnityEngine;
 
 namespace ToB.Entities.Projectiles
 {
-  public class SwordEffect : MonoBehaviour
+  public class SwordEffect : PooledObject
   {
     [ReadOnly] private new Camera camera;
     [Label("피해량")] public float damage;
@@ -61,7 +60,7 @@ namespace ToB.Entities.Projectiles
           HitEffect(other);
         }
 
-        gameObject.Release();
+        Release();
       }
     }
 
@@ -97,7 +96,7 @@ namespace ToB.Entities.Projectiles
 
       if (pos.x < 0 || pos.x > 1 || pos.y < 0 || pos.y > 1)
       {
-        gameObject.Release();
+        Release();
       }
     }
 
