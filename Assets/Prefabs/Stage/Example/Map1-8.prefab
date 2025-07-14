@@ -6325,13 +6325,13 @@ Transform:
   m_LocalScale: {x: 0.5, y: 0.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 7848418092901897732}
   - {fileID: 2180036652112066757}
   - {fileID: 1670984104499433825}
   - {fileID: 755921053404264262}
   - {fileID: 2125452536734364304}
   - {fileID: 681056272605894272}
   - {fileID: 6741779892252145142}
+  - {fileID: 7848418092901897732}
   m_Father: {fileID: 2903922225394110874}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1754268372277217355
@@ -6984,6 +6984,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d96dae62a5edd934a8c34b3d13155a75, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  stageIndex: 0
+  roomIndex: 0
   normalEnemyTable:
     array:
     - Key: {fileID: 1403825977827639516}
@@ -7004,6 +7006,10 @@ MonoBehaviour:
       Value: {fileID: 1730173166060172182, guid: bac78117d524fb94288aa0f875e1ae03, type: 3}
     - Key: {fileID: 8790078279618225119}
       Value: {fileID: 1730173166060172182, guid: bac78117d524fb94288aa0f875e1ae03, type: 3}
+  fieldObjects:
+    array: []
+  saveModule:
+    name: 
   links: []
   entityContainer: {fileID: 6416182101115832409}
   fieldObjectContainer: {fileID: 0}
@@ -16401,6 +16407,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6416182101115832409}
     m_Modifications:
+    - target: {fileID: 176068101399305392, guid: 9425be2ed2066304799c8fc157f012e4, type: 3}
+      propertyPath: doorMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 176068101399305392, guid: 9425be2ed2066304799c8fc157f012e4, type: 3}
+      propertyPath: isOpened
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3103974419986188427, guid: 9425be2ed2066304799c8fc157f012e4, type: 3}
       propertyPath: m_Name
       value: OnOffDoor
@@ -16552,6 +16566,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6416182101115832409}
     m_Modifications:
+    - target: {fileID: 176068101399305392, guid: 9425be2ed2066304799c8fc157f012e4, type: 3}
+      propertyPath: doorMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 176068101399305392, guid: 9425be2ed2066304799c8fc157f012e4, type: 3}
+      propertyPath: isOpened
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3103974419986188427, guid: 9425be2ed2066304799c8fc157f012e4, type: 3}
       propertyPath: m_Name
       value: OnOffDoor (1)
@@ -16675,11 +16697,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2834610158180860444, guid: fc877a6dd6ca2ef48aeda5cb3b3e40fd, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 3.92
       objectReference: {fileID: 0}
     - target: {fileID: 2834610158180860444, guid: fc877a6dd6ca2ef48aeda5cb3b3e40fd, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -16.76
       objectReference: {fileID: 0}
     - target: {fileID: 2834610158180860444, guid: fc877a6dd6ca2ef48aeda5cb3b3e40fd, type: 3}
       propertyPath: m_LocalPosition.z
@@ -16730,8 +16752,8 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fc877a6dd6ca2ef48aeda5cb3b3e40fd, type: 3}
---- !u!224 &7848418092901897732 stripped
-RectTransform:
+--- !u!4 &7848418092901897732 stripped
+Transform:
   m_CorrespondingSourceObject: {fileID: 2834610158180860444, guid: fc877a6dd6ca2ef48aeda5cb3b3e40fd, type: 3}
   m_PrefabInstance: {fileID: 5457694552917742616}
   m_PrefabAsset: {fileID: 0}
@@ -16883,11 +16905,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8814439406229541931, guid: ca6ec6ac62d7fde4d9842bb0fd4e762e, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 11
+      value: 9.5
       objectReference: {fileID: 0}
     - target: {fileID: 8814439406229541931, guid: ca6ec6ac62d7fde4d9842bb0fd4e762e, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -17
+      value: -15.4
       objectReference: {fileID: 0}
     - target: {fileID: 8814439406229541931, guid: ca6ec6ac62d7fde4d9842bb0fd4e762e, type: 3}
       propertyPath: m_LocalPosition.z
