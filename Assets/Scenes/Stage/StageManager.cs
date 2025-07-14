@@ -32,6 +32,8 @@ namespace ToB.Scenes.Stage
         private CompositeCollider2D confinerBorder;
         [Label("로딩된 Confiner 콜라이더 목록"), SerializeField]
         private SerializableDictionary<Collider2D, GameObject> loadedColliders = new();
+
+        [SerializeField] private GameObject tempObj;
         [SerializeField] private CinemachineConfiner2D confiner;
         [SerializeField] private Transform roomContainer;
         [Header("카메라")]
@@ -58,6 +60,8 @@ namespace ToB.Scenes.Stage
             {
                 player = PlayerCharacter.GetInstance();
             }
+            
+            if(tempObj) tempObj.SetActive(false);
         }
 
         private void Start()
