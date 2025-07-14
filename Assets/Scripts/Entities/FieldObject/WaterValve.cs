@@ -28,12 +28,6 @@ namespace ToB.Entities.FieldObject
         }
 
 #endif
-        private void Awake()
-        {
-            SetWaterSize();
-            InitPosition();
-        }
-
         private void SetWaterSize()
         {
             WaterMask.transform.localScale = new Vector3(Width * 2, Height, 1);

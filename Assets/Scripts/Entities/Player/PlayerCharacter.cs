@@ -1,11 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using NaughtyAttributes;
-using ToB.Core.InputManager;
 using ToB.Entities;
-using ToB.UI;
 using ToB.Utils;
 using ToB.Utils.UI;
 using ToB.Worlds;
@@ -424,11 +421,6 @@ namespace ToB.Player
       else
       {
         stat.Damage(value);
-        
-        // 독버프로 맞으면 화면에 경광등 켜져서 일단은 sender로 예외 처리.
-        // 추후 걸린 버프를 구분할 수 있는 방법이 생기면 (독 파워업 등등)
-        // 별도 이펙트 혹은 지속시간 인디케이터 UI를 만들기 좋을 것 같다고 생각해요!
-        if (sender !=null) UIManager.Instance.effectUI.PlayHitEffect();
 
         if (sender)
         {
@@ -499,50 +491,6 @@ namespace ToB.Player
       Walk = 1,
       Run = 2,
     }
-    
-    #region Teleportation
-  
-    public Transform TPTransform;
-    private Coroutine tpCoroutine;
-    public bool isFadeOutEnded = false;
-
-    public void TeleportByObstacle()
-    {
-      if (stat.Hp <= 0) return;
-      // 플레이어가 사망 시 스폰위치로 TP해야 하니 예외처리
-      if (TPTransform == null)
-      {
-        Debug.Log("TP할 지점이 null입니다. 체크포인트 콜라이더를 통하지 않고 진입했는지 확인해 주세요.");
-        return;
-      }
-      if (tpCoroutine != null) return;
-      else
-      {
-        tpCoroutine = StartCoroutine(TeleportCoroutine());
-      }
-    }
-    private IEnumerator TeleportCoroutine()
-    {
-      UIManager.Instance.effectUI.PlayFadeOutEffect();
-      //순서상 플레이어를 조작하는 컨트롤러를 먼저 끄고, 플레이어 상태를 고정
-      InputManager.Instance.SetInputActive(false);
-      IsMoving = false;
-      body.constraints = RigidbodyConstraints2D.FreezeAll;
-      while (isFadeOutEnded == false)
-      {
-        yield return new WaitForEndOfFrame();
-      }
-      body.constraints = RigidbodyConstraints2D.FreezeRotation;
-      this.transform.position = TPTransform.position;
-      InputManager.Instance.SetInputActive(true);
-      // 안전하게 가시 콜라이더에서 탈출
-      yield return new WaitForEndOfFrame();
-      isFadeOutEnded = false;
-      tpCoroutine = null;
-    }
-
-
-    #endregion
   }
   
   // 이동방향 설정용 열거형입니다.
@@ -551,6 +499,4 @@ namespace ToB.Player
     Left,
     Right,
   }
-  
-
 }
