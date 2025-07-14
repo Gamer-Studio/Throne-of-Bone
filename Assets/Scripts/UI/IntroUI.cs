@@ -145,14 +145,14 @@ namespace ToB.UI
         {
             CloseAllPanels();
             //SceneManager.LoadScene("Stage_Manager");
-            SceneManager.LoadScene("Stage_0707CopyFromjihwan");
+            SceneManager.LoadScene("Stage_jihwan");
             Debug.Log("게임 시작");
         }
         
         public void LoadGame()
         {
             CloseAllPanels();
-            SceneManager.LoadScene("Stage_Manager");
+            SceneManager.LoadScene("Stage_jihwan");
             Debug.Log("테스트 신 시작");       
         }
       

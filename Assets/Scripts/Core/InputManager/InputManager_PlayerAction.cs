@@ -17,6 +17,7 @@ namespace ToB.Core.InputManager
 
         public void PlayerMeleeAttack(InputAction.CallbackContext context)
         {
+            if (!StageManager.Instance) return;
             if (StageManager.Instance.State != GameState.Play) return;
             player?.MeleeAttack(context);
         }
