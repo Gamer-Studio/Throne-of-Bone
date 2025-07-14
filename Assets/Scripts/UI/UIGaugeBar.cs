@@ -152,12 +152,18 @@ namespace ToB.UI
     {
       Value = curEnergy;
       text.text = $"{(int)curEnergy} / {(int)max}";
+      
       if (curEnergy >= max)
       {
         Color = originalColor;
       }
-      else if (curEnergy <= 0)
-        Color = Color.gray;
+      else if (curEnergy <= 0) BEConsumed();
+        
+    }
+    private void BEConsumed()
+    {
+      Color = Color.gray;
+      
     }
 
     #endregion

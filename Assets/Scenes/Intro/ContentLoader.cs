@@ -10,7 +10,7 @@ namespace ToB.Scenes.Intro
 {
   public class ContentLoader : MonoBehaviour
   {
-    /*
+    
     public static bool isLoaded { get; private set; } = false;
     
     [SerializeField] private TMP_Text loadingText;
@@ -41,7 +41,7 @@ namespace ToB.Scenes.Intro
           if (temp.Any())
           {
             var next = temp.First();
-            loadingText.text = "loading " + next.name + " ...";
+            //loadingText.text = "loading " + next.name + " ...";
           }
         };
       }
@@ -58,9 +58,9 @@ namespace ToB.Scenes.Intro
     {
       LoadContent();
 
-      SceneManager.LoadScene("MainMenu");
+      //SceneManager.LoadScene("MainMenu");
     }
-    */
+    
   }
   
 }

@@ -1,7 +1,9 @@
 using System.Collections;
 using NaughtyAttributes;
+using ToB.Core;
 using ToB.Utils;
 using UnityEngine;
+using AudioType = ToB.Core.AudioType;
 
 namespace ToB.Player
 {
@@ -76,6 +78,8 @@ namespace ToB.Player
           if (immuneTime < parryImmuneTime) immuneTime = parryImmuneTime;
         
           Time.timeScale = 0;
+          int rand = Random.Range(1, 4);
+          AudioManager.Play($"fntgm_blade_heavy_hit_0{rand}",AudioType.Effect);
           if(freezeTime < parryFreezeTime) freezeTime = parryFreezeTime;
         }
         else
@@ -84,6 +88,8 @@ namespace ToB.Player
           AvailableRangedAttack += blockReward;
 
           stat.tempDef += additionalDef;
+          int rand = Random.Range(1, 4);
+          AudioManager.Play($"fntgm_blade_heavy_hit_0{rand}",AudioType.Effect);
           stat.Damage(damage);
           stat.tempDef -= additionalDef;
         }
@@ -172,9 +178,16 @@ namespace ToB.Player
     public void OnBlockEnergyChanged(float value)
     {
       if (value <= 0)
+      {
         freezeBlockable = true;
+        AudioManager.Play("env_trap_activate_01", AudioType.Effect);
+      }
+        
       else if (freezeBlockable && value >= 100)
+      {
         freezeBlockable = false;
+        AudioManager.Play("fntgm_magic_shield_04", AudioType.Effect);
+      }
     }
 
     private IEnumerator BlockCoroutine()

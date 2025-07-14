@@ -1,7 +1,9 @@
 using Newtonsoft.Json.Linq;
 using TMPro;
+using ToB.Core;
 using ToB.IO;
 using UnityEngine;
+using AudioType = ToB.Core.AudioType;
 
 namespace ToB.Entities.FieldObject
 {
@@ -45,6 +47,7 @@ namespace ToB.Entities.FieldObject
         
         public void Interact()
         {
+            AudioManager.Play("fntgm_magic_fire_08",AudioType.Effect);
             if(!isDiscovered) BonfireDiscovered();
             else
             {

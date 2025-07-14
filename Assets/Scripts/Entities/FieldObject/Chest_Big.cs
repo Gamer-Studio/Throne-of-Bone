@@ -3,6 +3,7 @@ using TMPro;
 using ToB.Core;
 using ToB.IO;
 using UnityEngine;
+using AudioType = ToB.Core.AudioType;
 
 namespace ToB.Entities.FieldObject
 {
@@ -46,6 +47,7 @@ namespace ToB.Entities.FieldObject
             IsOpened = true;
             IsInteractable = false;
             interactionText.text = "";
+            AudioManager.Play("env_chest_open_01", AudioType.Effect);
             animator.SetBool("IsOpened", IsOpened);
         }
         private void OnTriggerEnter2D(Collider2D other)

@@ -1,6 +1,8 @@
 using System.Collections;
 using NaughtyAttributes;
+using ToB.Core;
 using UnityEngine;
+using AudioType = ToB.Core.AudioType;
 
 namespace ToB.Player
 {
@@ -71,6 +73,7 @@ namespace ToB.Player
       var immuned = false;
       
       animator.SetTrigger(TRIGGER_DASH);
+      AudioManager.Play("fntgm_combat_whoosh_04",AudioType.Effect);
       beforeGravityScale = body.gravityScale;
       body.gravityScale = 0;
       body.linearVelocity = Vector2.zero;
