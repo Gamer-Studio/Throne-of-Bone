@@ -7,7 +7,7 @@ namespace ToB.IO
       
     }
     
-    public void Bind(ref T content)
+    public virtual void Bind(ref T content)
     {
       throw new System.NotImplementedException();
     }

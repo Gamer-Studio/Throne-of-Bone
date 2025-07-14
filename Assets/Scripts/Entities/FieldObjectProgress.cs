@@ -47,5 +47,11 @@ namespace ToB.Entities
         ["name"] = name,
       };
     }
+
+    #region Utility
+
+    
+
+    #endregion
   }
 }

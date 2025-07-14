@@ -12,7 +12,7 @@ using UnityEngine;
 namespace ToB.IO
 {
   [Serializable]
-  public class SAVEModule : JObject
+  public class SAVEModule : JObject, IJsonSerializable
   {
     public string name;
 
@@ -179,6 +179,16 @@ namespace ToB.IO
       children.Add(key, newNode);
       return newNode;
     }
+
+    /// <summary>
+    /// IJsonSerializable 구현 메소드입니다.
+    /// </summary>
+    public JObject ToJson() => this;
+    
+    /// <summary>
+    /// IJsonSerializable 구현 메소드입니다.
+    /// </summary>
+    public void LoadJson(JObject json) => Read(json);
 
     #region Getter
     
