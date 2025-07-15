@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using ToB.Core;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -67,7 +68,7 @@ namespace ToB.UI
         public void BackToMainMenuScene()
         {
             this.gameObject.SetActive(false);
-            SceneManager.LoadScene("MainMenu");
+            SceneManager.LoadScene(Defines.MainMenuScene);
         }
 
         #region InputAction

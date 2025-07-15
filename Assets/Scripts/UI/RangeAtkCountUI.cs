@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using ToB.Core;
 using ToB.Player;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -24,7 +25,7 @@ namespace ToB.UI
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            if (scene.name != "Intro" && scene.name != "MainMenu")
+            if (scene.name != Defines.IntroScene && scene.name != Defines.MainMenuScene)
             {
                 gameObject.SetActive(true);
                 player = PlayerCharacter.GetInstance();

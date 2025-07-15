@@ -1,3 +1,4 @@
+using ToB.Core;
 using ToB.Player;
 using ToB.Scenes.Intro;
 using UnityEngine;
@@ -24,7 +25,7 @@ namespace ToB.UI
         
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            if (scene.name != "Intro" && scene.name != "MainMenu")
+            if (scene.name != Defines.IntroScene && scene.name != Defines.MainMenuScene)
             {
                 player = PlayerCharacter.GetInstance();
                 if (player != null)

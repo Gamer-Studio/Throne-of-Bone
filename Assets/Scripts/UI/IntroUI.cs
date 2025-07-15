@@ -138,14 +138,13 @@ namespace ToB.UI
         public void BackToMainMenuScene()
         {
             CloseAllPanels();
-            SceneManager.LoadScene("MainMenu");
+            SceneManager.LoadScene(Defines.MainMenuScene);
             Debug.Log("메인 메뉴");
         }
         
         public void StartGame()
         {
             CloseAllPanels();
-            //SceneManager.LoadScene("Stage_Manager");
             SceneManager.LoadScene(Defines.StageScene);
             Debug.Log("게임 시작");
         }
@@ -179,7 +178,6 @@ namespace ToB.UI
         public void SaveSlotSelected(int selected)
         {
             OpenPanel(ConformPanel);
-            //ConformPanel.SetActive(true);
             selectedSave = saves[selected];
         }
 

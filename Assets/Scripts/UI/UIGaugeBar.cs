@@ -1,5 +1,6 @@
 using System;
 using TMPro;
+using ToB.Core;
 using ToB.Player;
 using ToB.Utils;
 using UnityEngine;
@@ -84,7 +85,8 @@ namespace ToB.UI
     }
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-      if (scene.name != "Intro" && scene.name != "MainMenu")
+      // Stage 씬에서만으로 조건을 걸어도 되지만 테스트신에서도 작동하기 위해 반대로...
+      if (scene.name != Defines.IntroScene && scene.name != Defines.MainMenuScene)
       {
         gameObject.SetActive(true);
         player = PlayerCharacter.GetInstance();

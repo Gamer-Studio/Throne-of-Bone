@@ -6,17 +6,6 @@ using UnityEngine.SceneManagement;
 
 namespace ToB.UI
 {
-    public enum SceneName
-    {
-        Invaild = -1,
-        Intro = 0,
-        MainMenu = 1,
-        GamePlay = 2,
-        LoadingScene = 99
-    }
-    // 추후 dev branch에서 수정 요망 (IntroScene, MenuScene, StageScene, LoadingScene, ...)
-    // SceneManager랑 잇기 편하게 Dictionary화 할지도 생각 중인데, 신이 4개밖에 없어서 그냥 하드코딩해도 될 것 같기도...
-
     public class UIManager : DDOLSingleton<UIManager>
     {
         #region InitPanels

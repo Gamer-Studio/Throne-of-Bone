@@ -58,7 +58,7 @@ namespace ToB.Scenes.Intro
     {
       LoadContent();
 
-      //SceneManager.LoadScene("MainMenu");
+      //SceneManager.LoadScene(Defines.MainMenuScene);
     }
     
   }
