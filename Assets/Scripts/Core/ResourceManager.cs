@@ -64,8 +64,6 @@ namespace ToB.Core
         public UnityEvent<int> onGoldChanged = new();
         public UnityEvent<int> onManaChanged = new();
         
-        [SerializeField] public GameObject goldPrefab;
-        [SerializeField] public GameObject manaPrefab;
         [SerializeField] private int ResourcePerObject = 20;
         [SerializeField] private int maxPrefabCount = 10;
 
@@ -82,13 +80,13 @@ namespace ToB.Core
             int prefabCount = Mathf.Clamp((resourceAmount / ResourcePerObject)+1, 1, maxPrefabCount);
             int resourceLeft = resourceAmount;
             // 자원 종류에 따라 프리펩 설정
-            GameObject prefab = (type == InfiniteResourceType.Gold) ? goldPrefab : manaPrefab;
+            var prefabRef = type == InfiniteResourceType.Gold ? "Entities/GoldOrb" : "Entities/ManaOrb";
             // 생성 위치를 살짝 랜덤하게(몬스터 위치에서 반경 0.2)
             Vector2 randomPos = (Vector2)spawnPoint.position + Random.insideUnitCircle * 0.2f;
             
             for (int i = 0; i < prefabCount; i++)
             {
-                GameObject obj = prefab.Pooling();
+                GameObject obj = PoolingHelper.Pooling(prefabRef, true);
                 obj.transform.position = randomPos;
                 obj.transform.rotation = Quaternion.identity;
                 ResourceDropping resourceDropping = obj.GetComponent<ResourceDropping>();
