@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using NaughtyAttributes;
 using TMPro;
+using ToB.Core;
 using ToB.IO;
 using ToB.Utils;
 using UnityEngine.UI;
@@ -145,14 +146,14 @@ namespace ToB.UI
         {
             CloseAllPanels();
             //SceneManager.LoadScene("Stage_Manager");
-            SceneManager.LoadScene("Stage_jihwan");
+            SceneManager.LoadScene(Defines.StageScene);
             Debug.Log("게임 시작");
         }
         
         public void LoadGame()
         {
             CloseAllPanels();
-            SceneManager.LoadScene("Stage_jihwan");
+            SceneManager.LoadScene(Defines.StageScene);
             Debug.Log("테스트 신 시작");       
         }
       
