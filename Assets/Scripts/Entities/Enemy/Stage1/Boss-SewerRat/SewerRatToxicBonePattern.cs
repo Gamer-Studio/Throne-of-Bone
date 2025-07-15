@@ -41,7 +41,7 @@ namespace ToB.Entities
             // 점프 방향은 플레이어 좌우만 체크하고 y는 1 
             jumpDirection.x = targetDirection.x > 0 ? -1 : 1;
             jumpDirection.y = 1;
-            float jumpForce = 10;
+            float jumpForce = 5;
             
             enemy.Physics.velocity = jumpDirection * jumpForce;
 

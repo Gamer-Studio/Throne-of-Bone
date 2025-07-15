@@ -90,7 +90,7 @@ namespace ToB.Entities
             yield return new WaitUntil(() => !firstSewerRat);
             
             roomVirtualCamera.Priority = 50;
-            roomVirtualCamera.m_Lens.OrthographicSize = 12f;
+            roomVirtualCamera.m_Lens.OrthographicSize = 6f;
             
             SetSewerRatInGround(anotherSewerRats[0], ascendLocation.transform.position - new Vector3(ascendLocation.Width / 3, 0));
             
@@ -120,8 +120,8 @@ namespace ToB.Entities
 
             roomVirtualCamera.Priority = 50;
             roomVirtualCamera.transform.position = transform.position;
-            roomVirtualCamera.transform.position += Vector3.down * 10f;
-            roomVirtualCamera.m_Lens.OrthographicSize = 8f;
+            roomVirtualCamera.transform.position += Vector3.down * 5f;
+            roomVirtualCamera.m_Lens.OrthographicSize = 4f;
             
             SetSewerRatInGround(firstSewerRat, ascendLocation.transform.position);
             
@@ -184,7 +184,7 @@ namespace ToB.Entities
             
             ratVirtualCamera.Priority = 0;
             roomVirtualCamera.Priority = 50;
-            roomVirtualCamera.transform.position = transform.position + Vector3.down * 5f;
+            roomVirtualCamera.transform.position = transform.position + Vector3.down * 2.5f;
             sewerRat.Animator.SetBool(EnemyAnimationString.Roll, false);
         }
     }
