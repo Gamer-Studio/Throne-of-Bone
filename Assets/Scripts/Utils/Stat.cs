@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -11,12 +13,14 @@ namespace ToB.Utils
   {
     public UnityEvent<float> onChanged;
     [SerializeField] protected float baseValue;
-    public StatOperator<float> effect;
+    public readonly List<StatOperator<float>> effects;
 
     public Stat(float baseValue, StatOperator<float> effect = null)
     {
       this.baseValue = baseValue;
-      this.effect = effect;
+      effects = new List<StatOperator<float>>();
+      
+      if (effect != null) effects.Add(effect);
     }
 
     public virtual float BaseValue
@@ -30,7 +34,7 @@ namespace ToB.Utils
       }
     }
 
-    public virtual float Value => effect?.Invoke(baseValue) ?? baseValue;
+    public virtual float Value => effects.Aggregate(baseValue, (current, effect) => effect(current));
     
     public override string ToString() => Value.ToString("F1");
 

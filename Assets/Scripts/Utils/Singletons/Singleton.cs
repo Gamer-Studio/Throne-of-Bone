@@ -1,10 +1,12 @@
+using System;
+
 namespace ToB.Utils.Singletons
 {
   using UnityEngine;
 
-  public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
+  public class Singleton<T> : MonoBehaviour where T : Singleton<T>
   {
-    private static T instance;
+    protected static T instance;
 
     public static T Instance
     {
@@ -27,9 +29,14 @@ namespace ToB.Utils.Singletons
       }
     }
 
-    public void OnDestroy()
+    /// <summary>
+    /// 해당 싱글톤이 활성화되어있는지 여부입니다.
+    /// </summary>
+    public static bool HasInstance => instance;
+    
+    private void OnDestroy()
     {
-      instance = null;
+      if (instance == this) instance = null;
     }
   }
 }

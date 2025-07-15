@@ -1,110 +1,98 @@
 using System;
 using System.Collections;
+using NaughtyAttributes;
+using ToB.Core;
 using ToB.Player;
 using UnityEngine;
 
 namespace ToB.Entities
 {
-    // [RequireComponent(typeof(EnemyStatHandler))]
+    [RequireComponent(typeof(EnemyPhysics))]
     public abstract class Enemy : MonoBehaviour
     {
-        [Header("기본 참조")]
-        [field:SerializeField] public EnemyData EnemyData { get; private set; }
-        [field:SerializeField] public Rigidbody2D rb { get; private set; }
+        [Header("기본 참조")] 
+        [Expandable, SerializeField] protected EnemySO enemySO;
+        public EnemySO EnemySO => enemySO;
+        [SerializeField] private Rigidbody2D rb;
+        public Rigidbody2D Rb => rb;
         [field:SerializeField] public EnemyPhysics Physics { get; private set; }
         [field:SerializeField] public Animator Animator { get; private set; }
-        [field:SerializeField] public EnemyKnockback Knockback { get; private set; }
         [field:SerializeField] public SpriteRenderer Sprite { get; private set; }
-
-        private Coroutine damageColorCoroutine;
-        // 스탯 핸들러는 스탯이 복잡해지면 다룰 예정. 현재는 HP 밖에 없음
-        // [field:SerializeField] public EnemyStatHandler EnemyStatHandler { get; private set; }
+        [field:SerializeField] public EnemyKnockback Knockback { get; protected set; }
+        [field:SerializeField] public BoxCollider2D Hitbox { get; private set; }
         
         public bool IsGrounded => Physics.IsGrounded();
-        public bool IsTargetLeft => GetTargetDirection().x < 0;
+        
+        public bool IsTargetLeft => target && GetTargetDirection().x < 0;
+        public Vector2 LookDirectionHorizontal => transform.localScale.x < 0 ? Vector2.left : Vector2.right;
+
+        /// <summary>
+        /// 타겟 위치에 따라 Vector2.Right나 Vector2.Left를 반환합니다.
+        /// </summary>
+        public Vector2 TargetDirectionHorizontal
+        {
+            get
+            {
+                if (!target) return Vector2.zero;
+                Vector2 posDiff = target.position - transform.position;
+                return posDiff.x > 0 ? Vector2.right : Vector2.left;
+            }
+        }
         
         [Header("타겟")]
         public Transform target;
         
         [Header("속성")]
-        public float bodyDamage;    // 충돌 시 데미지. 적군 상태에 따라 너무 유동적이기 쉬워서 public으로 함
-
-        public float BaseHP => EnemyData.HP;
-        public float currentHP;
+        [SerializeField] protected bool isAlive;
+        [field:SerializeField] public bool ReactOnDamage { get; private set; }
+        public bool IsAlive => isAlive;
         
-        [SerializeField] LayerMask hittableMask;
         protected virtual void Awake()
         {
-            hittableMask = LayerMask.GetMask("Player");
-            if(!rb) rb = GetComponent<Rigidbody2D>();
+            if(!Rb) rb = GetComponentInChildren<Rigidbody2D>();
             if(!Physics) Physics = GetComponent<EnemyPhysics>();
             if(!Animator) Animator = GetComponentInChildren<Animator>();
-            currentHP = EnemyData.HP;
-            //if(!EnemyStatHandler) EnemyStatHandler = GetComponent<EnemyStatHandler>();
-
-            //EnemyStatHandler.Init(this);
-            bodyDamage = EnemyData.ATK;
+            if(!Sprite) Sprite = GetComponent<SpriteRenderer>();
+            
+            isAlive = true;
         }
 
-        private void Reset()
+        protected virtual void Reset()
         {
-            hittableMask = LayerMask.GetMask("Player");
-            rb = GetComponent<Rigidbody2D>();
+            rb = GetComponentInChildren<Rigidbody2D>();
             Physics = GetComponent<EnemyPhysics>();
             Animator = GetComponentInChildren<Animator>();
-            //EnemyStatHandler = GetComponent<EnemyStatHandler>();
-            bodyDamage = EnemyData.ATK;
+            Sprite = GetComponentInChildren<SpriteRenderer>();
+
+            rb.bodyType = RigidbodyType2D.Kinematic;
+            Hitbox.isTrigger = true;
+            
+            isAlive = true;
         }
 
+        public void OnTakeDamage(MonoBehaviour sender)
+        {
+            if (!sender || !ReactOnDamage) return;
+            bool isSenderLeft = sender.transform.position.x < transform.position.x;
+            bool isLookingLeft = LookDirectionHorizontal == Vector2.left;
+            
+            if (isSenderLeft != isLookingLeft)
+                FlipBody();
+        }
+
+        private void FlipBody()
+        {
+            Vector3 localScale = transform.localScale;
+            localScale.x *= -1;
+            transform.localScale = localScale;
+        }
         
-        // 인터페이스화 할 예정
-        public virtual void OnTakeDamage(float damage)
-        {
-            float actualDamage = damage * (1 - EnemyData.DEF / 100);
-            ChangeHP(-actualDamage);
-            
-            if (currentHP <= 0)
-            {
-                Die();
-            }
-            
-            if(damageColorCoroutine != null) StopCoroutine(damageColorCoroutine);
-            damageColorCoroutine = StartCoroutine(DamageColorOverlay());
-
-        }
-
-        IEnumerator DamageColorOverlay()
-        {
-            Sprite.material.SetFloat("_Alpha", 1);
-            float duration = 0.3f;
-            float remainedTime = duration;
-
-            while (remainedTime > 0)
-            {
-                yield return null;
-                remainedTime -= Time.deltaTime;
-                Sprite.material.SetFloat("_Alpha", remainedTime / duration);
-            }
-        }
-
-        public void ApplyKnockback(Vector2 direction, float force)
-        {
-            Knockback?.ApplyKnockback(direction, force);
-        }
-
         protected virtual void Die()
         {
+            Core.ResourceManager.Instance.SpawnResources(InfiniteResourceType.Gold,enemySO.DropGold,transform);
+            Core.ResourceManager.Instance.SpawnResources(InfiniteResourceType.Mana,enemySO.DropMana,transform);
+            isAlive = false;
         }
-        
-        private void OnTriggerStay2D(Collider2D other)
-        {
-            if ((hittableMask & (1 << other.gameObject.layer)) != 0)
-            {
-                other.Damage(bodyDamage, this);
-                other.KnockBack(10, new Vector2(transform.localScale.x, 1));
-            }
-        }
-
 
         public float GetTargetDistanceSQR()
         {
@@ -114,7 +102,9 @@ namespace ToB.Entities
         
         public Vector2 GetTargetDirection()
         {
+            if(!target) return Vector2.zero;
             Vector2 posDiff = target.position - transform.position;
+            
             return posDiff.normalized;
         }
         
@@ -127,11 +117,25 @@ namespace ToB.Entities
             
             Debug.DrawRay(origin, dir, Color.cyan);
         }
-        
-        public void ChangeHP(float delta)
+
+        public virtual void PartDestroyed(EnemyStatHandler _)
         {
-            currentHP += delta;
-            currentHP = Mathf.Clamp(currentHP, 0, BaseHP);
+            // 대부분은 몸체가 파괴되면 그대로 죽음
+            Die();
+        }
+
+        public void LookHorizontal(Vector2 direction)
+        {
+            Vector3 scale = transform.localScale;
+            scale.x = direction.x > 0 ? 1 : -1;;
+            transform.localScale = scale;
+        }
+
+        public void LookTarget()
+        {
+            if (!target) return;
+            Vector2 dir = target.position - transform.position;
+            LookHorizontal(dir);
         }
     }
 }

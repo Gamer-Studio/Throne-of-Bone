@@ -1,19 +1,18 @@
 using System;
+using NaughtyAttributes;
 using UnityEngine;
 
 namespace ToB.Utils.UI
 {
   public class WorldGaugeBar : MonoBehaviour
   {
-    public float max;
-
-    [SerializeField] [GetSet("Value")] private float value;
+    [Label("시작 색상")] public Color startColor;
+    [Label("끝 색상")] public Color endColor;
+    [Label("최대값")] public float max;
+    [Label("현재 값"), SerializeField, GetSet(nameof(Value))] private float value;
+    
     [SerializeField] private RectTransform rect;
     [SerializeField] private SpriteRenderer sprite;
-
-#if UNITY_EDITOR
-    [SerializeField] [GetSet("Color")] private Color color;
-#endif
 
     public float Value
     {
@@ -21,7 +20,11 @@ namespace ToB.Utils.UI
       set
       {
         this.value = value < 0 ? 0 : Math.Min(value, max);
-        rect.localScale = new Vector3(this.value / max, 1, 1);
+        
+        var percent = this.value / max;
+        
+        rect.localScale = rect.localScale.X(percent);
+        sprite.color = Color.Lerp(startColor, endColor, percent);
       }
     }
 

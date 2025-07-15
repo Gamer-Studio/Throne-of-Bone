@@ -8,7 +8,6 @@ namespace ToB.Entities
     public class EnemyPhysics : MonoBehaviour
     {
         private Enemy enemy;
-        Rigidbody2D rb;
         [SerializeField] private float skinWidth = 0.02f;
         [SerializeField] BoxCollider2D terrainSensor;
 
@@ -21,17 +20,18 @@ namespace ToB.Entities
         public bool gravityEnabled;
         public bool collisionEnabled;
         
-        bool hasFixed;
         private Vector2 fixPos;
         private Vector2 fixDirection;
         private Vector2 totalVelocity;
 
         [Header("현재 속도")] 
         public Vector2 velocity;
-        
-        public Dictionary<string, Vector2> externalVelocity = new Dictionary<string, Vector2>();
+        public readonly Dictionary<string, Vector2> externalVelocity = new Dictionary<string, Vector2>();
         
         public bool HasCollided { get; private set; }
+
+        public bool IsWallLeft;
+        public bool IsWallRight;
 
         public float velocityX
         {
@@ -48,7 +48,6 @@ namespace ToB.Entities
         private void Awake()
         {
             enemy = GetComponent<Enemy>();
-            rb = GetComponent<Rigidbody2D>();
 
             terrainLayer = LayerMask.GetMask("Ground");
         }
@@ -71,6 +70,7 @@ namespace ToB.Entities
 
         void FixedUpdate()
         {
+            ClearCollideResults();
             if (collisionEnabled)
             {
                 FixPenetratedCollision();
@@ -78,9 +78,15 @@ namespace ToB.Entities
             MoveToNextPosition();
         }
 
-        private void MoveToNextPosition()
+        private void ClearCollideResults()
         {
             HasCollided = false;
+            IsWallLeft = false;
+            IsWallRight = false;
+        }
+
+        private void MoveToNextPosition()
+        {
             totalVelocity = velocity;
 
             foreach (var element in externalVelocity)
@@ -89,7 +95,7 @@ namespace ToB.Entities
             }
             
             // 속도가 거의 0이면 이동하지 않음
-            if (velocity.sqrMagnitude < 0.001f)
+            if (totalVelocity.sqrMagnitude < 0.001f)
             {
                 return;
             }
@@ -99,7 +105,7 @@ namespace ToB.Entities
             {
                 PerformBoxCastMovement();
             }
-            else rb.position += velocity * Time.fixedDeltaTime; 
+            else enemy.transform.position += (Vector3)totalVelocity * Time.fixedDeltaTime; 
         }
 
         private void PerformBoxCastMovement()
@@ -107,7 +113,7 @@ namespace ToB.Entities
             Vector2 castBoxSize = terrainSensor.size;
                 
             Vector2 moveDelta = totalVelocity * Time.fixedDeltaTime;
-            RaycastHit2D hit = Physics2D.BoxCast(rb.position + terrainSensor.offset, castBoxSize, 0, totalVelocity.normalized, moveDelta.magnitude, terrainLayer);
+            RaycastHit2D hit = Physics2D.BoxCast((Vector2)terrainSensor.transform.position + terrainSensor.offset, castBoxSize, 0, totalVelocity.normalized, moveDelta.magnitude, terrainLayer);
 
             if (hit.collider)
             {
@@ -116,6 +122,9 @@ namespace ToB.Entities
 
                 if (hit.normal.y < 0.5f) // 벽에 닿은 경우
                 {
+                    if(totalVelocity.x > 0) IsWallRight = true;
+                    else IsWallLeft = true;
+                    
                     resultMoveDelta.y = moveDelta.y;
                     int leftRightNum = totalVelocity.x > 0 ? 1 : -1;
                     resultMoveDelta.x -= leftRightNum * skinWidth;
@@ -129,33 +138,28 @@ namespace ToB.Entities
                     totalVelocity.y = 0;
                 }
                     
-                rb.MovePosition(rb.position + resultMoveDelta);
+                enemy.transform.position += (Vector3)resultMoveDelta;
             }
             else
             {
-                rb.MovePosition(rb.position + totalVelocity * Time.fixedDeltaTime); // MovePosition 함수 테스트
+                enemy.transform.position += (Vector3)totalVelocity * Time.fixedDeltaTime; // MovePosition 함수 테스트
             }
         }
 
         private void FixPenetratedCollision()
         {
-            Vector2 center = (Vector2)transform.position +
-                             (Vector2)terrainSensor.gameObject.transform.localPosition +
+            Vector2 center = (Vector2)terrainSensor.gameObject.transform.position +
                              terrainSensor.offset;
             
-            hasFixed = false;
             fixPos = Vector2.zero;
             FixSide(Vector2.down, terrainSensor.size, center);
             FixSide(Vector2.up, terrainSensor.size, center);
             FixSide(Vector2.left, terrainSensor.size, center);
             FixSide(Vector2.right, terrainSensor.size, center);
 
-            if (hasFixed)
+            if (fixPos != Vector2.zero)
             {
-                rb.position += fixPos - fixDirection * skinWidth; 
-                // Debug.Log("충돌 픽스 : " + Time.frameCount + velocity) ;
-                // if (fixPos.x != 0) velocityX = 0;
-                // else if (fixPos.y != 0) velocityY = 0;
+                enemy.transform.position += (Vector3)(fixPos.normalized * fixPos.magnitude + fixPos.normalized * skinWidth);
             }
         }
 
@@ -177,22 +181,11 @@ namespace ToB.Entities
             
             if (hit.collider)
             {
-                float penetration = distance - hit.distance;   
+                float penetration = distance - hit.distance;
                 if (penetration > 0.002f)
                 {
                     Vector2 penetrationVec = -direction * penetration;
-                    if (!hasFixed)
-                    {
-                        fixPos = penetrationVec;
-                        hasFixed = true;
-                        fixDirection = direction;
-                    }
-                    else if (fixPos.sqrMagnitude > penetrationVec.sqrMagnitude)
-                    {
-                        fixPos = penetrationVec;
-                        fixDirection = direction;
-                        
-                    }
+                    fixPos += penetrationVec;
                 }
             }
         }
@@ -203,19 +196,80 @@ namespace ToB.Entities
             return isGrounded;
         }
 
-
         private bool CheckCollision(Vector2 direction)
         {
-            Vector2 center = (Vector2)transform.position +
-                             (Vector2)terrainSensor.gameObject.transform.localPosition +
+            Vector2 origin = (Vector2)terrainSensor.gameObject.transform.position +
                              terrainSensor.offset;
             
             Vector2 castSize = terrainSensor.size;
-            if(direction.x != 0) castSize.y -= skinWidth;
+            
+            castSize.x -= skinWidth;
+            castSize.y -= skinWidth;
        
-            RaycastHit2D hit = Physics2D.BoxCast(center, castSize, 0, direction, skinWidth*2f, terrainLayer);
+            RaycastHit2D hit = Physics2D.BoxCast(origin, castSize, 0, direction, skinWidth*2f, terrainLayer);
+            
+            if(direction == Vector2.down)  // 디버그 시각화
+                DrawBoxCast(origin, castSize, direction.normalized, skinWidth*2f, Color.Lerp(Color.red, Color.yellow, 0.5f));
+
        
             return hit.collider;
+        }
+        
+        private void DrawBoxCast(Vector2 origin, Vector2 size, Vector2 direction, float distance, Color color)
+        {
+            // 중심점에서 방향으로 이동한 target 위치
+            Vector2 castCenter = origin + direction * distance;
+
+            // 네 개의 꼭짓점 계산 (회전 없음)
+            Vector2 halfSize = size * 0.5f;
+
+            Vector2[] cornersStart = new Vector2[4]
+            {
+                origin + new Vector2(-halfSize.x, -halfSize.y),
+                origin + new Vector2(-halfSize.x,  halfSize.y),
+                origin + new Vector2( halfSize.x,  halfSize.y),
+                origin + new Vector2( halfSize.x, -halfSize.y)
+            };
+
+            Vector2[] cornersEnd = new Vector2[4]
+            {
+                castCenter + new Vector2(-halfSize.x, -halfSize.y),
+                castCenter + new Vector2(-halfSize.x,  halfSize.y),
+                castCenter + new Vector2( halfSize.x,  halfSize.y),
+                castCenter + new Vector2( halfSize.x, -halfSize.y)
+            };
+
+            // 사각형 테두리 그리기
+            for (int i = 0; i < 4; i++)
+            {
+                Debug.DrawLine(cornersStart[i], cornersStart[(i + 1) % 4], color);
+                Debug.DrawLine(cornersEnd[i], cornersEnd[(i + 1) % 4], color);
+                Debug.DrawLine(cornersStart[i], cornersEnd[i], color);
+            }
+        }
+
+        public bool IsLedgeBelow()
+        {
+            Vector2 origin = (Vector2)transform.position +
+                             new Vector2(0, skinWidth);
+
+            float rayDistance = 0.1f;
+            
+            RaycastHit2D hit = Physics2D.Raycast(origin, Vector2.down, rayDistance, terrainLayer);
+
+            return !hit.collider;
+        }
+        
+        public bool IsLedgeOnSide(Vector2 direction)
+        {
+            Vector2 origin = (Vector2)transform.position +
+                             direction * terrainSensor.size.x / 2f +
+                             new Vector2(0, skinWidth);
+
+            float rayDistance = 0.1f;
+            
+            RaycastHit2D hit = Physics2D.Raycast(origin, Vector2.down, rayDistance, terrainLayer);
+            return !hit.collider;
         }
     }
 }

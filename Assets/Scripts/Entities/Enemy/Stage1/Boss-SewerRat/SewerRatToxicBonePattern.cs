@@ -8,10 +8,13 @@ namespace ToB.Entities
     public class SewerRatToxicBonePattern : SewerRatPattern
     {
         Coroutine coroutine;
-        /// <inheritdoc/>
-        public SewerRatToxicBonePattern(Enemy enemy, SewerRatStrategy strategy, Action EndCallback) : base(enemy, strategy, EndCallback)
+
+        public SewerRatToxicBonePattern(EnemyStrategy strategy, Action EndCallback) : base(strategy, EndCallback)
         {
         }
+
+        /// <inheritdoc/>
+     
 
         public override void Enter()
         {
@@ -23,7 +26,7 @@ namespace ToB.Entities
 
         }
 
-        protected override void Exit()
+        public override void Exit()
         {
             base.Exit();
             if(coroutine != null) enemy.StopCoroutine(coroutine);
@@ -38,7 +41,7 @@ namespace ToB.Entities
             // 점프 방향은 플레이어 좌우만 체크하고 y는 1 
             jumpDirection.x = targetDirection.x > 0 ? -1 : 1;
             jumpDirection.y = 1;
-            float jumpForce = 10;
+            float jumpForce = 5;
             
             enemy.Physics.velocity = jumpDirection * jumpForce;
 
@@ -60,9 +63,10 @@ namespace ToB.Entities
             enemy.Animator.SetBool("Bark", true);
             for (int i = 0; i < 3; i++)
             {
-                float speed = 10;
+                float speed = sewerRat.DataSO.ToxicBoneSpeed;
                 
-                GameObject boneObj = Object.Instantiate(strategy.ToxicBonePrefab);
+                // GameObject boneObj = Object.Instantiate(ratStrategy.ToxicBonePrefab);
+                GameObject boneObj = ratStrategy.ToxicBonePrefab.Pooling();
                 boneObj.transform.position = enemy.transform.position + new Vector3(0, 2, 0);
                 ToxicBone bone = boneObj.GetComponent<ToxicBone>();         // 양이 많지 않아서 굳이 풀링하지 않고 있습니다.
                 
@@ -70,7 +74,7 @@ namespace ToB.Entities
                 bone.LinearMovement.Init(direction, speed);
                 bone.SimpleRotate.SetRotationSpeed(enemy.IsTargetLeft ? -360 : 360);
                 
-                yield return new WaitForSeconds(0.27f);
+                yield return new WaitForSeconds(sewerRat.DataSO.ToxicBoneInterval);
             }
 
             enemy.Animator.SetBool("Bark", false);

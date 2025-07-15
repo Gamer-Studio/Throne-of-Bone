@@ -6,6 +6,8 @@ namespace ToB.Entities
 {
     public class SewerRatStrategy : EnemyStrategy
     {
+        private SewerRat sewerRat;
+        
         SewerRatDigPattern digPattern;
         SewerRatScratchPattern scratchPattern;
         SewerRatToxicBonePattern toxicBonePattern;
@@ -38,19 +40,33 @@ namespace ToB.Entities
         protected override void Awake()
         {
             base.Awake();
-            digPattern = new SewerRatDigPattern(enemy, this, PatternEnd);
-            scratchPattern = new SewerRatScratchPattern(enemy, this, PatternEnd);
-            toxicBonePattern = new SewerRatToxicBonePattern(enemy, this, PatternEnd);
             
+            sewerRat = enemy as SewerRat;
+            
+            if (!sewerRat)
+            {
+                Debug.LogWarning("SewerRat 본체 컴포넌트가 없습니다");
+                return;
+            }
+            
+            digPattern = new SewerRatDigPattern(this, PatternEnd);
+            scratchPattern = new SewerRatScratchPattern(this, PatternEnd);
+            toxicBonePattern = new SewerRatToxicBonePattern(this, PatternEnd);
+            
+            
+        }
+
+        private void Start()
+        {
             ScratchEffect = GetComponentInChildren<EnemyAttackArea>();
             ScratchEffect.gameObject.SetActive(false);
-            ScratchEffect.Init(enemy, 30);
+            ScratchEffect.Init(enemy, sewerRat.DataSO.ScratchDamage, sewerRat.DataSO.ScratchKnockBackForce, Vector2.right);
         }
 
         public override void Init()
         {
-            enemy.Physics.collisionEnabled = true;
-            enemy.Physics.gravityEnabled = true;
+            // enemy.Physics.collisionEnabled = true;
+            // enemy.Physics.gravityEnabled = true;
             
             coolDown = breathTime;
             currentPatternName = "";
@@ -65,8 +81,9 @@ namespace ToB.Entities
             transform.localScale = localScale;
         }
 
-        private void Update()
+        protected override void Update()
         {
+            if (!enemy.target) return; 
             if (currentPattern != null)
             {
                 currentPattern.Execute();
@@ -126,6 +143,15 @@ namespace ToB.Entities
         {
             currentPattern = null;   
             currentPatternName = "Breath";
+        }
+
+        public void CancelEffects()
+        {
+            var dustEmission = GroundDustEffect.emission;
+            dustEmission.enabled = false;
+
+            var rubbleEmission = GroundRubble.emission;
+            rubbleEmission.enabled = false;
         }
     }
 }

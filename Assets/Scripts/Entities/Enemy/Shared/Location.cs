@@ -1,11 +1,27 @@
+using System;
+using ToB.Player;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace ToB.Entities
 {
     public class Location : MonoBehaviour
     {
         [SerializeField] private float width;
+        public float Width => width;
         [SerializeField] private float height;
+        public float Height => height;
+
+        [SerializeField] private LayerMask mask;
+        [SerializeField] private Color gizmoColor;
+        [SerializeField] public bool PlayerEntered;
+
+        public event Action OnPlayerEntered;
+
+        private void Reset()
+        {
+            mask = LayerMask.GetMask("Player");       
+        }
 
         public Vector2 GetRandomPosition(bool fixedX = false, bool fixedY = false)
         {
@@ -16,8 +32,26 @@ namespace ToB.Entities
         
         private void OnDrawGizmos()
         {
-            Gizmos.color = Color.red.WithAlpha(0.7f);
+            Gizmos.color = gizmoColor;
             Gizmos.DrawCube(transform.position, new Vector3(width, height, 0));
         }
+
+        private void OnTriggerEnter2D(Collider2D other)
+        {
+            if ((mask & 1 << other.gameObject.layer) != 0)
+            {
+                PlayerEntered = true;
+                OnPlayerEntered?.Invoke();
+            }
+        }
+        private void OnTriggerExit2D(Collider2D other)
+        {
+            if ((mask & 1 << other.gameObject.layer) != 0)
+            {
+                PlayerEntered = false;
+            }
+        }
+        
+        
     }
 }

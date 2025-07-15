@@ -1,223 +1,195 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
+using Cysharp.Threading.Tasks;
 using Newtonsoft.Json.Linq;
+using ToB.Core;
 using UnityEngine;
 
 namespace ToB.IO
 {
-  /// <summary>
-  /// 임시로 단일 JSON으로 구현하였습니다. <br/>
-  /// TODO 네임스페이스(폴더)단위 파일 저장 시스템 구축 필요
-  /// </summary>
   [Serializable]
-  public class SAVE : JObject
+  public class SAVE
   {
-    public const string Version = "1.0";
-    
-    public readonly string name;
-    [SerializeField] private bool initialized = false;
-    public bool IsInitialized => initialized;
-    
-    #region Modules
-    
-    #endregion
+    /// <summary>
+    /// SAVE.Current에 저장 파일이 로딩될 때 호출됩니다.
+    /// </summary>
+    public static event Action<SAVE> OnCurrentLoad = save =>
+    {
+      ResourceManager.Instance.LoadJson(save.Node(nameof(ResourceManager), true));
+    };
 
     /// <summary>
-    /// SAVE 객체를 초기화합니다.
+    /// SAVE.Current가 저장될 때 호출됩니다.
     /// </summary>
-    /// <param name="name">저장 파일의 이름</param>
-    /// <param name="isRoot">루트 저장 객체 여부</param>
-    public SAVE(string name, bool isRoot = true)
+    public static event Action<SAVE> OnCurrentSave = save =>
     {
-      this.name = name;
-      this[nameof(Version)] = Version;
-    }
-
-    /// <summary>
-    /// SAVE 객체를 초기화합니다. 이미 초기화된 경우 아무 동작도 하지 않습니다.
-    /// </summary>
-    public void Init()
-    {
-      if(initialized) return;
-      initialized = true;
-    }
-
-    /// <summary>
-    /// 현재 SAVE 객체를 비동기적으로 파일에 저장합니다.
-    /// </summary>
-    /// <returns>저장 작업 완료를 나타내는 Task</returns>
-    public async Task Save()
-    {
-      var path = System.IO.Path.Combine(SavePath, name + ".json");
-      
-      if (!Directory.Exists(SavePath))
-        Directory.CreateDirectory(SavePath);
-      
-      var writer = File.CreateText(path);
-      var jsonWriter = new JsonTextWriter(writer);
-      jsonWriter.Formatting = Formatting.Indented;
-      
-      // 모듈 데이터를 여따 때려박기
-      // 데이터를 json 문자열 데이터로 변환
-      var writeData = new JObject(this)
-      {
-      };
-
-      await writeData.WriteToAsync(jsonWriter);
-      
-#if UNITY_EDITOR
-      Debug.Log($"Save as {path} Complete!");
-#endif
-      await jsonWriter.CloseAsync();
-      writer.Close();
-    }
-
-    /// <summary>
-    /// 현재 SAVE 객체를 동기적으로 파일에 저장합니다.
-    /// </summary>
-    public void SaveSync()
-    {
-      Save().Wait();
-    }
+      save.Node(nameof(ResourceManager)).Read(ResourceManager.Instance);
+    };
     
-    #region Static Methods
-
-    public static readonly string SavePath = System.IO.Path.Combine(Application.persistentDataPath, "Saves");
+    public static readonly string SavePath = Path.Combine(Application.persistentDataPath, "Saves");
     public static SAVE Current = null;
+    public const string RootName = "root";
+    public const int CurrentVersion = 1;
 
     /// <summary>
-    /// 현재 활성화된 SAVE 객체를 비동기적으로 저장합니다.
+    /// 해당 저장파일이 저장될 때 호출됩니다.
     /// </summary>
-    /// <returns>저장 작업 완료를 나타내는 Task</returns>
-    public static async Task SaveCurrent()
+    public event Action OnSave;
+    
+    [field: SerializeField] public SAVEModule Data { get; private set; }
+    
+    #region MetaData
+    
+    public JObject MetaData => Data.MetaData;
+    public string fileName;
+    public string name = "empty";
+    public int gold = 0;
+    [field: SerializeField] public string SaveTime { get; private set; }
+    [field: SerializeField] public int Version { get; private set; }
+
+    #endregion
+    
+    public SAVE(string fileName)
     {
-      if(Current != null)
-        await Current.Save();
+      this.fileName = fileName;
+      Version = CurrentVersion;
+      Data = new SAVEModule(RootName);
+      
+      SaveTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+      OnSave += () => { if (Current == this) OnCurrentSave.Invoke(this); };
+      InitMetaData();
     }
 
-    /// <summary>
-    /// 지정된 이름의 저장 파일을 비동기적으로 로드합니다.
-    /// </summary>
-    /// <param name="name">로드할 저장 파일의 이름</param>
-    /// <param name="create">파일이 존재하지 않을 경우 새로 생성할지 여부</param>
-    /// <returns>로드된 SAVE 객체를 포함한 Task</returns>
-    public static async Task<SAVE> Load(string name, bool create = false)
+    public void Save()
     {
-      var path = System.IO.Path.Combine(SavePath, name + ".json");
-      if (Directory.Exists(SavePath) && File.Exists(path))
-      {
-        try
-        {
-          var reader = new JsonTextReader(File.OpenText(path));
-          var result = new SAVE(name);
+      SaveTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+      
+      var rootPath = Path.Combine(SavePath, fileName);
+      var dir = new DirectoryInfo(rootPath);
 
-          if (await ReadFromAsync(reader) is JObject obj
-              && obj.TryGetValue(nameof(Version), out var version) && version.Value<string>() == Version)
+      // 폴더가 이미 존재할 시 원활한 저장을 위해 초기화
+      if (Directory.Exists(rootPath))
+      {
+        foreach (var file in dir.GetFiles())
+        {
+          if (file.IsReadOnly)
           {
-            foreach (var (key, value) in obj)
-            {
-              if (value is null) continue;
-
-              // 모듈 데이터 불러오는 코드는 여따 때려박기
-              switch (key)
-              {
-                default:
-                  result[key] = value;
-                  break;
-              }
-            }
-
-            result.Init();
-            reader.Close();
-
-            return result;
+            file.IsReadOnly = false;
           }
-
-          reader.Close();
+          file.Delete();
         }
-        catch (JsonReaderException e)
+
+        foreach (var info in dir.GetDirectories())
         {
-          #if UNITY_EDITOR
-          Debug.LogWarning($"Error while loading {path}.");
-          Debug.LogException(e);
-          #endif
+          info.Delete(true);
         }
       }
+      else dir.Create();
+
+      InitMetaData();
+
+      Data.Save(rootPath);
       
-      if(create)
-      {
-        var save = new SAVE(name);
-        save.Init();
-        await save.Save();
-        return save;
-      }
-      
-      return null;
+      OnSave?.Invoke();
+    }
+
+    private void InitMetaData()
+    {
+      MetaData[nameof(name)] = name;
+      MetaData[nameof(gold)] = gold;
+      MetaData[nameof(SaveTime)] = SaveTime;
+      MetaData[nameof(Version)] = Version;
+    }
+    
+    public SAVEModule Node(string key, bool force = false) => Data.Node(key, force);
+
+    /// <summary>
+    /// TODO 저장 파일의 유효성 체크
+    /// </summary>
+    /// <param name="path"></param>
+    public static bool Validate(string savePath)
+    {
+      return true;
     }
 
     /// <summary>
-    /// 지정된 이름의 저장 파일을 동기적으로 로드합니다.
+    /// 모든 저장 파일을 가져옵니다.
     /// </summary>
-    /// <param name="name">로드할 저장 파일의 이름</param>
-    /// <param name="create">파일이 존재하지 않을 경우 새로 생성할지 여부</param>
-    /// <returns>로드된 SAVE 객체</returns>
-    public static SAVE LoadSync(string name, bool create = false)
+    /// <returns></returns>
+    public static async Task<SAVE[]> GetAllSaves()
     {
-      var task = Load(name, create);
-      task.Wait();
-      return task.Result;
-    }
+      var result = new SAVE[3];
 
-    /// <summary>
-    /// 모든 저장 파일의 정보를 가져옵니다.
-    /// </summary>
-    /// <returns>저장 파일들의 FileInfo 배열</returns>
-    public static FileInfo[] GetSaveNames()
-    {
-      FileInfo[] result = null;
-      
-      if (Directory.Exists(SavePath))
+      for (var i = 0; i < result.Length; i++)
       {
-        result = new DirectoryInfo(SavePath).GetFiles("*.json");
+        var name = "save_" + i;
+        var target = result[i] = Exists(name) ? await Load(name) : new SAVE(name);
+        
+        // 메타데이터 불러오기
+        
+        target.name = target.MetaData.Get(nameof(name), target.name);
+        target.gold = target.MetaData.Get(nameof(gold), target.gold);
+        target.SaveTime = target.MetaData.Get(nameof(SaveTime), target.SaveTime);
+        target.Version = target.MetaData.Get(nameof(Version), CurrentVersion);
       }
       
       return result;
     }
-
+    
     /// <summary>
-    /// 지정된 이름의 저장 파일이 존재하는지 확인합니다.
+    /// 구버전 데이터일 경우 최신버전으로 업데이트시킵니다.
     /// </summary>
-    /// <param name="name">확인할 저장 파일의 이름</param>
-    /// <returns>파일 존재 여부</returns>
-    public static bool Exist(string name)
+    /// <param name="data"></param>
+    /// <returns></returns>
+    public static SAVE Update(SAVE data)
     {
-      var path = System.IO.Path.Combine(SavePath, name + ".json");
-      return Directory.Exists(SavePath) && File.Exists(path);
+      return data;
     }
 
     /// <summary>
-    /// 지정된 이름의 저장 파일을 로드하여 SAVE 객체로 반환을 시도합니다.
+    /// 해당 세이브로 게임을 시작하기 전에 호출해주세요.
     /// </summary>
-    /// <param name="name">로드할 저장 파일의 이름</param>
-    /// <param name="save">로드된 SAVE 객체</param>
-    /// <returns>로드 성공 여부</returns>
-    public static bool TryGet(string name, out SAVE save)
+    public async UniTask LoadAll()
     {
-      save = null;
-      if (Exist(name))
+      var rootPath = Path.Combine(SavePath, fileName);
+      if (Directory.Exists(rootPath) && Validate(rootPath))
       {
-        var task = Load(name);
-        task.Start();
-        task.Wait();
-        save = task.Result;
-        return true;
+        await Data.Load(rootPath, true);
       }
+        
+      Current = this;
       
-      return false;
+      OnCurrentLoad.Invoke(this);
+    }
+
+    public static bool Exists(string name)
+    {
+      var rootPath = Path.Combine(SavePath, name);
+      return Directory.Exists(rootPath);
     }
     
-    #endregion
+    public static async Task<SAVE> Load(string name)
+    {
+      var rootPath = Path.Combine(SavePath, name);
+      // 저장 데이터 유효성 검사
+      if (!Directory.Exists(rootPath)) throw new Exception($"Save file not found: {rootPath}");
+      if (!Validate(rootPath)) throw new Exception($"Save file is invalid: {rootPath}");
+      
+      // 데이터 로드
+      
+      var result = new SAVE(name);
+      await result.Data.Load(rootPath, false);
+      
+      // 메타 데이터 세팅
+      var meta = result.MetaData;
+      
+      result.name = meta.Get("name", "empty");
+      result.gold = meta.Get("gold", 0);
+      result.SaveTime = meta.Get("saveTime", "not saved");
+      result.Version = meta.Get("version", CurrentVersion);
+
+      return result;
+    }
   }
 }

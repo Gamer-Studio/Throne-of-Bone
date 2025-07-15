@@ -1,4 +1,6 @@
 #if UNITY_EDITOR
+using System;
+using System.Collections.Generic;
 using System.Reflection;
 using ToB.Utils;
 using UnityEditor;
@@ -7,44 +9,39 @@ using UnityEngine;
 [CustomPropertyDrawer(typeof(GetSetAttribute))]
 public sealed class GetSetDrawer : PropertyDrawer
 {
+  private static readonly Dictionary<(Type, string), PropertyInfo> _propertyCache = new();
   public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
   {
     var attribute = (GetSetAttribute)this.attribute;
 
     EditorGUI.BeginChangeCheck();
     EditorGUI.PropertyField(position, property, label);
-
     if (EditorGUI.EndChangeCheck())
     {
-      attribute.dirty = true;
-    }
-    else if (attribute.dirty)
-    {
       var parent = GetParentObject(property.propertyPath, property.serializedObject.targetObject);
+      var key = (parent.GetType(), attribute.name);
 
-      var type = parent.GetType();
-      var info = type.GetProperty(attribute.name);
+      if (!_propertyCache.TryGetValue(key, out var info))
+      {
+        info = key.Item1.GetProperty(attribute.name);
+        _propertyCache[key] = info;
+      }
 
-      if (info == null)
-        Debug.LogError("Invalid property name \"" + attribute.name + "\"");
-      else
-        info.SetValue(parent, fieldInfo.GetValue(parent), null);
-
-      attribute.dirty = false;
+      info?.SetValue(parent, fieldInfo.GetValue(parent));
     }
   }
 
   public static object GetParentObject(string path, object obj)
   {
-    var fields = path.Split('.');
-
-    if (fields.Length == 1)
-      return obj;
-
-    var info = obj.GetType().GetField(fields[0], BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-    obj = info.GetValue(obj);
-
-    return GetParentObject(string.Join(".", fields, 1, fields.Length - 1), obj);
+    string[] parts = path.Split('.');
+    for (int i = 0; i < parts.Length - 1; i++)
+    {
+      var type = obj.GetType();
+      var field = type.GetField(parts[i], BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+      if (field == null) return null;
+      obj = field.GetValue(obj);
+    }
+    return obj;
   }
 }
 #endif

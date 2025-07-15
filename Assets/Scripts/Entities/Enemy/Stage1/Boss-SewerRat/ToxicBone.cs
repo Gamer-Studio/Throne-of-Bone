@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using ToB.Entities.Buffs;
 using ToB.Player;
 using UnityEngine;
 
@@ -10,6 +12,7 @@ namespace ToB.Entities
         [Header("기본 컴포넌트")]
         [field:SerializeField] public LinearMovement LinearMovement { get; private set; }
         [field:SerializeField] public SimpleRotate SimpleRotate { get; private set; }
+        [field:SerializeField] public GameObject EffectPrefab { get; private set; }
         
         [Header("속성 설정")]
         [SerializeField] float baseDamage = 10f;
@@ -19,7 +22,8 @@ namespace ToB.Entities
         // 
         [Tooltip("효과를 입힐 대상"), SerializeField] private LayerMask targetLayers;
         [Tooltip("단순 소멸할 지형"), SerializeField] private LayerMask terrainLayers;
-            
+
+        private Coroutine lifeCoroutine;
         private void Awake()
         {
             if(!LinearMovement)
@@ -32,7 +36,18 @@ namespace ToB.Entities
         {
             targetLayers = LayerMask.GetMask("Player");
             terrainLayers = LayerMask.GetMask("Ground");
-            Destroy(gameObject, maxLifeTime);
+            
+        }
+
+        private void OnEnable()
+        {
+            lifeCoroutine = StartCoroutine(ReturnAtLifeTime());
+        }
+
+        IEnumerator ReturnAtLifeTime()
+        {
+            yield return new WaitForSeconds(maxLifeTime);
+            gameObject.Release();
         }
 
         private void Reset()
@@ -50,18 +65,26 @@ namespace ToB.Entities
             // 중독 가능한 개체들
             if ((targetLayers & 1 << other.gameObject.layer) != 0)
             {
-                // other.GetComponent<IHittable>().OnHit();
-                // other.GetComponent<IPoisonable>().ApplyPoison();
-
                 other.GetComponent<PlayerCharacter>().Damage(baseDamage, this);
-                
-                Destroy(gameObject);
+                if (other.TryGetComponent<BuffController>(out var buffs))
+                {
+                    buffs.Apply(Buff.Poison, new BuffInfo(2, 3), true);
+                }
+                HandleCollide();
             }
             
             if ((terrainLayers & 1 << other.gameObject.layer) != 0)
             {
-                Destroy(gameObject);
+                HandleCollide();
             }
+        }
+
+        void HandleCollide()
+        {
+            if(lifeCoroutine != null) StopCoroutine(lifeCoroutine);
+            GameObject effectObj = EffectPrefab.Pooling();
+            effectObj.transform.position = transform.position;
+            Destroy(gameObject);
         }
     }
 }

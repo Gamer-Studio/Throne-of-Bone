@@ -2,10 +2,18 @@ using UnityEngine;
 
 namespace ToB.Utils.Singletons
 {
-  public class DDOLSingleton<T> : Singleton<T> where T : MonoBehaviour
+  public class DDOLSingleton<T> : Singleton<T> where T : DDOLSingleton<T>
   {
-    private void Awake()
+    protected virtual void Awake()
     {
+      if (instance && instance != this)
+      {
+        Destroy(gameObject);
+        return;
+      }
+
+      instance = this as T;
+      
       if(transform.parent != null && transform.root != null) // 해당 오브젝트가 자식 오브젝트라면
         DontDestroyOnLoad(transform.root.gameObject); // 부모 오브젝트를 DontDestroyOnLoad 처리
       else
