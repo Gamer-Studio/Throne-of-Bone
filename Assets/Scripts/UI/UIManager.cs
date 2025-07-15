@@ -17,6 +17,7 @@ namespace ToB.UI
         public MainBookUI mainBookUI;
         public WideMapUI wideMapUI;
         public GameOverUI gameOverUI;
+        public EffectUI effectUI;
         //[SerializeField] public ToastUI toastUI;
         
         public readonly Stack<UIPanelBase> panelStack = new Stack<UIPanelBase>();
@@ -51,6 +52,7 @@ namespace ToB.UI
                     mainBookUI.gameObject.SetActive(false);
                     wideMapUI.gameObject.SetActive(false);
                     gameOverUI.gameObject.SetActive(false);
+                    effectUI.gameObject.SetActive(false);
                     break;
                 
                 case "Intro":
@@ -60,17 +62,11 @@ namespace ToB.UI
                     mainBookUI.gameObject.SetActive(false);
                     wideMapUI.gameObject.SetActive(false);
                     gameOverUI.gameObject.SetActive(false);
+                    effectUI.gameObject.SetActive(false);
                     break;
-                
-                case "Stage0623Copy":
-                    introUI.gameObject.SetActive(false);
-                    crossHairUI.gameObject.SetActive(true);
-                    gamePlayUI.gameObject.SetActive(true);
-                    mainBookUI.gameObject.SetActive(false);
-                    wideMapUI.gameObject.SetActive(false);
-                    gameOverUI.gameObject.SetActive(false);
-                    break;
-                
+        
+                //메인메뉴와 인트로 씬 말고는 다 Stage씬이니 일단은 이렇게.
+                //TODO: 추후 로딩씬이 생길 경우 케이스 추가할 필요 있음
                 default:
                     introUI.gameObject.SetActive(false);
                     crossHairUI.gameObject.SetActive(true);
@@ -78,6 +74,7 @@ namespace ToB.UI
                     mainBookUI.gameObject.SetActive(false);
                     wideMapUI.gameObject.SetActive(false);
                     gameOverUI.gameObject.SetActive(false);
+                    effectUI.gameObject.SetActive(true);
                     break;
             }
         }
