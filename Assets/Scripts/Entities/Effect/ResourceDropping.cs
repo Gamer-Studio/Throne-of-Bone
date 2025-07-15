@@ -14,7 +14,7 @@ namespace ToB.Entities.Effect
         public int amount;
         public InfiniteResourceType resourceType;
         
-        [SerializeField] public float jumpForce = 25f;
+        [SerializeField] public float jumpForce = 12.5f;
         [SerializeField] public float autoCollectDelay = 2f;
         [SerializeField] private float collectSpeed = 10f;
         [SerializeField] private float collectAcceleration = 50f;

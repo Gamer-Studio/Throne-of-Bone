@@ -104,7 +104,7 @@ namespace ToB.Entities
             enemy.Animator.SetBool(EnemyAnimationString.Roll, false);
             yield return new WaitForFixedUpdate();
             
-            enemy.Physics.velocity = new Vector2(0, 10);
+            enemy.Physics.velocity = new Vector2(0, 5);
             enemy.Animator.SetBool(EnemyAnimationString.Jump, true);
             
             enemy.Physics.gravityEnabled = true;

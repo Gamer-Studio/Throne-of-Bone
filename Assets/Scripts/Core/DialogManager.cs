@@ -52,7 +52,6 @@ namespace ToB.Core
         public void CancelDialog()
         {
             if(zoomCoroutine != null) StopCoroutine(zoomCoroutine);
-            StageManager.Instance.ChangeGameState(GameState.Play);
             CurrentNPC.DialogPanel.gameObject.SetActive(false);
             talking = false;
             UIManager.Instance.panelStack.Pop();
@@ -91,6 +90,7 @@ namespace ToB.Core
             CurrentNPC.Sprite.flipX = false;
             CurrentNPC.IsInteractable = true;
             CurrentNPC = null;
+            StageManager.Instance.ChangeGameState(GameState.Play);
             
         }
 
