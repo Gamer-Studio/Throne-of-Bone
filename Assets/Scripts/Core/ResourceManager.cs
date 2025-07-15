@@ -3,6 +3,7 @@ using Newtonsoft.Json.Linq;
 using ToB.Entities;
 using ToB.Entities.Effect;
 using ToB.IO;
+using ToB.Utils;
 using ToB.Utils.Singletons;
 using UnityEngine;
 using UnityEngine.Events;

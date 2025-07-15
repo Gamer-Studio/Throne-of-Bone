@@ -2,6 +2,7 @@ using UnityEngine;
 using DG.Tweening;
 using ToB.Core;
 using ToB.Player;
+using ToB.Utils;
 
 namespace ToB.Entities.Effect
 {
@@ -59,9 +60,9 @@ namespace ToB.Entities.Effect
                 if (direction.sqrMagnitude < 0.1f)
                 {
                     if (resourceType == InfiniteResourceType.Gold)
-                        Core.ResourceManager.Instance.GiveGoldToPlayer(amount);
+                        ResourceManager.Instance.GiveGoldToPlayer(amount);
                     else
-                        Core.ResourceManager.Instance.GiveManaToPlayer(amount);
+                        ResourceManager.Instance.GiveManaToPlayer(amount);
                     gameObject.Release();
                     GameObject effect = obtainEffectPrefab.Pooling();
                     effect.transform.position = player.transform.position;

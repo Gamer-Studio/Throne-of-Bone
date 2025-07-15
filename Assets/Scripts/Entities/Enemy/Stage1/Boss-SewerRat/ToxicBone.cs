@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using ToB.Entities.Buffs;
 using ToB.Player;
+using ToB.Utils;
 using UnityEngine;
 
 namespace ToB.Entities
