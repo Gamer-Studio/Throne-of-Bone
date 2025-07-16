@@ -15,19 +15,12 @@ namespace ToB.Core
         [field:SerializeField] public NPCBase CurrentNPC { get; private set; }
         [field:SerializeField] public CinemachineVirtualCamera DialogCamera { get; private set; }
         
-        private Camera mainCamera;
-        private CinemachineBrain brainCam;
-        private float camOriginalSize;
-        
         private Coroutine zoomCoroutine;
 
         private bool talking;
         private void Awake()
         {
             talking = false;
-            mainCamera = Camera.main;
-            brainCam = mainCamera.GetComponent<CinemachineBrain>();
-            camOriginalSize = Camera.main.orthographicSize;
         }
 
         private void Reset()
@@ -37,15 +30,12 @@ namespace ToB.Core
 
         public void StartDialogWith(NPCBase npc)
         {
-            StageManager.Instance.ChangeGameState(GameState.Dialog);
             CurrentNPC = npc;
-            
-            UIManager.Instance.panelStack.Push(npc.DialogPanel);
-
             CurrentNPC.IsInteractable = false;
-            brainCam.m_DefaultBlend.m_Time = 0.5f;
-            FocusCameraToNPC();
-            zoomCoroutine = StartCoroutine(ZoomInAndTalk());
+
+            StageManager.Instance.BeginDialog(npc);
+            
+            zoomCoroutine = StartCoroutine(SwitchCameraAndTalk());
         }
 
         
@@ -55,38 +45,28 @@ namespace ToB.Core
             CurrentNPC.DialogPanel.gameObject.SetActive(false);
             talking = false;
             UIManager.Instance.panelStack.Pop();
-            DefocusCamera();
 
-            zoomCoroutine = StartCoroutine(ZoomOut());
+            zoomCoroutine = StartCoroutine(SwitchCameraAndQuit());
         }
 
-        IEnumerator ZoomInAndTalk()
+        IEnumerator SwitchCameraAndTalk()
         {
+            FocusCameraToNPC();
             yield return null;
-            
-            while (brainCam.IsBlending)
-            {
-                float zoomCoef = camOriginalSize / mainCamera.orthographicSize;
-                UIManager.Instance.gamePlayUI.transform.localScale = new Vector3(zoomCoef, zoomCoef, zoomCoef);
-                yield return null;
-            }
-            
+            while(GameCameraManager.Instance.IsBlending()) yield return null;
+
             // 다이얼로그 UI 시작
             CurrentNPC.DialogPanel.gameObject.SetActive(true);
             talking = true;
             ProcessNPC();
         }
 
-        IEnumerator ZoomOut()
+        IEnumerator SwitchCameraAndQuit()
         {
+            GameCameraManager.Instance.SwitchFirstCamera();
             yield return null;
-
-            while (brainCam.IsBlending)
-            {
-                float zoomCoef = camOriginalSize / mainCamera.orthographicSize;
-                UIManager.Instance.gamePlayUI.transform.localScale = new Vector3(zoomCoef, zoomCoef, zoomCoef);
-                yield return null;
-            }
+            while(GameCameraManager.Instance.IsBlending()) yield return null;
+            
             CurrentNPC.Sprite.flipX = false;
             CurrentNPC.IsInteractable = true;
             CurrentNPC = null;
@@ -97,22 +77,19 @@ namespace ToB.Core
         public void ProcessNPC()
         {
             if (!talking) return;
-            if (brainCam.IsBlending) return;
+            if (GameCameraManager.Instance.IsBlending()) return;
             CurrentNPC.ProcessNext();
         }
 
         private void FocusCameraToNPC()
         {
+            // 다이얼로그 카메라만의 속성은 다이얼로그 매니저가 여전히 책임집니다. 
             DialogCamera.Follow = CurrentNPC.transform;
             DialogCamera.m_Lens.OrthographicSize = CurrentNPC.ZoomSize;
             var transposer = DialogCamera.GetCinemachineComponent<CinemachineFramingTransposer>();
-            transposer.m_TrackedObjectOffset = new Vector3(0, 2 * (CurrentNPC.ZoomSize / camOriginalSize), 0);
-            DialogCamera.Priority = 30;
-        }
-
-        void DefocusCamera()
-        {
-            DialogCamera.Priority = 0;
+            transposer.m_TrackedObjectOffset = new Vector3(0, 2 * (CurrentNPC.ZoomSize / GameCameraManager.Instance.MainCamOriginalSize), 0);
+            
+            GameCameraManager.Instance.SwitchFirstCamera(DialogCamera);
         }
     }
 }

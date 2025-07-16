@@ -1,6 +1,7 @@
 using System;
 using Cinemachine;
 using NaughtyAttributes;
+using ToB.Core;
 using ToB.Entities;
 using ToB.Utils;
 using UnityEngine;
@@ -14,8 +15,14 @@ namespace ToB.Player
     [Label("시네머신 카메라"), SerializeField] protected CinemachineVirtualCamera vCam;
     [Label("플레이어 캐릭터"), SerializeField] protected PlayerCharacter character;
 
+    [Label("시선 처리 시간"), SerializeField] private float stareTime;
+    
     private bool isMeleeAttacking = false;
     private bool isRangedAttacking = false;
+
+    [SerializeField, ReadOnly] private float stareDirectionVertical;
+    private float prevStareDirection;
+    [SerializeField, ReadOnly] private float stareTimeBuffer;
     
     #region Unity Event
     
@@ -52,6 +59,7 @@ namespace ToB.Player
       }
       
       character.SetBlockFocus(angle);
+      Look();
     }
 
     #endregion
@@ -75,6 +83,32 @@ namespace ToB.Player
       {
         character.IsMoving = false;
       }
+
+      // 시선 처리
+      if (!character.IsMoving)
+      {
+        stareDirectionVertical = context.ReadValue<Vector2>().y;
+        
+      }
+      
+    }
+
+    private void Look()
+    {
+      if (stareDirectionVertical != prevStareDirection)
+      {
+        stareTimeBuffer = 0;
+        prevStareDirection = stareDirectionVertical;
+      }
+      
+      stareTimeBuffer += Time.fixedDeltaTime;
+      if (stareTimeBuffer < stareTime)
+      {
+        GameCameraManager.Instance.Stare(0);
+        return;
+      }
+      
+      GameCameraManager.Instance.Stare(stareDirectionVertical);
     }
 
     /// <summary>
@@ -215,5 +249,10 @@ namespace ToB.Player
       }
     }
     #endregion
+
+    public void StopMove()
+    {
+      character.IsMoving = false;
+    }
   }
 }
