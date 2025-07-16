@@ -95,7 +95,7 @@ namespace ToB.Player
 
     private void Look()
     {
-      if (stareDirectionVertical != prevStareDirection)
+      if (stareDirectionVertical != prevStareDirection || character.IsMoving)
       {
         stareTimeBuffer = 0;
         prevStareDirection = stareDirectionVertical;
