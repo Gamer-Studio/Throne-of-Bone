@@ -85,8 +85,24 @@ namespace ToB.Scenes.Stage
       {
         // 임시 플레이어 소환 코드
         // TODO 방별 로딩형태 전환시 개편 필요
-        
-        // int stageIndex = SAVE.Current
+
+        int stageIndex = SAVE.Current.Player.currentStage,
+          roomIndex = SAVE.Current.Player.currentRoom;
+        var playerPos = SAVE.Current.Player.savedPosition;
+
+        if (stageIndex != 0 && roomIndex != 0)
+        {
+          foreach (var room in loadedRooms)
+          {
+            Debug.Log(room.name);
+            if (room.stageIndex != stageIndex || room.roomIndex != roomIndex) continue;
+            
+            currentRoom = room;
+            player.transform.position = room.transform.TransformPoint(playerPos);
+            
+            break;
+          }
+        }
       }
     }
 

@@ -159,11 +159,6 @@ namespace ToB.Worlds
       LoadJson(saveModule);
       
       onLoad?.Invoke();
-      
-      var loadedRooms = StageManager.Instance.loadedRooms;
-      
-      if(!loadedRooms.Contains(this))
-        loadedRooms.Add(this);
     }
 
     /// <summary>

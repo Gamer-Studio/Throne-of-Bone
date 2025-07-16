@@ -80,10 +80,10 @@ namespace ToB.IO
         
         if(PlayerCharacter.HasInstance)
           PlayerCharacter.Instance.Save();
+        
+        SaveTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+        name = SaveTime;
       }
-      
-      
-      SaveTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
       
       var rootPath = Path.Combine(SavePath, fileName);
       DebugSymbol.Save.Log($"Save file saved: {rootPath}");
