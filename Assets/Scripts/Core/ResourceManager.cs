@@ -255,6 +255,8 @@ namespace ToB.Core
             PlayerMana = json.Get(nameof(playerGold), 0);
             PlayerGold = json.Get(nameof(playerMana), 0);
             MasterKey = json.Get(nameof(MasterKey), 0);
+            UsedGold = json.Get(nameof(UsedGold), 0);
+            UsedMana = json.Get(nameof(UsedMana), 0);
         }
 
         public JObject ToJson()
@@ -262,7 +264,9 @@ namespace ToB.Core
             return new JObject(
                 new JProperty(nameof(playerMana), PlayerMana),
                 new JProperty(nameof(playerGold), PlayerGold),
-                new JProperty(nameof(MasterKey), MasterKey)
+                new JProperty(nameof(MasterKey), MasterKey),
+                new JProperty(nameof(UsedGold), UsedGold),
+                new JProperty(nameof(UsedMana), UsedMana)
             );
         }
         #endregion
