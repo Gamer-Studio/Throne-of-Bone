@@ -54,9 +54,9 @@ namespace ToB.Entities.FieldObject
             {
                 var playerData = SAVE.Current.Player;
 
-                playerData["currentStage"] = StageIndex;
-                playerData["currentRoom"] = RoomIndex;
-                playerData.Set("savedPosition", transform.localPosition);
+                playerData.currentStage = StageIndex;
+                playerData.currentRoom = RoomIndex;
+                playerData.savedPosition = TPTransform.localPosition;
                 SAVE.Current.Save();
             }
             animator.SetTrigger("IsActivated");

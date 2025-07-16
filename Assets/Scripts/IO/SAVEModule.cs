@@ -41,6 +41,8 @@ namespace ToB.IO
       this["metaData"] = new JObject();
     }
 
+    protected virtual void BeforeSave() { }
+
     public void Save(string parentPath)
     {
       var isRoot = name == SAVE.RootName;
@@ -58,6 +60,8 @@ namespace ToB.IO
         }
       }
 
+      BeforeSave();
+      
       // 자식 정보를 메타데이터로 입력
       MetaData["children"] = childModuleInfo;
       
