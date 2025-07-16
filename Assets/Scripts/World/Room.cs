@@ -17,9 +17,9 @@ namespace ToB.Worlds
   [AddComponentMenu("Stage/Room")]
   public class Room : MonoBehaviour, IJsonSerializable
   {
-    [Label("스테이지 인덱스"), Foldout("State")] public int stageIndex;
-    [Label("방 인덱스"), Foldout("State")] public int roomIndex;
-    [Label("데이터 모듈"), Foldout("State"), SerializeField] private SAVEModule saveModule;
+    [Label("스테이지 인덱스")] public int stageIndex;
+    [Label("방 인덱스")] public int roomIndex;
+    [Label("데이터 모듈"), SerializeField] private SAVEModule saveModule;
     
     #region Binding
     private const string Binding = "Binding"; 
