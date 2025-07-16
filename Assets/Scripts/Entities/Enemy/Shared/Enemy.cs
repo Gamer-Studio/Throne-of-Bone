@@ -3,12 +3,16 @@ using System.Collections;
 using NaughtyAttributes;
 using ToB.Core;
 using ToB.Player;
+using ToB.Utils;
 using UnityEngine;
 
 namespace ToB.Entities
 {
+    /// <summary>
+    /// Room에서 적 유닛 처리용도로 MonoBehavior -> PooledObject로 부모 클래스를 바꿨습니다.
+    /// </summary>
     [RequireComponent(typeof(EnemyPhysics))]
-    public abstract class Enemy : MonoBehaviour
+    public abstract class Enemy : PooledObject
     {
         [Header("기본 참조")] 
         [Expandable, SerializeField] protected EnemySO enemySO;

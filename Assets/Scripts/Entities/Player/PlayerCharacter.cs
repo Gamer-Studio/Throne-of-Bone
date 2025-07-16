@@ -1,12 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using NaughtyAttributes;
 using ToB.Core.InputManager;
 using ToB.Entities;
+using ToB.IO;
 using ToB.UI;
 using ToB.Utils;
+using ToB.Utils.Singletons;
 using ToB.Utils.UI;
 using ToB.Worlds;
 using UnityEngine;
@@ -14,7 +15,7 @@ using UnityEngine.Events;
 
 namespace ToB.Player
 {
-  public partial class PlayerCharacter : MonoBehaviour, IDamageable, IKnockBackable
+  public partial class PlayerCharacter : ManualSingleton<PlayerCharacter>, IDamageable, IKnockBackable
   {
     private static readonly int INT_STATE = Animator.StringToHash("State");
     private static readonly int BOOL_IMMUNE = Animator.StringToHash("Immune");
@@ -28,26 +29,6 @@ namespace ToB.Player
     private static readonly int INT_DASH_STATE = Animator.StringToHash("DashState");
     private static readonly int TRIGGER_ATTACK = Animator.StringToHash("Attack");
     private static readonly int INT_ATTACK_MOTION = Animator.StringToHash("AttackMotion");
-
-    private static PlayerCharacter instance;
-    
-    /// <summary>
-    /// 현재 활성화된 Player 태그가 붙은 오브젝트의 캐릭터를 찾아옵니다.
-    /// </summary>
-    public static PlayerCharacter GetInstance()
-    {
-      if(instance) return instance;
-      
-      foreach (var obj in GameObject.FindGameObjectsWithTag("Player"))
-      {
-        if (obj.TryGetComponent<PlayerCharacter>(out var comp) && obj.gameObject.activeSelf)
-        {
-          instance = comp;
-          return instance;
-        }
-      }
-      return null;
-    }
     
     #region State
 
@@ -158,6 +139,7 @@ namespace ToB.Player
 
     private void Awake()
     {
+      Load();
       InitDash();
       InitAttack();
 

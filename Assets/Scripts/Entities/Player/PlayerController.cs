@@ -24,7 +24,7 @@ namespace ToB.Player
     private void Reset()
     {
       if (!vCam) vCam = FindAnyObjectByType<CinemachineVirtualCamera>();
-      if (!character) character = PlayerCharacter.GetInstance();
+      if (!character) character = PlayerCharacter.Instance;
     }
     
 #endif
@@ -33,7 +33,7 @@ namespace ToB.Player
     {
       camera = Camera.main;
       if (!vCam) vCam = FindAnyObjectByType<CinemachineVirtualCamera>();
-      if (!character) character = PlayerCharacter.GetInstance();
+      if (!character) character = PlayerCharacter.Instance;
     }
 
     private void FixedUpdate()

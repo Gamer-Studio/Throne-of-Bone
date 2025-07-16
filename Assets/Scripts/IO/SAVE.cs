@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using ToB.Core;
+using ToB.Player;
 using ToB.Utils;
 using UnityEngine;
 
@@ -73,6 +74,14 @@ namespace ToB.IO
 
     public void Save()
     {
+      {
+        // 저장 전 액션
+        
+        if(PlayerCharacter.HasInstance)
+          PlayerCharacter.Instance.Save();
+      }
+      
+      
       SaveTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
       
       var rootPath = Path.Combine(SavePath, fileName);

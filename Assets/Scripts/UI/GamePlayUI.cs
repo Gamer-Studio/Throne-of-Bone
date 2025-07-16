@@ -54,7 +54,7 @@ namespace ToB.UI
 
         public void TestHPAddButton()
         {
-            PlayerCharacter player = PlayerCharacter.GetInstance();
+            PlayerCharacter player = PlayerCharacter.Instance;
             player.stat.Hp = player.stat.maxHp;
         }
 

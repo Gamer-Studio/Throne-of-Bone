@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TMPro;
 using ToB.Core;
@@ -51,7 +52,12 @@ namespace ToB.Entities.FieldObject
             if(!isDiscovered) BonfireDiscovered();
             else
             {
-                Debug.Log("저장하기 실행");
+                var playerData = SAVE.Current.Player;
+
+                playerData["currentStage"] = StageIndex;
+                playerData["currentRoom"] = RoomIndex;
+                playerData.Set("savedPosition", transform.localPosition);
+                SAVE.Current.Save();
             }
             animator.SetTrigger("IsActivated");
         }
