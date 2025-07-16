@@ -1,5 +1,6 @@
 using Cinemachine;
 using NaughtyAttributes;
+using ToB.Core;
 using ToB.Core.InputManager;
 using ToB.Entities.NPC;
 using ToB.Player;
