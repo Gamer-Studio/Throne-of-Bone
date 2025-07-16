@@ -5037,23 +5037,46 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stageIndex: 0
   roomIndex: 0
-  normalEnemyTable:
-    array:
-    - Key: {fileID: 5172160067160171294}
-      Value: {fileID: 1730173166060172182, guid: bac78117d524fb94288aa0f875e1ae03, type: 3}
-    - Key: {fileID: 6189164447649878007}
-      Value: {fileID: 1730173166060172182, guid: bac78117d524fb94288aa0f875e1ae03, type: 3}
-    - Key: {fileID: 2108680058195486591}
-      Value: {fileID: 5520806752015663448, guid: 49267989d0a544648a958066c59aa19a, type: 3}
-    - Key: {fileID: 623393342592448581}
-      Value: {fileID: 5520806752015663448, guid: 49267989d0a544648a958066c59aa19a, type: 3}
-  fieldObjects:
-    array: []
   saveModule:
     name: 
   links: []
   entityContainer: {fileID: 6416182101115832409}
-  fieldObjectContainer: {fileID: 0}
+  normalEnemyTable:
+    array:
+    - Key: {fileID: 5172160067160171294}
+      Value:
+        m_AssetGUID: bac78117d524fb94288aa0f875e1ae03
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - Key: {fileID: 6189164447649878007}
+      Value:
+        m_AssetGUID: bac78117d524fb94288aa0f875e1ae03
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - Key: {fileID: 2108680058195486591}
+      Value:
+        m_AssetGUID: 49267989d0a544648a958066c59aa19a
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - Key: {fileID: 623393342592448581}
+      Value:
+        m_AssetGUID: 49267989d0a544648a958066c59aa19a
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+  fieldObjects:
+    array:
+    - Key: Chest_Large
+      Value: {fileID: 1129401153918093701}
+  enemies:
+    array: []
   <Background>k__BackingField: {fileID: 3862053101447277060}
   onLoad:
     m_PersistentCalls:
@@ -5067,7 +5090,6 @@ MonoBehaviour:
   onExit:
     m_PersistentCalls:
       m_Calls: []
-  entities: []
 --- !u!1 &6003535714827787169
 GameObject:
   m_ObjectHideFlags: 0
@@ -14420,6 +14442,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Chest_Large
       objectReference: {fileID: 0}
+    - target: {fileID: 6765035619748457174, guid: f8012f2eb093d8748b53d87e1e5c51b2, type: 3}
+      propertyPath: room
+      value: 
+      objectReference: {fileID: 4396329301837953947}
     - target: {fileID: 8156979629186676098, guid: f8012f2eb093d8748b53d87e1e5c51b2, type: 3}
       propertyPath: m_LocalScale.x
       value: 2
@@ -14473,6 +14499,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f8012f2eb093d8748b53d87e1e5c51b2, type: 3}
+--- !u!114 &1129401153918093701 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6765035619748457174, guid: f8012f2eb093d8748b53d87e1e5c51b2, type: 3}
+  m_PrefabInstance: {fileID: 5930761666643682131}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4769e3e7ef7843fbabdb180763cbce7b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &2557241469828601553 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8156979629186676098, guid: f8012f2eb093d8748b53d87e1e5c51b2, type: 3}
