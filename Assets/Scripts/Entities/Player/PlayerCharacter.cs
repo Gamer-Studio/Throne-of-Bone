@@ -64,6 +64,7 @@ namespace ToB.Player
     [Label("최대 점프 시간"), Foldout("Jump State")] public float jumpTimeLimit = 0.2f;
     [Label("낙하시 중력가속도 보정값"), Foldout("Jump State")] public float gravityAcceleration = 10;
     [Label("낙하시 시작 중력값"), Foldout("Jump State")] public float gravityStart = -10;
+    [Label("낙하 최고 속력"), Foldout("Jump State")] public float maxFallSpeed = -10;
 
     // 이 아래는 외부 접근용 연결 필드입니다.
     // 캐릭터가 공중인지 여부입니다.
@@ -270,6 +271,7 @@ namespace ToB.Player
       if (body.linearVelocity.y < 0)
       {
         body.linearVelocity += Vector2.up * (Physics.gravity.y * (gravityAcceleration - 1) * Time.fixedDeltaTime);
+        if(body.linearVelocityY < maxFallSpeed) body.linearVelocityY = maxFallSpeed;
       }
     }
 

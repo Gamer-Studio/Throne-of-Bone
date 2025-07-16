@@ -87,7 +87,7 @@ namespace ToB.Entities
             
             // Phase 2 : 두 마리
             if(!hardMode) yield break;
-            yield return new WaitUntil(() => !firstSewerRat);
+            yield return new WaitUntil(() => !firstSewerRat.IsAlive);
             
             roomVirtualCamera.Priority = 50;
             roomVirtualCamera.m_Lens.OrthographicSize = 6f;

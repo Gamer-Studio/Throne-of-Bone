@@ -61,6 +61,18 @@ namespace ToB.Entities
             isAlive = true;
         }
 
+        protected virtual void OnEnable()
+        {
+            isAlive = true;
+            Physics.enabled = true;
+            Animator.enabled = true;
+            Animator.Rebind();
+            Sprite.enabled = true;
+            Hitbox.enabled = true;
+            Knockback.enabled = true;
+            target = null;
+        }
+
         protected virtual void Reset()
         {
             rb = GetComponentInChildren<Rigidbody2D>();
