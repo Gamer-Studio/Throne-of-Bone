@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
+using UnityEngine;
 
 namespace ToB.IO
 {
@@ -73,6 +74,13 @@ namespace ToB.IO
     public static T Get<T>(this JObject json, string key, T defaultValue = default)
       => json.TryGetValue(key, out var token) ? token.Value<T>() : defaultValue;
 
+    public static Vector3 Get(this JObject json, string key, Vector3 defaultValue)
+    {
+      var data = json.Get<JObject>(key);
+
+      return data != null ? new Vector3(data.Get("x", 0), data.Get("y", 0), data.Get("z", 0)) : defaultValue;
+    }
+
     public static T Get<T>(this JToken token, T defaultValue = default)
       => token.Value<T>() ?? defaultValue;
     
@@ -86,6 +94,19 @@ namespace ToB.IO
       json[key] = token;
       
       return token;
+    }
+
+    public static JObject Set(this JObject json, string key, Vector3 vector)
+    {
+      var obj = new JObject
+      {
+        ["x"] = vector.x,
+        ["y"] = vector.y,
+        ["z"] = vector.z
+      };
+      
+      json[key] = obj;
+      return json;
     }
 
     #endregion
