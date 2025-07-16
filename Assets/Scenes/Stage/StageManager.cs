@@ -1,8 +1,10 @@
+using System.Collections.Generic;
 using Cinemachine;
 using NaughtyAttributes;
 using ToB.Core;
 using ToB.Core.InputManager;
 using ToB.Entities.NPC;
+using ToB.IO;
 using ToB.Player;
 using ToB.UI;
 using ToB.Utils;
@@ -42,9 +44,9 @@ namespace ToB.Scenes.Stage
     [Label("시네머신 오류방지용 임시 오브젝트"), Foldout(Binding), SerializeField] private GameObject tempObj;
     [Foldout(Binding), SerializeField] private CinemachineConfiner2D confiner;
     [Foldout(Binding), SerializeField] private Transform roomContainer;
-
     [field: Foldout(Binding), SerializeField] public Camera MainCamera { get; private set; }
     [field: Foldout(Binding), SerializeField] public CinemachineVirtualCamera MainVirtualCamera { get; private set; }
+    [Foldout(Binding)] public List<Room> loadedRooms = new();
 
     #endregion
 
@@ -79,6 +81,13 @@ namespace ToB.Scenes.Stage
       if (!player) player = PlayerCharacter.Instance;
 
       if (tempObj) tempObj.SetActive(false);
+
+      {
+        // 임시 플레이어 소환 코드
+        // TODO 방별 로딩형태 전환시 개편 필요
+        
+        // int stageIndex = SAVE.Current
+      }
     }
 
     private void Start()

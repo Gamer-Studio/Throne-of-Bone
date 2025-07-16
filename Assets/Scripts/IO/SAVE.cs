@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using ToB.Core;
+using ToB.IO.SubModules;
 using ToB.Player;
 using ToB.Utils;
 using UnityEngine;
@@ -57,7 +58,7 @@ namespace ToB.IO
     /// <summary>
     /// Root/Player 경로의 데이터입니다.
     /// </summary>
-    public SAVEModule Player => Node(nameof(Player), true);
+    public PlayerModule Player => Current.Data.Node<PlayerModule>(nameof(Player), true);
 
     #endregion
     

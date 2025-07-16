@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using NaughtyAttributes;
@@ -10,7 +9,6 @@ using ToB.Utils;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
-using UnityEngine.Serialization;
 
 namespace ToB.Worlds
 {
@@ -161,6 +159,11 @@ namespace ToB.Worlds
       LoadJson(saveModule);
       
       onLoad?.Invoke();
+      
+      var loadedRooms = StageManager.Instance.loadedRooms;
+      
+      if(!loadedRooms.Contains(this))
+        loadedRooms.Add(this);
     }
 
     /// <summary>
