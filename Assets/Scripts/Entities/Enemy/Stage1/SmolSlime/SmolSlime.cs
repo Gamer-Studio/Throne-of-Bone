@@ -22,8 +22,9 @@ namespace ToB.Entities
             DataSO = enemySO as SmolSlimeSO;
         }
 
-        private void Start()
+        protected override void OnEnable()
         {
+            base.OnEnable();
             InitProperties();
             
             FSM.Init();

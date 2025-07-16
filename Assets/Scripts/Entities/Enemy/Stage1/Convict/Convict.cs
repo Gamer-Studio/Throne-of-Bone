@@ -26,8 +26,9 @@ namespace ToB.Entities
             DataSO = enemySO as ConvictSO;
         }
 
-        private void Start()
+        protected override void OnEnable()
         {
+            base.OnEnable();
             InitProperties();
             
             FSM.Init();

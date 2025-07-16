@@ -3,7 +3,9 @@ using Cinemachine;
 using NaughtyAttributes;
 using ToB.Core;
 using ToB.Core.InputManager;
+using ToB.Entities.NPC;
 using ToB.Player;
+using ToB.UI;
 using ToB.Utils;
 using ToB.Utils.Singletons;
 using UnityEngine;
@@ -141,6 +143,17 @@ namespace ToB.Scenes.Stage
             State = state;
         }
 
+        #endregion
+
+        #region Dialog
+        public void BeginDialog(NPCBase npc)
+        {
+            player.IsMoving = false;
+            ChangeGameState(GameState.Dialog);
+            UIManager.Instance.panelStack.Push(npc.DialogPanel);
+            GameCameraManager.Instance.SetBlendTime(0.5f);
+        }
+        
         #endregion
     }
 }
