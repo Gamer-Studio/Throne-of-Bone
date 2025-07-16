@@ -9,8 +9,7 @@ namespace ToB.UI
 {
     public class MainBookUI:UIPanelBase
     {
-        
-        [SerializeField] public GameObject[] panels;
+        [SerializeField] public GameObject[] panelObjects;
         private GameObject currentPanel;
         [SerializeField] public Button[] buttons;
         private List<Image> panelImages = new List<Image>();
@@ -31,14 +30,14 @@ namespace ToB.UI
         }
         private void InitPanels()
         {
-            for (int i = 0; i < panels.Length; i++)
+            for (int i = 0; i < panelObjects.Length; i++)
             {
-                panelImages.Add(panels[i].GetComponent<Image>());
+                panelImages.Add(panelObjects[i].GetComponent<Image>());
             }
             
             if (currentPanel == null)
             {
-                panels[0].SetActive(true);
+                panelObjects[0].SetActive(true);
             }
             else
             {
@@ -48,17 +47,17 @@ namespace ToB.UI
         
         private void ShowPanel(int indexToShow)
         {
-            for (int i = 0; i < panels.Length; i++)
+            for (int i = 0; i < panelObjects.Length; i++)
             {
                 if (i == indexToShow)
                 {
-                    panels[i].SetActive(true);
+                    panelObjects[i].SetActive(true);
                     panelImages[i].raycastTarget = true;
-                    currentPanel = panels[i];
+                    currentPanel = panelObjects[i];
                 }
                 else
                 {
-                    panels[i].SetActive(false);
+                    panelObjects[i].SetActive(false);
                     panelImages[i].raycastTarget = false;
                 }
                 // true인 것만 SetActive, 나머진 false
@@ -79,11 +78,11 @@ namespace ToB.UI
             // 분기 2-2 : 메인북이 켜져 있을 경우, 다른 패널을 부르면 패널을 바꾼다
             if (context.performed)
             {
-                if (gameObject.activeSelf && currentPanel == panels[0])
+                if (gameObject.activeSelf && currentPanel == panelObjects[0])
                 {
                     CloseBook();
                 }
-                else if (gameObject.activeSelf && currentPanel != panels[0])
+                else if (gameObject.activeSelf && currentPanel != panelObjects[0])
                 {
                     ShowPanel(0);
                 }
@@ -101,11 +100,11 @@ namespace ToB.UI
         {
             if (context.performed)
             {
-                if (gameObject.activeSelf && currentPanel == panels[1])
+                if (gameObject.activeSelf && currentPanel == panelObjects[1])
                 {
                     CloseBook();
                 }
-                else if (gameObject.activeSelf && currentPanel != panels[1])
+                else if (gameObject.activeSelf && currentPanel != panelObjects[1])
                 {
                     ShowPanel(1);
                 }
@@ -123,11 +122,11 @@ namespace ToB.UI
         {
             if (context.performed)
             {
-                if (gameObject.activeSelf && currentPanel == panels[2])
+                if (gameObject.activeSelf && currentPanel == panelObjects[2])
                 {
                     CloseBook();
                 }
-                else if (gameObject.activeSelf && currentPanel != panels[2])
+                else if (gameObject.activeSelf && currentPanel != panelObjects[2])
                 {
                     ShowPanel(2);
                 }
@@ -145,11 +144,11 @@ namespace ToB.UI
         {
             if (context.performed)
             {
-                if (gameObject.activeSelf && currentPanel == panels[3])
+                if (gameObject.activeSelf && currentPanel == panelObjects[3])
                 {
                     CloseBook();
                 }
-                else if (gameObject.activeSelf && currentPanel != panels[3])
+                else if (gameObject.activeSelf && currentPanel != panelObjects[3])
                 {
                     ShowPanel(3);
                 }
@@ -168,11 +167,11 @@ namespace ToB.UI
             Debug.Log("SettingUIToggle 실행됨");
             if (context.performed && !UIManager.Instance.isThereActiveUI)
             {
-                if (gameObject.activeSelf && currentPanel == panels[4])
+                if (gameObject.activeSelf && currentPanel == panelObjects[4])
                 {
                     CloseBook();
                 }
-                else if (gameObject.activeSelf && currentPanel != panels[4])
+                else if (gameObject.activeSelf && currentPanel != panelObjects[4])
                 {
                     ShowPanel(4);
                 }

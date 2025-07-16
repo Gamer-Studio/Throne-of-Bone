@@ -80,7 +80,7 @@ namespace ToB.Core
             int prefabCount = Mathf.Clamp((resourceAmount / ResourcePerObject)+1, 1, maxPrefabCount);
             int resourceLeft = resourceAmount;
             // 자원 종류에 따라 프리펩 설정
-            var prefabRef = type == InfiniteResourceType.Gold ? "Entities/GoldOrb" : "Entities/ManaOrb";
+            var prefabRef = type == InfiniteResourceType.Gold ? "Entities/GoldOrb" : "Entities/EnergyOrb";
             // 생성 위치를 살짝 랜덤하게(몬스터 위치에서 반경 0.2)
             Vector2 randomPos = (Vector2)spawnPoint.position + Random.insideUnitCircle * 0.2f;
             
