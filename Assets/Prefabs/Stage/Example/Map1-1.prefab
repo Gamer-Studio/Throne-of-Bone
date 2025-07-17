@@ -2127,38 +2127,38 @@ CompositeCollider2D:
   m_ColliderPaths:
   - m_Collider: {fileID: 6029250267318489628}
     m_ColliderPaths:
-    - - X: 460000000
-        Y: -260000000
-      - X: 80000000
-        Y: -260000000
-      - X: 80000000
-        Y: -120000000
-      - X: 400000000
-        Y: -120000000
-      - X: 400000000
-        Y: -200000000
-      - X: 460000000
-        Y: -200000000
-      - X: 460000000
-        Y: -80000000
-      - X: 20000000
-        Y: -80000000
-      - X: 20000000
-        Y: -340000000
-      - X: 460000000
-        Y: -340000000
+    - - X: 230000000
+        Y: -130000000
+      - X: 40000000
+        Y: -130000000
+      - X: 40000000
+        Y: -60000000
+      - X: 200000000
+        Y: -60000000
+      - X: 200000000
+        Y: -100000000
+      - X: 230000000
+        Y: -100000000
+      - X: 230000000
+        Y: -40000000
+      - X: 10000000
+        Y: -40000000
+      - X: 10000000
+        Y: -170000000
+      - X: 230000000
+        Y: -170000000
   m_CompositePaths:
     m_Paths:
-    - - {x: 45.999973, y: -34}
-      - {x: 45.999973, y: -26}
-      - {x: 8, y: -25.999971}
-      - {x: 8.00003, y: -12}
-      - {x: 40, y: -12.00003}
-      - {x: 40.00003, y: -20}
-      - {x: 46, y: -19.999971}
-      - {x: 45.999973, y: -8}
-      - {x: 2, y: -8.00003}
-      - {x: 2.0000293, y: -34}
+    - - {x: 22.999971, y: -17}
+      - {x: 22.999971, y: -13}
+      - {x: 4, y: -12.99997}
+      - {x: 4.0000296, y: -6}
+      - {x: 20, y: -6.0000296}
+      - {x: 20.000029, y: -10}
+      - {x: 23, y: -9.99997}
+      - {x: 22.999971, y: -4}
+      - {x: 1, y: -4.000029}
+      - {x: 1.0000293, y: -17}
   m_VertexDistance: 0.0005
   m_OffsetDistance: 0.00005
   m_UseDelaunayMesh: 0
@@ -3082,11 +3082,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d96dae62a5edd934a8c34b3d13155a75, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  normalEnemyTable:
-    array: []
+  stageIndex: 1
+  roomIndex: 1
+  saveModule:
+    name: 
   links: []
   entityContainer: {fileID: 6416182101115832409}
-  fieldObjectContainer: {fileID: 0}
+  normalEnemyTable:
+    array: []
+  fieldObjects:
+    array: []
+  enemies:
+    array: []
   <Background>k__BackingField: {fileID: 3862053101447277060}
   onLoad:
     m_PersistentCalls:
@@ -3100,7 +3107,6 @@ MonoBehaviour:
   onExit:
     m_PersistentCalls:
       m_Calls: []
-  entities: []
 --- !u!1 &6310603924267118937
 GameObject:
   m_ObjectHideFlags: 0
@@ -6681,8 +6687,8 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fc877a6dd6ca2ef48aeda5cb3b3e40fd, type: 3}
---- !u!224 &6211607514886905073 stripped
-RectTransform:
+--- !u!4 &6211607514886905073 stripped
+Transform:
   m_CorrespondingSourceObject: {fileID: 2834610158180860444, guid: fc877a6dd6ca2ef48aeda5cb3b3e40fd, type: 3}
   m_PrefabInstance: {fileID: 8170267446757727981}
   m_PrefabAsset: {fileID: 0}

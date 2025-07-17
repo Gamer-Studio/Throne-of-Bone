@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Pool;
@@ -9,7 +10,11 @@ namespace ToB.Utils
   public static class PoolingHelper
   {
     private static PoolingManager Manager => PoolingManager.Instance;
+    private static Dictionary<string, string> GUIDNames = new();
 
+    public static string GuidToName(string guid) => GUIDNames.ContainsKey(guid) ? GUIDNames[guid] : "";
+    public static void ClearCache() => GUIDNames.Clear();
+    
     /// <summary>
     /// 어드레서블 경로의 에셋을 로딩하여 id 키로 풀링매니저에 등록합니다.
     /// </summary>
@@ -63,22 +68,14 @@ namespace ToB.Utils
     /// <returns>풀링된 오브젝트입니다.</returns>
     public static PooledObject Pooling(this AssetReference reference)
     {
-      if (!reference.IsValid())
+      if (!Manager.IsRegistered(GuidToName(reference.AssetGUID)))
       {
-        reference.LoadAssetAsync<GameObject>().WaitForCompletion();
-
-        if (Manager.IsRegistered(reference.Asset.name))
-        {
-          var name = reference.Asset.name;
-          reference.ReleaseAsset();
-          throw new Exception($"같은 명칭({name})의 프리팹이 이미 로딩되어 있습니다!");
-        }
+        var obj = reference.LoadAssetAsync<GameObject>().WaitForCompletion();
+        GUIDNames[reference.AssetGUID] = obj.name;
+        return Manager.Register(obj.name, reference).Get();
       }
-      
-      if (!Manager.IsRegistered(reference.Asset.name))
-        Manager.Register(reference.Asset.name, reference);
         
-      return Manager.Get(reference.Asset.name);
+      return Manager.Get(GuidToName(reference.AssetGUID));
     }
     
     /// <summary>

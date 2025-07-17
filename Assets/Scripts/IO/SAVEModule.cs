@@ -2,10 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using NaughtyAttributes;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using ToB.IO.SubModules;
 using ToB.Utils;
 using UnityEngine;
 
@@ -14,6 +16,8 @@ namespace ToB.IO
   [Serializable]
   public class SAVEModule : JObject, IJsonSerializable
   {
+    private static readonly JObject Dummy = new JObject(); 
+    
     public string name;
 
     #region MetaData
@@ -21,6 +25,7 @@ namespace ToB.IO
     private Dictionary<string, SAVEModule> children;
     public string[] ChildNames => children.Keys.ToArray();
     public JObject MetaData => (JObject)this["metaData"];
+    protected virtual string ModuleType => nameof(SAVEModule);
 
     #endregion
 
@@ -36,10 +41,13 @@ namespace ToB.IO
       this["metaData"] = new JObject();
     }
 
+    protected virtual void BeforeSave() { }
+
     public void Save(string parentPath)
     {
       var isRoot = name == SAVE.RootName;
       var path = System.IO.Path.Combine(parentPath, !isRoot ? name : "");
+      var childModuleInfo = new JObject();
 
       if (children.Count > 0)
       {
@@ -48,9 +56,16 @@ namespace ToB.IO
         foreach (var (_, node) in children)
         {
           node.Save(path);
+          childModuleInfo[node.name] = node.ModuleType;
         }
       }
 
+      BeforeSave();
+      
+      // 자식 정보를 메타데이터로 입력
+      MetaData["children"] = childModuleInfo;
+      
+      // 데이터 저장
       var filename = isRoot ? System.IO.Path.Combine(path, name + ".json") : path + ".json";
       
       using var writer = File.CreateText(filename);
@@ -113,6 +128,7 @@ namespace ToB.IO
         #endif
       }
       
+      var childModuleInfo = MetaData.Get("children", Dummy);
 
       if (chainLoading && Directory.Exists(path))
       {
@@ -134,7 +150,11 @@ namespace ToB.IO
             continue;
           }
 
-          var childModule = Node(fileName, true);
+          var childModule = childModuleInfo.Get(fileName, nameof(SAVEModule)) switch
+          {
+            nameof(PlayerModule) => Node<PlayerModule>(fileName, true),
+            _ => Node(fileName, true),
+          };
           await childModule.Load(System.IO.Path.Combine(path, fileName), true);
         }
       }
@@ -164,20 +184,26 @@ namespace ToB.IO
     /// <param name="key"></param>
     /// <param name="force"></param>
     /// <typeparam name="T"></typeparam>
-    public GenericSAVEModule<T> Node<T>(string key, bool force = false) where T : IJsonSerializable
+    public T Node<T>(string key, bool force = false) where T : SAVEModule
     {
-      if (children.TryGetValue(key, out var node))
+      if(children.TryGetValue(key, out var node))
       {
-        if (node is GenericSAVEModule<T> result)
-          return result;
+        if (node is not T value) throw new Exception("Node type is not match");
         
-        throw new Exception("Node is not GenericSAVEModule<T>");
+        return value;
       }
+      
       if (!force) throw new Exception("Node not found");
       
-      var newNode = new GenericSAVEModule<T>(key);
-      children.Add(key, newNode);
-      return newNode;
+      var result = typeof(T) switch
+      {
+        var type when type == typeof(SAVEModule) => (T) new SAVEModule(key),
+        var type when type == typeof(PlayerModule) => (T) (object) new PlayerModule(key),
+        _ => (T) Activator.CreateInstance(typeof(T), key),
+      };
+      
+      children.Add(key, result);
+      return result;
     }
 
     /// <summary>

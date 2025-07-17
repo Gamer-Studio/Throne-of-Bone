@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using NaughtyAttributes;
@@ -6,7 +5,9 @@ using Newtonsoft.Json.Linq;
 using ToB.Entities;
 using ToB.IO;
 using ToB.Scenes.Stage;
+using ToB.Utils;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
 
 namespace ToB.Worlds
@@ -14,21 +15,22 @@ namespace ToB.Worlds
   [AddComponentMenu("Stage/Room")]
   public class Room : MonoBehaviour, IJsonSerializable
   {
-    [Label("스테이지 인덱스"), Foldout("State")] public int stageIndex;
-    [Label("방 인덱스"), Foldout("State")] public int roomIndex;
-    [Label("일반 적 소환 정보"), Foldout("State")] public SerializableDictionary<Transform, GameObject> normalEnemyTable = new();
-    [Label("오브젝트"), Foldout("State")] public SerializableDictionary<string, FieldObjectProgress> fieldObjects = new();
-    [Label("데이터 모듈"), Foldout("State"), SerializeField] private SAVEModule saveModule;
+    [Label("스테이지 인덱스")] public int stageIndex;
+    [Label("방 인덱스")] public int roomIndex;
+    [Label("데이터 모듈"), SerializeField] private SAVEModule saveModule;
     
     #region Binding
+    private const string Binding = "Binding"; 
 
-    #if UNITY_EDITOR
+#if UNITY_EDITOR
     [ContextMenuItem("내부 링크 찾기", nameof(FindLinks))]
-    #endif
-    [Foldout("Binding")] public List<RoomLink> links = new();
-    [Foldout("Binding"), SerializeField] private Transform entityContainer; 
-    [Foldout("Binding"), SerializeField] private Transform fieldObjectContainer;
-    [field: Foldout("Binding"), SerializeField] public RoomBackground Background { get; private set; }
+#endif
+    [Foldout(Binding)] public List<RoomLink> links = new();
+    [Foldout(Binding), SerializeField] private Transform entityContainer; 
+    [Label("일반 적 소환 정보"), Foldout(Binding)] public SerializableDictionary<Transform, AssetReference> normalEnemyTable = new();
+    [Label("오브젝트"), Foldout(Binding)] public SerializableDictionary<string, FieldObjectProgress> fieldObjects = new();
+    [Label("인스턴스된 적"), Foldout(Binding), SerializeField, ReadOnly] private SerializableDictionary<Transform, Enemy> enemies = new();
+    [field: Foldout(Binding), SerializeField] public RoomBackground Background { get; private set; }
     
     #endregion
     
@@ -41,13 +43,32 @@ namespace ToB.Worlds
     
     #endregion
     
-    #region Managed
-    
-    [SerializeField, ReadOnly] private List<GameObject> entities = new();
-    
-    #endregion
     
     #if UNITY_EDITOR
+
+    [Button("내부 오브젝트 찾기")]
+    private void FindStructures()
+    {
+      fieldObjects.Clear();
+      
+      FindStructure(transform);
+    }
+    
+    private void FindStructure(Transform tr)
+    {
+      for (var i = 0; i < tr.childCount; i++)
+      {
+        var child = tr.GetChild(i);
+        if (child.TryGetComponent<FieldObjectProgress>(out var structure))
+        {
+          DebugSymbol.Editor.Log(structure.name);
+          structure.room = this;
+          fieldObjects[child.name] = structure;
+        }
+        
+        FindStructure(child);
+      }
+    }
 
     private void FindLinks()
     {
@@ -62,7 +83,7 @@ namespace ToB.Worlds
         var child = tr.GetChild(i);
         if (child.TryGetComponent<RoomLink>(out var link))
         {
-          Debug.Log(link.name);
+          DebugSymbol.Editor.Log(link.name);
           links.Add(link);
         }
         
@@ -79,14 +100,9 @@ namespace ToB.Worlds
     private void Reset()
     {
       if(!Background) Background = transform.GetComponentInChildren<RoomBackground>();
-      if (fieldObjectContainer)
-      {
-        foreach (Transform child in fieldObjectContainer)
-        {
-          if(child.TryGetComponent<FieldObjectProgress>(out var fieldObjectProgress))
-            fieldObjects[child.name] = fieldObjectProgress;
-        }
-      }
+      
+      FindLinks();
+      FindStructures();
     }
     
     #endif
@@ -125,6 +141,7 @@ namespace ToB.Worlds
     #region Feature
 
     /// <summary>
+    /// Root/Stage/Room_{stageIndex}_{roomIndex} 경로로
     /// 방 데이터를 명시적으로 저장합니다.
     /// </summary>
     public void Save()
@@ -150,6 +167,14 @@ namespace ToB.Worlds
     /// </summary>
     public virtual void Unload()
     {
+      foreach (var pair in enemies)
+      {
+        if(pair.Value)
+          pair.Value.Release();
+      }
+      
+      enemies.Clear();
+      
       Save();
       
       onUnload?.Invoke();
@@ -163,13 +188,22 @@ namespace ToB.Worlds
     {
       foreach (var pair in normalEnemyTable)
       {
-        entities.Add(Instantiate(pair.Value, pair.Key.position, Quaternion.identity, entityContainer));
+        if(pair.Value == null || (enemies.ContainsKey(pair.Key) && enemies[pair.Key].IsAlive)) continue;
+        
+        var enemy = (Enemy)pair.Value.Pooling();
+        
+        enemy.transform.SetParent(entityContainer);
+        enemy.transform.position = pair.Key.position;
+        
+        enemies[pair.Key] = enemy;
       }
       
       foreach (var obj in fieldObjects)
         obj.Value.OnLoad();
 
       onEnter?.Invoke();
+      StageManager.Instance.onRoomEnter.Invoke(this);
+      StageManager.Instance.currentRoom = this;
     }
 
     /// <summary>
@@ -177,15 +211,22 @@ namespace ToB.Worlds
     /// </summary>
     protected virtual void Exit()
     {
-      foreach (var entity in entities.Where(entity => entity))
-        Destroy(entity);
+      DebugSymbol.Save.Log($"Exit room {stageIndex} / {roomIndex}");
       
-      entities.Clear();
-      
+      foreach (var pair in enemies)
+      {
+        if (!pair.Value.IsAlive)
+        {
+          pair.Value.Release();
+          enemies.Remove(pair.Key);
+        }
+      }
+
       foreach (var obj in fieldObjects)
         obj.Value.OnUnLoad();
       
       onExit?.Invoke();
+      StageManager.Instance.onRoomExit.Invoke(this);
     }
     
     #endregion
@@ -194,7 +235,14 @@ namespace ToB.Worlds
 
     public void LoadJson(JObject json)
     {
-      var objects = json.Get<JObject>(nameof(fieldObjects), null);
+      var dummy = new JObject();
+      var objects = json.Get(nameof(fieldObjects), dummy);
+
+      foreach (var pair in fieldObjects)
+      {
+        pair.Value.room = this;
+        pair.Value.LoadJson(objects.Get(pair.Key, dummy));
+      }
     }
 
     public JObject ToJson()

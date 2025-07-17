@@ -27,7 +27,7 @@ namespace ToB.UI
         {
             if (scene.name != Defines.IntroScene && scene.name != Defines.MainMenuScene)
             {
-                player = PlayerCharacter.GetInstance();
+                player = PlayerCharacter.Instance;
                 if (player != null)
                 {
                     Init();

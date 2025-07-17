@@ -1,11 +1,21 @@
+using NaughtyAttributes;
 using Newtonsoft.Json.Linq;
 using ToB.IO;
+using ToB.Worlds;
 using UnityEngine;
 
 namespace ToB.Entities
 {
   public class FieldObjectProgress : MonoBehaviour, IJsonSerializable
   {
+    #region State
+    
+    [ReadOnly] public Room room;
+    protected int StageIndex => room.stageIndex;
+    protected int RoomIndex => room.roomIndex;
+    
+    #endregion
+    
     /// <summary>
     /// 방 로딩시 오브젝트를 로딩할 떄 호출됩니다.
     /// </summary>

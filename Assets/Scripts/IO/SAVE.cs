@@ -4,6 +4,9 @@ using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using ToB.Core;
+using ToB.IO.SubModules;
+using ToB.Player;
+using ToB.Utils;
 using UnityEngine;
 
 namespace ToB.IO
@@ -50,6 +53,15 @@ namespace ToB.IO
 
     #endregion
     
+    #region Defines
+
+    /// <summary>
+    /// Root/Player 경로의 데이터입니다.
+    /// </summary>
+    public PlayerModule Player => Current.Data.Node<PlayerModule>(nameof(Player), true);
+
+    #endregion
+    
     public SAVE(string fileName)
     {
       this.fileName = fileName;
@@ -63,9 +75,19 @@ namespace ToB.IO
 
     public void Save()
     {
-      SaveTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+      {
+        // 저장 전 액션
+        
+        if(PlayerCharacter.HasInstance)
+          PlayerCharacter.Instance.Save();
+        
+        SaveTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+        name = SaveTime;
+      }
       
       var rootPath = Path.Combine(SavePath, fileName);
+      DebugSymbol.Save.Log($"Save file saved: {rootPath}");
+
       var dir = new DirectoryInfo(rootPath);
 
       // 폴더가 이미 존재할 시 원활한 저장을 위해 초기화

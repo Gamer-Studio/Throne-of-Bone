@@ -1,12 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using NaughtyAttributes;
 using ToB.Core.InputManager;
 using ToB.Entities;
+using ToB.IO;
 using ToB.UI;
 using ToB.Utils;
+using ToB.Utils.Singletons;
 using ToB.Utils.UI;
 using ToB.Worlds;
 using UnityEngine;
@@ -14,7 +15,7 @@ using UnityEngine.Events;
 
 namespace ToB.Player
 {
-  public partial class PlayerCharacter : MonoBehaviour, IDamageable, IKnockBackable
+  public partial class PlayerCharacter : ManualSingleton<PlayerCharacter>, IDamageable, IKnockBackable
   {
     private static readonly int INT_STATE = Animator.StringToHash("State");
     private static readonly int BOOL_IMMUNE = Animator.StringToHash("Immune");
@@ -28,26 +29,6 @@ namespace ToB.Player
     private static readonly int INT_DASH_STATE = Animator.StringToHash("DashState");
     private static readonly int TRIGGER_ATTACK = Animator.StringToHash("Attack");
     private static readonly int INT_ATTACK_MOTION = Animator.StringToHash("AttackMotion");
-
-    private static PlayerCharacter instance;
-    
-    /// <summary>
-    /// 현재 활성화된 Player 태그가 붙은 오브젝트의 캐릭터를 찾아옵니다.
-    /// </summary>
-    public static PlayerCharacter GetInstance()
-    {
-      if(instance) return instance;
-      
-      foreach (var obj in GameObject.FindGameObjectsWithTag("Player"))
-      {
-        if (obj.TryGetComponent<PlayerCharacter>(out var comp) && obj.gameObject.activeSelf)
-        {
-          instance = comp;
-          return instance;
-        }
-      }
-      return null;
-    }
     
     #region State
 
@@ -83,6 +64,7 @@ namespace ToB.Player
     [Label("최대 점프 시간"), Foldout("Jump State")] public float jumpTimeLimit = 0.2f;
     [Label("낙하시 중력가속도 보정값"), Foldout("Jump State")] public float gravityAcceleration = 10;
     [Label("낙하시 시작 중력값"), Foldout("Jump State")] public float gravityStart = -10;
+    [Label("낙하 최고 속력"), Foldout("Jump State")] public float maxFallSpeed = -10;
 
     // 이 아래는 외부 접근용 연결 필드입니다.
     // 캐릭터가 공중인지 여부입니다.
@@ -158,6 +140,7 @@ namespace ToB.Player
 
     private void Awake()
     {
+      Load();
       InitDash();
       InitAttack();
 
@@ -288,6 +271,7 @@ namespace ToB.Player
       if (body.linearVelocity.y < 0)
       {
         body.linearVelocity += Vector2.up * (Physics.gravity.y * (gravityAcceleration - 1) * Time.fixedDeltaTime);
+        if(body.linearVelocityY < maxFallSpeed) body.linearVelocityY = maxFallSpeed;
       }
     }
 

@@ -1105,38 +1105,38 @@ CompositeCollider2D:
   m_ColliderPaths:
   - m_Collider: {fileID: 6029250267318489628}
     m_ColliderPaths:
-    - - X: 20000000
-        Y: -380000000
-      - X: -260000000
-        Y: -380000000
-      - X: -260000000
-        Y: -420000000
-      - X: -240000000
-        Y: -420000000
-      - X: -240000000
-        Y: -400000000
-      - X: -20000000
-        Y: -400000000
-      - X: -20000000
-        Y: -480000000
-      - X: -260000000
-        Y: -480000000
-      - X: -260000000
-        Y: -520000000
-      - X: 20000000
-        Y: -520000000
+    - - X: 10000000
+        Y: -190000000
+      - X: -130000000
+        Y: -190000000
+      - X: -130000000
+        Y: -210000000
+      - X: -120000000
+        Y: -210000000
+      - X: -120000000
+        Y: -200000000
+      - X: -10000000
+        Y: -200000000
+      - X: -10000000
+        Y: -240000000
+      - X: -130000000
+        Y: -240000000
+      - X: -130000000
+        Y: -260000000
+      - X: 10000000
+        Y: -260000000
   m_CompositePaths:
     m_Paths:
-    - - {x: 1.9999708, y: -52}
-      - {x: 1.9999708, y: -38}
-      - {x: -26, y: -38.00003}
-      - {x: -25.999971, y: -42}
-      - {x: -24, y: -41.999973}
-      - {x: -23.999971, y: -40}
-      - {x: -2, y: -40.00003}
-      - {x: -2.0000293, y: -48}
-      - {x: -26, y: -48.00003}
-      - {x: -25.999971, y: -52}
+    - - {x: 0.99997073, y: -26}
+      - {x: 0.99997073, y: -19}
+      - {x: -13, y: -19.000029}
+      - {x: -12.99997, y: -21}
+      - {x: -12, y: -20.999971}
+      - {x: -11.99997, y: -20}
+      - {x: -1, y: -20.000029}
+      - {x: -1.0000294, y: -24}
+      - {x: -13, y: -24.000029}
+      - {x: -12.99997, y: -26}
   m_VertexDistance: 0.0005
   m_OffsetDistance: 0.00005
   m_UseDelaunayMesh: 0
@@ -1730,17 +1730,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d96dae62a5edd934a8c34b3d13155a75, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stageIndex: 0
-  roomIndex: 0
-  normalEnemyTable:
-    array: []
-  fieldObjects:
-    array: []
+  stageIndex: 1
+  roomIndex: 18
   saveModule:
     name: 
   links: []
   entityContainer: {fileID: 6416182101115832409}
-  fieldObjectContainer: {fileID: 0}
+  normalEnemyTable:
+    array: []
+  fieldObjects:
+    array:
+    - Key: Chest_Large
+      Value: {fileID: 5672869361457261749}
+  enemies:
+    array: []
   <Background>k__BackingField: {fileID: 3862053101447277060}
   onLoad:
     m_PersistentCalls:
@@ -1754,7 +1757,6 @@ MonoBehaviour:
   onExit:
     m_PersistentCalls:
       m_Calls: []
-  entities: []
 --- !u!1 &6310603924267118937
 GameObject:
   m_ObjectHideFlags: 0
@@ -3706,6 +3708,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Chest_Large
       objectReference: {fileID: 0}
+    - target: {fileID: 6765035619748457174, guid: f8012f2eb093d8748b53d87e1e5c51b2, type: 3}
+      propertyPath: room
+      value: 
+      objectReference: {fileID: 4396329301837953947}
     - target: {fileID: 8156979629186676098, guid: f8012f2eb093d8748b53d87e1e5c51b2, type: 3}
       propertyPath: m_LocalScale.x
       value: 1
@@ -3759,6 +3765,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f8012f2eb093d8748b53d87e1e5c51b2, type: 3}
+--- !u!114 &5672869361457261749 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6765035619748457174, guid: f8012f2eb093d8748b53d87e1e5c51b2, type: 3}
+  m_PrefabInstance: {fileID: 1393908809862465123}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4769e3e7ef7843fbabdb180763cbce7b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &7091833971157709793 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8156979629186676098, guid: f8012f2eb093d8748b53d87e1e5c51b2, type: 3}

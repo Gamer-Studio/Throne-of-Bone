@@ -31,7 +31,7 @@ namespace ToB.Entities.Effect
         private void Awake()
         {
             rb = GetComponent<Rigidbody2D>();
-            player = PlayerCharacter.GetInstance();
+            player = PlayerCharacter.Instance;
             _collider = GetComponent<Collider2D>();
         }
 

@@ -23,17 +23,20 @@ namespace ToB
         {
             base.Awake();
             DataSO = enemySO as HiveSO;
-
-            DataSO = enemySO as HiveSO;
             
             if(!DataSO) Debug.LogError("HiveSO가 없습니다");
             
             flies = new List<GameObject>();
             
-            stat.Init(this, DataSO);
             PatrolRange.Init(DataSO.PatrolRange);
             ChaseRange.Init(DataSO.ChaseRange);
             RangeBaseSightSensor.Init(this);
+        }
+
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+            stat.Init(this, DataSO);
         }
 
         protected override void Reset()
