@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace ToB.Player
 {
-  public partial class PlayerCharacter
+  public partial class PlayerCharacter : ISaveable
   {
     [Foldout("SAVE"), SerializeField] private SAVEModule data;
     
