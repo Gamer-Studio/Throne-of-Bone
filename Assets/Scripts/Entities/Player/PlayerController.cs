@@ -73,6 +73,8 @@ namespace ToB.Player
     {
       if(!character) return;
       
+      Debug.Log(context.ReadValue<Vector2>());
+      
       var input = context.ReadValue<Vector2>().x;
       if (Math.Abs(input) > 0.1f)
       {

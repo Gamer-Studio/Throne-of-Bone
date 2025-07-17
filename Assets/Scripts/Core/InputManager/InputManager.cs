@@ -17,7 +17,7 @@ namespace ToB.Core.InputManager
     
     public partial class InputManager : DDOLSingleton<InputManager>
     {
-        private PlayerInput playerInput;
+        public PlayerInput PlayerInput { get; private set; }
 
         public PlayerController player;
         
@@ -26,7 +26,7 @@ namespace ToB.Core.InputManager
         protected override void Awake()
         {
             base.Awake();
-            playerInput = GetComponent<PlayerInput>();
+            PlayerInput = GetComponent<PlayerInput>();
             
         }
 
@@ -41,12 +41,12 @@ namespace ToB.Core.InputManager
             else CurrentActionMap = map.ToString();
             
             
-            playerInput.SwitchCurrentActionMap(CurrentActionMap);
+            PlayerInput.SwitchCurrentActionMap(CurrentActionMap);
         }
 
         public void SetInputActive(bool isActive)
         {
-            playerInput.enabled = isActive;
+            PlayerInput.enabled = isActive;
         }
     }
 }
