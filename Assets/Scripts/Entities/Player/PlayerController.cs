@@ -72,7 +72,7 @@ namespace ToB.Player
     public void Move(InputAction.CallbackContext context)
     {
       if(!character) return;
-      
+      Debug.Log("OK Move");
       Debug.Log(context.ReadValue<Vector2>());
       
       var input = context.ReadValue<Vector2>().x;

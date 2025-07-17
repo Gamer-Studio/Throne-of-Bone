@@ -23,11 +23,13 @@ namespace ToB.Core.InputManager
         
         [field:SerializeField] public string CurrentActionMap { get; set; }
 
+        public static bool IsRebinding = false;
+
         protected override void Awake()
         {
             base.Awake();
             PlayerInput = GetComponent<PlayerInput>();
-            
+
         }
 
         private void Start()

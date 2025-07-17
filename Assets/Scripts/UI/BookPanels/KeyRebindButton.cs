@@ -2,6 +2,7 @@ using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 namespace ToB.UI.BookPanels
 {
@@ -18,7 +19,15 @@ namespace ToB.UI.BookPanels
         [SerializeField] Vector2 bindDirection;
         [SerializeField] private TextMeshProUGUI keyText;
         
+        Button button;
         InputActionRebindingExtensions.RebindingOperation rebindingOperation;
+
+        int bindingIndex;
+
+        private void Awake()
+        {
+            button = GetComponent<Button>();
+        }
 
         void OnEnable()
         {
@@ -27,7 +36,7 @@ namespace ToB.UI.BookPanels
         
         private void ShowBindKey()
         {
-            int bindingIndex = 0;
+            int index = 0;
             string bindKey = "None";
             
             if (bindType == BindType.Vector2)
@@ -51,16 +60,46 @@ namespace ToB.UI.BookPanels
                     if (binding.isPartOfComposite && binding.name == partName)
                     {
                         bindKey = inputActionReference.action.GetBindingDisplayString(i, displayStringOptions);
+                        index = i;
                         break;
                     }
                 }
 
                 keyText.text = bindKey;
+                bindingIndex = index;
             }
             else
             {
-                keyText.text = inputActionReference.action.GetBindingDisplayString(bindingIndex, displayStringOptions);
+                keyText.text = inputActionReference.action.GetBindingDisplayString(index, displayStringOptions);
             }
+        }
+
+        public void StartRebind()
+        {
+            InputAction action = inputActionReference.action;
+            
+            action.Disable();
+            button.interactable = false;
+            keyText.text = "_";
+
+            rebindingOperation = action.PerformInteractiveRebinding(bindingIndex)
+                .OnMatchWaitForAnother(0.1f)
+                .OnComplete(operation =>
+                {
+                    operation.Dispose();
+                    button.interactable = true;
+
+                    action.Enable();
+                    ShowBindKey();
+                });
+            
+            rebindingOperation.Start();
+        }
+
+        private void OnDisable()
+        {
+            rebindingOperation?.Dispose();
+            rebindingOperation = null;
         }
     }
 }
