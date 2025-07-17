@@ -13,9 +13,10 @@ namespace ToB.Entities.FieldObject
         public bool isDiscovered;
         [SerializeField] public TMP_Text interactionText;
         [SerializeField] public Transform TPTransform;
-        [SerializeField] public GameObject TempTPPanel;
+        [SerializeField] public GameObject BonfireUIPanel;
         public bool IsInteractable { get; set; }
         [SerializeField] private Animator animator;
+        [SerializeField] private GameObject TPPanel;
         
         #region SaveLoad
 
@@ -23,7 +24,7 @@ namespace ToB.Entities.FieldObject
         {
             IsInteractable = true;
             animator.SetBool("IsDiscovered", isDiscovered);
-            TempTPPanel.SetActive(false);
+            BonfireUIPanel.SetActive(false);
         }
         
 
@@ -54,9 +55,12 @@ namespace ToB.Entities.FieldObject
             if(!isDiscovered) BonfireDiscovered();
             else
             {
-                Debug.Log("저장하기 실행");
+                Debug.Log("상호작용 시작");
+                BonfireUIPanel.SetActive(true);
+                interactionText.text = "";
+                StageManager.Instance.ChangeGameState(GameState.Dialog);
+                animator.SetBool("IsUsing", true);
             }
-            animator.SetTrigger("IsActivated");
         }
 
         private void BonfireDiscovered()
@@ -73,8 +77,8 @@ namespace ToB.Entities.FieldObject
         {
             if (other.CompareTag("Player"))
             {
-                TempTPPanel.SetActive(true);
-                interactionText.text = isDiscovered ? "F : 저장하기" : "F : 쉬어가기";
+                
+                interactionText.text = isDiscovered ? "F : 쉬어가기" : "F : 발견하기";
             }
         }
         
@@ -82,9 +86,42 @@ namespace ToB.Entities.FieldObject
         {
             if (other.CompareTag("Player"))
             {
-                TempTPPanel.SetActive(false);
+                BonfireUIPanel.SetActive(false);
                 interactionText.text = "";
             }
         }
+        
+        #region ButtonAction
+
+        public void Save()
+        {
+            Debug.Log("세이브 진행");
+        }
+
+        public void TeleportPointSelected()
+        {
+            Debug.Log("티피합니다!");
+            CloseTPPanel();
+            LeaveBonfire();
+        }
+
+        public void OpenTPPanel()
+        {
+            TPPanel.SetActive(true);
+        }
+
+        public void CloseTPPanel()
+        {
+            TPPanel.SetActive(false);
+        }
+
+        public void LeaveBonfire()
+        {
+            BonfireUIPanel.SetActive(false);
+            StageManager.Instance.ChangeGameState(GameState.Play);
+            animator.SetBool("IsUsing", false);
+        }
+        
+        #endregion
     }
 }
