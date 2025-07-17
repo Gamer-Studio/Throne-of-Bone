@@ -2,6 +2,7 @@ using Newtonsoft.Json.Linq;
 using TMPro;
 using ToB.Core;
 using ToB.IO;
+using ToB.Scenes.Stage;
 using UnityEngine;
 using AudioType = ToB.Core.AudioType;
 
@@ -12,7 +13,7 @@ namespace ToB.Entities.FieldObject
         public bool isDiscovered;
         [SerializeField] public TMP_Text interactionText;
         [SerializeField] public Transform TPTransform;
-        //[SerializeField] public TMP_Text TPText;
+        [SerializeField] public GameObject TempTPPanel;
         public bool IsInteractable { get; set; }
         [SerializeField] private Animator animator;
         
@@ -22,6 +23,7 @@ namespace ToB.Entities.FieldObject
         {
             IsInteractable = true;
             animator.SetBool("IsDiscovered", isDiscovered);
+            TempTPPanel.SetActive(false);
         }
         
 
@@ -48,6 +50,7 @@ namespace ToB.Entities.FieldObject
         public void Interact()
         {
             AudioManager.Play("fntgm_magic_fire_08",AudioType.Effect);
+            StageManager.Instance.player.stat.Hp = StageManager.Instance.player.stat.maxHp;
             if(!isDiscovered) BonfireDiscovered();
             else
             {
@@ -61,6 +64,7 @@ namespace ToB.Entities.FieldObject
             isDiscovered = true;
             animator.SetBool("IsDiscovered", isDiscovered);
             Debug.Log("화톳불 발견");
+            interactionText.text = "F : 쉬어가기";
             // 이후 TP포인트에 추가, 지도에 추가 등등
         }
 
@@ -68,8 +72,9 @@ namespace ToB.Entities.FieldObject
         private void OnTriggerEnter2D(Collider2D other)
         {
             if (other.CompareTag("Player"))
-            { 
-                interactionText.text = "F : 상호작용";
+            {
+                TempTPPanel.SetActive(true);
+                interactionText.text = isDiscovered ? "F : 저장하기" : "F : 쉬어가기";
             }
         }
         
@@ -77,6 +82,7 @@ namespace ToB.Entities.FieldObject
         {
             if (other.CompareTag("Player"))
             {
+                TempTPPanel.SetActive(false);
                 interactionText.text = "";
             }
         }
