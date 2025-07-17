@@ -23,7 +23,6 @@ namespace ToB.Entities.FieldObject
         private void Awake()
         {
             IsInteractable = true;
-            animator.SetBool("IsDiscovered", isDiscovered);
             BonfireUIPanel.SetActive(false);
         }
         
@@ -31,12 +30,12 @@ namespace ToB.Entities.FieldObject
         public override void LoadJson(JObject json)
         {
             base.LoadJson(json);
-            isDiscovered = json.Get(nameof(isDiscovered), isDiscovered);;
+            isDiscovered = json.Get(nameof(isDiscovered), isDiscovered);
         }
 
         public override void OnLoad()
         {
-            
+            animator.SetBool("IsDiscovered", isDiscovered);
         }
         public override JObject ToJson()
         {
@@ -55,7 +54,6 @@ namespace ToB.Entities.FieldObject
             if(!isDiscovered) BonfireDiscovered();
             else
             {
-                Debug.Log("상호작용 시작");
                 BonfireUIPanel.SetActive(true);
                 interactionText.text = "";
                 StageManager.Instance.ChangeGameState(GameState.Dialog);
@@ -118,6 +116,7 @@ namespace ToB.Entities.FieldObject
         public void LeaveBonfire()
         {
             BonfireUIPanel.SetActive(false);
+            interactionText.text = "F : 쉬어가기";
             StageManager.Instance.ChangeGameState(GameState.Play);
             animator.SetBool("IsUsing", false);
         }

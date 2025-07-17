@@ -22,9 +22,7 @@ namespace ToB.Entities.FieldObject
 
         private void Awake()
         {
-            IsInteractable = true;
-            LeverSR.sprite = sprites[isLeverActivated ? 1 : 0];
-            interactionText.text = "";
+            
         }
 
         public override void LoadJson(JObject json)
@@ -64,7 +62,7 @@ namespace ToB.Entities.FieldObject
             }
         }
 
-        private void UpdateLeverText()
+        public void UpdateLeverText()
         {
             if (!isLeverActivated) interactionText.text = "F : 켜기";
             else interactionText.text = "F : 끄기";
