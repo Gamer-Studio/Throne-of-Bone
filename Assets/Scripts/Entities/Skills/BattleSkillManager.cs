@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using ToB.Utils.Singletons;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
@@ -12,34 +12,24 @@ namespace ToB.Entities.Skills
         Deactivated
     }
 
-    public class BattleSkillManager : MonoBehaviour
+    public class BattleSkillManager : ManualSingleton<BattleSkillManager>
     {
     private BattleSkillData skillDB;
     // 플레이어별 스킬 상태 관리(스킬 ID와 스킬 습득 여부)
     private Dictionary<int, SkillState> playerSkillStates = new();
     public Dictionary<int, SkillState> PlayerSkillStates => playerSkillStates;
 
-    private async void Awake()
+    private void Awake()
     {
-        await LoadSkillDataBase();
-
+        LoadSkillDataBase();
         InitializeSkillStates();
     }
 
-    private async Task LoadSkillDataBase()
+    private void LoadSkillDataBase()
     {
         var handle = Addressables.LoadAssetAsync<BattleSkillData>("Assets/Data/BattleSkill/BattleSkillSO.asset");
-        await handle.Task;
-
-        if (handle.Status == UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationStatus.Succeeded)
-        {
-            skillDB = handle.Result;
-            Debug.Log("스킬 DB 어드레서블로 불러오기 성공");
-        }
-        else
-        {
-            Debug.LogError("스킬 DB 어드레서블로 불러오기 실패");
-        }
+        skillDB = handle.WaitForCompletion();
+        if (skillDB != null) Debug.Log("스킬 DB 어드레서블로 불러오기 성공");
     }
 
     private void InitializeSkillStates()
@@ -69,7 +59,7 @@ namespace ToB.Entities.Skills
         }
         // Check 2. 상위 티어 스킬을 배우려고 하는가? 는 이거 게임매니저 같은 거가 필요하려나요? player가 저장해야 하나?
         /*
-        if (skillDB.GetSkillById(id).tier <= GameManager.tier)
+        if (skillDB.GetSkillById(id).tier <= StageManager.tier)
         {
             Debug.LogWarning($"스킬 {id} : {skillDB.GetSkillById(id).skillName} 를 배우려면 티어가 더 높아야 합니다");
             return;
