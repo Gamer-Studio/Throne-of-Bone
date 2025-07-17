@@ -18,7 +18,7 @@ namespace ToB.UI
         public WideMapUI wideMapUI;
         public GameOverUI gameOverUI;
         public EffectUI effectUI;
-        //[SerializeField] public ToastUI toastUI;
+        public ToastUI toastUI;
         
         public readonly Stack<UIPanelBase> panelStack = new Stack<UIPanelBase>();
         
@@ -53,6 +53,7 @@ namespace ToB.UI
                     wideMapUI.gameObject.SetActive(false);
                     gameOverUI.gameObject.SetActive(false);
                     effectUI.gameObject.SetActive(false);
+                    toastUI.gameObject.SetActive(false);
                     break;
                 
                 case "Intro":
@@ -63,6 +64,7 @@ namespace ToB.UI
                     wideMapUI.gameObject.SetActive(false);
                     gameOverUI.gameObject.SetActive(false);
                     effectUI.gameObject.SetActive(false);
+                    toastUI.gameObject.SetActive(false);
                     break;
         
                 //메인메뉴와 인트로 씬 말고는 다 Stage씬이니 일단은 이렇게.
@@ -75,6 +77,7 @@ namespace ToB.UI
                     wideMapUI.gameObject.SetActive(false);
                     gameOverUI.gameObject.SetActive(false);
                     effectUI.gameObject.SetActive(true);
+                    toastUI.gameObject.SetActive(false);
                     break;
             }
         }
