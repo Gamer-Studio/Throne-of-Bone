@@ -166,7 +166,6 @@ namespace ToB.UI
 
         public void SettingUIToggle(InputAction.CallbackContext context)
         {
-            Debug.Log("SettingUIToggle 실행됨");
             if (context.performed && !UIManager.Instance.isThereActiveUI)
             {
                 if (gameObject.activeSelf && currentPanel == panelObjects[4])

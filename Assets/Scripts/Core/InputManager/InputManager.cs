@@ -17,6 +17,7 @@ namespace ToB.Core.InputManager
     
     public partial class InputManager : DDOLSingleton<InputManager>
     {
+        [field:SerializeField] public KeyBindManager KeyBindManager { get; private set; }
         public PlayerInput PlayerInput { get; private set; }
 
         public PlayerController player;
@@ -29,12 +30,13 @@ namespace ToB.Core.InputManager
         {
             base.Awake();
             PlayerInput = GetComponent<PlayerInput>();
-
+            
         }
 
         private void Start()
         {
             SetActionMap(InputActionMaps.Player);
+            KeyBindManager.LoadKeySettings();
         }
 
         public void SetActionMap(InputActionMaps map)

@@ -1,5 +1,6 @@
 using System;
 using TMPro;
+using ToB.Core.InputManager;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -43,7 +44,6 @@ namespace ToB.UI.BookPanels
             {
                 var bindings = inputActionReference.action.bindings;
                 
-                // Composite의 part name (ex. "up", "down", etc.)
                 string partName = bindDirection switch
                 {
                     Vector2 v when v == Vector2.up => "up",
@@ -55,8 +55,7 @@ namespace ToB.UI.BookPanels
                 
                 for (int i = 0; i < bindings.Count; i++)
                 {
-                    var binding = bindings[i];
-                    Debug.Log(binding.name);
+                    var binding = bindings[i]; ;
                     if (binding.isPartOfComposite && binding.name == partName)
                     {
                         bindKey = inputActionReference.action.GetBindingDisplayString(i, displayStringOptions);
@@ -90,6 +89,7 @@ namespace ToB.UI.BookPanels
                     button.interactable = true;
 
                     action.Enable();
+                    InputManager.Instance.KeyBindManager.SaveCurrentKeySettings();
                     ShowBindKey();
                 });
             
