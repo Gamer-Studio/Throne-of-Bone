@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using ToB.Core;
+using ToB.Scenes.Stage;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -47,6 +48,7 @@ namespace ToB.UI
         
         private void ShowPanel(int indexToShow)
         {
+            StageManager.Instance?.ChangeGameState(GameState.UI);
             for (int i = 0; i < panelObjects.Length; i++)
             {
                 if (i == indexToShow)
@@ -164,7 +166,6 @@ namespace ToB.UI
 
         public void SettingUIToggle(InputAction.CallbackContext context)
         {
-            Debug.Log("SettingUIToggle 실행됨");
             if (context.performed && !UIManager.Instance.isThereActiveUI)
             {
                 if (gameObject.activeSelf && currentPanel == panelObjects[4])
@@ -201,6 +202,8 @@ namespace ToB.UI
         {
             gameObject.SetActive(false);
             UIManager.Instance.panelStack.Pop();
+            if(StageManager.Instance && UIManager.Instance.panelStack.Count == 0) 
+                StageManager.Instance.ChangeGameState(GameState.Play);
         }
     }
 }

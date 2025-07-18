@@ -13,7 +13,7 @@ namespace ToB.Player
     /// </summary>
     public void Load()
     {
-      data = SAVE.Current.Player.Node("character", true);
+      data = SAVE.Current?.Player.Node("character", true);
     }
 
     /// <summary>
