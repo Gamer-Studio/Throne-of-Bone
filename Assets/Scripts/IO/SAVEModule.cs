@@ -2,9 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
-using NaughtyAttributes;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ToB.IO.SubModules;
@@ -14,18 +12,23 @@ using UnityEngine;
 namespace ToB.IO
 {
   [Serializable]
-  public class SAVEModule : JObject, IJsonSerializable
+  public class SAVEModule : JObject, ISAVEModule
   {
     private static readonly JObject Dummy = new JObject(); 
-    
-    public string name;
+    private string name;
+
+    public string Name
+    {
+      get => name;
+      set => name = value;
+    }
 
     #region MetaData
 
-    private Dictionary<string, SAVEModule> children;
+    private Dictionary<string, ISAVEModule> children;
     public string[] ChildNames => children.Keys.ToArray();
     public JObject MetaData => (JObject)this["metaData"];
-    protected virtual string ModuleType => nameof(SAVEModule);
+    public string ModuleType => nameof(SAVEModule);
 
     #endregion
 
@@ -37,11 +40,11 @@ namespace ToB.IO
     public SAVEModule(string name)
     {
       this.name = name;
-      children = new Dictionary<string, SAVEModule>();
+      children = new Dictionary<string, ISAVEModule>();
       this["metaData"] = new JObject();
     }
 
-    protected virtual void BeforeSave() { }
+    public JObject BeforeSave() => this;
 
     public void Save(string parentPath)
     {
@@ -56,7 +59,7 @@ namespace ToB.IO
         foreach (var (_, node) in children)
         {
           node.Save(path);
-          childModuleInfo[node.name] = node.ModuleType;
+          childModuleInfo[node.Name] = node.ModuleType;
         }
       }
 
@@ -150,9 +153,10 @@ namespace ToB.IO
             continue;
           }
 
-          var childModule = childModuleInfo.Get(fileName, nameof(SAVEModule)) switch
+          ISAVEModule childModule = childModuleInfo.Get(fileName, nameof(SAVEModule)) switch
           {
             nameof(PlayerModule) => Node<PlayerModule>(fileName, true),
+            nameof(PlayerStatModule) => Node<PlayerStatModule>(fileName, true),
             _ => Node(fileName, true),
           };
           await childModule.Load(System.IO.Path.Combine(path, fileName), true);
@@ -167,14 +171,17 @@ namespace ToB.IO
     /// <param name="force">true일시 존재하지 않으면 생성합니다.</param>
     public SAVEModule Node(string key, bool force = false)
     {
-      if(children.TryGetValue(key, out var node))
-        return node;
+      if (children.TryGetValue(key, out var node))
+      {
+        if (node is SAVEModule value) return value;
+        else throw new Exception("Node type is not match");
+      }
       
       if (!force) throw new Exception("Node not found");
       
-      node = new SAVEModule(key);
-      children.Add(key, node);
-      return node;
+      var resultNode = new SAVEModule(key);
+      children.Add(key, resultNode);
+      return resultNode;
     }
 
     /// <summary>
@@ -184,7 +191,7 @@ namespace ToB.IO
     /// <param name="key"></param>
     /// <param name="force"></param>
     /// <typeparam name="T"></typeparam>
-    public T Node<T>(string key, bool force = false) where T : SAVEModule
+    public T Node<T>(string key, bool force = false) where T : ISAVEModule
     {
       if(children.TryGetValue(key, out var node))
       {
@@ -197,7 +204,7 @@ namespace ToB.IO
       
       var result = typeof(T) switch
       {
-        var type when type == typeof(SAVEModule) => (T) new SAVEModule(key),
+        var type when type == typeof(SAVEModule) => (T) (object) new SAVEModule(key),
         var type when type == typeof(PlayerModule) => (T) (object) new PlayerModule(key),
         var type when type == typeof(PlayerStatModule) => (T) (object) new PlayerStatModule(key),
         _ => (T) Activator.CreateInstance(typeof(T), key),
