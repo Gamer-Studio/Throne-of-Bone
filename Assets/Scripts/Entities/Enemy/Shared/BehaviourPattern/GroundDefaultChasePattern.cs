@@ -21,8 +21,14 @@ namespace ToB.Entities
         public override void FixedExecute()
         {
             base.FixedExecute();
-            if(!enemy.target)
-                Exit();
+            if (enemy.Physics.IsLedgeBelow())
+            {
+                enemy.Physics.externalVelocity[ChaseKey] = Vector2.zero;
+            }
+            else
+            {
+                enemy.Physics.externalVelocity[ChaseKey] = ChaseSpeed * enemy.LookDirectionHorizontal;
+            }
         }
 
         public override void Exit()

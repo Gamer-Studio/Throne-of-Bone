@@ -6,11 +6,13 @@ namespace ToB.Entities
     {
         public Func<bool> Condition { get; }
         public EnemyPattern Pattern { get; }
+        public Action OnTransition { get; }
         
-        public EnemyStateTransition(Func<bool> condition, EnemyPattern pattern)
+        public EnemyStateTransition(Func<bool> condition, EnemyPattern pattern, Action onTransition = null)
         {
             Condition = condition;
             Pattern = pattern;
+            OnTransition = onTransition;
         }
     }
 }

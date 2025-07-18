@@ -31,8 +31,11 @@ namespace ToB.Entities
         {
             foreach (var transition in transitions)
             {
-                if(transition.Condition())
+                if (transition.Condition())
+                {
                     strategy.ChangePattern(transition.Pattern);
+                    transition.OnTransition?.Invoke();
+                }
             }
         }
         
@@ -45,9 +48,9 @@ namespace ToB.Entities
             PatternEndCallback?.Invoke();
         }
 
-        public void AddTransition(Func<bool> condition, EnemyPattern pattern)
+        public void AddTransition(Func<bool> condition, EnemyPattern pattern, Action onTransition = null)
         {
-            transitions.Add(new EnemyStateTransition(condition, pattern));
+            transitions.Add(new EnemyStateTransition(condition, pattern, onTransition));
         }
     }
 }
