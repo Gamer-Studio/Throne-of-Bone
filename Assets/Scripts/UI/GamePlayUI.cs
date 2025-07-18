@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using DG.Tweening;
+using ToB.Entities.Skills;
 
 namespace ToB.UI
 {
@@ -55,7 +56,7 @@ namespace ToB.UI
         public void TestHPAddButton()
         {
             PlayerCharacter player = PlayerCharacter.Instance;
-            player.stat.Hp = player.stat.maxHp;
+            player.stat.HealtoFullHp();
         }
 
         #endregion

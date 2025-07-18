@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using ToB.Utils.Singletons;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.Events;
 
 namespace ToB.Entities.Skills
 {
@@ -15,9 +16,16 @@ namespace ToB.Entities.Skills
     public class BattleSkillManager : ManualSingleton<BattleSkillManager>
     {
     private BattleSkillData skillDB;
+    [SerializeField] private BattleSkillStats bsStats;
+    public BattleSkillStats BSStats => bsStats;
     // 플레이어별 스킬 상태 관리(스킬 ID와 스킬 습득 여부)
     private Dictionary<int, SkillState> playerSkillStates = new();
     public Dictionary<int, SkillState> PlayerSkillStates => playerSkillStates;
+    // 외부 참조용
+
+    //UI 갱신용 이벤트
+    public UnityEvent<int> onRangeAtkStackChanged = new();
+    public UnityEvent<float> onMaxHpChanged = new();
 
     private void Awake()
     {
@@ -25,13 +33,20 @@ namespace ToB.Entities.Skills
         InitializeSkillStates();
     }
 
+    
+    /// <summary>
+    /// CSV에서 파싱한 SO에서 정보를 불러옵니다.
+    /// </summary>
     private void LoadSkillDataBase()
     {
         var handle = Addressables.LoadAssetAsync<BattleSkillData>("Assets/Data/BattleSkill/BattleSkillSO.asset");
         skillDB = handle.WaitForCompletion();
         if (skillDB != null) Debug.Log("스킬 DB 어드레서블로 불러오기 성공");
     }
-
+    /// <summary>
+    /// 불러온 정보를 바탕으로 초기에 플레이어의 스킬 정보 딕셔너리가 없는 경우 플레이어의 스킬 정보 딕셔너리를 기록합니다.
+    /// 추후 초기화할 때도 이 메서드를 사용할 수 있습니다. (ResourceManager의 자원 환급 메서드와 함께 사용)
+    /// </summary>
     private void InitializeSkillStates()
     {
         foreach (var skill in skillDB.BattleSkillDataBase)
@@ -40,6 +55,28 @@ namespace ToB.Entities.Skills
             {
                 playerSkillStates.Add(skill.id, SkillState.Unacquired);
             }
+        }
+    }
+
+    /// <summary>
+    /// NPC에게 스킬 초기화 시 호출할 메서드
+    /// </summary>
+    public void ResetSkillStates()
+    {
+        InitializeSkillStates();
+        Core.ResourceManager.Instance.ReturnUsedResources();
+    }
+
+    public SkillState GetSkillState(int id)
+    {
+        if (playerSkillStates.TryGetValue(id, out var state))
+        {
+            return state;
+        }
+        else
+        {
+            Debug.LogWarning($"스킬 {id} : {skillDB.GetSkillById(id).skillName} 가 DB에 없습니다.");
+            return SkillState.Unacquired;
         }
     }
 
@@ -75,7 +112,15 @@ namespace ToB.Entities.Skills
         bool resourcePayed = Core.ResourceManager.Instance.IsPlayerHaveEnoughResources(goldCost, manaCost);
         if (resourcePayed)
         {
+            // 스킬 활성화에 사용한 자원 카운트
+            Core.ResourceManager.Instance.UsedGold += goldCost;
+            Core.ResourceManager.Instance.UsedMana += manaCost;
+            // 스킬의 상태를 배움 상태로 전환
             playerSkillStates[id] = SkillState.Acquired;
+            // bsStat에 스탯 적용
+            CategorizeSkills(id);
+            // bsStat을 실제 플레이어에 적용
+            bsStats.ApplyStats(bsStats);
             Debug.Log($"스킬 {id} : {skillDB.GetSkillById(id).skillName} 획득"); 
         }
     }
@@ -118,21 +163,135 @@ namespace ToB.Entities.Skills
         {
             if (playerSkillStates[skill.id] == SkillState.Acquired)
                 playerSkillStates[skill.id] = SkillState.Deactivated;
-        }
-    }
-    public SkillState GetSkillState(int id)
-    {
-        if (playerSkillStates.TryGetValue(id, out var state))
-        {
-            return state;
-        }
-        else
-        {
-            Debug.LogWarning($"스킬 {id} : {skillDB.GetSkillById(id).skillName} 가 DB에 없습니다.");
-            return SkillState.Unacquired;
+            ApplySkillsToPlayer();       
         }
     }
 
+	
+    /// <summary>
+    /// Dict를 순회하며 모든 스킬을 스탯에 적용하는 메서드.
+    /// 게임 시작 시 Load해온 스킬 습득 여부 Dictionary에서 스텟을 적용할 때 혹은 사망 시 스킬 초기화 시 호출됩니다.
+    /// </summary>
+    public void ApplySkillsToPlayer()
+    {
+        bsStats.ResetAllStats();
+        foreach (var skill in playerSkillStates)
+        {
+            if (skill.Value == SkillState.Acquired)
+                CategorizeSkills(skill.Key);
+        }
+        bsStats.ApplyStats(bsStats);
+    }
+
+    /// <summary>
+    /// ID에 따라 적용할 메서드를 분류해 줍니다. 이거 수작업을 안 할 방법이...없는 것 같은데?
+    /// </summary>
+    /// <param name="id"></param>
+    public void CategorizeSkills(int id)
+    {
+        if (id >= 10000 && id <= 10005)
+            AttackUP(id);
+        else if (id >= 10006 && id <= 10011)
+            CritUP(id);
+        else if (id >= 10012 && id <= 10014)
+            Bleed(id);
+        else if (id >= 10015 && id <= 10017)
+            RangeAtkUP(id);
+        else if (id == 10018)
+            RangeAtkHeal(id);
+        else if (id >= 20000 && id <= 20005)
+            MaxHpUP(id);
+        else if (id >= 20006 && id <= 20009)
+            ParryUP(id);
+        else if (id >= 20010 && id <= 20012)
+            DefUP(id);
+        else if (id >= 20013 && id <= 20016)
+            DefGaugeUP(id);
+        else if (id >= 30000 && id <= 30005)
+            GoldUP(id);
+        else if (id >= 30006 && id <= 30009)
+            DashUP(id);
+        else if (id >= 30010 && id <= 30012)
+            ImmuneDebuff(id);
+        else if (id >= 30013 && id <= 30015)
+            Discount(id);
+    }
+    
+    #region Skill Apply Methods
+
+	private void AttackUP(int id)
+    {
+        bsStats.Atk += skillDB.GetSkillById(id).upStat1;
+    }
+    private void Discount(int id)
+    {
+        bsStats.DiscountShop += skillDB.GetSkillById(id).upStat1;
+        bsStats.DiscountBlacksmith += skillDB.GetSkillById(id).upStat2;
+    }
+    private void ImmuneDebuff(int id)
+    {
+        switch (id)
+        {
+            case 30010:
+                bsStats.IsImmuneByPoison = true;
+                break;
+            case 30011:
+                bsStats.IsImmuneByFire = true;
+                break;
+            case 30012:
+                bsStats.IsImmuneByElectric = true;
+                break;
+        }
+    }
+    private void DashUP(int id)
+    {
+        bsStats.DashImmuneTime += skillDB.GetSkillById(id).upStat1;
+        bsStats.DashCooldown += skillDB.GetSkillById(id).upStat2;
+    }
+    private void GoldUP(int id)
+    {
+        bsStats.GoldUP += skillDB.GetSkillById(id).upStat1;
+    }
+    private void DefGaugeUP(int id)
+    {
+        bsStats.GuardGaugeDiscount += skillDB.GetSkillById(id).upStat1;
+        bsStats.GuardGaugeRegen += skillDB.GetSkillById(id).upStat2;
+    }
+    private void DefUP(int id)
+    {
+        bsStats.Def += skillDB.GetSkillById(id).upStat1;
+    }
+    private void ParryUP(int id)
+    {
+        bsStats.ParryTime += skillDB.GetSkillById(id).upStat1;
+        bsStats.ParryHealAmount += skillDB.GetSkillById(id).upStat2;
+    }
+    private void MaxHpUP(int id)
+    {
+        bsStats.MaxHp += skillDB.GetSkillById(id).upStat1;
+        onMaxHpChanged.Invoke(bsStats.MaxHp);    
+    }
+    private void RangeAtkHeal(int id)
+    {
+        bsStats.RangeAtkHeal += skillDB.GetSkillById(id).upStat1;
+    }
+    private void CritUP(int id)
+    {
+        bsStats.CritChance += skillDB.GetSkillById(id).upStat1;
+        bsStats.CritDmgMultiplier += skillDB.GetSkillById(id).upStat2;
+    }
+    private void Bleed(int id)
+    {
+        bsStats.BleedChance += skillDB.GetSkillById(id).upStat1;
+        bsStats.BleedDmgMultiplier += skillDB.GetSkillById(id).upStat2;
+    }
+    private void RangeAtkUP(int id)
+    {
+        bsStats.RangeAtkStack += (int)skillDB.GetSkillById(id).upStat1;
+        bsStats.RangeAtkDmgMultiplier += skillDB.GetSkillById(id).upStat2;
+        onRangeAtkStackChanged.Invoke(bsStats.RangeAtkStack);
+    }
+    #endregion
 
     }
 }

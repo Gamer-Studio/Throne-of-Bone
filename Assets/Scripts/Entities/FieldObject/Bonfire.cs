@@ -1,6 +1,7 @@
 using Newtonsoft.Json.Linq;
 using TMPro;
 using ToB.Core;
+using ToB.Entities.Skills;
 using ToB.IO;
 using ToB.Scenes.Stage;
 using UnityEngine;
@@ -50,7 +51,7 @@ namespace ToB.Entities.FieldObject
         public void Interact()
         {
             AudioManager.Play("fntgm_magic_fire_08",AudioType.Effect);
-            StageManager.Instance.player.stat.Hp = StageManager.Instance.player.stat.maxHp;
+            StageManager.Instance.player.stat.HealtoFullHp();
             if(!isDiscovered) BonfireDiscovered();
             else
             {
