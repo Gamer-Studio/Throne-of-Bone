@@ -33,6 +33,13 @@ public static class AddressableAssetImporter
       return;
     }
     
+    var group = settings.FindGroup("Audio Assets");
+    if (group == null)
+    {
+      Debug.LogError("Audio Assets 어드레서블 그룹이 존재하지 않아요!");
+      return;
+    }
+    
     foreach (var obj in Selection.objects)
     {
       if (obj is not AudioClip) continue;
@@ -41,15 +48,19 @@ public static class AddressableAssetImporter
         guid = AssetDatabase.AssetPathToGUID(path);
       var entry = settings.FindAssetEntry(guid);
 
-      if (entry == null)
+      if (entry != null)
       {
-        entry = settings.CreateOrMoveEntry(guid, settings.DefaultGroup);
-        entry.SetAddress($"{AudioManager.Label}/{obj.name}");
+        if (entry.parentGroup != group)
+        {
+          settings.RemoveAssetEntry(guid);
+          entry = settings.CreateOrMoveEntry(guid, group);
+        }
       }
       else
-      {
-        entry.SetAddress($"{AudioManager.Label}/{obj.name}");
-      }
+        entry = settings.CreateOrMoveEntry(guid, group);
+
+      entry.SetAddress($"{AudioManager.Label}/{obj.name}");
+      entry.SetLabel(AudioManager.Label, true);
     }
     
     AssetDatabase.SaveAssets();
