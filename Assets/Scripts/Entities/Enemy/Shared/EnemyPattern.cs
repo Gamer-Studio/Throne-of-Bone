@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace ToB.Entities
@@ -8,6 +9,7 @@ namespace ToB.Entities
         protected readonly Enemy enemy;
         protected readonly EnemyStrategy strategy;
       
+        List<EnemyStateTransition> transitions;
         event Action PatternEndCallback;    // 혹시 몰라서. 불필요하면 삭제
         
         /// <summary>
@@ -18,6 +20,7 @@ namespace ToB.Entities
             this.strategy = strategy;
             this.enemy = strategy.enemy;
             PatternEndCallback += EndCallback;
+            transitions = new List<EnemyStateTransition>();
         }
 
         public virtual void Enter()
@@ -26,6 +29,14 @@ namespace ToB.Entities
 
         public virtual void Execute()
         {
+            foreach (var transition in transitions)
+            {
+                if (transition.Condition())
+                {
+                    strategy.ChangePattern(transition.Pattern);
+                    transition.OnTransition?.Invoke();
+                }
+            }
         }
         
         public virtual void FixedExecute()
@@ -35,6 +46,11 @@ namespace ToB.Entities
         public virtual void Exit()
         {
             PatternEndCallback?.Invoke();
+        }
+
+        public void AddTransition(Func<bool> condition, EnemyPattern pattern, Action onTransition = null)
+        {
+            transitions.Add(new EnemyStateTransition(condition, pattern, onTransition));
         }
     }
 }

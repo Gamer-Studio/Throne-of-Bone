@@ -1,4 +1,5 @@
 using System;
+using NaughtyAttributes;
 using UnityEditor;
 using UnityEngine;
 
@@ -7,7 +8,7 @@ namespace ToB.Entities
     [RequireComponent(typeof(CircleCollider2D))]
     public class EnemyRangeBaseSightSensor : MonoBehaviour
     {
-        private Enemy enemy;
+        [SerializeField, ReadOnly] private Enemy enemy;
 
         [SerializeField] private CircleCollider2D circleCollider;
         [SerializeField] private LayerMask playerMask;
