@@ -4,17 +4,23 @@ namespace ToB.Entities
 {
     public class CagedSpiderFSM : EnemyStrategy
     {
-        public GroundDefaultMovePattern groundMovePattern;
-        public GroundDefaultChasePattern groundChasePattern;
-
+        private CagedSpider owner;
+        private GroundDefaultMovePattern groundMovePattern;
+        private GroundDefaultChasePattern groundChasePattern;
+        private CagedSpiderSelfDestructPattern selfDestructPattern;
 
         public override void Init()
         {
+            owner = enemy as CagedSpider;
+            
             groundMovePattern = new GroundDefaultMovePattern(this);
+            groundChasePattern = new GroundDefaultChasePattern(this);
+            selfDestructPattern = new CagedSpiderSelfDestructPattern(this);
+            
             groundMovePattern.AddTransition(()=>enemy.target, groundChasePattern);
             
-            groundChasePattern = new GroundDefaultChasePattern(this);
             groundChasePattern.AddTransition(()=>!enemy.target, groundMovePattern);
+            groundChasePattern.AddTransition(() => enemy.target && owner.Stat.CurrentHP * 2 <= owner.Stat.MaxHP, selfDestructPattern);
             
             ChangePattern(groundMovePattern);
         }

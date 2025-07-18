@@ -13,8 +13,8 @@ namespace ToB.Entities
         private IEnemyHittableSO hittableSO;
         
         [SerializeField, ReadOnly] private float currentHP;
-        private float CurrentHP => currentHP;
-        private float MaxHP => hittableSO.HP;
+        public float CurrentHP => currentHP;
+        public float MaxHP => hittableSO.HP;
         public float DEF => hittableSO.DEF;
 
         public Coroutine DamageEffectCoroutine { get; private set; }

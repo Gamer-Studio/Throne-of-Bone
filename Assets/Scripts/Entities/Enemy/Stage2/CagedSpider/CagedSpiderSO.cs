@@ -19,7 +19,12 @@ namespace ToB.Entities
 
         [field: SerializeField] public float BodyDamage { get; private set; } = 10;
         [field: SerializeField] public float ExplodeDamage { get; private set; } = 30;
+        [field: SerializeField] public float ExplodeRadius { get; private set; } = 2.5f;
+        [field: SerializeField] public float ExplodePower { get; private set; } = 22f;
+        
+        [field: SerializeField] public float ExplodeSensorRadius { get; private set; }
         [field: SerializeField] public float SightRange { get; private set; } = 7;
         [field: SerializeField] public float SightAngle { get; private set; } = 90;
+        [field: SerializeField] public float JumpForce { get; private set; } = 10;
     }
 }
