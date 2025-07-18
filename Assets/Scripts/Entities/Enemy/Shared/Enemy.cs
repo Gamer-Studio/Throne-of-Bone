@@ -15,7 +15,7 @@ namespace ToB.Entities
     public abstract class Enemy : PooledObject
     {
         [Header("기본 참조")] 
-        [Expandable, SerializeField] protected EnemySO enemySO;
+        [Expandable, SerializeField] public EnemySO enemySO;
         public EnemySO EnemySO => enemySO;
         [SerializeField] private Rigidbody2D rb;
         public Rigidbody2D Rb => rb;
@@ -69,7 +69,7 @@ namespace ToB.Entities
             Animator.Rebind();
             Sprite.enabled = true;
             Hitbox.enabled = true;
-            Knockback.enabled = true;
+            if(Knockback) Knockback.enabled = true;
             target = null;
         }
 
@@ -107,6 +107,8 @@ namespace ToB.Entities
         {
             Core.ResourceManager.Instance.SpawnResources(InfiniteResourceType.Gold,enemySO.DropGold,transform);
             Core.ResourceManager.Instance.SpawnResources(InfiniteResourceType.Mana,enemySO.DropMana,transform);
+            
+            Physics.enabled = false;
             isAlive = false;
         }
 

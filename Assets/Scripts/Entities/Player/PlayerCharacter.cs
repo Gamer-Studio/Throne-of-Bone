@@ -435,6 +435,7 @@ namespace ToB.Player
     {
       if(IsImmune) return;
       
+      Debug.Log("넉백 " + direction);
       StartCoroutine(KnockBackCoroutine(value, direction));
     }
     
@@ -443,7 +444,7 @@ namespace ToB.Player
     /// </summary>
     /// <param name="value">넉백 세기입니다.</param>
     /// <param name="sender">넉백을 가하는 오브젝트입니다.</param>
-    public void KnockBack(float value, GameObject sender) => KnockBack(value, transform.position - sender.transform.position );
+    public void KnockBack(float value, GameObject sender) => KnockBack(value, transform.position - sender.transform.position);
 
     private IEnumerator KnockBackCoroutine(float value, Vector2 direction)
     {

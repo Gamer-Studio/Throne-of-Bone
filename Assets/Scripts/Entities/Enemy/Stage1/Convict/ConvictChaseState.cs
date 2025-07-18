@@ -9,8 +9,8 @@ namespace ToB.Entities
     {
         private readonly Convict convict;
 
-        public ConvictChaseState(EnemyStrategy strategy, float chaseSpeed, Action EndCallback = null) : base(strategy,
-            chaseSpeed, EndCallback)
+        public ConvictChaseState(EnemyStrategy strategy,  Action EndCallback = null) : base(strategy,
+            EndCallback)
         {
             convict = enemy as Convict;
         }
@@ -42,7 +42,7 @@ namespace ToB.Entities
                 }
                 else
                 {
-                    enemy.Physics.externalVelocity[ChaseKey] = chaseSpeed * enemy.LookDirectionHorizontal;
+                    enemy.Physics.externalVelocity[ChaseKey] = ChaseSpeed * enemy.LookDirectionHorizontal;
                 }
             }
         }
