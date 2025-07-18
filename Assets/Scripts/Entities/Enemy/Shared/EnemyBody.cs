@@ -25,6 +25,7 @@ namespace ToB.Entities
         {
             hittableMask = LayerMask.GetMask("Player");
             BoxCollider = GetComponent<BoxCollider2D>();
+            owner = GetComponentInParent<Enemy>();
             BoxCollider.isTrigger = true;
         }
 

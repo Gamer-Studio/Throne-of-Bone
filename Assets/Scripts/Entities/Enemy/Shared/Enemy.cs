@@ -15,7 +15,7 @@ namespace ToB.Entities
     public abstract class Enemy : PooledObject
     {
         [Header("기본 참조")] 
-        [Expandable, SerializeField] protected EnemySO enemySO;
+        [Expandable, SerializeField] public EnemySO enemySO;
         public EnemySO EnemySO => enemySO;
         [SerializeField] private Rigidbody2D rb;
         public Rigidbody2D Rb => rb;
