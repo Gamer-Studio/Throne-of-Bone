@@ -3,6 +3,7 @@ using System.Collections;
 using NaughtyAttributes;
 using ToB.Core;
 using ToB.Entities.Projectiles;
+using ToB.Entities.Skills;
 using ToB.Utils;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -21,7 +22,7 @@ namespace ToB.Player
     [Label("근접 공격 피해 계수"), Tooltip("기본 캐릭터 공격력에 비례한 모션당 피해 계수입니다."), Foldout("Attack State")] public float[] attackDamageMultiplier = {1, 1, 2, 0.5f};
     [Label("근접 공격 대기 시간"), Foldout("Attack State"), SerializeField] private float meleeAttackDelay = 0;
     [Label("최대 원거리 공격 횟수"), Tooltip("원거리 공격의 충전되는 최대 횟수입니다."), Foldout("Attack State")] public int maxRangedAttack = 3;
-    [Label("검기 스택"), Foldout("Attack State"), SerializeField, ReadOnly] private int availableRangedAttack = 5;
+    [Label("검기 스택"), Foldout("Attack State"), SerializeField] private int availableRangedAttack = 3;
     [Label("검기 재생 시간(초)"), Foldout("Attack State")] public float rangedAttackRegenTime = 1;
     [Label("검기 초당 회복량"), Foldout("Attack State")] public int rangedAttackRegenAmount = 0;
     [Label("검기 발사 대기시간"), Foldout("Attack State")] public float shootDelay = 0.1f;
@@ -32,7 +33,7 @@ namespace ToB.Player
       get => availableRangedAttack;
       set
       {
-        var input = Math.Min(maxRangedAttack, Math.Max(value, 0));
+        var input = Math.Min(maxRangedAttack + BattleSkillManager.instance.BSStats.RangeAtkStack, Math.Max(value, 0));
 
         if (input != availableRangedAttack)
         {
@@ -192,7 +193,8 @@ namespace ToB.Player
       transform.eulerAngles = new Vector3(0, direction.x < 0 ? 180 : 0, 0);
       
       var prevDamage = stat.atk;
-      stat.atk *= attackDamageMultiplier[prevAttackMotion];
+      if (prevAttackMotion < 3) stat.atk *= attackDamageMultiplier[prevAttackMotion];
+      else if (prevAttackMotion == 3) stat.atk *= (attackDamageMultiplier[prevAttackMotion] + BattleSkillManager.instance.BSStats.RangeAtkDmgMultiplier);
       SetMeleeAttackDelay(waitTime);
       yield return new WaitForSeconds(waitTime);
       isAttacking = false;
@@ -206,7 +208,7 @@ namespace ToB.Player
 
     private IEnumerator RegenRangedAttack()
     {
-      for (;availableRangedAttack < maxRangedAttack;)
+      for (;availableRangedAttack < maxRangedAttack + BattleSkillManager.instance.BSStats.RangeAtkStack;)
       {
         yield return new WaitForSeconds(rangedAttackRegenTime);
         AvailableRangedAttack += rangedAttackRegenAmount;
