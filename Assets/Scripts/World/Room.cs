@@ -154,9 +154,12 @@ namespace ToB.Worlds
     /// </summary>
     public virtual void Load()
     {
-      saveModule = SAVE.Current.Node("Stage", true).Node($"Room_{stageIndex}_{roomIndex}", true);
-      
-      LoadJson(saveModule);
+      if (SAVE.Current != null)
+      {
+        saveModule = SAVE.Current.Node("Stage", true).Node($"Room_{stageIndex}_{roomIndex}", true);
+
+        LoadJson(saveModule);
+      }
       
       onLoad?.Invoke();
     }
@@ -178,7 +181,7 @@ namespace ToB.Worlds
       Save();
       
       onUnload?.Invoke();
-      Destroy(gameObject);
+      // Destroy(gameObject);
     }
     
     /// <summary>

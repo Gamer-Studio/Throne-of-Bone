@@ -82,7 +82,7 @@ namespace ToB.Scenes.Stage
 
       if (tempObj) tempObj.SetActive(false);
 
-      {
+      if (SAVE.Current != null) {
         // 임시 플레이어 소환 코드
         // TODO 방별 로딩형태 전환시 개편 필요
 
