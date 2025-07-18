@@ -17,22 +17,26 @@ namespace ToB.Core.InputManager
     
     public partial class InputManager : DDOLSingleton<InputManager>
     {
-        private PlayerInput playerInput;
+        [field:SerializeField] public KeyBindManager KeyBindManager { get; private set; }
+        public PlayerInput PlayerInput { get; private set; }
 
         public PlayerController player;
         
         [field:SerializeField] public string CurrentActionMap { get; set; }
 
+        public static bool IsRebinding = false;
+
         protected override void Awake()
         {
             base.Awake();
-            playerInput = GetComponent<PlayerInput>();
+            PlayerInput = GetComponent<PlayerInput>();
             
         }
 
         private void Start()
         {
             SetActionMap(InputActionMaps.Player);
+            KeyBindManager.LoadKeySettings();
         }
 
         public void SetActionMap(InputActionMaps map)
@@ -41,12 +45,12 @@ namespace ToB.Core.InputManager
             else CurrentActionMap = map.ToString();
             
             
-            playerInput.SwitchCurrentActionMap(CurrentActionMap);
+            PlayerInput.SwitchCurrentActionMap(CurrentActionMap);
         }
 
         public void SetInputActive(bool isActive)
         {
-            playerInput.enabled = isActive;
+            PlayerInput.enabled = isActive;
         }
     }
 }

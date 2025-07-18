@@ -71,8 +71,6 @@ namespace ToB.Core
               Debug.LogWarning("Multiple MainListener is found.");
           }
         }
-        
-        Debug.Log($"MainListener is found: {mainListener.gameObject.name}");
 
         if(mainListener) return mainListener;
         else throw new InvalidOperationException("MainListener is not found.");
