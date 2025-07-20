@@ -17,5 +17,7 @@ namespace ToB.Entities
         public static readonly int Bark = Animator.StringToHash("Bark");
         
         public static readonly int MotionCancel = Animator.StringToHash("MotionCancel");
+        public static readonly int AttackEnd  = Animator.StringToHash("AttackEnd");
+        public static readonly int AttackMiddleEnd  = Animator.StringToHash("AttackMiddleEnd");
     }
 }

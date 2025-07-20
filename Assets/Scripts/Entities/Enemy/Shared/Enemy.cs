@@ -47,7 +47,7 @@ namespace ToB.Entities
         public Transform target;
         
         [Header("속성")]
-        [SerializeField] protected bool isAlive;
+        [SerializeField, ReadOnly] protected bool isAlive;
         [field:SerializeField] public bool ReactOnDamage { get; private set; }
         public bool IsAlive => isAlive;
         
