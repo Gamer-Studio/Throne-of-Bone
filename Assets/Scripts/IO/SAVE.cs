@@ -131,6 +131,15 @@ namespace ToB.IO
     
     public SAVEModule Node(string key, bool force = false) => Data.Node(key, force);
 
+    public void Delete()
+    {
+      var rootPath = Path.Combine(SavePath, fileName);
+      if (Directory.Exists(rootPath))
+        Directory.Delete(rootPath, true);
+      
+      deleted = true;
+    }
+    
     /// <summary>
     /// TODO 저장 파일의 유효성 체크
     /// </summary>
