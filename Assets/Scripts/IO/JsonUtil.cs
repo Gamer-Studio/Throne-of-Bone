@@ -1,16 +1,81 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using ToB.IO.Converters;
+using ToB.Utils;
 using UnityEngine;
 
 namespace ToB.IO
 {
   public static class JsonUtil
   {
+    public static JsonSerializer Serializer { get; private set; }
     /// <summary>
     /// 비어 있는 더미 JObject입니다. 주로 초기값으로 사용됩니다.
     /// </summary>
-    public static readonly JObject Blank = new JObject(); 
+    public static readonly JObject Blank = new JObject();
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    private static void InitializeSettings()
+    {
+      // 제네릭 제외 컨버터 불러오기
+      var types = Assembly.GetExecutingAssembly().GetTypes();
+      var converters = (from target in types
+        where typeof(JsonConverter).IsAssignableFrom(target) &&
+              !target.IsAbstract &&
+              !target.ContainsGenericParameters &&
+              target.GetConstructor(Type.EmptyTypes) != null &&
+              target.Namespace != null &&
+              target.Namespace.StartsWith("ToB.IO.Converters")
+        select (JsonConverter)Activator.CreateInstance(target)).ToList();
+      
+      // IntEnumDictionary 대응
+      var enumTypes = types
+        .Where(t =>
+            t.IsEnum &&
+            t.IsPublic &&
+            t.GetCustomAttribute<SerializableAttribute>() != null // ✅ [Serializable]만 포함
+        );
+
+      foreach (var enumType in enumTypes)
+      {
+        try
+        {
+          var converterType = typeof(IntEnumDictionaryConverter<>).MakeGenericType(enumType);
+          converters.Add((JsonConverter)Activator.CreateInstance(converterType));
+        }
+        catch (Exception e)
+        {
+          DebugSymbol.Save.Log($"[JsonEnumConverterRegistry] '{enumType.Name}' 등록 실패: {e.Message}");
+        }
+      }
+      
+      
+      if(JsonConvert.DefaultSettings is null) goto CreateSetting;
+      var setting = JsonConvert.DefaultSettings?.Invoke();
+
+      if (setting is null) goto CreateSetting;
+      var settingConverters = setting.Converters;
+
+      foreach (var converter in converters)
+      {
+        settingConverters.Add(converter);
+      }
+      
+      goto Finish;
+      
+      CreateSetting:
+      JsonConvert.DefaultSettings = () => new JsonSerializerSettings
+      {
+        Converters = converters,
+      };
+      
+      Finish:
+      Serializer = JsonSerializer.Create(JsonConvert.DefaultSettings());
+    }
     
     /// <summary>
     /// 열거형 값을 정수 기반의 JValue로 변환합니다.
@@ -97,6 +162,33 @@ namespace ToB.IO
     #region Getter 
 
     #region JObject
+
+    public static JObject ReadObject(this JObject json, object obj)
+    {
+      if (json != null)
+      {
+        json.Merge(JObject.FromObject(obj, Serializer));
+        return json;
+      }
+      else return JObject.FromObject(obj, Serializer);
+    }
+
+    public static T ReadJson<T>(this JObject data, T target)
+    {
+      if (data == null || target == null) return target;
+      try
+      {
+        Serializer.Populate(data.CreateReader(), target);
+      }
+      catch (Exception e)
+      {
+        DebugSymbol.Save.Log(e);
+        throw;
+      }
+      
+      return target;
+    }
+    
     /// <summary>
     /// 지정된 키에 해당하는 열거형 값을 가져옵니다.
     /// </summary>
@@ -136,9 +228,12 @@ namespace ToB.IO
     /// <returns>Vector3 값 또는 기본값</returns>
     public static Vector3 Get(this JObject json, string key, Vector3 defaultValue)
     {
-      var data = json.Get<JObject>(key);
+      var str = json.Get(key, string.Empty);
+      var values = str.Split(',');
 
-      return data != null ? new Vector3(data.Get("x", 0), data.Get("y", 0), data.Get("z", 0)) : defaultValue;
+      return string.IsNullOrEmpty(str) ? 
+        new Vector3(float.Parse(values[0]), float.Parse(values[1]), float.Parse(values[2])) 
+        : defaultValue;
     }
     
     #endregion JObject
@@ -204,14 +299,7 @@ namespace ToB.IO
     /// <returns>변경된 JObject</returns>
     public static JObject Set(this JObject json, string key, Vector3 vector)
     {
-      var obj = new JObject
-      {
-        ["x"] = vector.x,
-        ["y"] = vector.y,
-        ["z"] = vector.z
-      };
-      
-      json[key] = obj;
+      json[key] = $"{vector.x},{vector.y},{vector.z}";
       return json;
     }
 

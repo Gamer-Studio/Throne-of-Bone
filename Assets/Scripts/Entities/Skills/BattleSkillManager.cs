@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using ToB.IO;
 using ToB.UI;
@@ -8,6 +9,7 @@ using UnityEngine.Events;
 
 namespace ToB.Entities.Skills
 {
+    [Serializable]
     public enum SkillState
     {
         Unacquired,
@@ -57,7 +59,7 @@ namespace ToB.Entities.Skills
     private void InitializeSkillStates()
     {
         // 이게 불러오기
-        playerSkillStates = SAVE.Current.PlayerStat.SavedPlayerSkillState;
+        playerSkillStates = SAVE.Current.PlayerStat.savedPlayerSkillState;
         
         foreach (var skill in skillDB.BattleSkillDataBase)
         {
