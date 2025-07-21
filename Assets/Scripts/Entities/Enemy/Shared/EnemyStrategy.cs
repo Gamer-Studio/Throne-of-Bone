@@ -33,6 +33,12 @@ namespace ToB.Entities
                 currentPattern?.FixedExecute();
         }
 
+        private void LateUpdate()
+        {
+            if (enemy.IsAlive)
+                currentPattern?.LateExecute();
+        }
+
         public void ChangePattern(EnemyPattern pattern)
         {
             currentPattern?.Exit();

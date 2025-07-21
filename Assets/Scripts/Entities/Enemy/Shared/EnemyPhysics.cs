@@ -207,7 +207,7 @@ namespace ToB.Entities
             castSize.x -= skinWidth;
             castSize.y -= skinWidth;
        
-            RaycastHit2D hit = Physics2D.BoxCast(origin, castSize, 0, direction, skinWidth*2f, terrainLayer);
+            RaycastHit2D hit = Physics2D.BoxCast(origin, castSize, 0, direction, skinWidth, terrainLayer);
             
             if(direction == Vector2.down)  // 디버그 시각화
                 DrawBoxCast(origin, castSize, direction.normalized, skinWidth*2f, Color.Lerp(Color.red, Color.yellow, 0.5f));

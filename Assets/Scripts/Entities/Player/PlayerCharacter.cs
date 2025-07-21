@@ -435,7 +435,6 @@ namespace ToB.Player
     {
       if(IsImmune) return;
       
-      Debug.Log("넉백 " + direction);
       StartCoroutine(KnockBackCoroutine(value, direction));
     }
     

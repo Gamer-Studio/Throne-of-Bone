@@ -42,6 +42,10 @@ namespace ToB.Entities
         public virtual void FixedExecute()
         {
         }
+        
+        public virtual void LateExecute()
+        {
+        }
 
         public virtual void Exit()
         {
