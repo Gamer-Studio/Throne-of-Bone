@@ -23,7 +23,9 @@ namespace ToB.UI
         
         [Header("Save Slot Panel")]
         [Foldout("Save Slot Panel"), SerializeField] public GameObject ConformPanel;
+        [Foldout("Save Slot Panel"), SerializeField] public GameObject DeleteConfirmPanel;
         [Foldout("Save Slot Panel"), SerializeField] public Button[] saveSlotButtons;
+        [Foldout("Save Slot Panel"), SerializeField] public Button[] deleteSlotButtons;
         [Label("로딩된 세이브파일 목록"), Foldout("Save Slot Panel"), SerializeField] private SAVE[] saves;
         [Label("선택된 세이브파일"), Foldout("Save Slot Panel"), SerializeField] private SAVE selectedSave;
 
@@ -52,6 +54,12 @@ namespace ToB.UI
                     // 빈 슬롯일 때
                     textField.text = $"세이브 슬롯 {i + 1} - EMPTY";
                 }
+            }
+
+            for (var i = 0; i < deleteSlotButtons.Length; i++)
+            {
+                var index = i;
+                deleteSlotButtons[i].onClick.AddListener(() => DeleteSaveFileSelected(index));
             }
         }
 
@@ -179,6 +187,19 @@ namespace ToB.UI
         {
             OpenPanel(ConformPanel);
             selectedSave = saves[selected];
+        }
+
+        public void DeleteSaveFileSelected(int selected)
+        {
+            OpenPanel(DeleteConfirmPanel);
+            selectedSave = saves[selected];
+        }
+
+        public void DeleteSaveFileConfirmed()
+        {
+            ClosePanel();
+            UIManager.Instance.toastUI.Show("선택한 세이브 파일을 삭제했습니다.");
+            // ~이하 세이브 파일 삭제 로직~
         }
 
         public void ConfirmSlotCancel()
