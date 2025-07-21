@@ -58,13 +58,18 @@ namespace ToB.Player
     [Label("캐릭터 스텟"), Foldout("State")] public PlayerStats stat = new();
 
     // Jump State
-    [Label("점프 파워"), Foldout("Jump State")] public float jumpPower = 10;
-    [Label("벽점프 파워"), Foldout("Jump State")] public float wallJumpPower = 10;
-    [Label("벽점프 반동 제어불가 시간"), Foldout("Jump State")] public float wallJumpReactionTime = 0.4f; 
-    [Label("최대 점프 시간"), Foldout("Jump State")] public float jumpTimeLimit = 0.2f;
-    [Label("낙하시 중력가속도 보정값"), Foldout("Jump State")] public float gravityAcceleration = 10;
-    [Label("낙하시 시작 중력값"), Foldout("Jump State")] public float gravityStart = -10;
-    [Label("낙하 최고 속력"), Foldout("Jump State")] public float maxFallSpeed = -10;
+    private const string JumpState = nameof(JumpState);
+    
+    [Label("최대 점프 가능 횟수"), Foldout(JumpState)] public int maxJumpCount = 0;
+    [Label("현재 점프 가능 횟수"), Foldout(JumpState)] public int currentJumpCount = 0;
+    [Label("점프 파워"), Foldout(JumpState)] public float jumpPower = 10;
+    [Label("공중 점프 파워"), Foldout(JumpState)] public float airJumpPower = 10;
+    [Label("벽점프 파워"), Foldout(JumpState)] public float wallJumpPower = 10;
+    [Label("벽점프 반동 제어불가 시간"), Foldout(JumpState)] public float wallJumpReactionTime = 0.4f; 
+    [Label("최대 점프 시간"), Foldout(JumpState)] public float jumpTimeLimit = 0.2f;
+    [Label("낙하시 중력가속도 보정값"), Foldout(JumpState)] public float gravityAcceleration = 10;
+    [Label("낙하시 시작 중력값"), Foldout(JumpState)] public float gravityStart = -10;
+    [Label("낙하 최고 속력"), Foldout(JumpState)] public float maxFallSpeed = -10;
 
     // 이 아래는 외부 접근용 연결 필드입니다.
     // 캐릭터가 공중인지 여부입니다.
@@ -323,6 +328,11 @@ namespace ToB.Player
     // 점프 관리용 코루틴
     private Coroutine jumpCoroutine = null;
     private Coroutine wallJumpControlLockCoroutine = null;
+
+    /// <summary>
+    /// 공중 점프 가능횟수를 초기화합니다.
+    /// </summary>
+    public void RegenJump() => currentJumpCount = maxJumpCount;
     
     /// <summary>
     /// Jump()를 호출하여 점프를 시작할 수 있습니다. <br/>
@@ -333,7 +343,12 @@ namespace ToB.Player
       if (!isControlable) return;
       if ((inWater || (!IsFlight || isClimbing)) && !IsDashing && jumpCoroutine == null)
       {
-        jumpCoroutine = StartCoroutine(JumpCoroutine());
+        jumpCoroutine = StartCoroutine(JumpCoroutine(jumpPower));
+      }
+      else if (currentJumpCount > 0 && !isClimbing)
+      {
+        currentJumpCount--;
+        jumpCoroutine = StartCoroutine(JumpCoroutine(airJumpPower));
       }
     }
 
@@ -350,7 +365,7 @@ namespace ToB.Player
       }
     }
 
-    private IEnumerator JumpCoroutine()
+    private IEnumerator JumpCoroutine(float power)
     {
       animator.SetTrigger(TRIGGER_JUMP);
 
@@ -369,7 +384,7 @@ namespace ToB.Player
       var jumpTime = 0f;
       while (jumpTime < jumpTimeLimit)
       {
-        body.linearVelocityY = jumpPower;
+        body.linearVelocityY = power;
         jumpTime += Time.deltaTime;
         yield return new WaitForFixedUpdate();
       }
