@@ -14,7 +14,6 @@ namespace ToB.IO
   [Serializable]
   public class SAVEModule : JObject, ISAVEModule
   {
-    private static readonly JObject Dummy = new JObject(); 
     private string name;
 
     public string Name
@@ -25,7 +24,7 @@ namespace ToB.IO
 
     #region MetaData
 
-    private Dictionary<string, ISAVEModule> children;
+    protected readonly Dictionary<string, ISAVEModule> children = new();
     public string[] ChildNames => children.Keys.ToArray();
     public JObject MetaData => (JObject)this["metaData"];
     public string ModuleType => nameof(SAVEModule);
@@ -40,35 +39,37 @@ namespace ToB.IO
     public SAVEModule(string name)
     {
       this.name = name;
-      children = new Dictionary<string, ISAVEModule>();
       this["metaData"] = new JObject();
     }
 
-    public JObject BeforeSave() => this;
+    public JObject BeforeSave()
+    {
+      // 자식 정보를 메타데이터로 입력
+      var childModuleInfo = new JObject();
+
+      foreach (var (_, node) in children)
+        childModuleInfo[node.Name] = node.ModuleType;
+      
+      MetaData["children"] = childModuleInfo;
+
+      return this;
+    }
 
     public void Save(string parentPath)
     {
       var isRoot = name == SAVE.RootName;
       var path = System.IO.Path.Combine(parentPath, !isRoot ? name : "");
-      var childModuleInfo = new JObject();
 
       if (children.Count > 0)
       {
         Directory.CreateDirectory(path);
-      
+
         foreach (var (_, node) in children)
-        {
           node.Save(path);
-          childModuleInfo[node.Name] = node.ModuleType;
-        }
       }
 
-      BeforeSave();
-      
-      // 자식 정보를 메타데이터로 입력
-      MetaData["children"] = childModuleInfo;
-      
       // 데이터 저장
+      BeforeSave();
       var filename = isRoot ? System.IO.Path.Combine(path, name + ".json") : path + ".json";
       
       using var writer = File.CreateText(filename);
@@ -131,7 +132,7 @@ namespace ToB.IO
         #endif
       }
       
-      var childModuleInfo = MetaData.Get("children", Dummy);
+      var childModuleInfo = MetaData.Get("children", JsonUtil.Blank);
 
       if (chainLoading && Directory.Exists(path))
       {

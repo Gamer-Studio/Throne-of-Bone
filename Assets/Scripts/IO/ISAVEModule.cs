@@ -10,6 +10,7 @@ namespace ToB.IO
     
     public JObject BeforeSave();
     public void Read(JObject data);
+    public void Read(IJsonSerializable data);
     public void Save(string parentPath);
     public Task Load(string path, bool chainLoading);
     public SAVEModule Node(string key, bool force = false);

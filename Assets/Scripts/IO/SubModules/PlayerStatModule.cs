@@ -21,37 +21,19 @@ namespace ToB.IO.SubModules
 
     public override JObject BeforeSave()
     {
-      var result = new JObject
-      {
-        [nameof(additionalHp)] = additionalHp,
-      };
+      var data = base.BeforeSave();
       
-      return result;
+      data[nameof(additionalHp)] = additionalHp;
+      
+      return data;
     }
     
     public override void Read(JObject data)
     {
+      base.Read(data);
+      
       additionalHp = data.Get(nameof(additionalHp), additionalHp);
     }
 
-    public override void Save(string parentPath)
-    {
-      throw new System.NotImplementedException();
-    }
-
-    public override async Task Load(string path, bool chainLoading)
-    {
-      throw new System.NotImplementedException();
-    }
-
-    public override SAVEModule Node(string key, bool force = false)
-    {
-      throw new System.NotImplementedException();
-    }
-
-    public override T Node<T>(string key, bool force = false)
-    {
-      throw new System.NotImplementedException();
-    }
   }
 }
