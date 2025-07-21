@@ -1,3 +1,4 @@
+using System.Collections;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
@@ -34,7 +35,12 @@ namespace ToB.UI
         public void Show(string message)
         {
             gameObject.SetActive(true);
+            
             text.text = message;
+            // 왠진 몰라도... 이걸 앞뒤로 업뎃해줘야 잘 된다네요. 의도된 반복입니다!
+            LayoutRebuilder.ForceRebuildLayoutImmediate(rectTransform);
+            Canvas.ForceUpdateCanvases();
+            
             image.color = Color.clear;
             rectTransform.localPosition = basePos + startPosOffset;
 

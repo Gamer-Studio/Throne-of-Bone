@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using ToB.UI;
 using ToB.Utils.Singletons;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -15,7 +16,7 @@ namespace ToB.Entities.Skills
 
     public class BattleSkillManager : ManualSingleton<BattleSkillManager>
     {
-    private BattleSkillData skillDB;
+    public BattleSkillData skillDB;
     [SerializeField] private BattleSkillStats bsStats;
     public BattleSkillStats BSStats => bsStats;
     // 플레이어별 스킬 상태 관리(스킬 ID와 스킬 습득 여부)
@@ -27,10 +28,15 @@ namespace ToB.Entities.Skills
     public UnityEvent<int> onRangeAtkStackChanged = new();
     public UnityEvent<float> onMaxHpChanged = new();
 
+    /// <summary>
+    /// 정보를 불러오는 파트는 추후 Save-Load 연동 타이밍 결정되면 수정.
+    /// 지금은 그냥 DB를 불러온 뒤 모든 스킬을 초기화하고 있습니다.
+    /// </summary>
     private void Awake()
     {
         LoadSkillDataBase();
         InitializeSkillStates();
+        ApplySkillsToPlayer();
     }
 
     
@@ -51,10 +57,7 @@ namespace ToB.Entities.Skills
     {
         foreach (var skill in skillDB.BattleSkillDataBase)
         {
-            if (!playerSkillStates.ContainsKey(skill.id))
-            {
-                playerSkillStates.Add(skill.id, SkillState.Unacquired);
-            }
+            playerSkillStates.TryAdd(skill.id, SkillState.Unacquired);
         }
     }
 
@@ -80,30 +83,34 @@ namespace ToB.Entities.Skills
         }
     }
 
-    public void LearnSkill(int id)
+    public bool LearnSkill(int id)
     {
         // 일단 id를 통해 Null처리부터
-        if (!playerSkillStates.ContainsKey(id))
+        if (!playerSkillStates.TryGetValue(id, out var skillState))
         {
-            Debug.LogWarning($"스킬 {id} : {skillDB.GetSkillById(id).skillName} 가 DB에 없습니다.");
-            return;       
+            Debug.LogWarning($"스킬 {id} 가 DB에 없습니다.");
+            return false;       
         }
         // Check 1. 이미 배운 스킬인지 확인
-        if (playerSkillStates[id] == SkillState.Acquired)
+        if (skillState == SkillState.Acquired)
         {
-            Debug.LogWarning($"스킬 {id} : {skillDB.GetSkillById(id).skillName} 는 이미 배운 스킬입니다");
-            return;
+            UIManager.Instance.toastUI.Show($"스킬 {id} : {skillDB.GetSkillById(id).skillName} 는 이미 배운 스킬입니다.");
+            return false;
         }
-        // Check 2. 상위 티어 스킬을 배우려고 하는가? 는 이거 게임매니저 같은 거가 필요하려나요? player가 저장해야 하나?
+        // Check 2. 상위 티어 스킬을 배우려고 하는가? 추후 티어정보가 저장되는 곳이 확정되면...
         /*
         if (skillDB.GetSkillById(id).tier <= StageManager.tier)
         {
-            Debug.LogWarning($"스킬 {id} : {skillDB.GetSkillById(id).skillName} 를 배우려면 티어가 더 높아야 합니다");
-            return;
+            UIManager.Instance.toastUI.Show($"스킬 {id} : {skillDB.GetSkillById(id).skillName} 를 배우려면 티어가 더 높아야 합니다!");
+            return false;
         }
         */
         // Check 3. 선행스킬을 찍었는지 체크.
-        if (!CheckRequiredSkill(id)) return;
+        if (!CheckRequiredSkill(id))
+        {
+            UIManager.Instance.toastUI.Show("선행 스킬을 먼저 배워야 합니다.");
+            return false;
+        }
         
         int goldCost = skillDB.GetSkillById(id).goldCost;
         int manaCost = skillDB.GetSkillById(id).manaCost;
@@ -121,7 +128,13 @@ namespace ToB.Entities.Skills
             CategorizeSkills(id);
             // bsStat을 실제 플레이어에 적용
             bsStats.ApplyStats(bsStats);
-            Debug.Log($"스킬 {id} : {skillDB.GetSkillById(id).skillName} 획득"); 
+            UIManager.Instance.toastUI.Show($"스킬 {id} : {skillDB.GetSkillById(id).skillName} 획득!");
+            return true;
+        }
+        else
+        {
+            UIManager.Instance.toastUI.Show($"자원이 부족하여 {skillDB.GetSkillById(id).skillName} 스킬을 습득하지 못했습니다.");
+            return false;       
         }
     }
 
@@ -170,7 +183,7 @@ namespace ToB.Entities.Skills
 	
     /// <summary>
     /// Dict를 순회하며 모든 스킬을 스탯에 적용하는 메서드.
-    /// 게임 시작 시 Load해온 스킬 습득 여부 Dictionary에서 스텟을 적용할 때 혹은 사망 시 스킬 초기화 시 호출됩니다.
+    /// 게임 시작 시 스킬 정보를 Load할 때 혹은 사망 시, 또는 스킬 초기화 시 호출됩니다.
     /// </summary>
     public void ApplySkillsToPlayer()
     {
