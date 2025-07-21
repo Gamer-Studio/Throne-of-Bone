@@ -78,7 +78,7 @@ namespace ToB.Entities.Skills
         }
         else
         {
-            Debug.LogWarning($"스킬 {id} : {skillDB.GetSkillById(id).skillName} 가 DB에 없습니다.");
+            Debug.LogWarning($"스킬 {id} 가 DB에 없습니다.");
             return SkillState.Unacquired;
         }
     }
