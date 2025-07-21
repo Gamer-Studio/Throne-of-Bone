@@ -15,6 +15,8 @@ namespace ToB.Entities
         
         [field:SerializeField] public BoxCollider2D BoxCollider { get; private set; }
 
+        private int lastContactedFrame;
+        public bool Contacted => lastContactedFrame == Time.frameCount;
         public void Init(Enemy enemy, float bodyDamage)
         {
             owner = enemy;
@@ -25,6 +27,7 @@ namespace ToB.Entities
         {
             hittableMask = LayerMask.GetMask("Player");
             BoxCollider = GetComponent<BoxCollider2D>();
+            owner = GetComponentInParent<Enemy>();
             BoxCollider.isTrigger = true;
         }
 
@@ -35,6 +38,7 @@ namespace ToB.Entities
             {
                 other.Damage(bodyDamage, this);
                 other.KnockBack(15, new Vector2(other.transform.position.x < transform.position.x  ? -1 : 1, 0.5f));
+                lastContactedFrame = Time.frameCount;
             }
         }
 

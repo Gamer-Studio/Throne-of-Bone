@@ -1,31 +1,34 @@
+using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
 
 namespace ToB.IO.SubModules
 {
-  public class PlayerModule : SAVEModule
+  public class PlayerModule : SubModule
   {
-    protected override string ModuleType => nameof(PlayerModule);
-    
+    public override string ModuleType => nameof(PlayerModule);
+
     #region Data
 
     public int currentStage = 0;
     public int currentRoom = 0;
     public Vector3 savedPosition;
-    
+
     #endregion
 
     public PlayerModule(string name) : base(name)
     {
     }
 
-    protected override void BeforeSave()
+    public override JObject BeforeSave()
     {
-      base.BeforeSave();
+      var data = base.BeforeSave();
       
-      this[nameof(currentStage)] = currentStage;
-      this[nameof(currentRoom)] = currentRoom;
-      this.Set(nameof(savedPosition), savedPosition);
+      data[nameof(currentStage)] = currentStage;
+      data[nameof(currentRoom)] = currentRoom;
+      data.Set(nameof(savedPosition), savedPosition);
+      
+      return data;
     }
     
     public override void Read(JObject data)

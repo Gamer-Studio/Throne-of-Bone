@@ -1,35 +1,39 @@
+using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
 
 namespace ToB.IO.SubModules
 {
-  public class PlayerStatModule : SAVEModule
+  public class PlayerStatModule : SubModule
   {
-    protected override string ModuleType => nameof(PlayerStatModule);
-    
+    public override string ModuleType => nameof(PlayerStatModule);
+
     #region Data
 
     // 예시 데이터
     public int additionalHp = 0;
-    
+
     #endregion
 
     public PlayerStatModule(string name) : base(name)
     {
     }
 
-    protected override void BeforeSave()
+    public override JObject BeforeSave()
     {
-      base.BeforeSave();
+      var data = base.BeforeSave();
       
-      this[nameof(additionalHp)] = additionalHp;
+      data[nameof(additionalHp)] = additionalHp;
+      
+      return data;
     }
     
     public override void Read(JObject data)
     {
       base.Read(data);
-
+      
       additionalHp = data.Get(nameof(additionalHp), additionalHp);
     }
+
   }
 }

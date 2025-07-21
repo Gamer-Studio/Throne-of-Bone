@@ -4,6 +4,7 @@ using ToB.Core;
 using ToB.Entities.Skills;
 using ToB.IO;
 using ToB.Scenes.Stage;
+using ToB.Utils;
 using UnityEngine;
 using AudioType = ToB.Core.AudioType;
 
@@ -94,7 +95,16 @@ namespace ToB.Entities.FieldObject
 
         public void Save()
         {
-            Debug.Log("세이브 진행");
+            var player = SAVE.Current.Player;
+            player.currentRoom = RoomIndex;
+            player.currentStage = StageIndex;
+            
+            var parentTransform = transform.parent;
+            var pos = TPTransform.localPosition + transform.localPosition;
+            
+            player.savedPosition = pos.X(x => x * parentTransform.localScale.x).Y(y => y * parentTransform.localScale.y)
+                                   + room.transform.position;
+            SAVE.Current.Save();
         }
 
         public void TeleportPointSelected()

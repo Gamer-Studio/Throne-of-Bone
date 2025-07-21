@@ -27,8 +27,9 @@ namespace ToB.Entities
         [Header("현재 속도")] 
         public Vector2 velocity;
         public readonly Dictionary<string, Vector2> externalVelocity = new Dictionary<string, Vector2>();
-        
-        public bool HasCollided { get; private set; }
+
+        [SerializeField] private bool hasCollided;
+        public bool HasCollided => hasCollided;
 
         public bool IsWallLeft;
         public bool IsWallRight;
@@ -80,7 +81,7 @@ namespace ToB.Entities
 
         private void ClearCollideResults()
         {
-            HasCollided = false;
+            hasCollided = false;
             IsWallLeft = false;
             IsWallRight = false;
         }
@@ -117,7 +118,7 @@ namespace ToB.Entities
 
             if (hit.collider)
             {
-                HasCollided = true;
+                hasCollided = true;
                 Vector2 resultMoveDelta = hit.distance * moveDelta.normalized;
 
                 if (hit.normal.y < 0.5f) // 벽에 닿은 경우

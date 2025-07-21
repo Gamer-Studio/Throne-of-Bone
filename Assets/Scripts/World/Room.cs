@@ -229,7 +229,7 @@ namespace ToB.Worlds
         obj.Value.OnUnLoad();
       
       onExit?.Invoke();
-      StageManager.Instance.onRoomExit.Invoke(this);
+      if(StageManager.HasInstance) StageManager.Instance.onRoomExit.Invoke(this);
     }
     
     #endregion
