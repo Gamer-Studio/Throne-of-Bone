@@ -199,6 +199,7 @@ namespace ToB.IO
       {
         var type when type == typeof(SAVEModule) => (T) new SAVEModule(key),
         var type when type == typeof(PlayerModule) => (T) (object) new PlayerModule(key),
+        var type when type == typeof(PlayerStatModule) => (T) (object) new PlayerStatModule(key),
         _ => (T) Activator.CreateInstance(typeof(T), key),
       };
       
