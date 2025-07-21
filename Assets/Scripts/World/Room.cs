@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using NaughtyAttributes;
@@ -52,6 +53,7 @@ namespace ToB.Worlds
       fieldObjects.Clear();
       
       FindStructure(transform);
+      FindLinks();
     }
     
     private void FindStructure(Transform tr)
@@ -85,6 +87,7 @@ namespace ToB.Worlds
         {
           DebugSymbol.Editor.Log(link.name);
           links.Add(link);
+          link.Init(this);
         }
         
         FindLink(child);
@@ -104,8 +107,13 @@ namespace ToB.Worlds
       FindLinks();
       FindStructures();
     }
-    
-    #endif
+
+    private void OnDrawGizmos()
+    {
+      
+    }
+
+#endif
 
     private void Awake()
     {
