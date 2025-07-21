@@ -1,10 +1,9 @@
 using System.Linq;
 using TMPro;
 using ToB.Core;
-using ToB.Worlds;
+using ToB.Entities.Buffs;
 using UnityEngine;
 using UnityEngine.ResourceManagement.AsyncOperations;
-using UnityEngine.SceneManagement;
 
 namespace ToB.Scenes.Intro
 {
@@ -27,6 +26,7 @@ namespace ToB.Scenes.Intro
         ("언어 번들", stringTableHandle),
         ("소리 설정", mixerHandle),
         ("음원", clipHandle),
+        ("버프 데이터", Buff.Load())
       };
 
       foreach (var operation in loaderList)

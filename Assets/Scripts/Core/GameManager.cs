@@ -1,3 +1,4 @@
+using ToB.Entities.Buffs;
 using ToB.Utils.Singletons;
 using UnityEngine;
 
@@ -10,6 +11,7 @@ namespace ToB.Core
     [Header("Loaded Assets")]
     
     public readonly SerializableDictionary<string, AudioClip> loadedAudios = new();
+    public readonly SerializableDictionary<string, Buff> loadedBuffs = new();
     
     #endif
   }
