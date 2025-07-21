@@ -33,11 +33,11 @@ namespace ToB.UI
         #region TestButton
         public void TestGoldAddButton()
         {
-            ResourceManager.Instance.GiveGoldToPlayer(10);
+            ResourceManager.Instance.GiveGoldToPlayer(100);
         }
         public void TestManaAddButton()
         {
-            ResourceManager.Instance.GiveManaToPlayer(10);
+            ResourceManager.Instance.GiveManaToPlayer(100);
         }
         public void TestGoldSubButton()
         {
