@@ -247,8 +247,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8814439406229541931}
-  - component: {fileID: 8473500224439148575}
   - component: {fileID: 2467121019318289438}
+  - component: {fileID: 8473500224439148575}
   m_Layer: 9
   m_Name: Lever
   m_TagString: Untagged
@@ -273,6 +273,29 @@ Transform:
   - {fileID: 5442818419581559530}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2467121019318289438
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4889232748988591479}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96468553acbc4eaf81425a8c71eeadfa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  room: {fileID: 0}
+  interactionText: {fileID: 4665605565821846827}
+  LeverSR: {fileID: 7658090142378330522}
+  sprites:
+  - {fileID: 21300000, guid: 48a9b9562543c8c4194ab0dab5cd1fff, type: 2}
+  - {fileID: 21300000, guid: 35cd36a6c65d42b498d7f9690eee8338, type: 2}
+  onLeverInteract:
+    m_PersistentCalls:
+      m_Calls: []
+  animator: {fileID: 8165569171087314665}
+  isLeverActivated: 0
 --- !u!58 &8473500224439148575
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -309,29 +332,6 @@ CircleCollider2D:
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
   m_Radius: 1
---- !u!114 &2467121019318289438
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4889232748988591479}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 96468553acbc4eaf81425a8c71eeadfa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  room: {fileID: 0}
-  interactionText: {fileID: 4665605565821846827}
-  LeverSR: {fileID: 7658090142378330522}
-  sprites:
-  - {fileID: 21300000, guid: 48a9b9562543c8c4194ab0dab5cd1fff, type: 2}
-  - {fileID: 21300000, guid: 35cd36a6c65d42b498d7f9690eee8338, type: 2}
-  onLeverInteract:
-    m_PersistentCalls:
-      m_Calls: []
-  animator: {fileID: 8165569171087314665}
-  isLeverActivated: 0
 --- !u!1 &8452819318040511089
 GameObject:
   m_ObjectHideFlags: 0

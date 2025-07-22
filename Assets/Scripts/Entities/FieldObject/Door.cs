@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace ToB.Entities.FieldObject
 {
-    public class Door : MonoBehaviour
+    public class Door : FieldObjectProgress
     {
         enum DoorState
         {

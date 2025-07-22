@@ -6,7 +6,6 @@ namespace ToB.Entities.FieldObject
 {
     public class TPPointSetter : MonoBehaviour
     {
-        public Transform SpikeTPTransform;
         private Transform TPpoint;
         private SpriteRenderer spriteRenderer;
 
@@ -21,14 +20,12 @@ namespace ToB.Entities.FieldObject
         {
             if (other.gameObject.CompareTag("Player"))
             {
-                other.gameObject.transform.position = SpikeTPTransform.position;
-                //TeleportPlayer(other.gameObject);
+                TeleportPlayer(other.gameObject);
             }
         }
 
         private void TeleportPlayer(GameObject player)
         {
-            
             StageManager.Instance.player.TPTransform = TPpoint;
             //ROOM 스케일링 문제가 해결되면, TPPointSetter 설치하고 코드 이걸로 변경
         }

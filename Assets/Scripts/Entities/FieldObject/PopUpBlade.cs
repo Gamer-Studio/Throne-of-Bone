@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace ToB.Entities.FieldObject
 {
-    public class PopUpBlade : MonoBehaviour
+    public class PopUpBlade : FieldObjectProgress
     {
         private readonly int IsActivated = Animator.StringToHash("IsActivated");
 

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace ToB.Entities.FieldObject
 {
-    public class GearBlade : MonoBehaviour
+    public class GearBlade : FieldObjectProgress
     {
         private readonly int IsActivated = Animator.StringToHash("IsActivated");
 

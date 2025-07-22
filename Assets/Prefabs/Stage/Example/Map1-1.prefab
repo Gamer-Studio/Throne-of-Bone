@@ -2208,7 +2208,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 521888241880651680}
@@ -2990,8 +2990,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stageIndex: 1
   roomIndex: 1
-  links: []
-  entityContainer: {fileID: 6416182101115832409}
   normalEnemyTable:
     array: []
   fieldObjects:
@@ -3000,6 +2998,9 @@ MonoBehaviour:
       Value: {fileID: 5153512671410905321}
   enemies:
     array: []
+  links:
+  - {fileID: 2137310311455528740}
+  entityContainer: {fileID: 6416182101115832409}
   <Background>k__BackingField: {fileID: 3862053101447277060}
   onLoad:
     m_PersistentCalls:
@@ -6493,6 +6494,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 7516575371986976267}
     m_Modifications:
     - target: {fileID: 620386541024489084, guid: a222cb390395f7a4bbe37d4469e1d244, type: 3}
+      propertyPath: <Index>k__BackingField
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 620386541024489084, guid: a222cb390395f7a4bbe37d4469e1d244, type: 3}
       propertyPath: connectedRoom.m_AssetGUID
       value: 2f95d4afda1f305458dba2a5c4c92e3e
       objectReference: {fileID: 0}
@@ -6545,6 +6550,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a222cb390395f7a4bbe37d4469e1d244, type: 3}
+--- !u!114 &2137310311455528740 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 620386541024489084, guid: a222cb390395f7a4bbe37d4469e1d244, type: 3}
+  m_PrefabInstance: {fileID: 1528213557171501400}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af132a98d81e420bbbcb63c8ed1649f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &6100082781702815617 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4725004823454009049, guid: a222cb390395f7a4bbe37d4469e1d244, type: 3}

@@ -28,7 +28,7 @@ namespace ToB.Entities.FieldObject
         public override void LoadJson(JObject json)
         {
             base.LoadJson(json);
-            isLeverActivated = json.Get(nameof(isLeverActivated), isLeverActivated);
+            isLeverActivated = json.Get(nameof(isLeverActivated), true);
             IsInteractable = json.Get(nameof(IsInteractable), true);
             animator.SetBool("IsActivated", isLeverActivated);
         }
