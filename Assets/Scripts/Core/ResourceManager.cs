@@ -78,6 +78,8 @@ namespace ToB.Core
         /// <param name="드랍할 지점"></param>
         public void SpawnResources(InfiniteResourceType type, int resourceAmount, Transform spawnPoint)
         {
+            if (resourceAmount <= 0) return;
+            
             //자원 오브젝트 생성할 수량 및 그 안에 들어갈 값 할당
             int prefabCount = Mathf.Clamp((resourceAmount / ResourcePerObject)+1, 1, maxPrefabCount);
             int resourceLeft = resourceAmount;
