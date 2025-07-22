@@ -1,6 +1,10 @@
 using System;
 using System.Collections;
 using NaughtyAttributes;
+using ToB.Entities.Projectiles;
+using ToB.Entities.Skills;
+using ToB.Player;
+using ToB.Scenes.Stage;
 using UnityEngine;
 
 namespace ToB.Entities
@@ -60,6 +64,12 @@ namespace ToB.Entities
             enemy.OnTakeDamage(sender);
             OnTakeDamage?.Invoke();
             
+            if (sender != null && sender.gameObject.TryGetComponent(out SwordEffect sword))
+            {
+                StageManager.Instance.player.stat.Hp +=
+                    (StageManager.Instance.player.stat.maxHp + StageManager.Instance.player.stat.tempMaxHP)
+                    * BattleSkillManager.Instance.BSStats.RangeAtkHeal;
+            }
             DamageEffectCoroutine = StartCoroutine(DamageColorOverlay());
         }
         

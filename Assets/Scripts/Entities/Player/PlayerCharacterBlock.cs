@@ -1,6 +1,7 @@
 using System.Collections;
 using NaughtyAttributes;
 using ToB.Core;
+using ToB.Entities.Skills;
 using ToB.Utils;
 using UnityEngine;
 using AudioType = ToB.Core.AudioType;
@@ -32,7 +33,9 @@ namespace ToB.Player
 
     //
     public bool IsBlocking => blockCoroutine != null;
-    public bool IsBlockable => !IsBlocking && stat.BlockEnergy > requireBlockEnergy && !freezeBlockable && currentBlockCoolTime <= 0;
+    public bool IsBlockable => !IsBlocking
+                               && stat.BlockEnergy > requireBlockEnergy + BattleSkillManager.Instance.BSStats.GuardGaugeDiscount
+                               && !freezeBlockable && currentBlockCoolTime <= 0;
 
     public float BlockAngle
     {
@@ -75,6 +78,7 @@ namespace ToB.Player
         {
           // 패링
           AvailableRangedAttack += parryReward;
+          stat.Hp += (stat.maxHp + stat.tempMaxHP) * BattleSkillManager.Instance.BSStats.ParryHealAmount;
           if (immuneTime < parryImmuneTime) immuneTime = parryImmuneTime;
         
           Time.timeScale = 0;
@@ -107,7 +111,7 @@ namespace ToB.Player
     {
       if(!IsBlockable || IsMoving) return;
 
-      stat.BlockEnergy -= requireBlockEnergy;
+      stat.BlockEnergy -= requireBlockEnergy + BattleSkillManager.Instance.BSStats.GuardGaugeDiscount;
       blockCoroutine = StartCoroutine(BlockCoroutine());
     }
     
@@ -166,7 +170,7 @@ namespace ToB.Player
           if(blockEnergyCurrentRegenTime >= blockEnergyRegenTime)
           {
             blockEnergyCurrentRegenTime = 0;
-            stat.BlockEnergy += blockEnergyRegenAmount;
+            stat.BlockEnergy += blockEnergyRegenAmount + BattleSkillManager.Instance.BSStats.GuardGaugeRegen;
 
             if (freezeBlockable && stat.BlockEnergy >= 100)
               freezeBlockable = false;
@@ -195,7 +199,7 @@ namespace ToB.Player
       isParrying = true;
       shield.gameObject.SetActive(true);
       
-      yield return new WaitForSeconds(parryTimeLimit);
+      yield return new WaitForSeconds(parryTimeLimit + BattleSkillManager.Instance.BSStats.ParryTime);
       isParrying = false;
 
       for (float blockTime = 0, rkbe = requireKeepBlockEnergy * (Time.fixedDeltaTime / blockTimeLimit); blockTime < blockTimeLimit; blockTime += Time.fixedDeltaTime)

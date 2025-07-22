@@ -30,6 +30,7 @@ namespace ToB.Scenes.Stage
     [Label("플레이어"), Tooltip("현재 활성화된 Player 태그가 붙은 플레이어 캐릭터입니다."), Foldout(State)] public PlayerCharacter player;
     [Label("현재 플레이어가 있는 방"), Foldout(State)] public Room currentRoom;
     [field: Foldout(State), SerializeField] public GameState CurrentState { get; private set; } = GameState.Play;
+    [SerializeField, ReadOnly] private bool unloaded;
 
     public int CurrentStageIndex => currentRoom.stageIndex;
     public int CurrentRoomIndex => currentRoom.roomIndex;
@@ -61,6 +62,11 @@ namespace ToB.Scenes.Stage
     /// 플레이어가 방에서 나갔을 때 이벤트. <br />
     /// </summary>
     public UnityEvent<Room> onRoomExit = new();
+
+    public void InvokeRoomExit(Room room)
+    {
+      if(!unloaded) onRoomExit.Invoke(room);
+    }
 
     #endregion
 
@@ -163,31 +169,29 @@ namespace ToB.Scenes.Stage
 
       if (Camera.main) confiner.InvalidateCache();
     }
-
-    private bool unloaded;
-
+    
     private void OnDestroy()
     {
       unloaded = true;
     }
-
 
     public void ChangeGameState(GameState state)
     {
       CurrentState = state;
     }
 
-        #endregion
+    #endregion
 
-        #region Dialog
-        public void BeginDialog(NPCBase npc)
-        {
-            player.IsMoving = false;
-            ChangeGameState(GameState.Dialog);
-            UIManager.Instance.panelStack.Push(npc.DialogPanel);
-            GameCameraManager.Instance.SetBlendTime(0.5f);
-        }
-        
-        #endregion
+    #region Dialog
+    
+    public void BeginDialog(NPCBase npc)
+    {
+      player.IsMoving = false;
+      ChangeGameState(GameState.Dialog);
+      UIManager.Instance.panelStack.Push(npc.DialogPanel);
+      GameCameraManager.Instance.SetBlendTime(0.5f);
+    }
+    
+    #endregion
     }
 }

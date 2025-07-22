@@ -7,6 +7,11 @@ namespace ToB.IO
 {
   public static class JsonUtil
   {
+    /// <summary>
+    /// 더미용 비어있는 오브젝트입니다.
+    /// </summary>
+    public static readonly JObject Blank = new JObject(); 
+    
     public static JValue ToToken<T>(this T enumValue) where T : struct, Enum
     {
       var value = Convert.ToInt32(enumValue);

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using ToB.Entities;
 using ToB.Entities.Effect;
+using ToB.Entities.Skills;
 using ToB.IO;
 using ToB.Utils;
 using ToB.Utils.Singletons;
@@ -38,13 +39,14 @@ namespace ToB.Core
         {
 
         }
-       
+
+        public float GoldUP;
         public int PlayerGold
         { 
             get => playerGold;
             set
             {
-                playerGold = value;
+                playerGold = value + (int)(value * GoldUP);
                 onGoldChanged?.Invoke(playerGold);
             }
         }
@@ -162,7 +164,7 @@ namespace ToB.Core
         public void UseGold(int requiredGold)
         {
             PlayerGold -= requiredGold;
-            UsedGold += requiredGold;
+            //UsedGold += requiredGold;
             Debug.Log($"{requiredGold} 골드를 사용했습니다.");
         }
         
@@ -173,9 +175,22 @@ namespace ToB.Core
         public void UseMana(int requiredMana)
         {
             PlayerMana -= requiredMana;
-            UsedMana += requiredMana;
+            //UsedMana += requiredMana;
             Debug.Log($"{requiredMana} 마나결정을 사용했습니다");
         }
+
+        /// <summary>
+        /// 스킬 초기화 시 사용한 골드를 돌려주는 메서드입니다.
+        /// </summary>
+        public void ReturnUsedResources()
+        {
+            GiveGoldToPlayer(UsedGold);
+            GiveManaToPlayer(UsedMana);
+            UsedGold = 0;
+            UsedMana = 0;
+        }
+        
+        
         #region Keys
         
         //public Dictionary<string, string> IndexedKey = new();
@@ -236,14 +251,16 @@ namespace ToB.Core
         */
         public int DropAllGoldsToCorpse()
         {
-            int totalGold = PlayerGold;
+            int totalGold = PlayerGold + UsedGold;
             PlayerGold = 0;
+            UsedGold = 0;
             return totalGold;
         }
         public int DropAllManaToCorpse()
         {
             int totalMana = PlayerMana + UsedMana;
             PlayerMana = 0;
+            UsedMana = 0;
             return totalMana;
         }
         

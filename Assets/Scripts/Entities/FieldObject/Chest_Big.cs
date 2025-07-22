@@ -18,9 +18,7 @@ namespace ToB.Entities.FieldObject
 
         private void Awake()
         {
-            IsOpened = false;
-            IsInteractable = true;
-            animator.SetBool("IsOpened", IsOpened);
+            
         }
 
         public override void LoadJson(JObject json)

@@ -1,4 +1,5 @@
 using ToB.Entities;
+using ToB.Entities.Skills;
 using ToB.Utils;
 using UnityEngine;
 
@@ -35,10 +36,14 @@ namespace ToB.Player
         var ps = attackEffect.GetComponent<ParticleSystem>().main;
         ps.startRotation = angle;
         
-        attackEffect.gameObject.SetActive(true);
+        attackEffect.gameObject.SetActive(true);  
       }
+      // 크리티컬 계산
+      float finalDmg = character.stat.atk;
+      float chance = BattleSkillManager.Instance.BSStats.CritChance - Random.Range(0, 100) / 100;
+      if (chance > 0) finalDmg += finalDmg * BattleSkillManager.Instance.BSStats.CritDmgMultiplier;
       
-      other.Damage(character.stat.atk, character);
+      other.Damage(finalDmg, character);
       other.KnockBack(30, new Vector2(character.transform.eulerAngles.y == 0 ? 1 : -1, 0)); // 넉백 테스트했습니다. 머지할 때 의도하는 쪽으로 써주세요
 
     }

@@ -30,8 +30,7 @@ namespace ToB.Entities.FieldObject
 #endif
         private void Awake()
         {
-            SetWaterSize();
-            InitPosition();
+           
         }
 
         private void SetWaterSize()
@@ -112,6 +111,7 @@ namespace ToB.Entities.FieldObject
         {
             isValveActivated = true;
             LinkedLever.IsInteractable = false;
+            LinkedLever.interactionText.text = "작동 중";
             Vector3 startPos = Vector3.zero;
             Vector3 targetPos = new Vector3(waterSpriteTransform.localPosition.x, ValveCloseTargetY,
                 waterSpriteTransform.localPosition.z);
@@ -124,6 +124,7 @@ namespace ToB.Entities.FieldObject
                     yield return null;
                 }
                 LinkedLever.IsInteractable = true;
+                LinkedLever.UpdateLeverText();
                 Debug.Log("밸브 잠그기 완료");
                 ValveOpenCoroutine = null;
         }
@@ -132,6 +133,7 @@ namespace ToB.Entities.FieldObject
         {
             isValveActivated = false;
             LinkedLever.IsInteractable = false;
+            LinkedLever.interactionText.text = "작동 중";
             Vector3 startPos = new Vector3(waterSpriteTransform.localPosition.x, ValveOpenTargetY,
                 waterSpriteTransform.localPosition.z);
             Vector3 targetPos = Vector3.zero;
@@ -144,6 +146,7 @@ namespace ToB.Entities.FieldObject
                 yield return null;
             }
             LinkedLever.IsInteractable = true;
+            LinkedLever.UpdateLeverText();
             Debug.Log("밸브 열기 완료");
             ValveCloseCoroutine = null;
         }

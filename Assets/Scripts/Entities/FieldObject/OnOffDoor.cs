@@ -45,7 +45,6 @@ namespace ToB.Entities.FieldObject
        private void Awake()
        {
            if (_collider ==null) _collider = GetComponent<Collider2D>();
-           IsOpened = isOpened;
        }
        public override void LoadJson(JObject json)
        {
