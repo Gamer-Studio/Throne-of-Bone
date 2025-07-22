@@ -60,7 +60,6 @@ namespace ToB.Entities
         IEnumerator LateMoveCachedPosition()
         {
             yield return null;
-            Vector3 posDiff = fsm.SavePosition.position - enemy.transform.position;
             enemy.transform.position = fsm.SavePosition.position;
         }
     }

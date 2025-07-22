@@ -8,7 +8,7 @@ namespace ToB.Entities
     public class EnemyPhysics : MonoBehaviour
     {
         private Enemy enemy;
-        [SerializeField] private float skinWidth = 0.02f;
+        [SerializeField] private float skinWidth = 0.005f;
         [SerializeField] BoxCollider2D terrainSensor;
 
         private float bodyWidth; // 임시
@@ -207,7 +207,7 @@ namespace ToB.Entities
             castSize.x -= skinWidth;
             castSize.y -= skinWidth;
        
-            RaycastHit2D hit = Physics2D.BoxCast(origin, castSize, 0, direction, skinWidth, terrainLayer);
+            RaycastHit2D hit = Physics2D.BoxCast(origin, castSize, 0, direction, skinWidth * 2, terrainLayer);
             
             if(direction == Vector2.down)  // 디버그 시각화
                 DrawBoxCast(origin, castSize, direction.normalized, skinWidth*2f, Color.Lerp(Color.red, Color.yellow, 0.5f));

@@ -21,5 +21,7 @@ namespace ToB.Entities
         [field: SerializeField] public float SightAngle { get; private set; } = 130;
         [field: SerializeField] public float AttackDamage { get; private set; } = 10;
         [field: SerializeField] public float AttackKnockbackForce { get; private set; } = 3;
+        
+        
     }
 }

@@ -15,7 +15,6 @@ namespace ToB.Entities
 
         public Vector3 BodyOffset { get; private set; }
         
-        float MoveXTick => owner.DataSO.MoveSpeed * Time.fixedDeltaTime;
         public override void Init()
         {
             owner = enemy as SecurityGuard;

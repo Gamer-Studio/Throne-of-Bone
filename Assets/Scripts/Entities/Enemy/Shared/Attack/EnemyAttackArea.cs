@@ -8,6 +8,7 @@ namespace ToB.Entities
     [RequireComponent(typeof(Rigidbody2D))]
     public class EnemyAttackArea : MonoBehaviour
     {
+        
         enum KnockbackType
         {
             Directional,

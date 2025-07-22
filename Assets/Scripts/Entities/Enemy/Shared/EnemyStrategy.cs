@@ -50,6 +50,9 @@ namespace ToB.Entities
         
         public abstract void Init();
 
+        public virtual void ChangeToDefaultPattern()
+        {
+        }
 
     }
 }

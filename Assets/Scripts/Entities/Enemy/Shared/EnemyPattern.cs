@@ -35,6 +35,7 @@ namespace ToB.Entities
                 {
                     strategy.ChangePattern(transition.Pattern);
                     transition.OnTransition?.Invoke();
+                    break;
                 }
             }
         }
