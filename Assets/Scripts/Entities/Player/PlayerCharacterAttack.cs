@@ -80,6 +80,8 @@ namespace ToB.Player
       attackGaugeBar.max = 1;
       attackGaugeBar.Value = 0;
     }
+
+    [NonSerialized] public bool bottomJumpAvailable = false;
     
     /// <summary>
     /// direction 방향으로 공격합니다.
@@ -105,8 +107,10 @@ namespace ToB.Player
 
         isAttacking = true;
       
+        // 아래공격
         if(bottomAttack && IsFlight)
         {
+          bottomJumpAvailable = true;
           attackCoroutine = StartCoroutine(AttackWaiter(direction, 0.1f));
           AudioManager.Play("fntgm_blade_whoosh_light_02",AudioType.Effect); // 아래공격 사운드
         }
@@ -162,6 +166,7 @@ namespace ToB.Player
     /// </summary>
     public void AttackEnd()
     {
+      bottomJumpAvailable = false;
       // transform.eulerAngles = new Vector3(0, MoveDirection == PlayerMoveDirection.Left ? 180 : 0, 0);
     }
 

@@ -48,18 +48,15 @@ namespace ToB.UI
                 {
                     // 빈 슬롯이 아닐 때
                     textField.text = $"세이브 슬롯 {i + 1} - {save.name}\n날짜 : {save.SaveTime}\n보유 골드 : {save.gold}";
+                    deleteSlotButtons[i].onClick.AddListener(() => DeleteSaveFileSelected(index));
+                    deleteSlotButtons[i].gameObject.SetActive(true);
                 }
                 else
                 {
                     // 빈 슬롯일 때
                     textField.text = $"세이브 슬롯 {i + 1} - EMPTY";
+                    deleteSlotButtons[i].gameObject.SetActive(false);
                 }
-            }
-
-            for (var i = 0; i < deleteSlotButtons.Length; i++)
-            {
-                var index = i;
-                deleteSlotButtons[i].onClick.AddListener(() => DeleteSaveFileSelected(index));
             }
         }
 
@@ -193,6 +190,8 @@ namespace ToB.UI
         {
             OpenPanel(DeleteConfirmPanel);
             selectedSave = saves[selected];
+            selectedSave.Delete();
+            _ = SaveSlotsInit();
         }
 
         public void DeleteSaveFileConfirmed()

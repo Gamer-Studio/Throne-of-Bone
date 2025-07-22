@@ -1,9 +1,6 @@
-using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 using ToB.Entities.Skills;
-using UnityEngine;
 
 namespace ToB.IO.SubModules
 {
@@ -13,45 +10,11 @@ namespace ToB.IO.SubModules
 
     #region Data
 
-    public Dictionary<int, SkillState> SavedPlayerSkillState = new();
+    [JsonProperty]
+    public Dictionary<int, SkillState> savedPlayerSkillState = new();
 
     #endregion
 
-    public PlayerStatModule(string name) : base(name)
-    {
-      
-    }
-
-    public override JObject BeforeSave()
-    {
-      var data = base.BeforeSave();
-      
-      var States = new JObject();
-      
-      foreach (var(key,value) in SavedPlayerSkillState)
-      {
-        States.Set(key.ToString(), value);
-      }
-      
-      data[nameof(SavedPlayerSkillState)] = States;
-      
-      return data;
-    }
-    
-    public override void Read(JObject data)
-    {
-      base.Read(data);
-      
-      var States = data.Get(nameof(SavedPlayerSkillState), JsonUtil.Blank);
-      
-      foreach (var (key, value) in States)
-      {
-        if (value is JObject skillState)
-        {
-          SavedPlayerSkillState.Add(int.Parse(key), skillState.GetEnum<SkillState>(key));
-        }
-      }
-    }
-
+    public PlayerStatModule(string name) : base(name) { }
   }
 }

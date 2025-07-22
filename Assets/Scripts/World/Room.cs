@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using NaughtyAttributes;
@@ -15,9 +16,17 @@ namespace ToB.Worlds
   [AddComponentMenu("Stage/Room")]
   public class Room : MonoBehaviour, IJsonSerializable
   {
-    [Label("스테이지 인덱스")] public int stageIndex;
-    [Label("방 인덱스")] public int roomIndex;
-    [Label("데이터 모듈"), SerializeField] private SAVEModule saveModule;
+    #region State
+    private const string State = "State";
+    
+    [Label("스테이지 인덱스"), Foldout(State)] public int stageIndex;
+    [Label("방 인덱스"), Foldout(State)] public int roomIndex;
+    [Label("데이터 모듈"), Foldout(State), SerializeField] private SAVEModule saveModule;
+    [Label("일반 적 소환 정보"), Foldout(State)] public SerializableDictionary<Transform, AssetReference> normalEnemyTable = new();
+    [Label("오브젝트"), Foldout(State)] public SerializableDictionary<string, FieldObjectProgress> fieldObjects = new();
+    [Label("인스턴스된 적"), Foldout(State), SerializeField, ReadOnly] private SerializableDictionary<Transform, Enemy> enemies = new();
+    
+    #endregion
     
     #region Binding
     private const string Binding = "Binding"; 
@@ -27,9 +36,6 @@ namespace ToB.Worlds
 #endif
     [Foldout(Binding)] public List<RoomLink> links = new();
     [Foldout(Binding), SerializeField] private Transform entityContainer; 
-    [Label("일반 적 소환 정보"), Foldout(Binding)] public SerializableDictionary<Transform, AssetReference> normalEnemyTable = new();
-    [Label("오브젝트"), Foldout(Binding)] public SerializableDictionary<string, FieldObjectProgress> fieldObjects = new();
-    [Label("인스턴스된 적"), Foldout(Binding), SerializeField, ReadOnly] private SerializableDictionary<Transform, Enemy> enemies = new();
     [field: Foldout(Binding), SerializeField] public RoomBackground Background { get; private set; }
     
     #endregion
@@ -52,6 +58,7 @@ namespace ToB.Worlds
       fieldObjects.Clear();
       
       FindStructure(transform);
+      FindLinks();
     }
     
     private void FindStructure(Transform tr)
@@ -85,6 +92,7 @@ namespace ToB.Worlds
         {
           DebugSymbol.Editor.Log(link.name);
           links.Add(link);
+          link.Init(this);
         }
         
         FindLink(child);
@@ -104,8 +112,13 @@ namespace ToB.Worlds
       FindLinks();
       FindStructures();
     }
-    
-    #endif
+
+    private void OnDrawGizmos()
+    {
+      
+    }
+
+#endif
 
     private void Awake()
     {

@@ -1,25 +1,11 @@
-using Newtonsoft.Json.Linq;
-using ToB.IO;
-using UnityEngine;
+using ToB.Utils;
 
 namespace ToB.Entities
 {
-  public class Entity : MonoBehaviour, IJsonSerializable
+  public class Entity : PooledObject
   {
     public EntityType type;
     
-    public virtual void LoadJson(JObject json)
-    {
-      
-    }
-
-    public virtual JObject ToJson()
-    {
-      return new JObject
-      {
-        ["name"] = name,
-      };
-    }
   }
 
   public enum EntityType

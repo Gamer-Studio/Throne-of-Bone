@@ -4,11 +4,10 @@ using UnityEngine;
 
 namespace ToB.Entities.Projectiles
 {
-  public class SwordEffect : PooledObject
+  public class SwordEffect : Projectile
   {
     [ReadOnly] private new Camera camera;
     [Label("피해량")] public float damage;
-    [Label("발사 방향")] private Vector2 direction = Vector2.zero;
     [Label("속도")] public float speed = 1;
     [Label("넉백 세기")] public float knockBackForce = 15;
     
