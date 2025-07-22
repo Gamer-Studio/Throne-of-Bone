@@ -4,10 +4,10 @@ using UnityEngine.AddressableAssets;
 
 namespace ToB.Utils.Singletons
 {
-  public abstract class PrefabSingleton<T> : MonoBehaviour where T : MonoBehaviour
+  public abstract class PrefabSingleton<T> : MonoBehaviour where T : PrefabSingleton<T>
   {
-    private AssetReferenceGameObject reference;
-    private static T instance;
+    private AssetReferenceGameObject reference = null;
+    private static T instance = null;
 
     /// <summary>
     /// get 시 어드레서블에서 해당 클래스명 주소로 된 프리팹을 찾아와서 인스턴스합니다.
@@ -16,6 +16,9 @@ namespace ToB.Utils.Singletons
     {
       get
       {
+        if (instance != null) return instance;
+        
+        instance = (T)FindAnyObjectByType(typeof(T));
         if (instance != null) return instance;
         
         var reference = new AssetReferenceGameObject(instance.GetType().Name);
@@ -28,11 +31,28 @@ namespace ToB.Utils.Singletons
         return instance;
       }
     }
+    
+    /// <summary>
+    /// 해당 싱글톤이 활성화되어있는지 여부입니다.
+    /// </summary>
+    public static bool HasInstance => instance;
 
-    private void OnDestroy()
+    protected virtual void Awake()
     {
-      reference.ReleaseInstance(gameObject);
-      reference.ReleaseAsset();
+      if (instance && instance != this)
+        Destroy(gameObject);
+      else
+        instance = this as T;
+    }
+
+    protected virtual void OnDestroy()
+    {
+      if (reference != null)
+      {
+        reference.ReleaseInstance(gameObject);
+        reference.ReleaseAsset();
+      }
+      
       instance = null;
     }
   }

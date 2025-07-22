@@ -46,7 +46,7 @@ namespace ToB.Core
             get => playerGold;
             set
             {
-                playerGold = value + (int)(value * GoldUP);
+                playerGold = value;
                 onGoldChanged?.Invoke(playerGold);
             }
         }
@@ -78,6 +78,8 @@ namespace ToB.Core
         /// <param name="드랍할 지점"></param>
         public void SpawnResources(InfiniteResourceType type, int resourceAmount, Transform spawnPoint)
         {
+            if (resourceAmount <= 0) return;
+            
             //자원 오브젝트 생성할 수량 및 그 안에 들어갈 값 할당
             int prefabCount = Mathf.Clamp((resourceAmount / ResourcePerObject)+1, 1, maxPrefabCount);
             int resourceLeft = resourceAmount;
@@ -106,14 +108,17 @@ namespace ToB.Core
                 resourceLeft -= ResourcePerObject;
             }
         }
-        
+
         /// <summary>
-        /// 플레이어에게 골드를 줍니다.
+        /// 플레이어에게 골드를 줍니다. isGoldUpApplied는 골드 획득량 증가 옵션 적용 여부입니다(기본 true)
+        /// 은행에서 출금하는 경우에는 false로 매개변수 넣어주시면 그대로 증가합니다.
         /// </summary>
         /// <param name="gold"></param>
-        public void GiveGoldToPlayer(int gold)
+        /// <param name="isGoldUPApplied"></param>
+        public void GiveGoldToPlayer(int gold, bool isGoldUPApplied = true)
         {
-            PlayerGold += gold;
+            if (isGoldUPApplied) PlayerGold += (int)(gold * (1 + GoldUP));
+            else PlayerGold += gold;
         }
         
         /// <summary>
@@ -184,7 +189,7 @@ namespace ToB.Core
         /// </summary>
         public void ReturnUsedResources()
         {
-            GiveGoldToPlayer(UsedGold);
+            GiveGoldToPlayer(UsedGold, false);
             GiveManaToPlayer(UsedMana);
             UsedGold = 0;
             UsedMana = 0;

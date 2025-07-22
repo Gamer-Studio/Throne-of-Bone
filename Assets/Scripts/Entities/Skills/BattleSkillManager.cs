@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using ToB.IO;
 using ToB.UI;
 using ToB.Utils.Singletons;
 using UnityEngine;
@@ -7,6 +9,7 @@ using UnityEngine.Events;
 
 namespace ToB.Entities.Skills
 {
+    [Serializable]
     public enum SkillState
     {
         Unacquired,
@@ -55,6 +58,9 @@ namespace ToB.Entities.Skills
     /// </summary>
     private void InitializeSkillStates()
     {
+        // 이게 불러오기
+        playerSkillStates = SAVE.Current.PlayerStat.savedPlayerSkillState;
+        
         foreach (var skill in skillDB.BattleSkillDataBase)
         {
             playerSkillStates.TryAdd(skill.id, SkillState.Unacquired);
@@ -78,7 +84,7 @@ namespace ToB.Entities.Skills
         }
         else
         {
-            Debug.LogWarning($"스킬 {id} : {skillDB.GetSkillById(id).skillName} 가 DB에 없습니다.");
+            Debug.LogWarning($"스킬 {id} 가 DB에 없습니다.");
             return SkillState.Unacquired;
         }
     }

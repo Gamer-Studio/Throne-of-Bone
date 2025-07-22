@@ -12,7 +12,9 @@ namespace ToB.IO.SubModules
   public abstract class SubModule : ISAVEModule
   {
     protected readonly Dictionary<string, ISAVEModule> children = new();
+    [JsonIgnore]
     protected string name;
+    [JsonIgnore]
     public abstract string ModuleType { get; }
 
     #region MetaData
@@ -26,6 +28,7 @@ namespace ToB.IO.SubModules
       this.name = name;
     }
 
+    [JsonIgnore]
     public virtual string Name
     {
       get => name;
@@ -43,6 +46,8 @@ namespace ToB.IO.SubModules
       metaData["children"] = childJson;
       result["metaData"] = metaData;
       
+      result.ReadObject(this);
+
       return result;
     }
 
@@ -57,6 +62,8 @@ namespace ToB.IO.SubModules
         
         childModuleInfo.Add(key, value.Get(nameof(SAVEModule)));
       }
+      
+      data.ReadJson(this);
     }
     
     public virtual void Read(IJsonSerializable data) => Read(data.ToJson());

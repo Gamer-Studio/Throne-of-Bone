@@ -4,7 +4,7 @@ using UnityEngine.Tilemaps;
 
 namespace ToB.Entities.FieldObject
 {
-    public class IndoorCoverTile : MonoBehaviour
+    public class IndoorCoverTile : FieldObjectProgress
     {
         private Tilemap _Tilemap;
         [SerializeField] public float FadeTime;

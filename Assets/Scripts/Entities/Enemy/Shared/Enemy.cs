@@ -12,7 +12,7 @@ namespace ToB.Entities
     /// Room에서 적 유닛 처리용도로 MonoBehavior -> PooledObject로 부모 클래스를 바꿨습니다.
     /// </summary>
     [RequireComponent(typeof(EnemyPhysics))]
-    public abstract class Enemy : PooledObject
+    public abstract class Enemy : Entity
     {
         [Header("기본 참조")] 
         [Expandable, SerializeField] public EnemySO enemySO;

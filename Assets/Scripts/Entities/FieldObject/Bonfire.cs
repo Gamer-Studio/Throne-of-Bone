@@ -4,6 +4,7 @@ using ToB.Core;
 using ToB.Entities.Skills;
 using ToB.IO;
 using ToB.Scenes.Stage;
+using ToB.UI;
 using ToB.Utils;
 using UnityEngine;
 using AudioType = ToB.Core.AudioType;
@@ -18,7 +19,6 @@ namespace ToB.Entities.FieldObject
         [SerializeField] public GameObject BonfireUIPanel;
         public bool IsInteractable { get; set; }
         [SerializeField] private Animator animator;
-        [SerializeField] private GameObject TPPanel;
         
         #region SaveLoad
 
@@ -110,20 +110,15 @@ namespace ToB.Entities.FieldObject
         public void TeleportPointSelected()
         {
             Debug.Log("티피합니다!");
-            CloseTPPanel();
+            TPPanelToggle();
             LeaveBonfire();
         }
 
-        public void OpenTPPanel()
+        public void TPPanelToggle()
         {
-            TPPanel.SetActive(true);
+            UIManager.Instance.wideMapUI.TPPanelToggle();
         }
-
-        public void CloseTPPanel()
-        {
-            TPPanel.SetActive(false);
-        }
-
+        
         public void LeaveBonfire()
         {
             BonfireUIPanel.SetActive(false);

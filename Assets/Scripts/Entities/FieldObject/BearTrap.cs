@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace ToB.Entities.FieldObject
 {
-    public class BearTrap : MonoBehaviour
+    public class BearTrap : FieldObjectProgress
     {
         private enum State
         {
