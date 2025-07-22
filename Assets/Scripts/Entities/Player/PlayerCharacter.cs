@@ -65,6 +65,7 @@ namespace ToB.Player
     [Label("점프 파워"), Foldout(JumpState)] public float jumpPower = 10;
     [Label("공중 점프 파워"), Foldout(JumpState)] public float airJumpPower = 10;
     [Label("벽점프 파워"), Foldout(JumpState)] public float wallJumpPower = 10;
+    [Label("하단 패링 점프 파워"), Foldout(JumpState)] public float downJumpPower = 10;
     [Label("벽점프 반동 제어불가 시간"), Foldout(JumpState)] public float wallJumpReactionTime = 0.4f; 
     [Label("최대 점프 시간"), Foldout(JumpState)] public float jumpTimeLimit = 0.2f;
     [Label("낙하시 중력가속도 보정값"), Foldout(JumpState)] public float gravityAcceleration = 10;
@@ -338,9 +339,15 @@ namespace ToB.Player
     /// Jump()를 호출하여 점프를 시작할 수 있습니다. <br/>
     /// 빠르게 CancelJump()를 호출하여 낮은 점프를 할 수 있습니다.
     /// </summary>
-    public void Jump()
+    public void Jump(bool bottomJump = false)
     {
       if (!isControlable) return;
+
+      if (bottomJump && bottomJumpAvailable)
+      {
+        bottomJumpAvailable = false;
+        jumpCoroutine = StartCoroutine(JumpCoroutine(downJumpPower));
+      }
       if ((inWater || (!IsFlight || isClimbing)) && !IsDashing && jumpCoroutine == null)
       {
         jumpCoroutine = StartCoroutine(JumpCoroutine(jumpPower));
