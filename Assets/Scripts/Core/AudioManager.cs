@@ -15,13 +15,18 @@ namespace ToB.Core
     public const string ObjectLabel = "Object"; 
     public const string Label = "Audio";
 
-    public SerializableDictionary<string, AudioClip> clips = new();
-
+    private static readonly Dictionary<string, AudioClip> Clips = new();
+    private static readonly Dictionary<string, AssetReference> References = new();
+    
     [SerializeField] private AudioMixer mixer;
     [SerializeField] private AudioSource backgroundSource = null;
     [SerializeField] private List<AudioSource> effectSources = new(); 
     
     [SerializeField] private AudioMixerGroup effectGroup, backgroundGroup, objectGroup;
+    
+#if UNITY_EDITOR
+    [SerializeField] private SerializableDictionary<string, AudioClip> loadedClips = new();
+#endif
     
     #region Unity Event
 
@@ -126,13 +131,54 @@ namespace ToB.Core
 
     #endregion
 
-    public AudioClip GetClip(string name)
+    public static AudioClip GetClip(string name)
     {
-      if (clips.TryGetValue(name, out var clip)) return clip;
+      if (Clips.TryGetValue(name, out var clip)) return clip;
+
+      var reference = new AssetReference($"{Label}/{name}");
+
+      try
+      {
+        clip = reference.LoadAssetAsync<AudioClip>().WaitForCompletion();
+      }
+      catch (Exception e)
+      {
+        Debug.LogError(e);
+        return null;
+      }
+
+      Clips[name] = clip;
+#if UNITY_EDITOR
+      if(HasInstance)
+        Instance.loadedClips[name] = clip;
+#endif
       
+      return clip;
+    }
+
+    public static bool TryGetClip(string name, out AudioClip clip)
+    {
+      clip = GetClip(name);
       
-      
-      return null;
+      return clip != null;
+    }
+
+    public static bool ReleaseClip(string name)
+    {
+      if (References.TryGetValue(name, out var reference))
+      {
+        Clips[name].UnloadAudioData();
+        Clips.Remove(name);
+        reference.ReleaseAsset();
+        
+#if UNITY_EDITOR
+        if (HasInstance)
+          Instance.loadedClips.Remove(name);
+#endif
+        
+        return true;
+      }
+      else return false;
     }
     
     #region Controller
@@ -151,7 +197,7 @@ namespace ToB.Core
 
     public static void Play(string clipName, GameObject obj)
     {
-      if(HasInstance && Instance.clips.TryGetValue(clipName, out var clip)) Play(clip, obj);
+      if(TryGetClip(clipName, out var clip)) Play(clip, obj);
       #if UNITY_EDITOR
       else Debug.LogWarning($"AudioClip {clipName} is not found.");
       #endif
@@ -194,7 +240,7 @@ namespace ToB.Core
     
     public static void Play(string clipName, AudioType type = AudioType.Effect)
     {
-      if(HasInstance && Instance.clips.TryGetValue(clipName, out var clip)) Play(clip, type);
+      if(TryGetClip(clipName, out var clip)) Play(clip, type);
       #if UNITY_EDITOR
       else Debug.LogWarning($"AudioClip {clipName} is not found.");
       #endif

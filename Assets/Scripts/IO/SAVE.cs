@@ -136,8 +136,6 @@ namespace ToB.IO
       var rootPath = Path.Combine(SavePath, fileName);
       if (Directory.Exists(rootPath))
         Directory.Delete(rootPath, true);
-      
-      deleted = true;
     }
     
     /// <summary>
