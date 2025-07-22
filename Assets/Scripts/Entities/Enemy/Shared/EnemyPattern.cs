@@ -35,11 +35,16 @@ namespace ToB.Entities
                 {
                     strategy.ChangePattern(transition.Pattern);
                     transition.OnTransition?.Invoke();
+                    break;
                 }
             }
         }
         
         public virtual void FixedExecute()
+        {
+        }
+        
+        public virtual void LateExecute()
         {
         }
 

@@ -23,6 +23,8 @@ namespace ToB.Entities
 
         public Coroutine DamageEffectCoroutine { get; private set; }
         public bool OnDamageEffect { get; private set; }
+
+        public event Action OnTakeDamage;
         
         /// <summary>
         /// 아직까지는 본체가 HP를 갖기에 본체의 데이터가 고스란히 들어가지만
@@ -60,6 +62,8 @@ namespace ToB.Entities
             float actualDamage = damage * (100 - DEF) / 100;
             ChangeHP(-actualDamage);
             enemy.OnTakeDamage(sender);
+            OnTakeDamage?.Invoke();
+            
             if (sender != null && sender.gameObject.TryGetComponent(out SwordEffect sword))
             {
                 StageManager.Instance.player.stat.Hp +=

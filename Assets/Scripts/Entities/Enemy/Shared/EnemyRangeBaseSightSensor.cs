@@ -89,7 +89,7 @@ namespace ToB.Entities
             Vector2 posDiff = TargetRB.position - (Vector2)transform.position;
             float distance = posDiff.magnitude;
 
-            if (distance < 1f)
+            if (distance < 0.25f)
             {
                 enemy.target = targetInRange;
                 return;
