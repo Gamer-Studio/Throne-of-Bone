@@ -19,13 +19,11 @@ namespace ToB.Scenes.Intro
       if(isLoaded) return;
       
       var (sharedTableLoader, stringTableHandle) = Localizer.Load();
-      var (mixerHandle, clipHandle ) = AudioManager.Load();
 
       (string name, AsyncOperationHandle loader)[] loaderList = {
         ("Shared Table", sharedTableLoader),
         ("언어 번들", stringTableHandle),
-        ("소리 설정", mixerHandle),
-        ("음원", clipHandle),
+        ("음원", AudioManager.Load()),
         ("버프 데이터", Buff.Load())
       };
 
