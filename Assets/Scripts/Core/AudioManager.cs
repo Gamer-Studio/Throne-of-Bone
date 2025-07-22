@@ -12,16 +12,10 @@ namespace ToB.Core
 {
   public class AudioManager : PrefabSingleton<AudioManager>
   {
-    public const string MasterLabel = "Master";
-    public const string BackgroundLabel = "Background";
-    public const string UILabel = "UI";
     public const string ObjectLabel = "Object"; 
     public const string Label = "Audio";
 
-    [SerializeField] private AudioListener mainListener = null;
-    
-    public static bool Loaded { get; private set; } = false;
-    public static readonly Dictionary<string, AudioClip> Clips = new();
+    public SerializableDictionary<string, AudioClip> clips = new();
 
     [SerializeField] private AudioMixer mixer;
     [SerializeField] private AudioSource backgroundSource = null;
@@ -132,6 +126,15 @@ namespace ToB.Core
 
     #endregion
 
+    public AudioClip GetClip(string name)
+    {
+      if (clips.TryGetValue(name, out var clip)) return clip;
+      
+      
+      
+      return null;
+    }
+    
     #region Controller
     
     public static void Play(AudioClip clip, GameObject obj)
@@ -148,9 +151,7 @@ namespace ToB.Core
 
     public static void Play(string clipName, GameObject obj)
     {
-      if(!Loaded) return;
-      
-      if(Clips.TryGetValue(clipName, out var clip)) Play(clip, obj);
+      if(HasInstance && Instance.clips.TryGetValue(clipName, out var clip)) Play(clip, obj);
       #if UNITY_EDITOR
       else Debug.LogWarning($"AudioClip {clipName} is not found.");
       #endif
@@ -193,9 +194,7 @@ namespace ToB.Core
     
     public static void Play(string clipName, AudioType type = AudioType.Effect)
     {
-      if(!Loaded) return;
-      
-      if(Clips.TryGetValue(clipName, out var clip)) Play(clip, type);
+      if(HasInstance && Instance.clips.TryGetValue(clipName, out var clip)) Play(clip, type);
       #if UNITY_EDITOR
       else Debug.LogWarning($"AudioClip {clipName} is not found.");
       #endif
@@ -218,23 +217,6 @@ namespace ToB.Core
     }
     
     #endregion
-    
-    public static AsyncOperationHandle Load()
-    {
-      if(Loaded) throw new InvalidOperationException("SoundManager is already loaded.");
-      Loaded = true;
-      
-      var clipHandle = Addressables.LoadAssetsAsync<AudioClip>(new AssetLabelReference { labelString = Label }, clip =>
-      {
-        Clips[clip.name] = clip;
-        
-        #if UNITY_EDITOR
-        GameManager.Instance.loadedAudios[clip.name] = clip;
-        #endif
-      });
-      
-      return clipHandle;
-    }
   }
 
   public enum AudioType
