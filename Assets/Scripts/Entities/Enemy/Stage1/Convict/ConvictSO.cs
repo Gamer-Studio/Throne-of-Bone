@@ -9,7 +9,8 @@ namespace ToB.Entities
         IEnemyKnockbackSO,
         IEnemyHittableSO,
         IEnemyGroundMoveSO,
-        IEnemySightSensorSO
+        IEnemySightSensorSO,
+        IEnemyChaserSO
     {
         [field: SerializeField] public float HP { get; private set; }
         [field: SerializeField]public float DEF { get; private set; }
