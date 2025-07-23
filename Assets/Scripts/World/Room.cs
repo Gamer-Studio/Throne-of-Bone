@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using NaughtyAttributes;
 using Newtonsoft.Json.Linq;
 using ToB.Entities;
@@ -10,6 +8,9 @@ using ToB.Utils;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace ToB.Worlds
 {
@@ -55,10 +56,14 @@ namespace ToB.Worlds
     [Button("내부 오브젝트 찾기")]
     private void FindStructures()
     {
+      Undo.RecordObject(this, nameof(FindStructures));
+      
       fieldObjects.Clear();
       
       FindStructure(transform);
       FindLinks();
+      
+      EditorUtility.SetDirty(this);
     }
     
     private void FindStructure(Transform tr)
@@ -71,6 +76,9 @@ namespace ToB.Worlds
           DebugSymbol.Editor.Log(structure.name);
           structure.room = this;
           fieldObjects[child.name] = structure;
+          
+          Undo.RecordObject(structure, nameof(FindStructure));
+          EditorUtility.SetDirty(structure);
         }
         
         FindStructure(child);
@@ -93,6 +101,9 @@ namespace ToB.Worlds
           DebugSymbol.Editor.Log(link.name);
           links.Add(link);
           link.Init(this);
+          
+          Undo.RecordObject(link, nameof(FindLink));
+          EditorUtility.SetDirty(link);
         }
         
         FindLink(child);
