@@ -17,6 +17,7 @@ namespace ToB.Entities
         [SerializeField] public bool PlayerEntered;
 
         public event Action OnPlayerEntered;
+        public event Action OnPlayerExit;
 
         private void Reset()
         {
@@ -49,6 +50,7 @@ namespace ToB.Entities
             if ((mask & 1 << other.gameObject.layer) != 0)
             {
                 PlayerEntered = false;
+                OnPlayerExit?.Invoke();
             }
         }
         

@@ -112,6 +112,10 @@ namespace ToB.Entities
             isAlive = false;
         }
 
+        public virtual void SetTarget(Transform target)
+        {
+            this.target = target;
+        }
         public float GetTargetDistanceSQR()
         {
             if (!target) return float.MaxValue;

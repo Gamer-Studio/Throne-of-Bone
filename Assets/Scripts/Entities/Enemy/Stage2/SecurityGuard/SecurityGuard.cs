@@ -31,6 +31,7 @@ namespace ToB.Entities
             });
             FSM.Init();
         }
+        
 
         protected override void Die()
         {
