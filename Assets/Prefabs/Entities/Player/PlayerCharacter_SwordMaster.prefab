@@ -262,11 +262,15 @@ MonoBehaviour:
           m_Calls: []
       baseValue: 0
     tempDef: 0
+    tempMaxHP: 0
+    tempAtk: 0
     atk:
       onChanged:
         m_PersistentCalls:
           m_Calls: []
       baseValue: 10
+  maxJumpCount: 0
+  currentJumpCount: 0
   jumpPower: 18
   wallJumpPower: 10
   wallJumpReactionTime: 0.2
@@ -337,8 +341,6 @@ MonoBehaviour:
   dashCoolTime: 0.5
   inWater: 0
   dashImmuneStartTime: 0
-  data:
-    name: 
 --- !u!114 &7655265317321702560
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -572,7 +574,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   onLanding:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1910508927396576283}
+        m_TargetAssemblyTypeName: ToB.Player.PlayerCharacter, Assembly-CSharp
+        m_MethodName: RegenJump
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   <IsGround>k__BackingField: 0
   grounds: []
   groundMask:

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ToB.Utils.Singletons;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Audio;
@@ -9,95 +10,47 @@ using UnityEngine.SceneManagement;
 
 namespace ToB.Core
 {
-  /// <summary>
-  /// 싱글톤보다 정적 클래스가 접근하기 편할 것 같아 정적 클래스로 구현했습니다.
-  /// 각 값은 SoundManager 초기화시 자동으로 불러오며, 값을 설정시 해당 값을 자동으로 저장합니다.
-  /// </summary>
-  public static class AudioManager
+  public class AudioManager : PrefabSingleton<AudioManager>
   {
-    public const string MasterLabel = "Master";
-    public const string BackgroundLabel = "Background";
-    public const string UILabel = "UI";
     public const string ObjectLabel = "Object"; 
     public const string Label = "Audio";
 
-    private static AudioListener mainListener = null;
+    private static readonly Dictionary<string, AudioClip> Clips = new();
+    private static readonly Dictionary<string, AssetReference> References = new();
     
-    public static bool Loaded { get; private set; } = false;
-    public static readonly Dictionary<string, AudioClip> Clips = new();
-
-    private static Camera mainCamera;
-    private static AudioSource effectSource = null, backgroundSource = null;
-    private static AudioMixerGroup effectGroup, backgroundGroup, objectGroup;
+    [SerializeField] private AudioMixer mixer;
+    [SerializeField] private AudioSource backgroundSource = null;
+    [SerializeField] private List<AudioSource> effectSources = new(); 
     
-    static AudioManager()
+    [SerializeField] private AudioMixerGroup effectGroup, backgroundGroup, objectGroup;
+    
+#if UNITY_EDITOR
+    [SerializeField] private SerializableDictionary<string, AudioClip> loadedClips = new();
+#endif
+    
+    #region Unity Event
+
+    protected override void Awake()
     {
-      InitScene();
-
-      SceneManager.activeSceneChanged += (_, _) =>
-      {
-        InitScene();
-      };
+      base.Awake();
+      
+      MasterVolume = PlayerPrefs.GetFloat("MasterVolume", 80);
+      BackgroundVolume = PlayerPrefs.GetFloat("BackgroundVolume", 80);
+      EffectVolume = PlayerPrefs.GetFloat("EffectVolume", 80);
+      ObjectVolume = PlayerPrefs.GetFloat("ObjectVolume", 80);
     }
-
-    private static void InitScene()
-    {
-      mainCamera = Camera.main;
-      effectSource = null;
-      backgroundSource = null;
-        
-      EffectSource?.Stop();
-      BackgroundSource?.Stop();
-
-      mainListener = null;
-    }
-
-    public static AudioListener Main
-    {
-      get
-      {
-        if (mainListener) return mainListener;
-
-        var objs = GameObject.FindGameObjectsWithTag("MainListener");
-        var find = false;
-        
-        foreach (var obj in objs)
-        {
-          if (obj.TryGetComponent(out mainListener))
-          {
-            if (!find)
-              find = true;
-            else
-              Debug.LogWarning("Multiple MainListener is found.");
-          }
-        }
-
-        if(mainListener) return mainListener;
-        else throw new InvalidOperationException("MainListener is not found.");
-      }
-      set => mainListener = value;
-    }
-
+    
+    #endregion
+    
     #region Volumes
 
-    private static AudioMixer mixer;
-    public static AudioMixer Mixer
+    private void SetEffectVolume(float value)
     {
-      get => mixer;
-      set
+      if(effectSources == null) return;
+      
+      foreach (var source in effectSources)
       {
-        mixer = value;
-        if (mixer)
-        {
-          MasterVolume = PlayerPrefs.GetFloat("MasterVolume", 80);
-          BackgroundVolume = PlayerPrefs.GetFloat("BackgroundVolume", 80);
-          EffectVolume = PlayerPrefs.GetFloat("EffectVolume", 80);
-          ObjectVolume = PlayerPrefs.GetFloat("ObjectVolume", 80);
-        
-          effectGroup = Mixer.FindMatchingGroups(UILabel)[0];
-          backgroundGroup = Mixer.FindMatchingGroups(BackgroundLabel)[0];
-          objectGroup = Mixer.FindMatchingGroups(ObjectLabel)[0];
-        }
+        source.volume = value;
       }
     }
 
@@ -113,8 +66,11 @@ namespace ToB.Core
       {
         var input = Math.Max(0, Math.Min(100, value));
 
-        if(EffectSource) EffectSource.volume = (input / 100) * (BackgroundVolume / 100);
-        if(BackgroundSource) BackgroundSource.volume = (input / 100) * (EffectVolume / 100);
+        if (HasInstance)
+        {
+          Instance.SetEffectVolume((input / 100) * (BackgroundVolume / 100));
+          Instance.backgroundSource.volume = (input / 100) * (EffectVolume / 100);
+        }
         PlayerPrefs.SetFloat("MasterVolume", input);
       }
     }
@@ -130,7 +86,9 @@ namespace ToB.Core
       {
         var input = Math.Max(0, Math.Min(100, value));
 
-        if(BackgroundSource) BackgroundSource.volume = (input / 100) * (MasterVolume / 100);
+        if (HasInstance)
+          Instance.backgroundSource.volume = (input / 100) * (MasterVolume / 100);
+
         PlayerPrefs.SetFloat("BackgroundVolume", input);
       }
     }
@@ -146,7 +104,9 @@ namespace ToB.Core
       {
         var input = Math.Max(0, Math.Min(100, value));
         
-        if(EffectSource) EffectSource.volume = (input / 100) * (MasterVolume / 100);
+        if (HasInstance) 
+          Instance.SetEffectVolume((input / 100) * (MasterVolume / 100));
+        
         PlayerPrefs.SetFloat("EffectVolume", input);
       }
     }
@@ -157,80 +117,87 @@ namespace ToB.Core
     /// </summary>
     public static float ObjectVolume
     {
-      get => Mixer && Mixer.GetFloat(ObjectLabel, out var value) ? value + 80 : PlayerPrefs.GetFloat("ObjectVolume", 80);
+      get => HasInstance && Instance.mixer.GetFloat(ObjectLabel, out var value) ? value + 80 : PlayerPrefs.GetFloat("ObjectVolume", 80);
       set
       {
         var input = Math.Max(0, Math.Min(100, value));
 
-        if(Mixer) Mixer.SetFloat(ObjectLabel, input - 80);
+        if (HasInstance) 
+          Instance.mixer.SetFloat(ObjectLabel, input - 80);
+        
         PlayerPrefs.SetFloat("ObjectVolume", input);
-      }
-    }
-
-    public static AudioSource EffectSource
-    {
-      get
-      {
-        if (!Main) return null;
-        
-        if (effectSource && effectSource.gameObject == Main.gameObject)
-          return effectSource;
-        
-        effectSource = Main.GetComponents<AudioSource>().FirstOrDefault(s => s.outputAudioMixerGroup == effectGroup);
-
-        if (effectSource) return effectSource;
-        
-        effectSource = Main.gameObject.AddComponent<AudioSource>();
-        effectSource.outputAudioMixerGroup = effectGroup;
-        effectSource.volume = (EffectVolume / 100) * (MasterVolume / 100);
-
-        return effectSource;
-      }
-    }
-    
-    public static AudioSource BackgroundSource
-    {
-      get
-      {
-        if (!Main) return null;
-        
-        if (backgroundSource && backgroundSource.gameObject == Main.gameObject)
-          return backgroundSource;
-        
-        backgroundSource = Main.GetComponents<AudioSource>().FirstOrDefault(s => s.outputAudioMixerGroup == backgroundGroup);
-
-        if (backgroundSource) return backgroundSource;
-        
-        backgroundSource = Main.gameObject.AddComponent<AudioSource>();
-        backgroundSource.loop = true;
-        backgroundSource.outputAudioMixerGroup = backgroundGroup;
-        backgroundSource.volume = (BackgroundVolume / 100) * (MasterVolume / 100);
-
-        return backgroundSource;
       }
     }
 
     #endregion
 
+    public static AudioClip GetClip(string name)
+    {
+      if (Clips.TryGetValue(name, out var clip)) return clip;
+
+      var reference = new AssetReference($"{Label}/{name}");
+
+      try
+      {
+        clip = reference.LoadAssetAsync<AudioClip>().WaitForCompletion();
+      }
+      catch (Exception e)
+      {
+        Debug.LogError(e);
+        return null;
+      }
+
+      Clips[name] = clip;
+#if UNITY_EDITOR
+      if(HasInstance)
+        Instance.loadedClips[name] = clip;
+#endif
+      
+      return clip;
+    }
+
+    public static bool TryGetClip(string name, out AudioClip clip)
+    {
+      clip = GetClip(name);
+      
+      return clip != null;
+    }
+
+    public static bool ReleaseClip(string name)
+    {
+      if (References.TryGetValue(name, out var reference))
+      {
+        Clips[name].UnloadAudioData();
+        Clips.Remove(name);
+        reference.ReleaseAsset();
+        
+#if UNITY_EDITOR
+        if (HasInstance)
+          Instance.loadedClips.Remove(name);
+#endif
+        
+        return true;
+      }
+      else return false;
+    }
+    
     #region Controller
     
     public static void Play(AudioClip clip, GameObject obj)
     {
-      if(!Mixer) return;
+      if(!HasInstance) return;
 
       if (obj.TryGetComponent(out AudioSource source)) {}
       else source = obj.AddComponent<AudioSource>();
       
       source.clip = clip;
-      source.outputAudioMixerGroup = objectGroup;
+      source.outputAudioMixerGroup = Instance.objectGroup;
       source.Play();
     }
 
     public static void Play(string clipName, GameObject obj)
     {
-      if(!Loaded) return;
-      
-      if(Clips.TryGetValue(clipName, out var clip)) Play(clip, obj);
+      if(TryGetClip(clipName, out var clip)) Play(clip, obj);
       #if UNITY_EDITOR
       else Debug.LogWarning($"AudioClip {clipName} is not found.");
       #endif
@@ -238,25 +205,42 @@ namespace ToB.Core
 
     public static void Play(AudioClip clip, AudioType type = AudioType.Effect)
     {
-      if(!Mixer) return;
-      
-      var source = type switch
+      if(!HasInstance) return;
+
+      if (type == AudioType.Background)
       {
-        AudioType.Background => BackgroundSource,
-        AudioType.Effect => EffectSource,
-        _ => EffectSource
-      };
-      
-      source.clip = clip;
-      source.outputAudioMixerGroup = type == AudioType.Background ? backgroundGroup : effectGroup;
-      source.Play();
+        Instance.backgroundSource.clip = clip;
+        Instance.backgroundSource.Play();
+      }
+      else
+      {
+        var availableSource = (from source in Instance.effectSources where source.isPlaying == false select source);
+
+        var audioSources = availableSource as AudioSource[] ?? availableSource.ToArray();
+        if (audioSources.Any())
+        {
+          audioSources.First().clip = clip;
+          audioSources.First().Play();
+        }
+        else
+        {
+          // 없을 경우 생성하여 붙이기
+          var obj = new GameObject("EffectSource");
+          obj.transform.SetParent(Instance.transform);
+          obj.transform.localPosition = Vector3.zero;
+          var source = obj.AddComponent<AudioSource>();
+
+          source.clip = clip;
+          source.Play();
+          
+          Instance.effectSources.Add(source);
+        }
+      }
     }
     
     public static void Play(string clipName, AudioType type = AudioType.Effect)
     {
-      if(!Loaded) return;
-      
-      if(Clips.TryGetValue(clipName, out var clip)) Play(clip, type);
+      if(TryGetClip(clipName, out var clip)) Play(clip, type);
       #if UNITY_EDITOR
       else Debug.LogWarning($"AudioClip {clipName} is not found.");
       #endif
@@ -264,40 +248,21 @@ namespace ToB.Core
 
     public static void Stop(AudioType type = AudioType.Background)
     {
-      if(!Mixer) return;
-      
-      var source = type switch
+      if(!HasInstance) return;
+
+      if (type == AudioType.Background)
+        Instance.backgroundSource.Stop();
+      else
       {
-        AudioType.Background => BackgroundSource,
-        AudioType.Effect => EffectSource,
-        _ => EffectSource
-      };
+        foreach (var source in Instance.effectSources)
+        {
+          source.Stop();
+        }
+      }
       
-      source.Stop();
     }
     
     #endregion
-    
-    public static (AsyncOperationHandle mixerHandle, AsyncOperationHandle clipHandle) Load()
-    {
-      if(Loaded) throw new InvalidOperationException("SoundManager is already loaded.");
-      Loaded = true;
-      
-      // Mixer = Addressables.LoadAssetAsync<AudioMixer>(new AssetLabelReference{labelString = Label}).WaitForCompletion();
-      var mixerHandle = Addressables.LoadAssetAsync<AudioMixer>(new AssetLabelReference{labelString = Label});
-      mixerHandle.Completed += handle => Mixer = handle.Result;
-
-      var clipHandle = Addressables.LoadAssetsAsync<AudioClip>(new AssetLabelReference { labelString = Label }, clip =>
-      {
-        Clips[clip.name] = clip;
-        
-        #if UNITY_EDITOR
-        GameManager.Instance.loadedAudios[clip.name] = clip;
-        #endif
-      });
-      
-      return (mixerHandle, clipHandle);
-    }
   }
 
   public enum AudioType

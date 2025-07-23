@@ -69,7 +69,11 @@ namespace ToB.UI
     public void ChangeMax(float maxValue)
     {
       max = maxValue;
-      if (_valueType == ValueType.Health) max += player.stat.Hp;
+      if (_valueType == ValueType.Health)
+      {
+        max += player.stat.Hp;
+        text.text = $"{(int)player.stat.Hp} / {(int)max}";
+      }
       Value = Value;
     }
     #region HPBarChange

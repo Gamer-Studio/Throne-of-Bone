@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace ToB.Entities.FieldObject
 {
-    public class Chest_Small : MonoBehaviour, IDamageable
+    public class Chest_Small : FieldObjectProgress, IDamageable
     {
         [SerializeField] private int gold;
         [SerializeField] private int mana;

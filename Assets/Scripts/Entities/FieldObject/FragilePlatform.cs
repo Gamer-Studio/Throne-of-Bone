@@ -1,10 +1,10 @@
 using System.Collections;
-using UnityEngine;
 using DG.Tweening;
 using Newtonsoft.Json.Linq;
 using ToB.IO;
+using UnityEngine;
 
-namespace ToB.Entities.Obstacle
+namespace ToB.Entities.FieldObject
 {
     public class FragilePlatform : FieldObjectProgress
     {

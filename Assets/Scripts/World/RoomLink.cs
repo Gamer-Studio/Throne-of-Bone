@@ -7,14 +7,13 @@ namespace ToB.Worlds
   [AddComponentMenu("Stage/Room Link")]
   public class RoomLink : MonoBehaviour
   {
-    public int connectedStageId = 1;
-    public int connectedRoomId = 1;
+    [field: Label("방의 링크 인덱스입니다."), SerializeField, ReadOnly] public int Index { get; private set; } = -1;
+    public AssetReference connectedRoom;
     public int connectedIndex = 0;
-
-    public AssetReference RoomRef => new AssetReference($"Stage{connectedStageId}/Room{connectedRoomId}");
-
-#if UNITY_EDITOR
-    [ShowNativeProperty] private string refString => RoomRef.AssetGUID;
-#endif
+    
+    public void Init(Room room)
+    {
+      Index = room.links.FindIndex(link => link == this);
+    }
   }
 }
