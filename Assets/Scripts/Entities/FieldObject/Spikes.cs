@@ -12,7 +12,7 @@ namespace ToB.Entities.FieldObject
             if (other.gameObject.CompareTag("Player"))
             {
                 other.gameObject.Damage(damage,this);
-                StageManager.Instance.player.TeleportByObstacle();
+                StageManager.Instance.player.TeleportByObject();
             }
         }
     }

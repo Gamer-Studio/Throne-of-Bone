@@ -41,6 +41,13 @@ namespace ToB.Entities.FieldObject
             gameObject.SetActive(!isActivated);
         }
         
+        public override JObject ToJson()
+        {
+            JObject json = base.ToJson();
+            json[nameof(isActivated)] = isActivated;
+            return json;
+        }
+        
         #endregion
 
         private void OnTriggerStay2D(Collider2D other)

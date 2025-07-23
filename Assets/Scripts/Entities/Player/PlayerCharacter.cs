@@ -512,7 +512,7 @@ namespace ToB.Player
     private Coroutine tpCoroutine;
     public bool isFadeOutEnded = false;
 
-    public void TeleportByObstacle()
+    public void TeleportByObject()
     {
       if (stat.Hp <= 0) return;
       // 플레이어가 사망 시 스폰위치로 TP해야 하니 예외처리

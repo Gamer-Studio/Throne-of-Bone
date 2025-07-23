@@ -20,15 +20,10 @@ namespace ToB.Entities.FieldObject
         
         #region SaveLoad
 
-        private void Awake()
-        {
-            
-        }
-
         public override void LoadJson(JObject json)
         {
             base.LoadJson(json);
-            isLeverActivated = json.Get(nameof(isLeverActivated), true);
+            isLeverActivated = json.Get(nameof(isLeverActivated), isLeverActivated);
             IsInteractable = json.Get(nameof(IsInteractable), true);
             animator.SetBool("IsActivated", isLeverActivated);
         }
@@ -41,8 +36,8 @@ namespace ToB.Entities.FieldObject
         public override JObject ToJson()
         {
             JObject json = base.ToJson();
-            json.Add(nameof(isLeverActivated), isLeverActivated);
-            json.Add(nameof(IsInteractable), IsInteractable);
+            json[nameof(isLeverActivated)] = isLeverActivated;
+            json[nameof(IsInteractable)] = IsInteractable;
             return json;
         }
       
@@ -54,6 +49,11 @@ namespace ToB.Entities.FieldObject
         public void Interact()
         {
             isLeverActivated = !isLeverActivated;
+            LeverStateUpdate();
+            
+        }
+        public void LeverStateUpdate()
+        {
             animator.SetBool("IsActivated", isLeverActivated);
             UpdateLeverText();
             if (IsInteractable)
@@ -61,6 +61,7 @@ namespace ToB.Entities.FieldObject
                 onLeverInteract?.Invoke(isLeverActivated);
             }
         }
+        
 
         public void UpdateLeverText()
         {

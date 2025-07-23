@@ -55,7 +55,7 @@ namespace ToB.Entities.FieldObject
        }
        public override void OnLoad()
        {
-           IsOpened = isOpened;
+           OnOffDoorInteract(isOpened);
            // 세이브데이터 로딩이 끝나면 문의 상태를 결정해 줌
        }
 
@@ -63,8 +63,8 @@ namespace ToB.Entities.FieldObject
        {
            JObject json = base.ToJson();
            json.Set(nameof(doorMode), doorMode);
-           json.Add(nameof(activeLeverCount), activeLeverCount);
-           json.Add(nameof(isOpened), isOpened);
+           json[nameof(activeLeverCount)] = activeLeverCount;
+           json[nameof(isOpened)] = isOpened;
            return json;
        }
        #endregion
