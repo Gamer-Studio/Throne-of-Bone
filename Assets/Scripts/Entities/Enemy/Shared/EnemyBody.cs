@@ -1,4 +1,5 @@
 using System;
+using ToB.Entities.Interface;
 using UnityEngine;
 
 namespace ToB.Entities
@@ -36,7 +37,7 @@ namespace ToB.Entities
             if (!owner.IsAlive) return;
             if ((hittableMask & (1 << other.gameObject.layer)) != 0)
             {
-                other.Damage(bodyDamage, this);
+                IDamageableExtensions.Damage(other, bodyDamage, (IAttacker)this);
                 other.KnockBack(15, new Vector2(other.transform.position.x < transform.position.x  ? -1 : 1, 0.5f));
                 lastContactedFrame = Time.frameCount;
             }

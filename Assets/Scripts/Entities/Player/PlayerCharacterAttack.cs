@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using NaughtyAttributes;
 using ToB.Core;
+using ToB.Entities.Interface;
 using ToB.Entities.Projectiles;
 using ToB.Entities.Skills;
 using ToB.Utils;
@@ -12,7 +13,7 @@ using AudioType = ToB.Core.AudioType;
 
 namespace ToB.Player
 {
-  public partial class PlayerCharacter
+  public partial class PlayerCharacter : IAttacker
   {
     #region State
     
@@ -26,7 +27,19 @@ namespace ToB.Player
     [Label("검기 재생 시간(초)"), Foldout("Attack State")] public float rangedAttackRegenTime = 1;
     [Label("검기 초당 회복량"), Foldout("Attack State")] public int rangedAttackRegenAmount = 0;
     [Label("검기 발사 대기시간"), Foldout("Attack State")] public float shootDelay = 0.1f;
-    
+
+    /// <summary>
+    /// 적이 플레이어의 공격을 막을 수 있는지 여부입니다.
+    /// </summary>
+    public bool Blockable => true;
+
+    /// <summary>
+    /// 플레이어의 공격에 피격됬을 때 이펙트를 발생시키는지 여부입니다.
+    /// </summary>
+    public bool Effectable => true;
+
+    public Vector3 Position => transform.position;
+
     // 현재 원거리 공격 가능 횟수입니다.
     public int AvailableRangedAttack
     {
@@ -82,7 +95,7 @@ namespace ToB.Player
     }
 
     [NonSerialized] public bool bottomJumpAvailable = false;
-    
+
     /// <summary>
     /// direction 방향으로 공격합니다.
     /// isMelee를 false로 하여 원거리 공격을 할 수 있습니다.
@@ -173,12 +186,13 @@ namespace ToB.Player
     private IEnumerator Shoot(Vector2 direction)
     {
       yield return new WaitForSeconds(shootDelay);
-      var eff = swordEffect.Pooling().GetComponent<SwordEffect>();
+      var effect = (SwordEffect)swordEffect.Pooling();
+      effect.ClearEffect();
 
-      eff.transform.position = transform.position;
-      eff.Direction = direction;
-      eff.damage = stat.atk / 2;
-      eff.ClearEffect();
+      effect.transform.position = transform.position;
+      effect.Direction = direction;
+      effect.damage = stat.atk / 2;
+      effect.launcher = gameObject;
         
       if(rangeAttackGlowEffect.isPlaying) rangeAttackGlowEffect.Stop();
       rangeAttackGlowEffect.Play();

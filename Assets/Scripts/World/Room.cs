@@ -126,7 +126,7 @@ namespace ToB.Worlds
 
     private void OnDrawGizmos()
     {
-      
+      Handles.Label(transform.position, $"Room {stageIndex} / {roomIndex}");
     }
 
 #endif

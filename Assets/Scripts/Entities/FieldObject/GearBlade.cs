@@ -1,4 +1,5 @@
 using System.Collections;
+using ToB.Entities.Interface;
 using UnityEngine;
 
 namespace ToB.Entities.FieldObject
@@ -91,7 +92,7 @@ namespace ToB.Entities.FieldObject
         {
             if (other.gameObject.CompareTag("Player") && isActivated)
             {
-                other.Damage(damage,this);
+                IDamageableExtensions.Damage(other, damage,(IAttacker)this);
                 other.KnockBack(knockBackPower, gameObject);
             }
         }

@@ -1,3 +1,4 @@
+using ToB.Entities.Interface;
 using ToB.Scenes.Stage;
 using UnityEngine;
 
@@ -11,7 +12,7 @@ namespace ToB.Entities.FieldObject
         {
             if (other.gameObject.CompareTag("Player"))
             {
-                other.gameObject.Damage(damage,this);
+                IDamageableExtensions.Damage(other.gameObject, (float)damage,(IAttacker)this);
                 StageManager.Instance.player.TeleportByObstacle();
             }
         }

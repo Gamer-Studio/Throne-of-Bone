@@ -19,7 +19,6 @@ namespace ToB.Player
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-    
       Vector2 otherCenter = other.GetComponent<Collider2D>().bounds.center;
       Vector2 posDiff = otherCenter - (Vector2)character.transform.position;
       Vector2 posDiffDir = posDiff.normalized;
