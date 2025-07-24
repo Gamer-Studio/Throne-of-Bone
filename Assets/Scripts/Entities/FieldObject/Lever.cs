@@ -31,7 +31,7 @@ namespace ToB.Entities.FieldObject
         public override void OnLoad()
         {
             LeverSR.sprite = sprites[isLeverActivated ? 1 : 0];
-            interactionText.text = "";
+            //interactionText.text = "";
         }
         public override JObject ToJson()
         {
@@ -48,31 +48,30 @@ namespace ToB.Entities.FieldObject
         /// </summary>
         public void Interact()
         {
-            isLeverActivated = !isLeverActivated;
-            LeverStateUpdate();
-            
+            if (IsInteractable)
+            {
+                isLeverActivated = !isLeverActivated;
+                LeverStateUpdate();
+                onLeverInteract?.Invoke(isLeverActivated);
+            }
         }
         public void LeverStateUpdate()
         {
             animator.SetBool("IsActivated", isLeverActivated);
             UpdateLeverText();
-            if (IsInteractable)
-            {
-                onLeverInteract?.Invoke(isLeverActivated);
-            }
         }
         
 
         public void UpdateLeverText()
         {
-            if (!isLeverActivated) interactionText.text = "F : 켜기";
-            else interactionText.text = "F : 끄기";
+            interactionText.text = !isLeverActivated ? "F : 켜기" : "F : 끄기";
         }
 
         private void OnTriggerEnter2D(Collider2D other)
         {
             if (other.CompareTag("Player") && IsInteractable)
             {
+                interactionText.enabled = true;
                 UpdateLeverText();
             }
         }
@@ -80,6 +79,7 @@ namespace ToB.Entities.FieldObject
         {
             if (other.CompareTag("Player"))
             {
+                interactionText.enabled = false;
                 interactionText.text = "";
             }
         }
