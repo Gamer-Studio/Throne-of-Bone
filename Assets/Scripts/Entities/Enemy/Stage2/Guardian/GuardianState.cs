@@ -5,5 +5,10 @@ using Unity.Behavior;
 public enum GuardianState
 {
     Idle,
-    Beware
+    Beware,
+    Shield,
+    Teleport,
+    Blast,
+    Lazer,
+    LazerRain
 }

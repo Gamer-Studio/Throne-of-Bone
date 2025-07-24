@@ -149,7 +149,7 @@ namespace ToB.Entities
         public void LookHorizontal(Vector2 direction)
         {
             Vector3 scale = transform.localScale;
-            scale.x = direction.x > 0 ? 1 : -1;;
+            scale.x = direction.x > 0 ? 1 : -1;
             transform.localScale = scale;
         }
 
@@ -159,5 +159,7 @@ namespace ToB.Entities
             Vector2 dir = target.position - transform.position;
             LookHorizontal(dir);
         }
+        
+        
     }
 }

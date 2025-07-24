@@ -263,12 +263,14 @@ namespace ToB.Entities
         
         public bool IsLedgeOnSide(Vector2 direction)
         {
-            Vector2 origin = (Vector2)transform.position +
-                             direction * terrainSensor.size.x / 2f +
-                             new Vector2(0, skinWidth);
+            Vector2 origin = (Vector2)terrainSensor.bounds.center +
+                             direction * terrainSensor.bounds.extents.x +
+                             new Vector2(0, - terrainSensor.bounds.extents.y + skinWidth);
 
             float rayDistance = 0.1f;
             
+            // 디버그 선 그리기 (씬 뷰에서 확인 가능)
+            //Debug.DrawRay(origin, Vector2.down * rayDistance, Color.red, 0.1f);
             RaycastHit2D hit = Physics2D.Raycast(origin, Vector2.down, rayDistance, terrainLayer);
             return !hit.collider;
         }
