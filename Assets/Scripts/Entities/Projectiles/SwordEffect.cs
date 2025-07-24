@@ -1,3 +1,4 @@
+using System;
 using NaughtyAttributes;
 using ToB.Utils;
 using UnityEngine;
@@ -12,6 +13,8 @@ namespace ToB.Entities.Projectiles
     [Label("넉백 세기")] public float knockBackForce = 15;
     
     public LayerMask hitLayers;
+
+    private LayerMask hitLayersDefault;
     
     [SerializeField] private Rigidbody2D body;
     [SerializeField] private TrailRenderer trail;
@@ -82,9 +85,15 @@ namespace ToB.Entities.Projectiles
       attackEffect.gameObject.SetActive(true);
     }
 
+    private void Awake()
+    {
+      hitLayersDefault = hitLayers;
+    }
+
     private void OnEnable()
     {
       camera = Camera.main;
+      hitLayers = hitLayersDefault;
     }
 
     private void FixedUpdate()

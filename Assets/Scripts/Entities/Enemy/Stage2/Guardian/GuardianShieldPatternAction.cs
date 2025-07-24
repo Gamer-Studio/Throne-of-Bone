@@ -24,16 +24,21 @@ public partial class GuardianShieldPatternAction : Action
     {
         CanShield.Value = false;
         shieldEnd = false;
+        
         Guardian.Value.ShieldRecharger = DOVirtual.DelayedCall(Guardian.Value.GuardianSO.ShieldRechargeTime, () =>
         {
             CanShield.Value = true;
         });
+        
         shieldActiveTween = DOVirtual.DelayedCall(ShieldDuration, () =>
         {
             shieldEnd = true;
         });
 
         Guardian.Value.Animator.SetTrigger(ShieldHash);
+        Guardian.Value.Stat.SetDEF(Guardian.Value.GuardianSO.ShieldDEF);
+        Guardian.Value.ShieldAreaObject.SetActive(true);
+        Guardian.Value.Knockback.isActive = false;
         
         return Status.Running;
     }
@@ -46,6 +51,10 @@ public partial class GuardianShieldPatternAction : Action
     protected override void OnEnd()
     {
         shieldActiveTween.Kill();
+        Guardian.Value.Stat.SetDEF(Guardian.Value.GuardianSO.DEF);
+        Guardian.Value.ShieldAreaObject.SetActive(false);
+        Guardian.Value.Knockback.isActive = true;
+        
     }
 }
 

@@ -7,10 +7,12 @@ namespace ToB.Entities
         , IEnemyGroundMoveSO
         , IEnemyHittableSO
         , IEnemyMainBodySO
+        , IEnemyKnockbackSO
     {
         [field: SerializeField] public float MoveSpeed { get; private set; } = 2;
         [field: SerializeField] public float HP { get; private set; } = 250;
         [field: SerializeField] public float DEF { get; private set; }
+        [field: SerializeField] public float KnockbackMultiplier { get; private set; } = 0.2f;
         [field: SerializeField] public float ShieldDEF { get; private set; } = 90;
         
         [field: SerializeField] public float BodyDamage { get; private set; }
@@ -22,6 +24,6 @@ namespace ToB.Entities
         [field:SerializeField] public float BlastRechargeTime { get; private set; } = 3;
         [field:SerializeField] public float LaserRechargeTime { get; private set; } = 7;
         [field:SerializeField] public float LaserTickDamage { get; private set; } = 5;
-        
+
     }
 }
