@@ -20,15 +20,10 @@ namespace ToB.Entities.FieldObject
         
         #region SaveLoad
 
-        private void Awake()
-        {
-            
-        }
-
         public override void LoadJson(JObject json)
         {
             base.LoadJson(json);
-            isLeverActivated = json.Get(nameof(isLeverActivated), true);
+            isLeverActivated = json.Get(nameof(isLeverActivated), isLeverActivated);
             IsInteractable = json.Get(nameof(IsInteractable), true);
             animator.SetBool("IsActivated", isLeverActivated);
         }
@@ -36,13 +31,13 @@ namespace ToB.Entities.FieldObject
         public override void OnLoad()
         {
             LeverSR.sprite = sprites[isLeverActivated ? 1 : 0];
-            interactionText.text = "";
+            //interactionText.text = "";
         }
         public override JObject ToJson()
         {
             JObject json = base.ToJson();
-            json.Add(nameof(isLeverActivated), isLeverActivated);
-            json.Add(nameof(IsInteractable), IsInteractable);
+            json[nameof(isLeverActivated)] = isLeverActivated;
+            json[nameof(IsInteractable)] = IsInteractable;
             return json;
         }
       
@@ -53,25 +48,30 @@ namespace ToB.Entities.FieldObject
         /// </summary>
         public void Interact()
         {
-            isLeverActivated = !isLeverActivated;
-            animator.SetBool("IsActivated", isLeverActivated);
-            UpdateLeverText();
             if (IsInteractable)
             {
+                isLeverActivated = !isLeverActivated;
+                LeverStateUpdate();
                 onLeverInteract?.Invoke(isLeverActivated);
             }
         }
+        public void LeverStateUpdate()
+        {
+            animator.SetBool("IsActivated", isLeverActivated);
+            UpdateLeverText();
+        }
+        
 
         public void UpdateLeverText()
         {
-            if (!isLeverActivated) interactionText.text = "F : 켜기";
-            else interactionText.text = "F : 끄기";
+            interactionText.text = !isLeverActivated ? "F : 켜기" : "F : 끄기";
         }
 
         private void OnTriggerEnter2D(Collider2D other)
         {
             if (other.CompareTag("Player") && IsInteractable)
             {
+                interactionText.enabled = true;
                 UpdateLeverText();
             }
         }
@@ -79,6 +79,7 @@ namespace ToB.Entities.FieldObject
         {
             if (other.CompareTag("Player"))
             {
+                interactionText.enabled = false;
                 interactionText.text = "";
             }
         }

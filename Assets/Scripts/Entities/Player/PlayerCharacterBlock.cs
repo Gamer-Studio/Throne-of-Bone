@@ -1,6 +1,7 @@
 using System.Collections;
 using NaughtyAttributes;
 using ToB.Core;
+using ToB.Entities.Interface;
 using ToB.Entities.Skills;
 using ToB.Utils;
 using UnityEngine;
@@ -61,10 +62,10 @@ namespace ToB.Player
     
     private Coroutine blockCoroutine = null;
 
-    public void Block(float damage, MonoBehaviour sender)
+    public void Block(float damage, IAttacker sender)
     {
       // 공격 방향 구하기
-      var blockDir = (sender.transform.position - transform.position).normalized;
+      var blockDir = (sender.Position - transform.position).normalized;
       var angle = Mathf.Atan2(blockDir.y, blockDir.x) * Mathf.Rad2Deg + 360;
       
       if (MathUtil.GetAngleDiff(angle, shield.transform.rotation.eulerAngles.z) > blockAngle / 2)

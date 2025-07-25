@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using NaughtyAttributes;
 using ToB.Core;
+using ToB.Entities.Interface;
 using ToB.Player;
 using ToB.Utils;
 using UnityEngine;
@@ -86,10 +87,10 @@ namespace ToB.Entities
             isAlive = true;
         }
 
-        public void OnTakeDamage(MonoBehaviour sender)
+        public void OnTakeDamage(IAttacker sender)
         {
-            if (!sender || !ReactOnDamage) return;
-            bool isSenderLeft = sender.transform.position.x < transform.position.x;
+            if (sender == null || !ReactOnDamage) return;
+            bool isSenderLeft = sender.Position.x < transform.position.x;
             bool isLookingLeft = LookDirectionHorizontal == Vector2.left;
             
             if (isSenderLeft != isLookingLeft)

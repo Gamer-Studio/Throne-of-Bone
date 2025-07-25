@@ -1,4 +1,5 @@
 using System.Collections;
+using ToB.Entities.Interface;
 using UnityEngine;
 
 namespace ToB.Entities.FieldObject
@@ -37,7 +38,7 @@ namespace ToB.Entities.FieldObject
             {
                 if (state != State.Opened) return;
                 
-                other.Damage(damage, this);
+                IDamageableExtensions.Damage(other, damage, (IAttacker)this);
                 other.KnockBack(knockBackPower, new Vector2(other.transform.eulerAngles.y == 0 ? 1 : -1, 1));
                 animator.SetTrigger(ObstacleAnimationString.Activate);
                 state = State.Closed;
