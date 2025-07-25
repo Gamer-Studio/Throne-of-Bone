@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
+using ToB.Entities.Interface;
 using ToB.IO;
 using UnityEngine;
 
@@ -209,7 +210,7 @@ namespace ToB.Entities.FieldObject
             }
         }
 
-        public void Damage(float damage, MonoBehaviour sender = null)
+        public void Damage(float damage, IAttacker sender = null)
         {
             if (IsInteractable)
             {
