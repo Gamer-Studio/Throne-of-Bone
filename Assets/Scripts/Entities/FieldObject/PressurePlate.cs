@@ -1,6 +1,7 @@
 using Newtonsoft.Json.Linq;
 using ToB.IO;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace ToB.Entities.FieldObject
 {
@@ -19,13 +20,14 @@ namespace ToB.Entities.FieldObject
         
         [Header("인터렉션 영역")]
         [SerializeField] private float DetectionWidth;
-        [SerializeField] private bool IsActivated;
+        [SerializeField] public bool IsActivated;
         [SerializeField] private bool IsCleared;
         [SerializeField] private BoxCollider2D boxCollider;
         // 설명 : 레이케스트를 해도 될 것 같지만, 간단하게 올라가고 내려가는 것만 감지하고
         // 상자가 여러 개 눌린다거나 깊게 눌린다거나 하는 게 없으니 콜라이더 기반 충돌로 해결.
         private float initialWidth;
         private int objectCount;
+        [SerializeField] public UnityEvent<bool> onPlateActivated;
 
         /// <summary>
         /// 클리어 조건 만족 시 호출. 한번 호출되면 바뀔 일이 없지 싶어요.
@@ -58,11 +60,13 @@ namespace ToB.Entities.FieldObject
                 IsActivated = objectCount > 0;
                 // 소리 여기서 재생 if(!IsActivated) Play~
                 SetPlateSprite(plateType, IsActivated);
+                
             }
         }
         
         private void SetPlateSprite(PlateType type, bool isActivated = false)
         {
+            onPlateActivated?.Invoke(IsActivated);
             switch (type)
             {
                 case PlateType.Stone:
