@@ -9,17 +9,16 @@ namespace ToB.UI
     public class ToastUI : MonoBehaviour
     {
         [SerializeField] private Image image;
-        [SerializeField] private TextMeshProUGUI text;
+        [SerializeField] private TextMeshProUGUI toastText;
         [SerializeField] private RectTransform rectTransform;
 
 
-        [Header("Tween Values")]
+        [Header("Toast UI 관련")]
         [SerializeField] private float fadeInDuration;
         [SerializeField] private float displayDuration;
         [SerializeField] private float fadeOutDuration;
         [SerializeField] private Vector3 startPosOffset;
         [SerializeField] private Vector3 endPosOffset;
-        
         private Tween toastTween;
         private Vector3 basePos;
 
@@ -34,9 +33,10 @@ namespace ToB.UI
 
         public void Show(string message)
         {
+            
             gameObject.SetActive(true);
             
-            text.text = message;
+            toastText.text = message;
             // 왠진 몰라도... 이걸 앞뒤로 업뎃해줘야 잘 된다네요. 의도된 반복입니다!
             LayoutRebuilder.ForceRebuildLayoutImmediate(rectTransform);
             Canvas.ForceUpdateCanvases();

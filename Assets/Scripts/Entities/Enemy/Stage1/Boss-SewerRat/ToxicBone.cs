@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using ToB.Entities.Buffs;
+using ToB.Entities.Projectiles;
 using ToB.Player;
 using ToB.Utils;
 using UnityEngine;
@@ -8,7 +9,7 @@ using UnityEngine;
 namespace ToB.Entities
 {
     [RequireComponent(typeof(BoxCollider2D))]
-    public class ToxicBone : MonoBehaviour
+    public class ToxicBone : Projectile
     {
         [Header("기본 컴포넌트")]
         [field:SerializeField] public LinearMovement LinearMovement { get; private set; }

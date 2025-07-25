@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using NaughtyAttributes;
+using ToB.Entities.Interface;
 using ToB.Entities.Projectiles;
 using ToB.Entities.Skills;
 using ToB.Player;
@@ -57,14 +58,14 @@ namespace ToB.Entities
             }
         }
 
-        public void Damage(float damage, MonoBehaviour sender = null)
+        public void Damage(float damage, IAttacker sender = null)
         {
             float actualDamage = damage * (100 - DEF) / 100;
             ChangeHP(-actualDamage);
             enemy.OnTakeDamage(sender);
             OnTakeDamage?.Invoke();
             
-            if (sender != null && sender.gameObject.TryGetComponent(out SwordEffect sword))
+            if (sender is SwordEffect)
             {
                 StageManager.Instance.player.stat.Hp +=
                     (StageManager.Instance.player.stat.maxHp + StageManager.Instance.player.stat.tempMaxHP)
