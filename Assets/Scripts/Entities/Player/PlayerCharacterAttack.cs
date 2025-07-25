@@ -17,17 +17,20 @@ namespace ToB.Player
   public partial class PlayerCharacter : IAttacker
   {
     #region State
+
+    private const string AttackState = "Attack State";
     
-    [Label("공격 모션 재생 여부"), Foldout("Attack State")] public bool isAttacking = false; 
-    [Label("공격 딜레이"), Tooltip("0번 인덱스는 모션 리셋 시간 / 1, 2, 3번은 근접 공격 대기시간, 4번은 원거리 대기 시간입니다."), Foldout("Attack State")] 
+    [Label("공격 모션 재생 여부"), Foldout(AttackState)] public bool isAttacking = false; 
+    [Label("공격 딜레이"), Tooltip("0번 인덱스는 모션 리셋 시간 / 1, 2, 3번은 근접 공격 대기시간, 4번은 원거리 대기 시간입니다."), Foldout(AttackState)] 
     public float[] attackDelay = {1, 0.3f, 0.3f, 0.1f};
-    [Label("근접 공격 피해 계수"), Tooltip("기본 캐릭터 공격력에 비례한 모션당 피해 계수입니다."), Foldout("Attack State")] public float[] attackDamageMultiplier = {1, 1, 2, 0.5f};
-    [Label("근접 공격 대기 시간"), Foldout("Attack State"), SerializeField] private float meleeAttackDelay = 0;
-    [Label("최대 원거리 공격 횟수"), Tooltip("원거리 공격의 충전되는 최대 횟수입니다."), Foldout("Attack State")] public int maxRangedAttack = 3;
-    [Label("검기 스택"), Foldout("Attack State"), SerializeField] private int availableRangedAttack = 3;
-    [Label("검기 재생 시간(초)"), Foldout("Attack State")] public float rangedAttackRegenTime = 1;
-    [Label("검기 초당 회복량"), Foldout("Attack State")] public int rangedAttackRegenAmount = 0;
-    [Label("검기 발사 대기시간"), Foldout("Attack State")] public float shootDelay = 0.1f;
+    [Label("근접 공격 피해 계수"), Tooltip("기본 캐릭터 공격력에 비례한 모션당 피해 계수입니다."), Foldout(AttackState)] public float[] attackDamageMultiplier = {1, 1, 2, 0.5f};
+    [Label("근접 공격 대기 시간"), Foldout(AttackState), SerializeField] private float meleeAttackDelay = 0;
+    [Label("최대 원거리 공격 횟수"), Tooltip("원거리 공격의 충전되는 최대 횟수입니다."), Foldout(AttackState)] public int maxRangedAttack = 3;
+    [Label("검기 스택"), Foldout(AttackState), SerializeField] private int availableRangedAttack = 3;
+    [Label("검기 재생 시간(초)"), Foldout(AttackState)] public float rangedAttackRegenTime = 1;
+    [Label("검기 초당 회복량"), Foldout(AttackState)] public int rangedAttackRegenAmount = 0;
+    [Label("검기 발사 대기시간"), Foldout(AttackState)] public float shootDelay = 0.1f;
+    [Label("패링 가능 레이어"), Foldout(AttackState)] public LayerMask parryableLayer;
 
     /// <summary>
     /// 적이 플레이어의 공격을 막을 수 있는지 여부입니다.

@@ -349,7 +349,9 @@ namespace ToB.Player
       {
         bottomJumpAvailable = false;
         jumpCoroutine = StartCoroutine(JumpCoroutine(downJumpPower));
+        return;
       }
+      
       if ((inWater || (!IsFlight || isClimbing)) && !IsDashing && jumpCoroutine == null)
       {
         jumpCoroutine = StartCoroutine(JumpCoroutine(jumpPower));
