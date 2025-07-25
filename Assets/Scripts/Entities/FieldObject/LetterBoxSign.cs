@@ -1,7 +1,5 @@
-using System;
 using System.Collections;
 using TMPro;
-using ToB.UI;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -65,12 +63,41 @@ namespace ToB.Entities.FieldObject
         
         private IEnumerator TypeText(string message)
         {
-            for (int i = 0; i < message.Length; i++)
+            toastText.text = "";
+            int i = 0;
+
+            while (i < message.Length)
             {
+                if (message[i] == '<') // 태그 시작 처리
+                {
+                    string tagStr = "";
+                    while (i < message.Length && message[i] != '>')
+                    {
+                        tagStr += message[i];
+                        i++;
+                    }
+                    if (i < message.Length) // 태그 끝 처리
+                    {
+                        tagStr += message[i];
+                        i++;
+                    }
+                    toastText.text += tagStr;
+                }
+                else if (message[i] == '\\' && i + 1 < message.Length && message[i + 1] == 'n') // \n 처리
+                {
+                    toastText.text += '\n';
+                    i += 2;
+                }
+                else
+                {
+                    toastText.text += message[i];
+                    i++;
+                    yield return new WaitForSeconds(typingSpeed);
+                }
                 if (IsShowingTextEnd) break;
-                toastText.text = message.Substring(0, i + 1);
-                yield return new WaitForSeconds(typingSpeed);
             }
+            
+            // 플레이어 나갈 때까지 대기
             while (!IsShowingTextEnd)
             {
                 yield return null;
