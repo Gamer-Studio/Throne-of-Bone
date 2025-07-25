@@ -31,7 +31,7 @@ namespace ToB.Entities.FieldObject
         public override JObject ToJson()
         {
             JObject json = base.ToJson();
-            json.Add(nameof(isOpened), isOpened);
+            json[nameof(isOpened)] = isOpened;
             return json;
         }
         #endregion

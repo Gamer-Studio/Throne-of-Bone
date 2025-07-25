@@ -18,10 +18,10 @@ namespace ToB.Entities.FieldObject
         [SerializeField] private Sprite[] sprites; // 0~1 Stone, 2~3 Wood
         
         [Header("인터렉션 영역")]
-        [SerializeField] public float DetectionWidth;
+        [SerializeField] private float DetectionWidth;
         [SerializeField] private bool IsActivated;
         [SerializeField] private bool IsCleared;
-        [SerializeField] BoxCollider2D boxCollider;
+        [SerializeField] private BoxCollider2D boxCollider;
         // 설명 : 레이케스트를 해도 될 것 같지만, 간단하게 올라가고 내려가는 것만 감지하고
         // 상자가 여러 개 눌린다거나 깊게 눌린다거나 하는 게 없으니 콜라이더 기반 충돌로 해결.
         private float initialWidth;
@@ -36,7 +36,6 @@ namespace ToB.Entities.FieldObject
             IsCleared = true;
             SetPlateSprite(plateType, IsCleared);
             objectCount = 0;
-            IsActivated = false;
             SetColliderWidth(0);
         }
         
@@ -46,6 +45,7 @@ namespace ToB.Entities.FieldObject
             {
                 objectCount++;
                 IsActivated = objectCount > 0;
+                // 소리 여기서 재생 if(IsActivated) Play~
                 SetPlateSprite(plateType, IsActivated);
             }
         }
@@ -56,6 +56,7 @@ namespace ToB.Entities.FieldObject
             {
                 objectCount--;
                 IsActivated = objectCount > 0;
+                // 소리 여기서 재생 if(!IsActivated) Play~
                 SetPlateSprite(plateType, IsActivated);
             }
         }
@@ -103,15 +104,19 @@ namespace ToB.Entities.FieldObject
         
         public override void OnLoad()
         {
-            objectCount = 0;
-            initialWidth = boxCollider.size.x;
-            SetColliderWidth(DetectionWidth);
-            SetPlateSprite(plateType, IsCleared);
+            if (!IsCleared)
+            {
+                objectCount = 0;
+                initialWidth = boxCollider.size.x;
+                SetColliderWidth(DetectionWidth);
+                SetPlateSprite(plateType, IsCleared);
+            }
+            else Clear();
         }
         public override JObject ToJson()
         {
             JObject json = base.ToJson();
-            json.Add(nameof(IsCleared), IsCleared);
+            json[nameof(IsCleared)] = IsCleared;
             return json;
         }
         #endregion

@@ -53,7 +53,7 @@ namespace ToB.Entities.FieldObject
         public override JObject ToJson()
         {
             JObject json = base.ToJson();
-            json.Add(nameof(isValveActivated), isValveActivated);
+            json[nameof(isValveActivated)] = isValveActivated;
             return json;
         }
         

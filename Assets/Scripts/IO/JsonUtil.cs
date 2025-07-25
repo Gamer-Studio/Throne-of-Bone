@@ -231,7 +231,7 @@ namespace ToB.IO
       var str = json.Get(key, string.Empty);
       var values = str.Split(',');
 
-      return string.IsNullOrEmpty(str) ? 
+      return !string.IsNullOrEmpty(str) ? 
         new Vector3(float.Parse(values[0]), float.Parse(values[1]), float.Parse(values[2])) 
         : defaultValue;
     }

@@ -35,7 +35,7 @@ namespace ToB.Entities.FieldObject
         public override JObject ToJson()
         {
             JObject json = base.ToJson();
-            json.Add(nameof(IsOpened), IsOpened);
+            json[nameof(IsOpened)] = IsOpened;
             return json;
         }
         public void Interact()
