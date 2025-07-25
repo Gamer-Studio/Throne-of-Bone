@@ -891,7 +891,7 @@ Tilemap:
     second:
       serializedVersion: 2
       m_TileIndex: 63
-      m_TileSpriteIndex: 61
+      m_TileSpriteIndex: 68
       m_TileMatrixIndex: 0
       m_TileColorIndex: 0
       m_TileObjectToInstantiateIndex: 65535
@@ -1980,8 +1980,8 @@ Tilemap:
     m_Data: {fileID: 1527599485, guid: 6382cff562d249441835d5114c0d04f6, type: 3}
   - m_RefCount: 0
     m_Data: {fileID: 0}
-  - m_RefCount: 1
-    m_Data: {fileID: -295522424, guid: 6382cff562d249441835d5114c0d04f6, type: 3}
+  - m_RefCount: 0
+    m_Data: {fileID: 0}
   - m_RefCount: 1
     m_Data: {fileID: -157987530, guid: 6382cff562d249441835d5114c0d04f6, type: 3}
   - m_RefCount: 1
@@ -1994,8 +1994,8 @@ Tilemap:
     m_Data: {fileID: 1565149794, guid: 6382cff562d249441835d5114c0d04f6, type: 3}
   - m_RefCount: 10
     m_Data: {fileID: 853732130, guid: 6382cff562d249441835d5114c0d04f6, type: 3}
-  - m_RefCount: 0
-    m_Data: {fileID: 0}
+  - m_RefCount: 1
+    m_Data: {fileID: -295522424, guid: 6382cff562d249441835d5114c0d04f6, type: 3}
   m_TileMatrixArray:
   - m_RefCount: 117
     m_Data:
@@ -3370,7 +3370,7 @@ Tilemap:
     second:
       serializedVersion: 2
       m_TileIndex: 49
-      m_TileSpriteIndex: 58
+      m_TileSpriteIndex: 68
       m_TileMatrixIndex: 0
       m_TileColorIndex: 0
       m_TileObjectToInstantiateIndex: 65535
@@ -3913,8 +3913,8 @@ Tilemap:
     m_Data: {fileID: -1365481051, guid: 6382cff562d249441835d5114c0d04f6, type: 3}
   - m_RefCount: 4
     m_Data: {fileID: -2146032333, guid: 6382cff562d249441835d5114c0d04f6, type: 3}
-  - m_RefCount: 1
-    m_Data: {fileID: 1557571487, guid: 6382cff562d249441835d5114c0d04f6, type: 3}
+  - m_RefCount: 0
+    m_Data: {fileID: 0}
   - m_RefCount: 2
     m_Data: {fileID: 1527599485, guid: 6382cff562d249441835d5114c0d04f6, type: 3}
   - m_RefCount: 0
@@ -3933,8 +3933,8 @@ Tilemap:
     m_Data: {fileID: 0}
   - m_RefCount: 0
     m_Data: {fileID: 0}
-  - m_RefCount: 0
-    m_Data: {fileID: 0}
+  - m_RefCount: 1
+    m_Data: {fileID: 1557571487, guid: 6382cff562d249441835d5114c0d04f6, type: 3}
   m_TileMatrixArray:
   - m_RefCount: 130
     m_Data:
@@ -5496,7 +5496,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af132a98d81e420bbbcb63c8ed1649f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <Index>k__BackingField: -1
+  <Index>k__BackingField: 0
   connectedRoom:
     m_AssetGUID: 
     m_SubObjectName: 
@@ -11484,7 +11484,8 @@ MonoBehaviour:
     array: []
   enemies:
     array: []
-  links: []
+  links:
+  - {fileID: 2137310311455528740}
   entityContainer: {fileID: 6416182101115832409}
   <Background>k__BackingField: {fileID: 3862053101447277060}
   onLoad:
