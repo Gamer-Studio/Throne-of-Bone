@@ -6,6 +6,7 @@ using ToB.Entities.Interface;
 using ToB.Entities.Projectiles;
 using ToB.Entities.Skills;
 using ToB.Utils;
+using ToB.Worlds;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
@@ -39,6 +40,7 @@ namespace ToB.Player
     public bool Effectable => true;
 
     public Vector3 Position => transform.position;
+    public Team Team => Team.None;
 
     // 현재 원거리 공격 가능 횟수입니다.
     public int AvailableRangedAttack
@@ -125,7 +127,7 @@ namespace ToB.Player
         {
           bottomJumpAvailable = true;
           attackCoroutine = StartCoroutine(AttackWaiter(direction, 0.1f));
-          AudioManager.Play("fntgm_blade_whoosh_light_02",AudioType.Effect); // 아래공격 사운드
+          AudioManager.Play("fntgm_blade_whoosh_light_02", AudioType.Effect); // 아래공격 사운드
         }
         else
         {

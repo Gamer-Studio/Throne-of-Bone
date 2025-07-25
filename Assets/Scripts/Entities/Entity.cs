@@ -1,5 +1,6 @@
 using ToB.Entities.Interface;
 using ToB.Utils;
+using ToB.Worlds;
 using UnityEngine;
 
 namespace ToB.Entities
@@ -10,6 +11,7 @@ namespace ToB.Entities
     public virtual bool Blockable => true;
     public virtual bool Effectable => true;
     public virtual Vector3 Position => transform.position;
+    public Team Team => Team.Enemy;
   }
 
   public enum EntityType

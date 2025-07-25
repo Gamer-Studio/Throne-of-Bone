@@ -1,3 +1,4 @@
+using ToB.Worlds;
 using UnityEngine;
 
 namespace ToB.Entities.Interface
@@ -18,5 +19,7 @@ namespace ToB.Entities.Interface
     /// 피해를 발생시키는 위치입니다.
     /// </summary>
     Vector3 Position { get; }
+    
+    Team Team { get; }
   }
 }

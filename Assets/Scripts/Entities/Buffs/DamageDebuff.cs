@@ -1,4 +1,5 @@
 using ToB.Entities.Interface;
+using ToB.Worlds;
 using UnityEngine;
 
 namespace ToB.Entities.Buffs
@@ -15,6 +16,7 @@ namespace ToB.Entities.Buffs
     public bool Blockable => false;
     public bool Effectable => false;
     public Vector3 Position { get; private set; }
+    public Team Team => Team.None;
 
     public override void Apply(GameObject target, BuffInfo info)
     {
