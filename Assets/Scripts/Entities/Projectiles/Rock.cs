@@ -1,12 +1,15 @@
+using System.Collections;
+using DG.Tweening;
 using NaughtyAttributes;
 using ToB.Utils;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 namespace ToB.Entities.Projectiles
 {
     public class Rock :Projectile
     { 
-      [ReadOnly] private new Camera camera;
+      //[ReadOnly] private new Camera camera;
       [Label("피해량")] public float damage;
       [Label("속도")] public float speed;
       [Label("넉백 세기")] public float knockBackForce;
@@ -16,15 +19,24 @@ namespace ToB.Entities.Projectiles
       [SerializeField] private TrailRenderer trail;
       [SerializeField] private ParticleSystem ps;
       [SerializeField] private GameObject hitEffectPrefab;
-      [SerializeField] private Rigidbody2D body;
-
+      [SerializeField] public Rigidbody2D body;
+      
+      [Header("깜빡임 두트윈")]
+      [SerializeField] private TilemapRenderer spriteRenderer;
+      [SerializeField] private float blinkAlpha;
+      [SerializeField] private float blinkDuration;
+      [SerializeField] private int blinkCount;
+      private Tween blinkTween;
+      private Material tilemapMaterialInstance;
+      private bool IsContacted;
+      private Color originalColor;
       public Vector2 Direction
         {
           get => direction;
           set
         {
           direction = value;
-          transform.rotation = Quaternion.Euler(0, 0, Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg);
+          //transform.rotation = Quaternion.Euler(0, 0, Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg);
         }
       }
 
@@ -34,7 +46,6 @@ namespace ToB.Entities.Projectiles
           if(ps) ps.Clear();
         }
     
-      #region Unity Event
     
         #if UNITY_EDITOR
 
@@ -48,8 +59,11 @@ namespace ToB.Entities.Projectiles
        private void OnTriggerEnter2D(Collider2D other)
         {
           if ((hitLayers & 1 << other.gameObject.layer) == 0) return;
+          if (IsContacted) return;
+          
+          Debug.Log("충돌 시퀀스 실행");
       
-         other.KnockBack(knockBackForce, direction);
+          other.KnockBack(knockBackForce, direction);
       
           if (other.TryGetComponent<IDamageable>(out var damageable))
           {
@@ -59,9 +73,45 @@ namespace ToB.Entities.Projectiles
               //HitEffect(other);
             }
           }
-          Release();
+          //플레이어 혹은 바닥에 충돌 시, 사라짐 코루틴 시작
+          StartCoroutine(Disappear());
         }
+       
+       private IEnumerator Disappear()
+        {
+          Debug.Log("코루틴 시작");
+          IsContacted = true;
+          trail.enabled = false; // 트레일 제거
+          // 0.5초 최소 시간 보장
+          yield return new WaitForSeconds(0.5f);
+          while (body.linearVelocity.y > 0.2f)
+          {
+            yield return new WaitForFixedUpdate();
+          }
+          //깜빡임 시작. 끝나면 풀로 반환
+          StartBlink();
+        }
+        public void StartBlink()
+        {
+          blinkTween?.Kill();
 
+          originalColor = tilemapMaterialInstance.color;
+          Color blinkColor = originalColor;
+          blinkColor.a = blinkAlpha;
+
+          blinkTween = tilemapMaterialInstance
+            .DOColor(blinkColor, blinkDuration)
+            .SetLoops(blinkCount * 2, LoopType.Yoyo)
+            .OnComplete(ResetRock);
+        }
+        private void ResetRock()
+        {
+          Release();
+          tilemapMaterialInstance.color = new Color(originalColor.r, originalColor.g, originalColor.b, 1);
+          IsContacted = false;
+        }
+        
+       // 추후 이펙트 추가 시 이용
         private void HitEffect(Collider2D other)
         {
           Vector2 otherCenter = other.GetComponent<Collider2D>().bounds.center;
@@ -81,14 +131,23 @@ namespace ToB.Entities.Projectiles
          attackEffect.gameObject.SetActive(true);
        }
 
-       private void OnEnable()
+        private void Start()
         {
-          camera = Camera.main;
+          body.AddForce(Vector2.down * speed, ForceMode2D.Impulse);
+        }
+        private void OnEnable()
+        {
+          //camera = Camera.main;
+          trail.enabled = true;
+          tilemapMaterialInstance = Instantiate(spriteRenderer.material);
+          spriteRenderer.material = tilemapMaterialInstance;
+          body.AddForce(Vector2.down * speed, ForceMode2D.Impulse);
         }
 
+       /*
        private void FixedUpdate()
         {
-         body.MovePosition(body.position + direction * speed * Time.fixedDeltaTime);
+         // body.MovePosition(body.position + direction * (speed * Time.fixedDeltaTime));
       
          var pos = camera.WorldToViewportPoint(transform.position);
 
@@ -97,6 +156,6 @@ namespace ToB.Entities.Projectiles
            Release();
           }
         }
-        #endregion
+        */
     }
 }

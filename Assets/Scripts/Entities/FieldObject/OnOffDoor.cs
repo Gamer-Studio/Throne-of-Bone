@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using ToB.IO;
 using UnityEngine;
@@ -23,9 +24,10 @@ namespace ToB.Entities.FieldObject
 
     public class OnOffDoor : FieldObjectProgress
     {
-       [SerializeField] private Lever[] levers;
+       [SerializeField] private List<Lever> levers = new List<Lever>();
+       [SerializeField] private List<PressurePlate> pressurePlates = new List<PressurePlate>();
        
-       private int activeLeverCount;
+       private int activeInputCount;
        [SerializeField] private DoorMode doorMode;
        [SerializeField] private bool isOpened;
        public bool IsOpened
@@ -50,7 +52,7 @@ namespace ToB.Entities.FieldObject
        {
            base.LoadJson(json);
            doorMode = json.GetEnum(nameof(doorMode), doorMode);
-           activeLeverCount = json.Get(nameof(activeLeverCount), activeLeverCount);
+           activeInputCount = json.Get(nameof(activeInputCount), activeInputCount);
            isOpened = json.Get(nameof(isOpened), isOpened);
        }
        public override void OnLoad()
@@ -63,7 +65,7 @@ namespace ToB.Entities.FieldObject
        {
            JObject json = base.ToJson();
            json.Set(nameof(doorMode), doorMode);
-           json[nameof(activeLeverCount)] = activeLeverCount;
+           json[nameof(activeInputCount)] = activeInputCount;
            json[nameof(isOpened)] = isOpened;
            return json;
        }
@@ -75,23 +77,25 @@ namespace ToB.Entities.FieldObject
        /// <param name="leverState"></param>
        public void OnOffDoorInteract(bool leverState)
        {
-           activeLeverCount = 0;
+           activeInputCount = 0;
            switch (doorMode)
            {
                case DoorMode.Normal:
-                   activeLeverCount = leverState ? 1 : 0;
-                   IsOpened = activeLeverCount > 0;
+                   activeInputCount = leverState ? 1 : 0;
+                   IsOpened = activeInputCount > 0;
                    break;
                case DoorMode.Invert:
                    IsOpened = !IsOpened;
                    break;
                case DoorMode.Or:
-                   foreach (var lever in levers) if (lever.isLeverActivated) activeLeverCount++;
-                   IsOpened = activeLeverCount > 0;
+                   foreach (var lever in levers) if (lever.isLeverActivated) activeInputCount++;
+                   foreach (var plate in pressurePlates) if (plate.IsActivated) activeInputCount++;
+                   IsOpened = activeInputCount > 0;
                    break;
                case DoorMode.And:
-                   foreach (var lever in levers) if (lever.isLeverActivated) activeLeverCount++;
-                   IsOpened = activeLeverCount == levers.Length;
+                   foreach (var lever in levers) if (lever.isLeverActivated) activeInputCount++;
+                   foreach (var plate in pressurePlates) if (plate.IsActivated) activeInputCount++;
+                   IsOpened = activeInputCount == levers.Count + pressurePlates.Count;
                    break;
                case DoorMode.Fixed:
                    break;
