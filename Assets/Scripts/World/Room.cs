@@ -124,9 +124,23 @@ namespace ToB.Worlds
       FindStructures();
     }
 
+    public Vector3 pos;
+
     private void OnDrawGizmos()
     {
-      Handles.Label(transform.position, $"Room {stageIndex} / {roomIndex}");
+      if (Background && Background.tilemap)
+      {
+        var tilemap = Background.tilemap;
+        var bounds = tilemap.cellBounds;
+        var centerCell = (bounds.min + bounds.max) / 2;
+
+        // 타일맵의 중심을 월드 좌표로 변환
+        pos = bounds.position + transform.position;
+
+        // 부모 오브젝트 기준 보정 (tilemap이 자식이므로 위치 보정 필요 없음)
+        Handles.Label(pos, $"{stageIndex} Stage / {roomIndex} Room");
+
+      }
     }
 
 #endif
