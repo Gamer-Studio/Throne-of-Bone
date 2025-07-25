@@ -5665,14 +5665,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af132a98d81e420bbbcb63c8ed1649f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <Index>k__BackingField: -1
+  <CurrentIndex>k__BackingField: -1
   connectedRoom:
     m_AssetGUID: 
     m_SubObjectName: 
     m_SubObjectType: 
     m_SubObjectGUID: 
     m_EditorAssetChanged: 0
-  connectedIndex: 0
+  connectedLinkIndex: 0
 --- !u!1 &4334934516052721888
 GameObject:
   m_ObjectHideFlags: 0
@@ -7382,7 +7382,7 @@ GameObject:
   - component: {fileID: 410403060601839520}
   - component: {fileID: 4396329301837953947}
   m_Layer: 0
-  m_Name: NPC_Village
+  m_Name: Map0-1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7459,6 +7459,7 @@ MonoBehaviour:
   onExit:
     m_PersistentCalls:
       m_Calls: []
+  pos: {x: 0, y: 0, z: 0}
 --- !u!1 &6310603924267118937
 GameObject:
   m_ObjectHideFlags: 0
@@ -24738,6 +24739,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   backgroundCollider: {fileID: 7074738989043311013}
+  tilemap: {fileID: 0}
 --- !u!1001 &1148939855102192664
 PrefabInstance:
   m_ObjectHideFlags: 0
