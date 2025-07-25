@@ -1,3 +1,4 @@
+using NaughtyAttributes;
 using ToB.Entities.Interface;
 using ToB.Utils;
 using ToB.Worlds;
@@ -15,22 +16,22 @@ namespace ToB.Entities
     /// <summary>
     /// 엔티티의 공격이 막을 수 있는지 여부입니다.
     /// </summary>
-    public virtual bool Blockable => true;
+    [ShowNativeProperty] public virtual bool Blockable => true;
     
     /// <summary>
     /// 해당 엔티티가 공격시점에 이펙트를 발생시키는지 여부입니다.
     /// </summary>
-    public virtual bool Effectable => true;
+    [ShowNativeProperty] public virtual bool Effectable => true;
 
     /// <summary>
     /// 엔티티의 공격시점 위치입니다.
     /// </summary>
-    public virtual Vector3 Position => transform.position;
+    [ShowNativeProperty] public virtual Vector3 Position => transform.position;
     
     /// <summary>
     /// 엔티티의 팀입니다.
     /// </summary>
-    public Team Team => Team.Enemy;
+    [ShowNativeProperty] public virtual Team Team => Team.Enemy;
   }
 
   public enum EntityType
