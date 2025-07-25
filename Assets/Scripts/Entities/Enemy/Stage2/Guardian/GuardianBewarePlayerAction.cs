@@ -25,12 +25,12 @@ public partial class GuardianBewarePlayerAction : Action
         if (Guardian.Value.AttackableAreaInnerSensor.TargetInArea && Guardian.Value.AttackableAreaOuterSensor.TargetInArea)
         {
             Guardian.Value.Physics.externalVelocity[MoveKey] =
-                Guardian.Value.TargetDirectionHorizontal * -1 * Guardian.Value.GuardianSO.MoveSpeed;
+                Guardian.Value.TargetDirectionHorizontal * -1 * Guardian.Value.DataSO.MoveSpeed;
         }
         else if (!Guardian.Value.AttackableAreaInnerSensor.TargetInArea && !Guardian.Value.AttackableAreaOuterSensor.TargetInArea)
         {
             Guardian.Value.Physics.externalVelocity[MoveKey] =
-                Guardian.Value.TargetDirectionHorizontal * Guardian.Value.GuardianSO.MoveSpeed;
+                Guardian.Value.TargetDirectionHorizontal * Guardian.Value.DataSO.MoveSpeed;
         }
         else
         {
@@ -51,6 +51,7 @@ public partial class GuardianBewarePlayerAction : Action
 
     protected override Status OnUpdate()
     {
+        Debug.Log("Beware");
         return Status.Success;
     }
 

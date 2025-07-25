@@ -14,7 +14,7 @@ public partial class GuardianShieldPatternAction : Action
     [SerializeReference] public BlackboardVariable<bool> CanShield;
 
     private int ShieldHash = Animator.StringToHash("Shield");
-    private float ShieldDuration => Guardian.Value.GuardianSO.ShieldDuration;
+    private float ShieldDuration => Guardian.Value.DataSO.ShieldDuration;
 
     private bool shieldEnd;
     
@@ -25,7 +25,7 @@ public partial class GuardianShieldPatternAction : Action
         CanShield.Value = false;
         shieldEnd = false;
         
-        Guardian.Value.ShieldRecharger = DOVirtual.DelayedCall(Guardian.Value.GuardianSO.ShieldRechargeTime, () =>
+        Guardian.Value.ShieldRecharger = DOVirtual.DelayedCall(Guardian.Value.DataSO.ShieldRechargeTime, () =>
         {
             CanShield.Value = true;
         });
@@ -36,7 +36,7 @@ public partial class GuardianShieldPatternAction : Action
         });
 
         Guardian.Value.Animator.SetTrigger(ShieldHash);
-        Guardian.Value.Stat.SetDEF(Guardian.Value.GuardianSO.ShieldDEF);
+        Guardian.Value.Stat.SetDEF(Guardian.Value.DataSO.ShieldDEF);
         Guardian.Value.ShieldAreaObject.SetActive(true);
         Guardian.Value.Knockback.isActive = false;
         
@@ -51,7 +51,7 @@ public partial class GuardianShieldPatternAction : Action
     protected override void OnEnd()
     {
         shieldActiveTween.Kill();
-        Guardian.Value.Stat.SetDEF(Guardian.Value.GuardianSO.DEF);
+        Guardian.Value.Stat.SetDEF(Guardian.Value.DataSO.DEF);
         Guardian.Value.ShieldAreaObject.SetActive(false);
         Guardian.Value.Knockback.isActive = true;
         

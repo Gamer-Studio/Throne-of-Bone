@@ -10,6 +10,7 @@ namespace ToB.Entities
         private Enemy enemy;
         [SerializeField] private float skinWidth = 0.005f;
         [SerializeField] BoxCollider2D terrainSensor;
+        public BoxCollider2D TerrainSensor => terrainSensor;
 
         private float bodyWidth; // 임시
         

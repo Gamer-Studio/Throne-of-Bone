@@ -7,12 +7,13 @@ namespace ToB.Entities
 {
     public class Guardian : Enemy
     {
-        public GuardianSO GuardianSO => enemySO as GuardianSO;
+        public GuardianSO DataSO => enemySO as GuardianSO;
         [field:SerializeField] public EnemyBody EnemyBody { get; private set; }
         [field:SerializeField] public EnemyStatHandler Stat { get; private set; }
         [field:SerializeField] public GameObject ShieldAreaObject { get; private set; }
         [field:SerializeField] public EnemySimpleSensor AttackableAreaInnerSensor { get; private set; }
         [field:SerializeField] public EnemySimpleSensor AttackableAreaOuterSensor { get; private set; }
+        [field:SerializeField] public GuardianShieldSensor ShieldSensor { get; private set; }
 
         [SerializeField] private BehaviorGraphAgent agent;
 
@@ -24,13 +25,17 @@ namespace ToB.Entities
         {
             base.OnEnable();
             
-            EnemyBody.Init(this, GuardianSO.BodyDamage);
-            Stat.Init(this, GuardianSO);
+            EnemyBody.Init(this, DataSO.BodyDamage);
+            Stat.Init(this, DataSO);
             Knockback.Init(this);
             ShieldAreaObject.SetActive(false);
             agent.enabled = true;
             agent.BlackboardReference.SetVariableValue("IsAlive", true);
-
+            agent.BlackboardReference.SetVariableValue("IsTargetDetected", false);
+            agent.BlackboardReference.SetVariableValue("ShieldCooldown", DataSO.ShieldRechargeTime);
+            agent.BlackboardReference.SetVariableValue("TeleportCooldown", DataSO.TeleportRechargeTime);
+            agent.BlackboardReference.SetVariableValue("BlastCooldown", DataSO.BlastRechargeTime);
+            agent.BlackboardReference.SetVariableValue("LaserCooldown", DataSO.LaserRechargeTime);
         }
 
         public override void SetTarget(Transform target)
