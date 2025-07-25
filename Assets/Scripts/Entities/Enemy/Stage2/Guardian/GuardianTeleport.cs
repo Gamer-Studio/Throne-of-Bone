@@ -27,7 +27,7 @@ namespace ToB.Entities
         {
             if (!guardian.target) return;
             
-            Debug.Log("ㅇㅁㅇ");
+
             if (!avoid)
             {
                 TeleportToAttackPosition();
