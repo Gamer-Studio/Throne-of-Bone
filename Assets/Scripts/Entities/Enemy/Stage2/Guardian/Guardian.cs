@@ -1,5 +1,6 @@
 using System;
 using DG.Tweening;
+using ToB.Entities.Interface;
 using Unity.Behavior;
 using UnityEngine;
 
@@ -17,22 +18,33 @@ namespace ToB.Entities
         
         [field:SerializeField] public EnemyAttackArea BlastArea { get; private set; }
 
+        [field:SerializeField] public EnemyBeamAttack Laser { get; private set; }
+        
         [SerializeField] private BehaviorGraphAgent agent;
 
         [SerializeField] private ParticleSystem deathImpact;
+        
 
         public Tween ShieldRecharger;
-
+        public Tween TeleportInvincible;
+        public Tween DamagedJudge;
+        
         protected override void Awake()
         {
             base.Awake();
+
+            Laser.Init(DataSO.LaserTickDamage);
+            
             agent.BlackboardReference.SetVariableValue("ShieldCooldown", DataSO.ShieldRechargeTime);
             agent.BlackboardReference.SetVariableValue("TeleportCooldown", DataSO.TeleportRechargeTime);
             agent.BlackboardReference.SetVariableValue("BlastCooldown", DataSO.BlastRechargeTime);
             agent.BlackboardReference.SetVariableValue("LaserCooldown", DataSO.LaserRechargeTime);
+            
+            agent.BlackboardReference.SetVariableValue("DamagedJudgeTime", 0.4f);
+            
         }
 
-        protected override void OnEnable()
+        protected override void OnEnable() 
         {
             base.OnEnable();
             
@@ -44,6 +56,7 @@ namespace ToB.Entities
             BlastArea.gameObject.SetActive(false);
             ShieldAreaObject.SetActive(false);
             
+            Laser.gameObject.SetActive(false);
             
             agent.enabled = true;
             agent.BlackboardReference.SetVariableValue("IsAlive", true);
@@ -54,6 +67,15 @@ namespace ToB.Entities
         {
             base.SetTarget(target);
             agent.BlackboardReference.SetVariableValue("IsTargetDetected", target ? true : false);
+        }
+
+        public override void OnTakeDamage(IAttacker sender)
+        {
+            base.OnTakeDamage(sender);
+            agent.BlackboardReference.SetVariableValue("Damaged", true);
+
+            DamagedJudge.Kill();
+            DamagedJudge = DOVirtual.DelayedCall(0.4f, ()=> agent.BlackboardReference.SetVariableValue("Damaged", false));
         }
 
         protected override void Die()
@@ -71,6 +93,8 @@ namespace ToB.Entities
         private void OnDestroy()
         {
             ShieldRecharger.Kill();
+            TeleportInvincible.Kill();
+            DamagedJudge.Kill();
         }
     }
 }

@@ -1653,10 +1653,10 @@ PolygonCollider2D:
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 8119
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
@@ -1686,10 +1686,10 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: 0, y: 1}
-      - {x: -0.95105654, y: 0.30901697}
-      - {x: -0.5877852, y: -0.80901706}
-      - {x: 0.58778536, y: -0.80901694}
+    - - {x: -0.81, y: 0.6668091}
+      - {x: -0.9725485, y: 0.40575007}
+      - {x: 1.4543633, y: -0.42207706}
+      - {x: 2.647853, y: -0.4562913}
   m_UseDelaunayMesh: 0
 --- !u!114 &161402227
 MonoBehaviour:
@@ -1703,6 +1703,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90f5fb606f41426f965539fcaae462d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  objects: []
 --- !u!1 &261576301
 GameObject:
   m_ObjectHideFlags: 0
@@ -3039,6 +3040,7 @@ MonoBehaviour:
   <AttackableAreaOuterSensor>k__BackingField: {fileID: 1782801981}
   <ShieldSensor>k__BackingField: {fileID: 1849585270}
   <BlastArea>k__BackingField: {fileID: 1065644376}
+  <Laser>k__BackingField: {fileID: 161402227}
   agent: {fileID: 636068623}
   deathImpact: {fileID: 1551512682}
 --- !u!114 &636068622
@@ -3079,17 +3081,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Graph: {fileID: 5326201474846112572, guid: 5f043b382e84424488d176dd113d652d, type: 2}
   m_BlackboardVariableOverridesList:
-  - rid: 7518850259562791050
-  - rid: 7518850270750835344
-  - rid: 7518850284632408795
-  - rid: 7518850309217845867
-  - rid: 7518850313953214484
+  - rid: 7518850331771142230
+  - rid: 7518850331771142231
+  - rid: 7518850331771142232
+  - rid: 7518850331771142233
+  - rid: 7518850332107998145
   m_IsInitialised: 0
   m_IsStarted: 0
   references:
     version: 2
     RefIds:
-    - rid: 7518850259562791050
+    - rid: 7518850331771142230
       type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
@@ -3097,7 +3099,7 @@ MonoBehaviour:
           m_Value1: 0
         Name: Self
         m_Value: {fileID: 636068619}
-    - rid: 7518850270750835344
+    - rid: 7518850331771142231
       type: {class: 'BlackboardVariable`1[[ToB.Entities.Guardian, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
@@ -3105,15 +3107,7 @@ MonoBehaviour:
           m_Value1: 10267764198276316997
         Name: Guardian
         m_Value: {fileID: 636068621}
-    - rid: 7518850284632408795
-      type: {class: 'BlackboardVariable`1[[System.Boolean, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
-      data:
-        GUID:
-          m_Value0: 7926268296038966796
-          m_Value1: 12992393253256774678
-        Name: CanShield
-        m_Value: 1
-    - rid: 7518850309217845867
+    - rid: 7518850331771142232
       type: {class: 'BlackboardVariable`1[[UnityEngine.Animator, UnityEngine.AnimationModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
@@ -3121,7 +3115,7 @@ MonoBehaviour:
           m_Value1: 12308838675848935648
         Name: GuardianAnimator
         m_Value: {fileID: 468649192}
-    - rid: 7518850313953214484
+    - rid: 7518850331771142233
       type: {class: 'BlackboardVariable`1[[ToB.GuardianShieldSensor, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
@@ -3129,6 +3123,14 @@ MonoBehaviour:
           m_Value1: 47146406170337230
         Name: ShieldSensor
         m_Value: {fileID: 1849585270}
+    - rid: 7518850332107998145
+      type: {class: 'BlackboardVariable`1[[System.Single, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 5081464224360392092
+          m_Value1: 7323937707661635139
+        Name: LastTeleportTime
+        m_Value: -8
 --- !u!1 &669286697
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,4 +1,5 @@
 using System;
+using DG.Tweening;
 using ToB.Entities;
 using Unity.Behavior;
 using UnityEngine;
@@ -10,11 +11,16 @@ using Unity.Properties;
 public partial class GuardianTeleportAction : Action
 {
     [SerializeReference] public BlackboardVariable<Guardian> Guardian;
+    [SerializeReference] public BlackboardVariable<float> LastTeleportTime;
 
     private int TeleportHash = Animator.StringToHash("Teleport");
     protected override Status OnStart()
     {
+        Debug.Log("TPTime : "+ Time.time);
+        LastTeleportTime.Value = Time.time;
         Guardian.Value.Animator.SetTrigger(TeleportHash);
+        Guardian.Value.Hitbox.enabled = false;
+        Guardian.Value.TeleportInvincible = DOVirtual.DelayedCall(2, ()=>Guardian.Value.Hitbox.enabled = true);
         return Status.Running;
     }
 

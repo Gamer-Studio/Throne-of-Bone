@@ -64,7 +64,6 @@ namespace ToB.Entities
         public void Damage(float damage, IAttacker sender = null)
         {
             float actualDamage = damage * (100 - DEF) / 100;
-            Debug.Log("Damage : " + damage + " || ActualDamage : " + actualDamage + "");
             ChangeHP(-actualDamage);
             enemy.OnTakeDamage(sender);
             OnTakeDamage?.Invoke();
