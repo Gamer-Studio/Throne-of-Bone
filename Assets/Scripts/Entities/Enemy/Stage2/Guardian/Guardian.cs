@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using DG.Tweening;
 using ToB.Entities.Interface;
 using Unity.Behavior;
@@ -19,11 +20,14 @@ namespace ToB.Entities
         [field:SerializeField] public EnemyAttackArea BlastArea { get; private set; }
 
         [field:SerializeField] public EnemyBeamAttack Laser { get; private set; }
+        [field:SerializeField] public EnemyBeamAttack LaserRain { get; private set; }
+        
         
         [SerializeField] private BehaviorGraphAgent agent;
 
         [SerializeField] private ParticleSystem deathImpact;
-        
+
+        public Queue<float> ultConditionQueue;
 
         public Tween ShieldRecharger;
         public Tween TeleportInvincible;
@@ -34,6 +38,7 @@ namespace ToB.Entities
             base.Awake();
 
             Laser.Init(DataSO.LaserTickDamage);
+            LaserRain.Init(DataSO.LaserTickDamage);
             
             agent.BlackboardReference.SetVariableValue("ShieldCooldown", DataSO.ShieldRechargeTime);
             agent.BlackboardReference.SetVariableValue("TeleportCooldown", DataSO.TeleportRechargeTime);
@@ -57,10 +62,16 @@ namespace ToB.Entities
             ShieldAreaObject.SetActive(false);
             
             Laser.gameObject.SetActive(false);
+            LaserRain.gameObject.SetActive(false);
             
             agent.enabled = true;
             agent.BlackboardReference.SetVariableValue("IsAlive", true);
             agent.BlackboardReference.SetVariableValue("IsTargetDetected", false);
+
+            ultConditionQueue = new Queue<float>();
+            ultConditionQueue.Enqueue(0.75f);
+            ultConditionQueue.Enqueue(0.50f);
+            ultConditionQueue.Enqueue(0.25f);
         }
 
         public override void SetTarget(Transform target)
@@ -95,6 +106,18 @@ namespace ToB.Entities
             ShieldRecharger.Kill();
             TeleportInvincible.Kill();
             DamagedJudge.Kill();
+        }
+        
+        public bool CheckUltCondition()
+        {
+            if (ultConditionQueue.Count == 0) return false;
+            
+            if (Stat.CurrentHP / DataSO.HP <= ultConditionQueue.Peek() )
+            {
+                ultConditionQueue.Dequeue();
+                return true;
+            }
+            return false;
         }
     }
 }

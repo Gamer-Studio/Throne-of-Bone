@@ -16,7 +16,6 @@ public partial class GuardianTeleportAction : Action
     private int TeleportHash = Animator.StringToHash("Teleport");
     protected override Status OnStart()
     {
-        Debug.Log("TPTime : "+ Time.time);
         LastTeleportTime.Value = Time.time;
         Guardian.Value.Animator.SetTrigger(TeleportHash);
         Guardian.Value.Hitbox.enabled = false;
