@@ -1,4 +1,5 @@
 using ToB.Core;
+using ToB.Entities.Interface;
 using UnityEngine;
 
 namespace ToB.Entities.FieldObject
@@ -28,7 +29,7 @@ namespace ToB.Entities.FieldObject
             HP = 1;
             _collider.enabled = true;
         }
-        public void Damage(float damage, MonoBehaviour sender = null)
+        public void Damage(float damage, IAttacker sender = null)
         {
             HP -= damage;
             if (HP <= 0)

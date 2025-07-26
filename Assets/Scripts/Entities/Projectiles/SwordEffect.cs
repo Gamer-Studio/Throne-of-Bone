@@ -33,7 +33,13 @@ namespace ToB.Entities.Projectiles
       if(trail) trail.Clear();
       if(ps) ps.Clear();
     }
-    
+
+    public override void Release()
+    {
+      launcher = null;
+      base.Release();
+    }
+
     #region Unity Event
     
     #if UNITY_EDITOR
@@ -47,6 +53,7 @@ namespace ToB.Entities.Projectiles
     
     private void OnTriggerEnter2D(Collider2D other)
     {
+      if (!gameObject.activeSelf) return;
       if ((hitLayers & 1 << other.gameObject.layer) == 0) return;
       
       other.KnockBack(knockBackForce, direction);
@@ -89,7 +96,7 @@ namespace ToB.Entities.Projectiles
 
     private void FixedUpdate()
     {
-      body.MovePosition(body.position + direction * speed * Time.fixedDeltaTime);
+      body.MovePosition(body.position + direction * (speed * Time.fixedDeltaTime));
       
       var pos = camera.WorldToViewportPoint(transform.position);
 

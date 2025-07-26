@@ -1,3 +1,4 @@
+using ToB.Entities.Interface;
 using UnityEngine;
 
 namespace ToB.Entities
@@ -6,7 +7,7 @@ namespace ToB.Entities
   {
     /// <param name="damage">대상에게 가하는 피해량입니다.</param>
     /// <param name="sender">공격하는 주체입니다.</param>
-    void Damage(float damage, MonoBehaviour sender = null);
+    void Damage(float damage, IAttacker sender = null);
   }
 
   public static class IDamageableExtensions
@@ -17,7 +18,7 @@ namespace ToB.Entities
     /// <param name="obj">IDamageable 컴포넌트가 붙어있는 오브젝트입니다.</param>
     /// <param name="damage">대상에게 가하는 피해량입니다.</param>
     /// <param name="sender">공격하는 주체입니다.</param>
-    public static void Damage(this GameObject obj, float damage, MonoBehaviour sender = null)
+    public static void Damage(this GameObject obj, float damage, IAttacker sender = null)
     {
       if (obj && obj.TryGetComponent(out IDamageable damageable))
       {
@@ -31,12 +32,15 @@ namespace ToB.Entities
     /// <param name="coll">IDamageable 컴포넌트가 붙어있는 오브젝트입니다.</param>
     /// <param name="damage">대상에게 가하는 피해량입니다.</param>
     /// <param name="sender">공격하는 주체입니다.</param>
-    public static void Damage(this Collider2D coll, float damage, MonoBehaviour sender = null)
+    public static bool Damage(this Collider2D coll, float damage, IAttacker sender)
     {
       if (coll && coll.TryGetComponent(out IDamageable damageable))
       {
         damageable.Damage(damage, sender);
+        return true;
       }
+      
+      return false;
     }
   }
 }

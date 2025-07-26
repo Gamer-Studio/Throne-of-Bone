@@ -1,4 +1,5 @@
 using ToB.Entities.FieldObject;
+using ToB.Entities.Projectiles;
 using ToB.Utils;
 using UnityEngine;
 
@@ -6,7 +7,7 @@ namespace ToB.Entities
 {
     [RequireComponent(typeof(LinearMovement))]
     [RequireComponent(typeof(ContactDamage))]
-    public class LinearProjectile : MonoBehaviour
+    public class LinearProjectile : Projectile
     {
         [field:SerializeField] public LinearMovement LinearMovement {get; private set;}
         [field:SerializeField] public ContactDamage ContactDamage {get; private set;}

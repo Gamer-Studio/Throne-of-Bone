@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using NaughtyAttributes;
 using ToB.Core.InputManager;
 using ToB.Entities;
+using ToB.Entities.Buffs;
+using ToB.Entities.Interface;
 using ToB.IO;
 using ToB.UI;
 using ToB.Utils;
@@ -347,7 +349,9 @@ namespace ToB.Player
       {
         bottomJumpAvailable = false;
         jumpCoroutine = StartCoroutine(JumpCoroutine(downJumpPower));
+        return;
       }
+      
       if ((inWater || (!IsFlight || isClimbing)) && !IsDashing && jumpCoroutine == null)
       {
         jumpCoroutine = StartCoroutine(JumpCoroutine(jumpPower));
@@ -421,11 +425,13 @@ namespace ToB.Player
     /// </summary>
     /// <param name="value">피해량입니다.</param>
     /// <param name="sender">피해량을 주는 주체입니다.</param>
-    public void Damage(float value, MonoBehaviour sender)
+    public void Damage(float value, IAttacker sender)
     {
-      if(IsImmune) return;
+      var isBuff = sender is DamageDebuff;
+      if(sender == null) return;
+      if(IsImmune && !isBuff) return;
 
-      if (IsBlocking && sender)
+      if (IsBlocking && sender.Blockable)
         Block(value, sender);
       else
       {
@@ -434,17 +440,17 @@ namespace ToB.Player
         // 독버프로 맞으면 화면에 경광등 켜져서 일단은 sender로 예외 처리.
         // 추후 걸린 버프를 구분할 수 있는 방법이 생기면 (독 파워업 등등)
         // 별도 이펙트 혹은 지속시간 인디케이터 UI를 만들기 좋을 것 같다고 생각해요!
-        if (sender !=null) UIManager.Instance.effectUI.PlayHitEffect();
-
-        if (sender)
+        if (sender.Effectable)
         {
+          UIManager.Instance.effectUI.PlayHitEffect();
+          
           damagedEffect.transform.eulerAngles = Vector3.zero;
 
           if (damagedEffect.isPlaying) damagedEffect.Stop();
           damagedEffect.Play();
         }
 
-        if (sender != null && immuneTime < damageImmuneTime) immuneTime = damageImmuneTime;
+        if (isBuff && immuneTime < damageImmuneTime) immuneTime = damageImmuneTime;
       }
     }
 
@@ -512,7 +518,7 @@ namespace ToB.Player
     private Coroutine tpCoroutine;
     public bool isFadeOutEnded = false;
 
-    public void TeleportByObstacle()
+    public void TeleportByObject()
     {
       if (stat.Hp <= 0) return;
       // 플레이어가 사망 시 스폰위치로 TP해야 하니 예외처리

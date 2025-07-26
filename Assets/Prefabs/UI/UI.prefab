@@ -2269,7 +2269,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8531404731112398134}
   m_HandleRect: {fileID: 1311707493395322980}
   m_Direction: 2
-  m_Value: 1.0000008
+  m_Value: 1
   m_Size: 0.6
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -7819,7 +7819,7 @@ MonoBehaviour:
       - m_Target: {fileID: 3421517413151793967}
         m_TargetAssemblyTypeName: ToB.UI.IntroUI, Assembly-CSharp
         m_MethodName: DeleteSaveFileConfirmed
-        m_Mode: 3
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -19829,7 +19829,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.00023546114}
+  m_AnchoredPosition: {x: 0, y: 0.000015258789}
   m_SizeDelta: {x: 0, y: 700}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &3003172819178472971
@@ -27840,7 +27840,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2218969029337085451, guid: dbbb46800aa8172478c05c1197509ea4, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: 0.000030517578
       objectReference: {fileID: 0}
     - target: {fileID: 2847448161856455237, guid: dbbb46800aa8172478c05c1197509ea4, type: 3}
       propertyPath: m_SizeDelta.x
@@ -28088,6 +28088,14 @@ PrefabInstance:
     m_TransformParent: {fileID: 2156949057391490614}
     m_Modifications:
     - target: {fileID: 111849178435277372, guid: 0295f95894306ff45bc190db6b29a5a4, type: 3}
+      propertyPath: toastText
+      value: 
+      objectReference: {fileID: 8166912027665694986}
+    - target: {fileID: 111849178435277372, guid: 0295f95894306ff45bc190db6b29a5a4, type: 3}
+      propertyPath: typingSpeed
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 111849178435277372, guid: 0295f95894306ff45bc190db6b29a5a4, type: 3}
       propertyPath: endPosOffset.y
       value: -50
       objectReference: {fileID: 0}
@@ -28271,6 +28279,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 1416489014072162231, guid: 0295f95894306ff45bc190db6b29a5a4, type: 3}
   m_PrefabInstance: {fileID: 3221049893215384122}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &8166912027665694986 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6766030584357106480, guid: 0295f95894306ff45bc190db6b29a5a4, type: 3}
+  m_PrefabInstance: {fileID: 3221049893215384122}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &3601226589111108474
 PrefabInstance:
   m_ObjectHideFlags: 0
