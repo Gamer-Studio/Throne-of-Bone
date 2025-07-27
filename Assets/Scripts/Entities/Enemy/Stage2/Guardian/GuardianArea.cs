@@ -35,16 +35,20 @@ namespace ToB.Entities
             Sequence seq = DOTween.Sequence();
 
             seq.AppendInterval(1f);
-            seq.AppendCallback(() => GameCameraManager.Instance.SwitchFirstCamera(roomCamera));
+            seq.AppendCallback(() => GameCameraManager.Instance.SwitchFirstCamera(roomCamera, false));
             seq.AppendCallback(() => StageManager.Instance.ChangeGameState(GameState.UI));
             seq.AppendInterval(1f);
-            exitBlocker.SetActive(true);
+            
+            seq.AppendCallback(()=> exitBlocker.SetActive(true));
             seq.AppendCallback(() => prison.SetActive(false));
-            seq.AppendInterval(1f);
+            seq.AppendCallback(() => GameCameraManager.Instance.EarthQuake(30,1,0.7f));
+            
+            seq.AppendInterval(1.5f);
+            
             seq.AppendCallback(() => guardians.ForEach(g => g.gameObject.SetActive(true)));
             seq.AppendInterval(1f);
             
-            seq.AppendCallback(() => GameCameraManager.Instance.SwitchFirstCamera());
+            seq.AppendCallback(() => GameCameraManager.Instance.SwitchFirstCamera(false));
             seq.AppendInterval(0.5f);
             seq.AppendCallback(() => StageManager.Instance.ChangeGameState(GameState.Play));
             
