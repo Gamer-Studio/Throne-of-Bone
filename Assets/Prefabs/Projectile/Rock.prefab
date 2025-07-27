@@ -75,7 +75,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7640748304037184980}
@@ -94,7 +94,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   direction: {x: 0, y: 0}
-  <Damage>k__BackingField: 1
+  launcher: {fileID: 0}
   damage: 1
   speed: 1
   knockBackForce: 1
@@ -177,20 +177,20 @@ CompositeCollider2D:
   m_ColliderPaths:
   - m_Collider: {fileID: 5475165630021243888}
     m_ColliderPaths:
-    - - X: 5000000
-        Y: 5000000
-      - X: -5000000
-        Y: 5000000
-      - X: -5000000
-        Y: -5000000
-      - X: 5000000
-        Y: -5000000
+    - - X: 10000000
+        Y: 10000000
+      - X: -10000000
+        Y: 10000000
+      - X: -10000000
+        Y: -10000000
+      - X: 10000000
+        Y: -10000000
   m_CompositePaths:
     m_Paths:
-    - - {x: 0.4999707, y: -0.5}
-      - {x: 0.4999707, y: 0.5}
-      - {x: -0.5, y: 0.4999707}
-      - {x: -0.4999707, y: -0.5}
+    - - {x: 0.99997073, y: -1}
+      - {x: 0.99997073, y: 1}
+      - {x: -1, y: 0.99997073}
+      - {x: -0.99997073, y: -1}
   m_VertexDistance: 0.0005
   m_OffsetDistance: 0.00005
   m_UseDelaunayMesh: 0
