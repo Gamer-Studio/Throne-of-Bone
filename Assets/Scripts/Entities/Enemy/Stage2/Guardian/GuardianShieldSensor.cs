@@ -15,6 +15,11 @@ namespace ToB
         public float senseDuration;
         public LayerMask targetLayer;
 
+        private void Awake()
+        {
+            lastEnterTime = float.MinValue;
+        }
+
         private void Update()
         {
             if (Time.time - lastEnterTime > senseDuration)

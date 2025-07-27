@@ -10,6 +10,8 @@ namespace ToB.Entities
     public class Guardian : Enemy
     {
         public GuardianSO DataSO => enemySO as GuardianSO;
+        
+        [field:SerializeField] public GuardianArea Area { get; private set; }
         [field:SerializeField] public EnemyBody EnemyBody { get; private set; }
         [field:SerializeField] public EnemyStatHandler Stat { get; private set; }
         [field:SerializeField] public GameObject ShieldAreaObject { get; private set; }

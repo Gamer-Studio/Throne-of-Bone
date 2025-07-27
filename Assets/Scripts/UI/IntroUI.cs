@@ -150,7 +150,7 @@ namespace ToB.UI
         public void StartGame()
         {
             CloseAllPanels();
-            SceneManager.LoadScene(Defines.StageScene);
+            SceneManager.LoadScene(Defines.MonsterTestScene);
             Debug.Log("게임 시작");
         }
         
