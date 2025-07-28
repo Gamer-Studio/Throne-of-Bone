@@ -87,7 +87,7 @@ namespace ToB.Entities
             isAlive = true;
         }
 
-        public void OnTakeDamage(IAttacker sender)
+        public virtual void OnTakeDamage(IAttacker sender)
         {
             if (sender == null || !ReactOnDamage) return;
             bool isSenderLeft = sender.Position.x < transform.position.x;
@@ -113,6 +113,10 @@ namespace ToB.Entities
             isAlive = false;
         }
 
+        public virtual void SetTarget(Transform target)
+        {
+            this.target = target;
+        }
         public float GetTargetDistanceSQR()
         {
             if (!target) return float.MaxValue;
@@ -146,7 +150,7 @@ namespace ToB.Entities
         public void LookHorizontal(Vector2 direction)
         {
             Vector3 scale = transform.localScale;
-            scale.x = direction.x > 0 ? 1 : -1;;
+            scale.x = direction.x > 0 ? 1 : -1;
             transform.localScale = scale;
         }
 
@@ -156,5 +160,7 @@ namespace ToB.Entities
             Vector2 dir = target.position - transform.position;
             LookHorizontal(dir);
         }
+        
+        
     }
 }

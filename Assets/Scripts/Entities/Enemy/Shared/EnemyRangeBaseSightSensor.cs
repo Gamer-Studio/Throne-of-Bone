@@ -77,13 +77,13 @@ namespace ToB.Entities
             {
                 targetInRange = null;
                 TargetRB = null;
-                enemy.target = null;
+                enemy.SetTarget(null);
             }
         }
 
         private void Update()
         {
-            if (!dontMissOutOfRay) enemy.target = null;
+            if (!dontMissOutOfRay) enemy.SetTarget(null);
             if (!targetInRange) return;
 
             Vector2 posDiff = TargetRB.position - (Vector2)transform.position;
@@ -91,7 +91,7 @@ namespace ToB.Entities
 
             if (distance < 0.25f)
             {
-                enemy.target = targetInRange;
+                enemy.SetTarget(targetInRange);
                 return;
             }
 
@@ -115,7 +115,7 @@ namespace ToB.Entities
                 return;
             }
 
-            enemy.target = targetInRange;
+            enemy.SetTarget(targetInRange);
         }
     }
 }
