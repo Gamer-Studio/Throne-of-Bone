@@ -28,6 +28,7 @@ namespace ToB.Scenes.Stage
     private const string State = "State";
 
     [Label("플레이어"), Tooltip("현재 활성화된 Player 태그가 붙은 플레이어 캐릭터입니다."), Foldout(State)] public PlayerCharacter player;
+    [Label("로딩된 방 목록"), Foldout(State)] public List<Room> loadedRooms = new();
     [Label("현재 플레이어가 있는 방"), Foldout(State)] public Room currentRoom;
     [field: Foldout(State), SerializeField] public GameState CurrentState { get; private set; } = GameState.Play;
     [SerializeField, ReadOnly] private bool unloaded;
@@ -47,7 +48,6 @@ namespace ToB.Scenes.Stage
     [Foldout(Binding), SerializeField] private Transform roomContainer;
     [field: Foldout(Binding), SerializeField] public Camera MainCamera { get; private set; }
     [field: Foldout(Binding), SerializeField] public CinemachineVirtualCamera MainVirtualCamera { get; private set; }
-    [Foldout(Binding)] public List<Room> loadedRooms = new();
 
     #endregion
 
