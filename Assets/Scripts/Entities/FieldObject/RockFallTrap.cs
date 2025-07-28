@@ -1,4 +1,5 @@
 using System.Collections;
+using DG.Tweening;
 using ToB.Utils;
 using ToB.Entities.Projectiles;
 using UnityEngine;
@@ -18,8 +19,10 @@ namespace ToB.Entities.FieldObject
         [SerializeField] private float RockKnockBack;
         public bool IsActivated;
         private Coroutine shootingCo;
+        private Tween vibrateTween;
         public override void OnLoad()
         {
+            TrapSprite.SetActive(true);
             IsActivated = false;
             IsDetected = false;
         }
@@ -36,7 +39,7 @@ namespace ToB.Entities.FieldObject
 
         private IEnumerator Shoot()
         {
-            //딜레이 시간 동안 대기한 뒤 발사
+            FallingWarning();
             yield return new WaitForSeconds(FallDelayTime);
             var eff = RockPrefab.Pooling().GetComponent<Rock>();
             eff.transform.position = SpawnPos.position;
@@ -46,6 +49,20 @@ namespace ToB.Entities.FieldObject
             eff.speed = RockSpeedMultiplier;
             
             eff.ClearEffect();
+            
+            TrapSprite.SetActive(false);
+        }
+
+        private void FallingWarning()
+        {
+            TrapSprite.transform.DOShakePosition(
+                    duration: FallDelayTime
+                    , strength: new Vector3(0.1f, 0.1f, 0)
+                    , vibrato: 60
+                    , randomness: 90
+                    , fadeOut: true
+                )
+                .OnComplete(() => vibrateTween.Kill());
         }
 
     }
