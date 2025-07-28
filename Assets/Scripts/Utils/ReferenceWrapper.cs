@@ -16,6 +16,14 @@ namespace ToB.Utils
     /// </summary>
     public string path;
 
+    public ReferenceWrapper() { }
+
+    public ReferenceWrapper(AssetReference assetReference, string path)
+    {
+      this.assetReference = assetReference;
+      this.path = path;
+    }
+
     public override string ToString() => path;
   }
 }
