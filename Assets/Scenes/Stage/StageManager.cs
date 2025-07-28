@@ -9,6 +9,7 @@ using ToB.Player;
 using ToB.UI;
 using ToB.Utils;
 using ToB.Utils.Singletons;
+using ToB.World;
 using ToB.Worlds;
 using UnityEngine;
 using UnityEngine.Events;
@@ -22,13 +23,13 @@ namespace ToB.Scenes.Stage
     Dialog
   }
 
+  [RequireComponent(typeof(RoomController))]
   public class StageManager : ManualSingleton<StageManager>
   {
     #region State
     private const string State = "State";
 
     [Label("플레이어"), Tooltip("현재 활성화된 Player 태그가 붙은 플레이어 캐릭터입니다."), Foldout(State)] public PlayerCharacter player;
-    [Label("로딩된 방 목록"), Foldout(State)] public List<Room> loadedRooms = new();
     [Label("현재 플레이어가 있는 방"), Foldout(State)] public Room currentRoom;
     [field: Foldout(State), SerializeField] public GameState CurrentState { get; private set; } = GameState.Play;
     [SerializeField, ReadOnly] private bool unloaded;
@@ -44,10 +45,11 @@ namespace ToB.Scenes.Stage
     [Label("카메라 틀 콜라이더"), Tooltip("시네머신 Confiner 용 콜라이더입니다."), Foldout(Binding), SerializeField] private CompositeCollider2D confinerBorder;
     [Label("로딩된 Confiner 콜라이더 목록"), Foldout(Binding), SerializeField] private SerializableDictionary<Collider2D, GameObject> loadedColliders = new();
     [Label("시네머신 오류방지용 임시 오브젝트"), Foldout(Binding), SerializeField] private GameObject tempObj;
+    [field: Foldout(Binding), SerializeField] public CinemachineVirtualCamera MainVirtualCamera { get; private set; }
+    [Foldout(Binding), SerializeField] private RoomController roomController;
     [Foldout(Binding), SerializeField] private CinemachineConfiner2D confiner;
     [Foldout(Binding), SerializeField] private Transform roomContainer;
-    [field: Foldout(Binding), SerializeField] public Camera MainCamera { get; private set; }
-    [field: Foldout(Binding), SerializeField] public CinemachineVirtualCamera MainVirtualCamera { get; private set; }
+    [Foldout(Binding), SerializeField] private new Camera camera;
 
     #endregion
 
@@ -77,30 +79,38 @@ namespace ToB.Scenes.Stage
     private void Reset()
     {
       player = PlayerCharacter.Instance;
-      if (!confiner) confiner = FindAnyObjectByType<CinemachineConfiner2D>();
+      confiner = FindAnyObjectByType<CinemachineConfiner2D>();
+      roomController = GetComponent<RoomController>();
     }
 
 #endif
 
     private void Awake()
     {
-      if (!player) player = PlayerCharacter.Instance;
+      // 필드 초기화
+      {
+        if (!player) player = PlayerCharacter.Instance;
+        if (!confiner) confiner = FindAnyObjectByType<CinemachineConfiner2D>();
+        if (!roomController) roomController = GetComponent<RoomController>();
+        if (tempObj) tempObj.SetActive(false);
+      }
 
-      if (tempObj) tempObj.SetActive(false);
+      // 시작 방 로딩
+      {
+        
+      }
 
       if (SAVE.Current != null) {
-        // 임시 플레이어 소환 코드
-        // TODO 방별 로딩형태 전환시 개편 필요
-
+        // 플레이어 소환 
+        
         int stageIndex = SAVE.Current.Player.currentStage,
           roomIndex = SAVE.Current.Player.currentRoom;
         var playerPos = SAVE.Current.Player.savedPosition;
 
         if (stageIndex != 0 && roomIndex != 0)
         {
-          foreach (var room in loadedRooms)
+          foreach (var room in roomController.loadedRooms)
           {
-            Debug.Log(room.name);
             if (room.stageIndex != stageIndex || room.roomIndex != roomIndex) continue;
             
             currentRoom = room;
