@@ -11,7 +11,6 @@ namespace ToB.Core.InputManager
     {
         public void PlayerMove(InputAction.CallbackContext context)
         {
-            Debug.Log("PlayerMove!");
             if (!CanMove()) return;
             player?.Move(context);
         }
