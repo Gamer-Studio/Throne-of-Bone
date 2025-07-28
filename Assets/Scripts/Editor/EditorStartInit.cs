@@ -3,7 +3,6 @@ using UnityEditor.SceneManagement;
 
 namespace ToB.Editor
 {
-  [InitializeOnLoad]
   public static class EditorStartInit
   {
     [MenuItem("Debug/시작 씬부터 시작")]
