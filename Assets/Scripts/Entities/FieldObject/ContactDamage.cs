@@ -1,9 +1,11 @@
 using ToB.Entities.Interface;
+using ToB.Scenes.Stage;
+using ToB.Worlds;
 using UnityEngine;
 
 namespace ToB.Entities.FieldObject
 {
-    public class ContactDamage : MonoBehaviour
+    public class ContactDamage : MonoBehaviour, IAttacker
     {
         private IConatactDamageSO attackSO;
         public float ATK => attackSO?.ATK ?? nonSODamage;
@@ -32,17 +34,31 @@ namespace ToB.Entities.FieldObject
             this.knockBackDirection = knockBackDirection;
             directional = fixedDirection;
         }
-        
+
+        public void Init(float atk, float knockbackPower, Vector2 knockBackDirection = default,
+            bool fixedDirection = true)
+        {
+            nonSODamage = atk;
+            this.knockBackPower = knockbackPower;
+            this.knockBackDirection = knockBackDirection;
+            directional = fixedDirection;
+        }
         
 
         private void OnTriggerEnter2D(Collider2D other)
         {
             if ((playerMask & 1 << other.gameObject.layer) != 0)
             {
-                IDamageableExtensions.Damage(other, ATK, (IAttacker)this);
+                other.Damage(ATK, this);
                 if(directional) other.KnockBack(knockBackPower, knockBackDirection);
                 else other.KnockBack(knockBackPower, gameObject);
             }
         }
+
+        public bool Blockable { get; set; }
+        public bool Effectable { get; set; }
+        public Vector3 Position { get; set; }
+        public Team Team { get; set; }
+        
     }
 }

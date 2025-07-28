@@ -2,7 +2,92 @@ fileFormatVersion: 2
 guid: 09e0765a26da2bb4495cfa309eaaa253
 ScriptedImporter:
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:AnimationClip
+      assembly: UnityEngine.AnimationModule
+      name: attack
+    second: {fileID: 7400000, guid: 5fecd873eba81dd4585aeac9830a250b, type: 2}
+  - first:
+      type: UnityEngine:AnimationClip
+      assembly: UnityEngine.AnimationModule
+      name: attack 1
+    second: {fileID: 7400000, guid: ad04c095ff961ea4284c1389007ea91e, type: 2}
+  - first:
+      type: UnityEngine:AnimationClip
+      assembly: UnityEngine.AnimationModule
+      name: attack 3
+    second: {fileID: 7400000, guid: 4534b5829a726db4bb42e66fbb6fbe75, type: 2}
+  - first:
+      type: UnityEngine:AnimationClip
+      assembly: UnityEngine.AnimationModule
+      name: blood gif
+    second: {fileID: 7400000, guid: b80e2915a88eebe44ab57628729914d6, type: 2}
+  - first:
+      type: UnityEngine:AnimationClip
+      assembly: UnityEngine.AnimationModule
+      name: blood teleport 2
+    second: {fileID: 7400000, guid: f3c115fc55502124e9d0624ba5678323, type: 2}
+  - first:
+      type: UnityEngine:AnimationClip
+      assembly: UnityEngine.AnimationModule
+      name: charge
+    second: {fileID: 7400000, guid: 994357374b09aa14fb6e8088b9b22839, type: 2}
+  - first:
+      type: UnityEngine:AnimationClip
+      assembly: UnityEngine.AnimationModule
+      name: double slash
+    second: {fileID: 7400000, guid: 540c2d16a2e8aec4888ee99875c01d21, type: 2}
+  - first:
+      type: UnityEngine:AnimationClip
+      assembly: UnityEngine.AnimationModule
+      name: fall
+    second: {fileID: 7400000, guid: 36f6e16239fd2474cb7a810013519f4b, type: 2}
+  - first:
+      type: UnityEngine:AnimationClip
+      assembly: UnityEngine.AnimationModule
+      name: heart slam
+    second: {fileID: 7400000, guid: e103a272d4994de45b097b394ecf32ab, type: 2}
+  - first:
+      type: UnityEngine:AnimationClip
+      assembly: UnityEngine.AnimationModule
+      name: hit
+    second: {fileID: 7400000, guid: 6122cf161da91014a9cce315b2ba8444, type: 2}
+  - first:
+      type: UnityEngine:AnimationClip
+      assembly: UnityEngine.AnimationModule
+      name: idle
+    second: {fileID: 7400000, guid: 7e1555f1e0bb0ef44aa2ee9f8b027795, type: 2}
+  - first:
+      type: UnityEngine:AnimationClip
+      assembly: UnityEngine.AnimationModule
+      name: jump
+    second: {fileID: 7400000, guid: 456c614dbbbc6e4449e6de70cdd82366, type: 2}
+  - first:
+      type: UnityEngine:AnimationClip
+      assembly: UnityEngine.AnimationModule
+      name: jump slam
+    second: {fileID: 7400000, guid: cfb1bd513a0b9384ba4582fc1db65a99, type: 2}
+  - first:
+      type: UnityEngine:AnimationClip
+      assembly: UnityEngine.AnimationModule
+      name: jump to fall trans
+    second: {fileID: 7400000, guid: 3aec8dfc2f04d9c4aa047f610fd04e2d, type: 2}
+  - first:
+      type: UnityEngine:AnimationClip
+      assembly: UnityEngine.AnimationModule
+      name: run
+    second: {fileID: 7400000, guid: 5d01302ada0e9fc4b83afedcb40a9df9, type: 2}
+  - first:
+      type: UnityEngine:AnimationClip
+      assembly: UnityEngine.AnimationModule
+      name: transition down
+    second: {fileID: 7400000, guid: 17a4b4d49829ee24791aab16b43976f8, type: 2}
+  - first:
+      type: UnityEngine:AnimationClip
+      assembly: UnityEngine.AnimationModule
+      name: transition to charge
+    second: {fileID: 7400000, guid: 41c90f38f419aad4ba6203745fc8a6f2, type: 2}
   serializedVersion: 2
   userData: 
   assetBundleName: 
@@ -36,7 +121,7 @@ ScriptedImporter:
     spriteMeshType: 1
     alignment: 0
     spritePivot: {x: 0.5, y: 0.5}
-    spritePixelsToUnits: 100
+    spritePixelsToUnits: 16
     spriteBorder: {x: 0, y: 0, z: 0, w: 0}
     spriteGenerateFallbackPhysicsShape: 0
     generateCubemap: 6
@@ -98,7 +183,7 @@ ScriptedImporter:
     addSortingGroup: 1
     addShadowCasters: 0
   importFileNodeState: 1
-  platformSettingsDirtyTick: 0
+  platformSettingsDirtyTick: 638893009636927790
   textureAssetName: 
   singleSpriteImportData:
   - name: 
@@ -4914,6 +4999,30 @@ ScriptedImporter:
     overridden: 0
     ignorePlatformSupport: 0
     maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    androidETC2FallbackOverride: 0
+  - name: DefaultTexturePlatform
+    overridden: 0
+    ignorePlatformSupport: 0
+    maxTextureSize: 16384
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    androidETC2FallbackOverride: 0
+  - name: Standalone
+    overridden: 0
+    ignorePlatformSupport: 0
+    maxTextureSize: 16384
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 0
