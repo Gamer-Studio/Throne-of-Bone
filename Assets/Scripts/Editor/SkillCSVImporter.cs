@@ -58,7 +58,8 @@ namespace ToB.Editor
                     goldCost = int.Parse(tokens[7]),
                     manaCost = int.Parse(tokens[8]),
                     reqID1 = int.Parse(tokens[9]),
-                    reqID2 = int.Parse(tokens[10])
+                    reqID2 = int.Parse(tokens[10]),
+                    description = tokens[11]
                 };
 
                 database.BattleSkillDataBase.Add(skill);

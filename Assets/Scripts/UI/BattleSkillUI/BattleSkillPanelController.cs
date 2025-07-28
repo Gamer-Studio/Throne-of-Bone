@@ -92,9 +92,10 @@ namespace ToB.UI
 
         private void SelectedSkillTextUpdate()
         {
-            SkillNameText.text = BattleSkillManager.Instance.skillDB.GetSkillById(selectedSkillID).skillName;
-            SkillDescriptionText.text = "스킬설명";
-            //SkillDescriptionText.text = BattleSkillManager.Instance.skillDB.GetSkillById(selectedSkillID).skillDescription;
+            SkillData _skillData = BattleSkillManager.Instance.skillDB.GetSkillById(selectedSkillID);
+            SkillNameText.text = _skillData.skillName;
+            //SkillDescriptionText.text = "스킬설명";
+            SkillDescriptionText.text = $"{_skillData.description}";
             switch (BattleSkillManager.Instance.GetSkillState(selectedSkillID))
             {
                 case SkillState.Acquired:
@@ -102,13 +103,13 @@ namespace ToB.UI
                     break;
                 case SkillState.Unacquired:
                     SkillCostText.text =
-                        $"필요 자원 : {BattleSkillManager.Instance.skillDB.GetSkillById(selectedSkillID).goldCost} G" +
-                        $" + {BattleSkillManager.Instance.skillDB.GetSkillById(selectedSkillID).manaCost} M";
+                        $"필요 자원 : {_skillData.goldCost} G" +
+                        $" + {_skillData.manaCost} M";
                     break;
                 case SkillState.Deactivated:
                     SkillCostText.text =
                         "필요 자원 : 0 G" +
-                        $" + {BattleSkillManager.Instance.skillDB.GetSkillById(selectedSkillID).manaCost} M";
+                        $" + {_skillData.manaCost} M";
                     break;
             }
         }
