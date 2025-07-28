@@ -127,7 +127,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03b6e05f7c5922749bd911139cbf26ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  beam: {fileID: 5142743732748553440}
+  beams:
+  - {fileID: 5142743732748553440}
 --- !u!114 &5036365120858571385
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5304,6 +5305,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   targets: []
+  entered: 0
+  lastEnteredTime: 0
+  senseDuration: 0
 --- !u!1 &5529266737035754618
 GameObject:
   m_ObjectHideFlags: 0
@@ -5350,10 +5354,10 @@ BoxCollider2D:
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 2048
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
@@ -5395,6 +5399,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90f5fb606f41426f965539fcaae462d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  objects: []
 --- !u!1 &7133672690074080751
 GameObject:
   m_ObjectHideFlags: 0
@@ -5561,6 +5566,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2581f9cb50efbca43a5447f646dc2a72, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  type: 0
   enemySO: {fileID: 11400000, guid: 6566023ba95494243a4d11310c6ca997, type: 2}
   rb: {fileID: 598470307178557339}
   <Physics>k__BackingField: {fileID: 1521356677129366956}
@@ -5645,6 +5651,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   targets: []
+  entered: 0
+  lastEnteredTime: 0
+  senseDuration: 0
 --- !u!61 &5792997091322954901
 BoxCollider2D:
   m_ObjectHideFlags: 0
