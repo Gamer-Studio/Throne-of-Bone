@@ -15,6 +15,7 @@ namespace ToB.UI
 {
     public class IntroUI : UIPanelBase
     {
+        [Scene] public string stageSceneName;
         [SerializeField] public GameObject MainPanel;
         [SerializeField] public GameObject SaveSlotPanel;
         [SerializeField] public GameObject SettingPanel;
@@ -150,14 +151,14 @@ namespace ToB.UI
         public void StartGame()
         {
             CloseAllPanels();
-            SceneManager.LoadScene(Defines.StageScene);
+            SceneManager.LoadScene(stageSceneName);
             Debug.Log("게임 시작");
         }
         
         public void LoadGame()
         {
             CloseAllPanels();
-            SceneManager.LoadScene(Defines.StageScene);
+            SceneManager.LoadScene(stageSceneName);
             Debug.Log("테스트 신 시작");       
         }
       
