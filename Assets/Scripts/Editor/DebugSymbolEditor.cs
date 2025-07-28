@@ -1,4 +1,5 @@
 using System.Linq;
+using ToB.Core;
 using ToB.Utils;
 using UnityEditor;
 using UnityEngine;
@@ -7,6 +8,12 @@ namespace ToB.Editor
 {
   public class DebugSymbolEditor : EditorWindow
   {
+    [InitializeOnLoadMethod]
+    private static void Inititalize()
+    {
+      Defines.DynamicLoading = EditorPrefs.GetBool(nameof(Defines.DynamicLoading), Defines.DynamicLoading);
+    }
+    
     [MenuItem("Debug/Symbol Editor")]
     private static void ShowWindow()
     {
@@ -37,6 +44,14 @@ namespace ToB.Editor
       if (GUILayout.Button("디버그 심볼 추가"))
       {
         DebugSymbol.Get(tempText, true, false);
+      }
+
+      // 스테이지 동적 로딩
+      {
+        var dynamicLoading = EditorGUILayout.Toggle("스테이지 동적 로딩", Defines.DynamicLoading);
+        
+        Defines.DynamicLoading = dynamicLoading;
+        EditorPrefs.SetBool(nameof(Defines.DynamicLoading), dynamicLoading);
       }
     }
   }
