@@ -125,9 +125,35 @@ namespace ToB.Utils
     /// <param name="clipName">중지할 클립의 파일명</param>
     public void Stop(string clipName)
     {
-      var source = (from target in sourcePool where target.clip.name == clipName select target).FirstOrDefault();
-      if (source == null) return;
-      source.Stop();
+      if (sourcePool == null || sourcePool.Count == 0) return;
+
+      foreach (var source in sourcePool.Where(source => source.clip.name == clipName))
+        source.Stop();
+    }
+
+    /// <summary>
+    /// 오디오클립을 기반으로 재생중인 사운드를 중지시킵니다.
+    /// </summary>
+    /// <param name="clip">중지할 클립</param>
+    public void Stop(AudioClip clip)
+    {
+      if (sourcePool == null || sourcePool.Count == 0) return;
+      
+      foreach (var source in sourcePool.Where(source => source.clip == clip))
+        source.Stop();
+    }
+
+    /// <summary>
+    /// 어드레서블 참조를 기반으로 재생중인 사운드를 중지시킵니다.
+    /// </summary>
+    /// <param name="reference">중지할 클립의 어드레서블 참조</param>
+    public void Stop(ReferenceWrapper reference)
+    {
+      if (sourcePool == null || sourcePool.Count == 0) return;
+      var clipName = reference.path.Replace($"{AudioManager.Label}/", "");
+      
+      foreach (var source in sourcePool.Where(source => source.clip.name == clipName))
+        source.Stop();
     }
   }
 }
