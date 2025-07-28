@@ -1,8 +1,10 @@
 using System;
 using ToB.Player;
+using ToB.Utils;
 using ToB.Utils.Singletons;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Serialization;
 
 namespace ToB.Core.InputManager
 {
@@ -22,7 +24,15 @@ namespace ToB.Core.InputManager
 
         public PlayerController player;
         
-        [field:SerializeField] public string CurrentActionMap { get; set; }
+        /// <summary>
+        /// 현재 액션 맵을 표시하고, 변경할 수 있습니다.
+        /// </summary>
+        [SerializeField, GetSet(nameof(CurrentActionMap))] private InputActionMaps currentActionMap;
+        public InputActionMaps CurrentActionMap
+        {
+            get => currentActionMap;
+            set => SetActionMap(value);
+        }
 
         public static bool IsRebinding = false;
 
@@ -41,11 +51,9 @@ namespace ToB.Core.InputManager
 
         public void SetActionMap(InputActionMaps map)
         {
-            if (map == InputActionMaps.NULL) CurrentActionMap = null;
-            else CurrentActionMap = map.ToString();
-            
-            
-            PlayerInput.SwitchCurrentActionMap(CurrentActionMap);
+            currentActionMap = map;
+
+            PlayerInput.SwitchCurrentActionMap(currentActionMap.ToString());
         }
 
         public void SetInputActive(bool isActive)
