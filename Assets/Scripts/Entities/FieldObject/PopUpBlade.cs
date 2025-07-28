@@ -2,11 +2,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using ToB.Entities.Interface;
+using ToB.Worlds;
 using UnityEngine;
 
 namespace ToB.Entities.FieldObject
 {
-    public class PopUpBlade : FieldObjectProgress
+    public class PopUpBlade : FieldObjectProgress, IAttacker
     {
         private readonly int IsActivated = Animator.StringToHash("IsActivated");
 
@@ -28,6 +29,7 @@ namespace ToB.Entities.FieldObject
         [SerializeField] private float safeTime;
         [SerializeField] private float knockBackPower;
         [SerializeField] private float damage;
+        private float invincibleTime = 1f;
         
         private Coroutine C_popUpTimer;
         private bool isActivated;
@@ -48,11 +50,15 @@ namespace ToB.Entities.FieldObject
 
         private void LateUpdate()
         {
+            // Polygon Collider가 스프라이트 갱신에 따라 갱신되도록 함
             if (state != PopUpBladeState.Disabled && lastSprite != SpriteRenderer.sprite)
             {
                 UpdateCollider();
                 lastSprite = SpriteRenderer.sprite;
             }
+            
+            // 플레이어에게 무적시간 살짝 부여 : 콜라이더가 갱신되면서 프레임마다 triggerEnter 판정이 계속 발생(플레이어 즉사)
+            if(invincibleTime > 0) invincibleTime -= Time.deltaTime;
         }
 
         private void TimerCoroutine()
@@ -117,12 +123,13 @@ namespace ToB.Entities.FieldObject
             animator.SetBool(IsActivated, true);
         }
         
-        private void OnTriggerEnter2D(Collider2D other)
+        private void OnTriggerStay2D(Collider2D other)
         {
-            if (other.gameObject.CompareTag("Player") && isActivated)
+            if (other.gameObject.CompareTag("Player") && isActivated && invincibleTime <= 0)
             {
-                IDamageableExtensions.Damage(other, damage, (IAttacker)this);
+                other.Damage(damage, this);
                 other.KnockBack(knockBackPower, gameObject);
+                invincibleTime = 1f;
             }
         }
 
@@ -143,6 +150,11 @@ namespace ToB.Entities.FieldObject
         {
             return state;
         }
+        
+        [field: SerializeField] public bool Blockable { get; set; }
+        [field: SerializeField] public bool Effectable { get; set; }
+        public Vector3 Position => transform.position;
+        public Team Team => Team.None;
 
     }
 }

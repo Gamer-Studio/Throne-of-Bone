@@ -1,10 +1,11 @@
 using System.Collections;
 using ToB.Entities.Interface;
+using ToB.Worlds;
 using UnityEngine;
 
 namespace ToB.Entities.FieldObject
 {
-    public class BearTrap : FieldObjectProgress
+    public class BearTrap : FieldObjectProgress, IAttacker
     {
         private enum State
         {
@@ -38,7 +39,7 @@ namespace ToB.Entities.FieldObject
             {
                 if (state != State.Opened) return;
                 
-                IDamageableExtensions.Damage(other, damage, (IAttacker)this);
+                other.Damage(damage, (IAttacker)this);
                 other.KnockBack(knockBackPower, new Vector2(other.transform.eulerAngles.y == 0 ? 1 : -1, 1));
                 animator.SetTrigger(ObstacleAnimationString.Activate);
                 state = State.Closed;
@@ -53,6 +54,10 @@ namespace ToB.Entities.FieldObject
             animator.SetTrigger(ObstacleAnimationString.Reset);
             
         }
-        
+
+        [field:SerializeField] public bool Blockable { get; set; }
+        [field:SerializeField] public bool Effectable { get; set; }
+        public Vector3 Position => transform.position;
+        public Team Team => Team.None;
     }
 }

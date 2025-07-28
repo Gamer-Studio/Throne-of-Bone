@@ -1,10 +1,11 @@
 using System.Collections;
 using ToB.Entities.Interface;
+using ToB.Worlds;
 using UnityEngine;
 
 namespace ToB.Entities.FieldObject
 {
-    public class GearBlade : FieldObjectProgress
+    public class GearBlade : FieldObjectProgress, IAttacker
     {
         private readonly int IsActivated = Animator.StringToHash("IsActivated");
 
@@ -14,7 +15,7 @@ namespace ToB.Entities.FieldObject
             Timed,
             Disabled
         }
-        
+
         [SerializeField] private Animator animator;
         [SerializeField] public BladeMode bladeMode;
         [SerializeField] public float knockBackPower;
@@ -23,9 +24,10 @@ namespace ToB.Entities.FieldObject
         [SerializeField] public float safeTime;
         private bool isActivated;
         private Coroutine C_SpinningTimer;
+
         private void Awake()
         {
-            if(!animator) animator = GetComponent<Animator>();
+            if (!animator) animator = GetComponent<Animator>();
             GearBladeModeToggle(bladeMode);
         }
 
@@ -36,6 +38,7 @@ namespace ToB.Entities.FieldObject
                 StopCoroutine(C_SpinningTimer);
                 C_SpinningTimer = null;
             }
+
             C_SpinningTimer = StartCoroutine(Spinning());
         }
 
@@ -46,17 +49,17 @@ namespace ToB.Entities.FieldObject
                 isActivated = true;
                 animator.SetBool(IsActivated, true);
                 yield return new WaitForSeconds(activeTime);
-                
+
                 isActivated = false;
                 animator.SetBool(IsActivated, false);
                 yield return new WaitForSeconds(safeTime);
             }
-            
+
             isActivated = false;
             animator.SetBool(IsActivated, false);
             C_SpinningTimer = null;
         }
-        
+
         /// <summary>
         /// 혹시나 레버 등으로 기어의 작동을 꺼야 할 일이 있을 때, 모드 변환을 위해 호출.
         /// Always는 항상 돌고, Timed는 돌다가 멈췄다가 하며, Disable은 회전이 꺼짐
@@ -65,7 +68,7 @@ namespace ToB.Entities.FieldObject
         public void GearBladeModeToggle(BladeMode _bladeMode)
         {
             bladeMode = _bladeMode;
-            
+
             if (_bladeMode == BladeMode.Always)
             {
                 if (C_SpinningTimer != null) StopCoroutine(C_SpinningTimer);
@@ -77,7 +80,7 @@ namespace ToB.Entities.FieldObject
             {
                 SpinningCoroutine();
             }
-            
+
             else if (_bladeMode == BladeMode.Disabled)
             {
                 if (C_SpinningTimer != null) StopCoroutine(C_SpinningTimer);
@@ -85,17 +88,21 @@ namespace ToB.Entities.FieldObject
                 isActivated = false;
                 animator.SetBool(IsActivated, false);
             }
-            
+
         }
-        
+
         private void OnTriggerEnter2D(Collider2D other)
         {
             if (other.gameObject.CompareTag("Player") && isActivated)
             {
-                IDamageableExtensions.Damage(other, damage,(IAttacker)this);
+                other.Damage(damage, this);
                 other.KnockBack(knockBackPower, gameObject);
             }
         }
-        
+
+        [field: SerializeField] public bool Blockable { get; set; }
+        [field: SerializeField] public bool Effectable { get; set; }
+        public Vector3 Position => transform.position;
+        public Team Team => Team.None;
     }
 }

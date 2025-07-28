@@ -1,4 +1,5 @@
 using NaughtyAttributes;
+using ToB.Entities.Interface;
 using ToB.Utils;
 using UnityEngine;
 
@@ -12,6 +13,7 @@ namespace ToB.Entities.Projectiles
       [Label("넉백 세기")] public float knockBackForce;
       
       public LayerMask hitLayers;
+      private float timeAfterLaunch = 0.3f;
       
       [SerializeField] private TrailRenderer trail;
       [SerializeField] private ParticleSystem ps;
@@ -44,10 +46,13 @@ namespace ToB.Entities.Projectiles
         }
     
          #endif
-    
-       private void OnTriggerEnter2D(Collider2D other)
+
+     private void OnTriggerEnter2D(Collider2D other)
         {
           if ((hitLayers & 1 << other.gameObject.layer) == 0) return;
+          
+          // 발사된 뒤 시간이 얼마 지나지 않았을 경우 벽과의 충돌 무시 (발사되자마자 벽에 충돌해 사라짐 방지)
+          if (other.gameObject.CompareTag("Ground") && timeAfterLaunch > 0) return;
       
          other.KnockBack(knockBackForce, direction);
       
@@ -84,11 +89,18 @@ namespace ToB.Entities.Projectiles
        private void OnEnable()
         {
           camera = Camera.main;
+          timeAfterLaunch = 0.3f;
         }
 
        private void FixedUpdate()
         {
          body.MovePosition(body.position + direction * (speed * Time.fixedDeltaTime));
+         
+         // 발사 시 바로 벽에 부딪혀서 사라짐 방지
+         if (timeAfterLaunch > 0)
+         {
+           timeAfterLaunch -= Time.deltaTime;
+         }
       
          var pos = camera.WorldToViewportPoint(transform.position);
 
