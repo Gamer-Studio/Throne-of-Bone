@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using ToB.Entities.Skills;
 using UnityEditor;
 using UnityEngine;
@@ -32,6 +34,19 @@ namespace ToB.Editor
                 ImportCSV(csvFile, skillDatabaseSO);
             }
         }
+        
+        private List<string> ParseCsvLine(string line)
+        {
+            var matches = Regex.Matches(line, @"(?:^|,)(?:""(.*?)""|([^"",]*))");
+            var values = new List<string>();
+
+            foreach (Match match in matches)
+            {
+                values.Add(match.Groups[1].Success ? match.Groups[1].Value : match.Groups[2].Value);
+            }
+
+            return values;
+        }
 
         private void ImportCSV(TextAsset csv, BattleSkillData database)
         {
@@ -39,12 +54,13 @@ namespace ToB.Editor
 
             string[] lines = csv.text.Split('\n');
 
-            for (int i = 2; i < lines.Length; i++) // 0번째는 헤더라서 스킵
+            for (int i = 2; i < lines.Length; i++)
             {
                 string line = lines[i].Trim();
                 if (string.IsNullOrEmpty(line)) continue;
 
-                string[] tokens = line.Split(',');
+                var tokens = ParseCsvLine(line);
+                if (tokens.Count < 12) continue;
 
                 SkillData skill = new SkillData
                 {

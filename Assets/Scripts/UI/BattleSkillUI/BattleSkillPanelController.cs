@@ -142,7 +142,7 @@ namespace ToB.UI
                     DEF_SkillPanel.SetActive(false);
                     SUP_SkillPanel.SetActive(true);
                     selectedPanel = SUP_SkillPanel;
-                    SkillTypeText.text = "전장의 기억";
+                    SkillTypeText.text = "지배의 기억";
                     break;
             }
             ScrollRectSetting();
