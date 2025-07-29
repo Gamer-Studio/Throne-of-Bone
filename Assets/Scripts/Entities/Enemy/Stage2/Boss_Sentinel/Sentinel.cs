@@ -11,6 +11,7 @@ namespace ToB.Entities
         [field:SerializeField] public EnemyStatHandler Stat { get; private set; }
         [field:SerializeField] public BehaviorGraphAgent Agent { get; private set; }
         
+        [field:SerializeField] public EnemyAttackArea SprintArea { get; private set; }
         [field:SerializeField] public EnemyAttackArea LongSprintArea { get; private set; }
 
         [SerializeField] private GameObject rangeAttackPrefab;
@@ -23,7 +24,7 @@ namespace ToB.Entities
         {
             base.Awake();
             Agent.BlackboardReference.SetVariableValue("IsAlive", true);
-            
+            Agent.BlackboardReference.SetVariableValue("ShieldCooldown", DataSO.BarrierCooldown);
         }
 
         protected override void OnEnable()
@@ -31,7 +32,9 @@ namespace ToB.Entities
             base.OnEnable();
             Stat.Init(this, DataSO);
             Knockback.Init(this);
-            LongSprintArea.Init(this, DataSO.SprintAttackDamage_1Phase, 5, KnockbackType.Directional);
+            SprintArea.Init(this, DataSO.SprintAttackDamage_1Phase, 15, Vector2.right);
+            LongSprintArea.Init(this, DataSO.SprintAttackDamage_1Phase, 15, Vector2.right);
+            rangeAttackCooldown = DataSO.RangedAttackPhase1.cooldown;
         }
 
         protected override void Die()
