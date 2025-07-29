@@ -10,6 +10,8 @@ namespace ToB.Entities
         public SentinelSO DataSO => enemySO as SentinelSO;
         [field:SerializeField] public EnemyStatHandler Stat { get; private set; }
         [field:SerializeField] public BehaviorGraphAgent Agent { get; private set; }
+        
+        [field:SerializeField] public EnemyAttackArea LongSprintArea { get; private set; }
 
         [SerializeField] private GameObject rangeAttackPrefab;
         public Vector2 rangeAttackDirection;
@@ -29,6 +31,7 @@ namespace ToB.Entities
             base.OnEnable();
             Stat.Init(this, DataSO);
             Knockback.Init(this);
+            LongSprintArea.Init(this, DataSO.SprintAttackDamage_1Phase, 5, KnockbackType.Directional);
         }
 
         protected override void Die()

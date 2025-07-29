@@ -15,5 +15,24 @@ namespace ToB.Entities
         {
             sentinel.RangeAttack();
         }
+
+        public void Dodge()
+        {
+            sentinel.Physics.externalVelocity[EnemyPhysicsKeys.MOVE] = -10 * sentinel.LookDirectionHorizontal;
+        }
+
+        public void LongSprint()
+        {
+            sentinel.Physics.externalVelocity[EnemyPhysicsKeys.MOVE] = 80 * sentinel.LookDirectionHorizontal;
+        }
+        public void LongSprintNext()
+        {
+            sentinel.Physics.externalVelocity[EnemyPhysicsKeys.MOVE] = 15 * sentinel.LookDirectionHorizontal;
+        }
+
+        public void Stop()
+        {
+            sentinel.Physics.externalVelocity[EnemyPhysicsKeys.MOVE] = Vector2.zero;
+        }
     }
 }
