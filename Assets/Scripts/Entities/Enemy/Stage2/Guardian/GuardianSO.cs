@@ -22,6 +22,8 @@ namespace ToB.Entities
         
         [field:SerializeField] public float TeleportRechargeTime { get; private set; } = 8;
         [field:SerializeField] public float BlastRechargeTime { get; private set; } = 3;
+        [field:SerializeField] public float BlastDamage { get; private set; } = 15;
+        [field:SerializeField] public float BlastKnockbackForce { get; private set; } = 3;
         [field:SerializeField] public float LaserRechargeTime { get; private set; } = 7;
         [field:SerializeField] public float LaserTickDamage { get; private set; } = 5;
 

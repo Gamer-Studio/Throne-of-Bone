@@ -87,7 +87,7 @@ namespace ToB.Entities
             isAlive = true;
         }
 
-        public void OnTakeDamage(IAttacker sender)
+        public virtual void OnTakeDamage(IAttacker sender)
         {
             if (sender == null || !ReactOnDamage) return;
             bool isSenderLeft = sender.Position.x < transform.position.x;

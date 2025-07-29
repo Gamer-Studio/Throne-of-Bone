@@ -27,7 +27,7 @@ namespace ToB.Entities
         {
             if (!guardian.target) return;
             
-            Debug.Log("ㅇㅁㅇ");
+
             if (!avoid)
             {
                 TeleportToAttackPosition();
@@ -67,24 +67,26 @@ namespace ToB.Entities
             }
 
             Vector2 movePoint = playerFloorContactPoint + targetDirection * offensiveTeleportDistance;
+
+            if (!guardian.Area.IsPointInArea(movePoint)) return false;
             
             // 이동 예정 지점에 이동 가능한지 체크
             Vector2 boxOrigin = movePoint + new Vector2(0, guardian.Physics.TerrainSensor.bounds.extents.y);
             RaycastHit2D hit = Physics2D.BoxCast(boxOrigin, guardian.Physics.TerrainSensor.bounds.size, 0, Vector2.up, 0.02f, groundLayer);
             
-#if UNITY_EDITOR
-// Scene 뷰에서 boxOrigin 위치에 작은 박스 그리기
-            Vector3 boxCenter = boxOrigin;
-            Vector3 boxSize = guardian.Physics.TerrainSensor.bounds.size;
-            
-            Color c = eDirection == EDirection.Front ? Color.red : Color.blue;
-
-            Debug.DrawLine(boxCenter + Vector3.left * boxSize.x * 0.5f, boxCenter + Vector3.right * boxSize.x * 0.5f, c, 1.0f);
-            Debug.DrawLine(boxCenter + Vector3.up * boxSize.y * 0.5f, boxCenter + Vector3.down * boxSize.y * 0.5f, c, 1.0f);
-            Debug.DrawLine(boxCenter + new Vector3(-boxSize.x, boxSize.y) * 0.5f, boxCenter + new Vector3(boxSize.x, -boxSize.y) * 0.5f,c, 1.0f);
-            Debug.DrawLine(boxCenter + new Vector3(boxSize.x, boxSize.y) * 0.5f, boxCenter + new Vector3(-boxSize.x, -boxSize.y) * 0.5f, c, 1.0f);
-#endif
-            
+// #if UNITY_EDITOR
+// // Scene 뷰에서 boxOrigin 위치에 작은 박스 그리기
+//             Vector3 boxCenter = boxOrigin;
+//             Vector3 boxSize = guardian.Physics.TerrainSensor.bounds.size;
+//             
+//             Color c = eDirection == EDirection.Front ? Color.red : Color.blue;
+//
+//             Debug.DrawLine(boxCenter + Vector3.left * boxSize.x * 0.5f, boxCenter + Vector3.right * boxSize.x * 0.5f, c, 1.0f);
+//             Debug.DrawLine(boxCenter + Vector3.up * boxSize.y * 0.5f, boxCenter + Vector3.down * boxSize.y * 0.5f, c, 1.0f);
+//             Debug.DrawLine(boxCenter + new Vector3(-boxSize.x, boxSize.y) * 0.5f, boxCenter + new Vector3(boxSize.x, -boxSize.y) * 0.5f,c, 1.0f);
+//             Debug.DrawLine(boxCenter + new Vector3(boxSize.x, boxSize.y) * 0.5f, boxCenter + new Vector3(-boxSize.x, -boxSize.y) * 0.5f, c, 1.0f);
+// #endif
+//             
             // hit이 있다면 벽에 끼는 자리라는 뜻
             if (hit) return false;
             
