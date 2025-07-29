@@ -58,6 +58,7 @@ namespace ToB.Entities.Skills
     /// </summary>
     private void InitializeSkillStates()
     {
+        if (SAVE.Current == null) return;
         // 이게 불러오기
         playerSkillStates = SAVE.Current.PlayerStat.savedPlayerSkillState;
         

@@ -9,5 +9,11 @@ namespace ToB.Core
     public const string StageScene = "Stage";
     
     #endregion
+    
+    #region Stage Config
+
+    public static bool DynamicLoading = true;
+    
+    #endregion
   }
 }

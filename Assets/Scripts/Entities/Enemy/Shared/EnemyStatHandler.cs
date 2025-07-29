@@ -17,10 +17,12 @@ namespace ToB.Entities
         private Enemy enemy;
         private IEnemyHittableSO hittableSO;
         
-        [SerializeField, ReadOnly] private float currentHP;
+        [SerializeField] private float currentHP;
         public float CurrentHP => currentHP;
         public float MaxHP => hittableSO.HP;
-        public float DEF => hittableSO.DEF;
+
+        private float def;
+        public float DEF => def;
 
         public Coroutine DamageEffectCoroutine { get; private set; }
         public bool OnDamageEffect { get; private set; }
@@ -45,6 +47,7 @@ namespace ToB.Entities
             }
             this.hittableSO = hittableSO;
             currentHP = MaxHP;
+            def = hittableSO.DEF;
         }
         
         private void ChangeHP(float delta)
@@ -61,6 +64,7 @@ namespace ToB.Entities
         public void Damage(float damage, IAttacker sender = null)
         {
             float actualDamage = damage * (100 - DEF) / 100;
+            Debug.Log("Damage : " + damage + " || ActualDamage : " + actualDamage + "");
             ChangeHP(-actualDamage);
             enemy.OnTakeDamage(sender);
             OnTakeDamage?.Invoke();
@@ -99,6 +103,12 @@ namespace ToB.Entities
         public void SetDefault()
         {
             currentHP = MaxHP;
+        }
+
+        public void SetDEF(float def = -1)
+        {
+            if (def < 0) def = hittableSO.DEF;
+            this.def = def;
         }
     }
 }

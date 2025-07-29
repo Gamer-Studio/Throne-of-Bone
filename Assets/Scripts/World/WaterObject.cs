@@ -1,4 +1,7 @@
+using System.Collections.Generic;
+using NaughtyAttributes;
 using ToB.Entities.Buffs;
+using ToB.Player;
 using UnityEngine;
 
 namespace ToB.Worlds
@@ -6,13 +9,12 @@ namespace ToB.Worlds
   [AddComponentMenu("Stage/Object/Water")]
   public class WaterObject : MonoBehaviour
   {
-    [Tooltip("해당 물 오브젝트가 주는 피해량입니다.")] public int damage = 1;
-    [Tooltip("피해를 주는 초 단위 주기입니다.")] public float delay = 1;
-    [Tooltip("플레이어에게만 피해를 줄 지 여부입니다.")] public bool onlyPlayer = true;
+    [Label("플레이어만 적용"), Tooltip("플레이어에게만 적용하는지 여부입니다.")] public bool onlyPlayer = true;
+    [Label("적용시킬 버프 정보")] public SerializableDictionary<Buff, BuffInfo> buffs = new();
     
     private void OnTriggerEnter2D(Collider2D other)
     {
-      if (other )
+      if (other)
       {
         other.gameObject.SendMessage("WaterEnter", this, SendMessageOptions.DontRequireReceiver);
       }
@@ -20,11 +22,14 @@ namespace ToB.Worlds
     
     private void OnTriggerStay2D(Collider2D other)
     {
-      if (other)
+      if (other && (!onlyPlayer || other.TryGetComponent<PlayerCharacter>(out _)))
       {
-        if (other.TryGetComponent<BuffController>(out var buffs))
+        if (other.TryGetComponent<BuffController>(out var controller))
         {
-          buffs.Apply(Buff.Poison, new BuffInfo(1, 10), true);
+          foreach (var pair in buffs)
+          {
+            controller.Apply(pair.Key, pair.Value, true);
+          }
         }
       }
     }
