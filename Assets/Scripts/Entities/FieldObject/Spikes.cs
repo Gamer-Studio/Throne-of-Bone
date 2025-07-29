@@ -1,3 +1,4 @@
+using System.Transactions;
 using ToB.Entities.Interface;
 using ToB.Scenes.Stage;
 using ToB.Worlds;
@@ -18,7 +19,8 @@ namespace ToB.Entities.FieldObject
             if (other.gameObject.CompareTag("Player"))
             {
                 other.gameObject.Damage(damage,this);
-                StageManager.Instance.player.TeleportByObject();
+                if (StageManager.Instance.player.stat.Hp > 0)
+                    StageManager.Instance.player.TeleportByObject();
             }
         }
 

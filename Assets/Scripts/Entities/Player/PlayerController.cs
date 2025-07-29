@@ -88,7 +88,16 @@ namespace ToB.Player
       if (!character.IsMoving)
       {
         stareDirectionVertical = context.ReadValue<Vector2>().y;
-        
+      }
+      
+      // 걷기 소리 재생
+      if (character.IsMoving && !character.IsFlight && !character.inWater)
+      {
+        //TODO : 발소리 재생 (기본 이동)
+      }
+      else if (character.IsMoving && character.inWater)
+      {
+        // TODO : 발소리 재생 (수중)
       }
       
     }

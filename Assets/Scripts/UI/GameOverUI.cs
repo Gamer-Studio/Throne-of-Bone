@@ -41,15 +41,13 @@ namespace ToB.UI
 
         private void Init()
         {
-            player.stat.onHpChanged.AddListener(GameOver);
+            player.stat.onDeath.AddListener(GameOver);
         }
         
-        private void GameOver(float curHp)
+        private void GameOver()
         {
-            if (curHp <= 0)
-            {
-                gameObject.SetActive(true);
-            }
+            gameObject.SetActive(true);
+            // TODO : 사망 시 사운드 재생
         }
 
         public void ReLoadScene()

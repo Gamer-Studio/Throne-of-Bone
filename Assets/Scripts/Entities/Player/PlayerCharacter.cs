@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using NaughtyAttributes;
+using ToB.Core;
 using ToB.Core.InputManager;
 using ToB.Entities;
 using ToB.Entities.Buffs;
@@ -157,6 +158,10 @@ namespace ToB.Player
         groundChecker.onLanding.AddListener(() =>
         {
           animator.SetBool(BOOL_IS_FLIGHT, false);
+          /* TODO : 착지 소리 재생
+          if (!inWater) AudioManager.Play("ground");
+          else AudioManager.Play("Water");
+          */
         });
       }
     }
@@ -436,10 +441,8 @@ namespace ToB.Player
       else
       {
         stat.Damage(value);
+        // TODO : 피격 시 사운드 재생
         
-        // 독버프로 맞으면 화면에 경광등 켜져서 일단은 sender로 예외 처리.
-        // 추후 걸린 버프를 구분할 수 있는 방법이 생기면 (독 파워업 등등)
-        // 별도 이펙트 혹은 지속시간 인디케이터 UI를 만들기 좋을 것 같다고 생각해요!
         if (sender.Effectable)
         {
           UIManager.Instance.effectUI.PlayHitEffect();

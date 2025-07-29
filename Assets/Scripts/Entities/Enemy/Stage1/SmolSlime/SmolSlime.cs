@@ -55,6 +55,7 @@ namespace ToB.Entities
             base.Die();
             Animator.SetTrigger(EnemyAnimationString.Die);
             Hitbox.enabled = false;
+            //TODO : 슬라임 사망 사운드 재생
             FSM.ChangePattern(null);
         }
     }
