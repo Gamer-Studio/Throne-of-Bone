@@ -57,7 +57,7 @@ namespace ToB.Player
     private bool isDamageImmune = false;
     
     // 플레이어 스텟 관리 클래스입니다.
-    [Label("캐릭터 스텟"), Foldout("State")] public PlayerStats stat = new();
+    [Label("캐릭터 스텟")] public PlayerStats stat = new();
 
     // Jump State
     private const string JumpState = nameof(JumpState);
