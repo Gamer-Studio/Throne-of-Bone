@@ -48,5 +48,10 @@ namespace ToB.Entities
         {
             sentinel.Physics.externalVelocity[EnemyPhysicsKeys.MOVE] = Vector2.zero;
         }
+
+        public void GenerateShockWave()
+        {
+            sentinel.GenerateShockWave();
+        }
     }
 }

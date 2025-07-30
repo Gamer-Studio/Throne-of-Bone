@@ -6,6 +6,7 @@ using ToB.Entities.Interface;
 using ToB.Utils;
 using Unity.Behavior;
 using UnityEngine;
+using UnityEngine.VFX;
 
 namespace ToB.Entities
 {
@@ -27,6 +28,13 @@ namespace ToB.Entities
         [SerializeField] private LayerMask groundLayer;
         [SerializeField] private GameObject rangeAttackPrefab;
         [SerializeField] private GameObject bloodBubblePrefab;
+        
+        [Header("점프 슬램")]
+        [SerializeField] private GameObject shockwavePrefab;
+        [SerializeField] private VisualEffect shockwaveEffect;
+        [SerializeField] private Transform shockwaveSpawnPositionLeft;
+        [SerializeField] private Transform shockwaveSpawnPositionRight;
+        [SerializeField] private float shockwaveAccelPower = 3;
         public int Phase { get; private set; }
         public Queue<float> SpecialAttackQueue { get; private set; }
 
@@ -41,6 +49,7 @@ namespace ToB.Entities
             Agent.BlackboardReference.SetVariableValue("IsAlive", true);
             Agent.BlackboardReference.SetVariableValue("ShieldCooldown", DataSO.BarrierCooldown);
             SpecialAttackQueue = new Queue<float>();
+            shockwaveEffect.Stop();
         }
 
         protected override void OnEnable()
@@ -80,6 +89,7 @@ namespace ToB.Entities
                 if (currentHP < 0)
                 {
                     SetPhase2();
+                    return;
                 }
                 
                 Debug.Log(currentHP / DataSO.HP_1Phase);
@@ -201,6 +211,37 @@ namespace ToB.Entities
             blood.transform.position = spawnPos;
         }
 
+        public void GenerateShockWave()
+        {
+            shockwaveEffect.SendEvent("OnPlay");
+            StartCoroutine(GenerateShockWaveCoroutine());
+            
+        }
+
+        IEnumerator GenerateShockWaveCoroutine()
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                GameObject waveObj = shockwavePrefab.Pooling();
+                waveObj.transform.position = shockwaveSpawnPositionRight.position;
+                waveObj.transform.localScale = LookDirectionHorizontal + new Vector2(0,1);
+                
+                AccelerateMovement waveAccel = waveObj.GetComponent<AccelerateMovement>();
+                waveAccel.SetAcceleration(LookDirectionHorizontal * (shockwaveAccelPower));
+                
+                waveObj = shockwavePrefab.Pooling();
+                waveObj.transform.position = shockwaveSpawnPositionLeft.position;
+                waveObj.transform.localScale = -LookDirectionHorizontal + new Vector2(0, 1);
+                
+                waveAccel = waveObj.GetComponent<AccelerateMovement>();
+                waveAccel.SetAcceleration(LookDirectionHorizontal * (-shockwaveAccelPower));
+                
+                yield return new WaitForSeconds(0.02f);
+            }
+        }
+        
         #endregion
+
+        
     }
 }
