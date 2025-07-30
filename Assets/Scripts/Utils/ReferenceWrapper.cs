@@ -18,6 +18,12 @@ namespace ToB.Utils
 
     public ReferenceWrapper() { }
 
+    public ReferenceWrapper(string path)
+    {
+      assetReference = new AssetReference(path);
+      this.path = path;
+    }
+
     public ReferenceWrapper(AssetReference assetReference, string path)
     {
       this.assetReference = assetReference;
@@ -25,5 +31,8 @@ namespace ToB.Utils
     }
 
     public override string ToString() => path;
+    
+    public static implicit operator AssetReference(ReferenceWrapper wrapper) => wrapper.assetReference;
+    public static implicit operator ReferenceWrapper(string path) => new  (path);
   }
 }

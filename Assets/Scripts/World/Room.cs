@@ -179,6 +179,25 @@ namespace ToB.Worlds
     #region Feature
 
     /// <summary>
+    /// 링크로 연결되어있는 방들을 가져옵니다.
+    /// </summary>
+    /// <param name="onlyActive">참일 경우 활성화된 방만 가져옵니다.</param>
+    public List<Room> GetLinkedRooms(bool onlyActive)
+    {
+      var result = new List<Room>();
+
+      foreach (var link in links)
+      {
+        if (link.IsLoaded || !onlyActive)
+        {
+          result.Add(link.connectedRoom);
+        }
+      }
+      
+      return result;
+    }
+
+    /// <summary>
     /// Root/Stage/Room_{stageIndex}_{roomIndex} 경로로
     /// 방 데이터를 명시적으로 저장합니다.
     /// </summary>
@@ -229,7 +248,7 @@ namespace ToB.Worlds
     {
       foreach (var pair in normalEnemyTable)
       {
-        if(pair.Value == null || (enemies.ContainsKey(pair.Key) && enemies[pair.Key].IsAlive)) continue;
+        if(pair.Key == null || pair.Value == null || (enemies.ContainsKey(pair.Key) && enemies[pair.Key].IsAlive)) continue;
         
         var enemy = (Enemy)pair.Value.Pooling();
         
@@ -244,7 +263,7 @@ namespace ToB.Worlds
 
       onEnter?.Invoke();
       StageManager.Instance.onRoomEnter.Invoke(this);
-      StageManager.Instance.currentRoom = this;
+      StageManager.RoomController.currentRoom = this;
     }
 
     /// <summary>
