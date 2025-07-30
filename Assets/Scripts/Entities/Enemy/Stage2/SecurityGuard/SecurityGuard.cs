@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using ToB.Entities.Interface;
 using UnityEngine;
 
 namespace ToB.Entities
@@ -31,11 +32,19 @@ namespace ToB.Entities
             });
             FSM.Init();
         }
+
+        public override void OnTakeDamage(IAttacker sender)
+        {
+            base.OnTakeDamage(sender);
+            audioPlayer.Play("Orc_Hurt_02");
+        }
         
 
         protected override void Die()
         {
             base.Die();
+            audioPlayer.StopAll();
+            audioPlayer.Play("Orc_Death_05");
             Animator.SetTrigger(EnemyAnimationString.Die);
             Hitbox.enabled = false;
             FSM.ChangePattern(null);

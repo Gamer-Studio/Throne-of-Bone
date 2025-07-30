@@ -29,8 +29,11 @@ public class ReferenceWrapperDrawer : PropertyDrawer
         EditorGUILayout.BeginHorizontal();
 
         EditorGUILayout.LabelField("Asset GUID");
-        target.path = AddressableAssetSettingsDefaultObject.Settings.FindAssetEntry(target.assetReference.AssetGUID)
-          .address;
+        if (target.assetReference != null)
+        {
+          target.path = AddressableAssetSettingsDefaultObject.Settings.FindAssetEntry(target.assetReference.AssetGUID)?
+            .address;
+        }
         EditorGUILayout.TextField(target.path);
         EditorGUILayout.EndHorizontal();
       }

@@ -1,5 +1,6 @@
 using System.Collections;
 using ToB.Entities.Interface;
+using ToB.Utils;
 using ToB.Worlds;
 using UnityEngine;
 
@@ -20,12 +21,14 @@ namespace ToB.Entities.FieldObject
         [SerializeField] private float damage;
 
         [SerializeField] private float resetDuration = 3;
-         
+        private ObjectAudioPlayer audioPlayer; 
+        
         private void Awake()
         {
             playerMask = LayerMask.GetMask("Player");       
             if(!animator) animator = GetComponentInChildren<Animator>();
             state = State.Opened;
+            audioPlayer = GetComponent<ObjectAudioPlayer>();
         }
 
         private void Reset()
@@ -42,6 +45,7 @@ namespace ToB.Entities.FieldObject
                 other.Damage(damage, (IAttacker)this);
                 other.KnockBack(knockBackPower, new Vector2(other.transform.eulerAngles.y == 0 ? 1 : -1, 1));
                 animator.SetTrigger(ObstacleAnimationString.Activate);
+                audioPlayer.Play("env_trap_activate_01");
                 state = State.Closed;
                 StartCoroutine(ResetTrap());
             }

@@ -15,6 +15,7 @@ using ToB.Utils.UI;
 using ToB.Worlds;
 using UnityEngine;
 using UnityEngine.Events;
+using Object = System.Object;
 
 namespace ToB.Player
 {
@@ -56,6 +57,7 @@ namespace ToB.Player
     
     public bool IsImmune => isDamageImmune || dashImmuneTime > 0;
     private bool isDamageImmune = false;
+    public ObjectAudioPlayer audioPlayer;
     
     // 플레이어 스텟 관리 클래스입니다.
     [Label("캐릭터 스텟"), Foldout("State")] public PlayerStats stat = new();
@@ -143,12 +145,14 @@ namespace ToB.Player
       if (!body) body = GetComponent<Rigidbody2D>();
       if (!animator) animator = GetComponentInChildren<Animator>();
       if (!spriteRenderer) spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+      if (!audioPlayer) audioPlayer = GetComponent<ObjectAudioPlayer>();
     }
     
 #endif
 
     private void Awake()
     {
+      if (!audioPlayer) audioPlayer = GetComponent<ObjectAudioPlayer>();
       Load();
       InitDash();
       InitAttack();
@@ -158,10 +162,7 @@ namespace ToB.Player
         groundChecker.onLanding.AddListener(() =>
         {
           animator.SetBool(BOOL_IS_FLIGHT, false);
-          /* TODO : 착지 소리 재생
-          if (!inWater) AudioManager.Play("ground");
-          else AudioManager.Play("Water");
-          */
+          audioPlayer.Play(!inWater ? "Footsteps_DirtyGround_Jump_Land_02" : "Footsteps_Water_Jump_Light_01");
         });
       }
     }
@@ -446,7 +447,8 @@ namespace ToB.Player
       else
       {
         stat.Damage(value);
-        // TODO : 피격 시 사운드 재생
+        if (stat.Hp > 0) audioPlayer.Play("VOXReac_Death_HA_MaleCharVoc_21"); // 피통이 남았을 시
+        else audioPlayer.Play("VOXMisc_Drowning_HA_MaleCharVoc_02"); // 사망 시
         
         if (sender.Effectable)
         {

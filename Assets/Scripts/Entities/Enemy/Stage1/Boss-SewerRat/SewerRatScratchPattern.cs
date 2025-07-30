@@ -45,6 +45,7 @@ namespace ToB.Entities
             float dashSpeed = sewerRat.DataSO.DashSpeed;
             float dashDuration = sewerRat.DataSO.DashDuration;
             
+            enemy.audioPlayer.Play("Footstep_Landing");
             enemy.Physics.velocity = dashDirection * dashSpeed;
             
             yield return new WaitForSeconds(dashDuration);
@@ -61,6 +62,7 @@ namespace ToB.Entities
         {
             // TODO : 스크래치 애니메이션과 함께 판정 처리
             enemy.Animator.SetBool("Bark", true);
+            enemy.audioPlayer.Play("QuickShout_02");
             ratStrategy.ScratchEffect.gameObject.SetActive(true);
             yield return new WaitForSeconds(0.59f); // 애니메이션 클립 시간 
             enemy.Animator.SetBool("Bark", false);

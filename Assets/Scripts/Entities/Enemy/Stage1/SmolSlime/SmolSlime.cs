@@ -1,6 +1,7 @@
 using System;
 using NaughtyAttributes;
 using ToB.Entities;
+using ToB.Entities.Interface;
 using UnityEngine;
 
 namespace ToB.Entities
@@ -36,6 +37,12 @@ namespace ToB.Entities
             InitProperties();
         }
 
+        public override void OnTakeDamage(IAttacker sender)
+        {
+            base.OnTakeDamage(sender);
+            if (Stat.CurrentHP > 0) audioPlayer.Play("Scream_04");
+        }
+
         private void InitProperties()
         {
             if (!EnemyKnockBack) EnemyKnockBack = GetComponentInChildren<EnemyKnockback>();
@@ -55,7 +62,7 @@ namespace ToB.Entities
             base.Die();
             Animator.SetTrigger(EnemyAnimationString.Die);
             Hitbox.enabled = false;
-            //TODO : 슬라임 사망 사운드 재생
+            audioPlayer.Play("Danger_01");
             FSM.ChangePattern(null);
         }
     }

@@ -31,6 +31,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 8940590554777805789}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1104765199909202086
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2146282165331891208}
+  m_Layer: 0
+  m_Name: Audio Sources
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2146282165331891208
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1104765199909202086}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8940590554777805789}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2848272385415484426
 GameObject:
   m_ObjectHideFlags: 0
@@ -514,6 +545,7 @@ GameObject:
   - component: {fileID: 8940590554777805789}
   - component: {fileID: 6375771417235373621}
   - component: {fileID: 4309760777387992248}
+  - component: {fileID: 2284107772727390793}
   m_Layer: 9
   m_Name: PuzzleRoomSetter
   m_TagString: Untagged
@@ -538,6 +570,7 @@ Transform:
   - {fileID: 1208534690458683832}
   - {fileID: 7743845325676655778}
   - {fileID: 7583434700096757647}
+  - {fileID: 2146282165331891208}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6375771417235373621
@@ -595,3 +628,17 @@ CircleCollider2D:
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
   m_Radius: 1.5
+--- !u!114 &2284107772727390793
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8747221239114335774}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 383646569fb04c2babfa49d0b40ea4bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sourcePool: []
+  audioSourceParent: {fileID: 2146282165331891208}

@@ -198,7 +198,8 @@ namespace ToB.Player
       effect.Direction = direction;
       effect.damage = stat.atk / 2;
       effect.launcher = gameObject;
-      //TODO : 원거리 공격 사운드 재생
+      
+      AudioManager.Play("fntgm_arrow_whoosh", AudioType.Effect);
         
       if(rangeAttackGlowEffect.isPlaying) rangeAttackGlowEffect.Stop();
       rangeAttackGlowEffect.Play();

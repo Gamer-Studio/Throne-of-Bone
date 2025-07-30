@@ -20,6 +20,7 @@ namespace ToB.Entities
         }
         public override void Enter()
         {
+            enemy.audioPlayer.Stop("Spider_footstep_Loop_01");
             actionStarted = false;
             delayCoroutine = enemy.StartCoroutine(Delay());
         }
@@ -36,6 +37,7 @@ namespace ToB.Entities
                 || enemy.GetTargetDistanceSQR() < Mathf.Pow(cagedSpiderSO.ExplodeSensorRadius, 2))
             {
                 cagedSpider.EnemyBody.gameObject.Damage(9999);
+                enemy.audioPlayer.Play("Basic Explosion 1");
             }
         }
 

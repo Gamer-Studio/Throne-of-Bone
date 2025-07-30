@@ -1,6 +1,7 @@
 using System.Collections;
 using Newtonsoft.Json.Linq;
 using ToB.IO;
+using ToB.Utils;
 using UnityEngine;
 
 namespace ToB.Entities.FieldObject
@@ -20,6 +21,7 @@ namespace ToB.Entities.FieldObject
         
         private Coroutine ValveCloseCoroutine;
         private Coroutine ValveOpenCoroutine;
+        private ObjectAudioPlayer audioPlayer;
         
 #if UNITY_EDITOR
         private void OnValidate()
@@ -42,6 +44,7 @@ namespace ToB.Entities.FieldObject
         {
             base.LoadJson(json);
             isValveActivated = json.Get(nameof(isValveActivated), false);
+            audioPlayer = GetComponent<ObjectAudioPlayer>();
         }
 
         public override void OnLoad()
@@ -74,6 +77,7 @@ namespace ToB.Entities.FieldObject
 
         public void LeverInteraction(bool leverState)
         {
+            audioPlayer.Play("WAV_DSGNMisc_Rock_Sequences_Underwater_DR_GQ");
             if (!leverState)
             {
                 DeactivateValve();

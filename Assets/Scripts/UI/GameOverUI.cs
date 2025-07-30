@@ -47,7 +47,6 @@ namespace ToB.UI
         private void GameOver()
         {
             gameObject.SetActive(true);
-            // TODO : 사망 시 사운드 재생
         }
 
         public void ReLoadScene()

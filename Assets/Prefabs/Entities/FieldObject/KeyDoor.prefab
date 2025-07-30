@@ -114,6 +114,7 @@ GameObject:
   - component: {fileID: 1367609906884724734}
   - component: {fileID: 6197931446831234723}
   - component: {fileID: 4905711669737272880}
+  - component: {fileID: 923031774297292362}
   m_Layer: 9
   m_Name: KeyDoor
   m_TagString: Untagged
@@ -138,6 +139,7 @@ Transform:
   - {fileID: 1975426824170322366}
   - {fileID: 76632801683577225}
   - {fileID: 1784282609572546286}
+  - {fileID: 1225132341292508699}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6197931446831234723
@@ -152,6 +154,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fcf27d439eed431381c4c8c612e5e6d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  room: {fileID: 0}
   interactionText: {fileID: 3573677672965124374}
   isOpened: 0
 --- !u!61 &4905711669737272880
@@ -200,6 +203,20 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 2.5, y: 3}
   m_EdgeRadius: 0
+--- !u!114 &923031774297292362
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 136972163497830324}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 383646569fb04c2babfa49d0b40ea4bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sourcePool: []
+  audioSourceParent: {fileID: 1225132341292508699}
 --- !u!1 &146468242110353008
 GameObject:
   m_ObjectHideFlags: 0
@@ -825,6 +842,37 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &6515535449268500586
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1225132341292508699}
+  m_Layer: 0
+  m_Name: Audio Sources
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1225132341292508699
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6515535449268500586}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1367609906884724734}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8541933495901978286
 GameObject:
   m_ObjectHideFlags: 0
