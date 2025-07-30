@@ -5,6 +5,7 @@ using ToB.Core;
 using ToB.Core.InputManager;
 using ToB.Entities.NPC;
 using ToB.IO;
+using ToB.IO.SubModules;
 using ToB.Player;
 using ToB.UI;
 using ToB.Utils;
@@ -93,30 +94,21 @@ namespace ToB.Scenes.Stage
       }
 
       // 시작 방 로딩
+      var savedInfo = SAVE.Current.SavePoints.GetLastSavePoint();
+
+      if (!savedInfo.Equals(SavePointData.Default))
       {
-        
+        // 저장기록이 있을 경우 마지막 저장지점에서 소환
+        int stageIndex = savedInfo.stageIndex, roomIndex = savedInfo.roomIndex;
+        var room = RoomController.LoadRoom(stageIndex, roomIndex, true);
+        var bonfire = room.bonfires[savedInfo.pointIndex];
+        player.transform.position = bonfire.TPTransform.position;
       }
-
-      if (SAVE.Current != null) {
-        // 플레이어 소환 
-        
-        int stageIndex = SAVE.Current.Player.currentStage,
-          roomIndex = SAVE.Current.Player.currentRoom;
-        var playerPos = SAVE.Current.Player.savedPosition;
-
-        if (stageIndex != 0 && roomIndex != 0)
-        {
-          foreach (var pair in roomController.loadedRooms)
-          {
-            var room = pair.Value;
-            if (room.stageIndex != stageIndex || room.roomIndex != roomIndex) continue;
-            
-            roomController.currentRoom = room;
-            player.transform.position = room.transform.TransformPoint(playerPos);
-            
-            break;
-          }
-        }
+      else
+      {
+        // 저장기록이 없을 경우 초기 지점에서 소환
+        var room = RoomController.LoadRoom(1, 1, true);
+        player.transform.position = room.transform.position.X(v => v + 12).Y(v => v - 11);
       }
     }
 

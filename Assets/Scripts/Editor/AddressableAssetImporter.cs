@@ -4,6 +4,7 @@ using ToB.Worlds;
 using UnityEditor;
 using UnityEditor.AddressableAssets;
 using UnityEngine;
+#pragma warning disable CS0612 // 형식 또는 멤버는 사용되지 않습니다.
 
 public static class AddressableAssetImporter
 {

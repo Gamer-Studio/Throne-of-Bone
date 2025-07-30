@@ -19,7 +19,16 @@ namespace ToB.Worlds
     public int connectedLinkIndex = 0;
 
     [ReadOnly] public Room connectedRoom = null;
-    public bool IsLoaded => connectedRoom != null;
+    public bool IsLoaded => connectedRoom;
+
+    private void Start()
+    {
+      if (StageManager.RoomController.loadedRooms.TryGetValue(connectedRoomReference.path, out var room))
+      {
+        connectedRoom = room;
+        room.onUnload.AddListener(OnUnload);
+      }
+    }
     
     /// <summary>
     /// 에디터 전용 링크 인덱스 설정 메소드입니다. <br/>
@@ -37,12 +46,15 @@ namespace ToB.Worlds
     /// <returns></returns>
     public Room LoadRoom(Room currentRoom)
     {
+      if (IsLoaded)
+        return connectedRoom;
+      
       connectedRoom = StageManager.RoomController.LoadRoom(connectedRoomReference);
+      connectedRoom.onUnload.AddListener(OnUnload);
       var connectedLink = connectedRoom.links[connectedLinkIndex];
       connectedLink.connectedRoom = currentRoom;
       
       var linkedDistance = connectedRoom.transform.position - connectedLink.transform.position;
-      connectedRoom.gameObject.name = connectedRoomReference.path;
       connectedRoom.transform.position = transform.position + linkedDistance;
       connectedRoom.gameObject.SetActive(true);
 
@@ -60,6 +72,11 @@ namespace ToB.Worlds
         Destroy(connectedRoom.gameObject);
         connectedRoom = null;
       }
+    }
+
+    private void OnUnload()
+    {
+      connectedRoom = null;
     }
   }
 }

@@ -31,12 +31,6 @@ namespace ToB.World
     private void Awake()
     {
       StageManager.Instance.onRoomEnter.AddListener(LoadLinkedRoom);
-      StageManager.Instance.onRoomExit.AddListener(UnLoadLinkedRoom);
-      
-      var data = SAVE.Current.Player;
-      
-      int stageIndex = data.currentStage, roomIndex = data.currentRoom;
-      LoadRoom(stageIndex, roomIndex, true);
     }
     
     #endregion
@@ -46,11 +40,12 @@ namespace ToB.World
 
     public Room LoadRoom(ReferenceWrapper reference, bool initActive = false)
     {
-      if (loadedRooms.TryGetValue(reference.path, out var room))
+      if (loadedRooms.TryGetValue(reference.path, out var room) && room)
         return room;
       
       var roomObject = Instantiate(reference.assetReference.LoadAssetAsync<GameObject>().WaitForCompletion(), roomContainer, true);
       roomObject.SetActive(initActive);
+      roomObject.name = reference.path;
       room = roomObject.GetComponent<Room>();
       roomObject.transform.position = Vector3.zero;
 
@@ -60,33 +55,22 @@ namespace ToB.World
       return room;
     }
 
-    private Action<Room> unloader = null;
     private void LoadLinkedRoom(Room room)
     {
       foreach (var link in room.links)
       {
         if (!link.IsLoaded) link.LoadRoom(room);
       }
-      
-      if(unloader != null) unloader(room);
-    }
-    
-    private void UnLoadLinkedRoom(Room room)
-    {
-      unloader = loadedRoom =>
+
+      var currentLinkedRooms = room.GetLinkedRooms(true);
+
+      foreach (var pair in loadedRooms)
       {
-        var currentRooms = loadedRoom.GetLinkedRooms(true);
-
-        foreach (var link in room.links)
+        if (!currentLinkedRooms.Contains(pair.Value) && pair.Value && pair.Value != room)
         {
-          if (link.IsLoaded && !currentRooms.Contains(link.connectedRoom) && link.connectedRoom != loadedRoom)
-          {
-            link.UnLoadRoom();
-          }
+          Destroy(pair.Value.gameObject);
         }
-
-        unloader = null;
-      };
+      }
     }
   }
 }

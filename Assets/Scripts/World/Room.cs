@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using NaughtyAttributes;
 using Newtonsoft.Json.Linq;
 using ToB.Entities;
+using ToB.Entities.FieldObject;
 using ToB.IO;
 using ToB.Scenes.Stage;
 using ToB.Utils;
@@ -25,6 +26,7 @@ namespace ToB.Worlds
     [Label("데이터 모듈"), Foldout(State), SerializeField] private SAVEModule saveModule;
     [Label("일반 적 소환 정보"), Foldout(State)] public SerializableDictionary<Transform, AssetReference> normalEnemyTable = new();
     [Label("오브젝트"), Foldout(State)] public SerializableDictionary<string, FieldObjectProgress> fieldObjects = new();
+    [Label("모닥불 목록"), Foldout(State)] public List<Bonfire> bonfires = new();
     [Label("인스턴스된 적"), Foldout(State), SerializeField, ReadOnly] private SerializableDictionary<Transform, Enemy> enemies = new();
     
     #endregion
@@ -79,6 +81,9 @@ namespace ToB.Worlds
           
           Undo.RecordObject(structure, nameof(FindStructure));
           EditorUtility.SetDirty(structure);
+          
+          if(structure is Bonfire bonfire)
+            bonfires.Add(bonfire);
         }
         
         FindStructure(child);
@@ -124,7 +129,7 @@ namespace ToB.Worlds
       FindStructures();
     }
 
-    public Vector3 pos;
+    [SerializeField] private Vector3 pos;
 
     private void OnDrawGizmos()
     {
