@@ -198,6 +198,8 @@ namespace ToB.Player
       effect.Direction = direction;
       effect.damage = stat.atk / 2;
       effect.launcher = gameObject;
+      
+      AudioManager.Play("fntgm_arrow_whoosh", AudioType.Effect);
         
       if(rangeAttackGlowEffect.isPlaying) rangeAttackGlowEffect.Stop();
       rangeAttackGlowEffect.Play();

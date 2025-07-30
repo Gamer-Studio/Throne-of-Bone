@@ -1,4 +1,5 @@
 using System.Collections;
+using ToB.Entities.Interface;
 using UnityEngine;
 
 namespace ToB.Entities
@@ -34,9 +35,16 @@ namespace ToB.Entities
             explodeEffect.gameObject.SetActive(false);
         }
 
+        public override void OnTakeDamage(IAttacker sender)
+        {
+            base.OnTakeDamage(sender);
+            audioPlayer.Play("Spider_Hurt_03");
+        }
+
         protected override void Die()
         {
             base.Die();
+            audioPlayer.StopAll();
             Animator.SetTrigger(EnemyAnimationString.Die);
             Hitbox.enabled = false;
             explodeArea.gameObject.SetActive(true);

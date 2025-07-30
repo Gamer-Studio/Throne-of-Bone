@@ -84,7 +84,8 @@ namespace ToB.Player
         
           Time.timeScale = 0;
           int rand = Random.Range(1, 4);
-          AudioManager.Play($"fntgm_blade_heavy_hit_0{rand}",AudioType.Effect);
+          audioPlayer.Play($"fntgm_blade_heavy_hit_0{rand}");
+          // 이 부분 저스트가드 사운드 확정되면 수정
           if(freezeTime < parryFreezeTime) freezeTime = parryFreezeTime;
         }
         else
@@ -94,7 +95,7 @@ namespace ToB.Player
 
           stat.tempDef += additionalDef;
           int rand = Random.Range(1, 4);
-          AudioManager.Play($"fntgm_blade_heavy_hit_0{rand}",AudioType.Effect);
+          audioPlayer.Play($"fntgm_blade_heavy_hit_0{rand}");
           stat.Damage(damage);
           stat.tempDef -= additionalDef;
         }
@@ -185,13 +186,13 @@ namespace ToB.Player
       if (value <= 0)
       {
         freezeBlockable = true;
-        AudioManager.Play("env_trap_activate_01", AudioType.Effect);
+        audioPlayer.Play("fntgm_magic_ice_08");
       }
         
       else if (freezeBlockable && value >= 100)
       {
         freezeBlockable = false;
-        AudioManager.Play("fntgm_magic_shield_04", AudioType.Effect);
+        audioPlayer.Play("fntgm_magic_shield_04");
       }
     }
 

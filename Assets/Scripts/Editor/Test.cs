@@ -25,13 +25,9 @@ namespace ToB.Editor
       var save = await SAVE.Load("Test");
     }
 
-    public Button button;
     [Test]
     public void LoadAllSAVETest()
     {
-      button.Select();
-      // button.navigation.selectOnDown;
-      
       var saves = SAVE.GetAllSaves().Result;
 
       foreach (var save in saves)

@@ -40,5 +40,6 @@ namespace ToB.Entities.Skills
         public int manaCost;
         public int reqID1;
         public int reqID2;
+        public string description;
     }
 }

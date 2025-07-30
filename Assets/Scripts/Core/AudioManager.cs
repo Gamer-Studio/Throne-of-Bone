@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using NaughtyAttributes;
+using ToB.Utils;
 using ToB.Utils.Singletons;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Audio;
-using UnityEngine.ResourceManagement.AsyncOperations;
-using UnityEngine.SceneManagement;
+using UnityEngine.Events;
 
 namespace ToB.Core
 {
@@ -15,18 +16,34 @@ namespace ToB.Core
     public const string ObjectLabel = "Object"; 
     public const string Label = "Audio";
 
-    private static readonly Dictionary<string, AudioClip> Clips = new();
-    private static readonly Dictionary<string, AssetReference> References = new();
+    private static readonly Dictionary<string, AudioClip> clips = new();
+    private static readonly Dictionary<string, AssetReference> references = new();
     
-    [SerializeField] private AudioMixer mixer;
-    [SerializeField] private AudioSource backgroundSource = null;
-    [SerializeField] private List<AudioSource> effectSources = new(); 
+    public static AudioMixerGroup ObjectMixer => Instance.objectGroup;
+
+    #region Binding
+
+    private const string Binding = "Binding";
     
-    [SerializeField] private AudioMixerGroup effectGroup, backgroundGroup, objectGroup;
+    [Foldout(Binding), SerializeField] private AudioMixer mixer;
+    [Foldout(Binding), SerializeField] private AudioSource backgroundSource = null;
+    [Foldout(Binding), SerializeField] private List<AudioSource> effectSources = new(); 
+    [Foldout(Binding), SerializeField] private AudioMixerGroup effectGroup, backgroundGroup, objectGroup;
     
 #if UNITY_EDITOR
-    [SerializeField] private SerializableDictionary<string, AudioClip> loadedClips = new();
+    [Foldout(Binding), SerializeField] private SerializableDictionary<string, AudioClip> loadedClips = new();
 #endif
+    
+    #endregion
+
+    [RuntimeInitializeOnLoadMethod]
+    private static void Init()
+    {
+      masterVolume = PlayerPrefs.GetFloat(nameof(MasterVolume), 80);
+      backgroundVolume = PlayerPrefs.GetFloat(nameof(BackgroundVolume), 80);
+      effectVolume = PlayerPrefs.GetFloat(nameof(EffectVolume), 80);
+      objectVolume = PlayerPrefs.GetFloat(nameof(ObjectVolume), 80);
+    }
     
     #region Unity Event
 
@@ -38,6 +55,11 @@ namespace ToB.Core
       BackgroundVolume = PlayerPrefs.GetFloat("BackgroundVolume", 80);
       EffectVolume = PlayerPrefs.GetFloat("EffectVolume", 80);
       ObjectVolume = PlayerPrefs.GetFloat("ObjectVolume", 80);
+    }
+
+    protected override void OnDestroy()
+    {
+      onObjectVolumeChanged.RemoveAllListeners();
     }
     
     #endregion
@@ -54,6 +76,7 @@ namespace ToB.Core
       }
     }
 
+    private static float masterVolume = 80;
     /// <summary>
     /// 각 볼륨을 총괄하는 마스터 볼륨입니다.
     /// 해당 볼륨을 변경시 다른 모든 볼륨이 영향받습니다.
@@ -61,7 +84,7 @@ namespace ToB.Core
     /// </summary>
     public static float MasterVolume
     {
-      get => PlayerPrefs.GetFloat("MasterVolume", 80);
+      get => masterVolume;
       set
       {
         var input = Math.Max(0, Math.Min(100, value));
@@ -70,18 +93,22 @@ namespace ToB.Core
         {
           Instance.SetEffectVolume((input / 100) * (BackgroundVolume / 100));
           Instance.backgroundSource.volume = (input / 100) * (EffectVolume / 100);
+          Instance.onObjectVolumeChanged.Invoke();
         }
-        PlayerPrefs.SetFloat("MasterVolume", input);
+        
+        masterVolume = input;
+        PlayerPrefs.SetFloat(nameof(MasterVolume), input);
       }
     }
 
+    private static float backgroundVolume = 80;
     /// <summary>
     /// 배경 볼륨입니다.
     /// 값은 0~100 사이로 설정할 수 있고, 미만 혹은 초과시 자동으로 포맷팅됩니다.
     /// </summary>
     public static float BackgroundVolume
     {
-      get => PlayerPrefs.GetFloat("BackgroundVolume", 80);
+      get => backgroundVolume;
       set
       {
         var input = Math.Max(0, Math.Min(100, value));
@@ -89,17 +116,19 @@ namespace ToB.Core
         if (HasInstance)
           Instance.backgroundSource.volume = (input / 100) * (MasterVolume / 100);
 
-        PlayerPrefs.SetFloat("BackgroundVolume", input);
+        backgroundVolume = input;
+        PlayerPrefs.SetFloat(nameof(BackgroundVolume), input);
       }
     }
 
+    private static float effectVolume = 80;
     /// <summary>
     /// 효과음 볼륨입니다.
     /// 값은 0~100 사이로 설정할 수 있고, 미만 혹은 초과시 자동으로 포맷팅됩니다.
     /// </summary>
     public static float EffectVolume
     {
-      get => PlayerPrefs.GetFloat("EffectVolume", 80);
+      get => effectVolume;
       set
       {
         var input = Math.Max(0, Math.Min(100, value));
@@ -107,39 +136,63 @@ namespace ToB.Core
         if (HasInstance) 
           Instance.SetEffectVolume((input / 100) * (MasterVolume / 100));
         
-        PlayerPrefs.SetFloat("EffectVolume", input);
+        effectVolume = input;
+        PlayerPrefs.SetFloat(nameof(EffectVolume), input);
       }
     }
     
+    private static float objectVolume = 80;
     /// <summary>
     /// 오브젝트 볼륨입니다.
     /// 값은 0~100 사이로 설정할 수 있고, 미만 혹은 초과시 자동으로 포맷팅됩니다.
     /// </summary>
     public static float ObjectVolume
     {
-      get => HasInstance && Instance.mixer.GetFloat(ObjectLabel, out var value) ? value + 80 : PlayerPrefs.GetFloat("ObjectVolume", 80);
+      get => objectVolume;
       set
       {
         var input = Math.Max(0, Math.Min(100, value));
 
-        if (HasInstance) 
-          Instance.mixer.SetFloat(ObjectLabel, input - 80);
+        if (HasInstance)
+        {
+          Instance.onObjectVolumeChanged.Invoke();
+        }
         
-        PlayerPrefs.SetFloat("ObjectVolume", input);
+        objectVolume = input;
+        PlayerPrefs.SetFloat(nameof(ObjectVolume), input);
       }
     }
 
     #endregion
+    
+    #region Event
+    
+    public UnityEvent onObjectVolumeChanged = new();
+    
+    #endregion
+    
+    #region Controller
 
-    public static AudioClip GetClip(string name)
+    /// <summary>
+    /// name 명칭의 오디오 클립을 불러옵니다. <br/>
+    /// 불러오는데 실패할 경우 Null을 반환합니다.
+    /// </summary>
+    /// <param name="name">불러올 오디오 클립의 파일명입니다.</param>
+    /// <param name="forceLoad">참일 때 메모리에 없을 경우 불러옵니다.</param>
+    /// <returns>불러온 오디오클립입니다.</returns>
+    public static AudioClip GetClip(string name, bool forceLoad = false)
     {
-      if (Clips.TryGetValue(name, out var clip)) return clip;
+      if (clips.TryGetValue(name, out var clip)) return clip;
+      if (!forceLoad) return null;
 
       var reference = new AssetReference($"{Label}/{name}");
 
       try
       {
         clip = reference.LoadAssetAsync<AudioClip>().WaitForCompletion();
+        
+        clips[name] = clip;
+        references[name] = reference;
       }
       catch (Exception e)
       {
@@ -147,7 +200,6 @@ namespace ToB.Core
         return null;
       }
 
-      Clips[name] = clip;
 #if UNITY_EDITOR
       if(HasInstance)
         Instance.loadedClips[name] = clip;
@@ -156,19 +208,80 @@ namespace ToB.Core
       return clip;
     }
 
-    public static bool TryGetClip(string name, out AudioClip clip)
+    /// <summary>
+    /// 어드레서블 참조를 기반으로 클립을 불러옵니다.
+    /// </summary>
+    /// <param name="reference">불러올 클립의 어드레서블 참조입니다.</param>
+    /// <param name="forceLoad">참일 때 메모리에 없을 경우 불러옵니다.</param>
+    /// <returns>불러온 오디오클립입니다.</returns>
+    public static AudioClip GetClip(ReferenceWrapper reference, bool forceLoad = false)
     {
-      clip = GetClip(name);
+      if(reference == null) return null;
+      var name = reference.path.Replace($"{Label}/", "");
+      
+      if (clips.TryGetValue(name, out var clip)) return clip;
+      if (!forceLoad) return null;
+
+      try
+      {
+        clip = reference.assetReference.LoadAssetAsync<AudioClip>().WaitForCompletion();
+        
+        references[name] = reference.assetReference;
+        clips[name] = clip;
+      }
+      catch (Exception e)
+      {
+        Debug.LogError(e);
+        return null;
+      }
+      
+#if UNITY_EDITOR
+      if(HasInstance)
+        Instance.loadedClips[name] = clip;
+#endif
+      
+      return clip;
+    }
+
+    /// <summary>
+    /// name 명칭의 오디오 클립을 불러와서 clip으로 넘겨줍니다.
+    /// </summary>
+    /// <param name="name">불러올 클립의 파일명입니다.</param>
+    /// <param name="clip">불러온 클립입니다.</param>
+    /// <param name="forceLoad">참일 때 메모리에 없을 경우 불러옵니다.</param>
+    /// <returns>정상적으로 불러왔는지 여부입니다.</returns>
+    public static bool TryGetClip(string name, out AudioClip clip, bool forceLoad = false)
+    {
+      clip = GetClip(name, forceLoad);
       
       return clip != null;
     }
 
+    /// <summary>
+    /// name 명칭의 오디오 클립을 불러와서 clip으로 넘겨줍니다.
+    /// </summary>
+    /// <param name="reference">불러올 클립의 어드레서블 참조입니다.</param>
+    /// <param name="clip">불러온 클립입니다.</param>
+    /// <param name="forceLoad">참일 때 메모리에 없을 경우 불러옵니다.</param>
+    /// <returns>정상적으로 불러왔는지 여부입니다.</returns>
+    public static bool TryGetClip(ReferenceWrapper reference, out AudioClip clip, bool forceLoad = false)
+    {
+      clip = GetClip(reference, forceLoad);
+      
+      return clip != null;
+    }
+
+    /// <summary>
+    /// 불러온 오디오 클립을 메모리에서 해제합니다.
+    /// </summary>
+    /// <param name="name">해제할 클립의 명칭입니다.</param>
+    /// <returns>정상적으로 해제했는지 여부입니다.</returns>
     public static bool ReleaseClip(string name)
     {
-      if (References.TryGetValue(name, out var reference))
+      if (references.TryGetValue(name, out var reference))
       {
-        Clips[name].UnloadAudioData();
-        Clips.Remove(name);
+        clips[name].UnloadAudioData();
+        clips.Remove(name);
         reference.ReleaseAsset();
         
 #if UNITY_EDITOR
@@ -181,28 +294,11 @@ namespace ToB.Core
       else return false;
     }
     
-    #region Controller
-    
-    public static void Play(AudioClip clip, GameObject obj)
-    {
-      if(!HasInstance) return;
-
-      if (obj.TryGetComponent(out AudioSource source)) {}
-      else source = obj.AddComponent<AudioSource>();
-      
-      source.clip = clip;
-      source.outputAudioMixerGroup = Instance.objectGroup;
-      source.Play();
-    }
-
-    public static void Play(string clipName, GameObject obj)
-    {
-      if(TryGetClip(clipName, out var clip)) Play(clip, obj);
-      #if UNITY_EDITOR
-      else Debug.LogWarning($"AudioClip {clipName} is not found.");
-      #endif
-    }
-
+    /// <summary>
+    /// 오디오클립을 받아와서 사운드를 재생합니다.
+    /// </summary>
+    /// <param name="clip">재생할 클립</param>
+    /// <param name="type">재생할 사운드의 종류</param>
     public static void Play(AudioClip clip, AudioType type = AudioType.Effect)
     {
       if(!HasInstance) return;
@@ -238,14 +334,48 @@ namespace ToB.Core
       }
     }
     
+    /// <summary>
+    /// 문자열 키를 기반으로 사운드를 재생합니다.
+    /// </summary>
+    /// <param name="clipName">재생할 클립의 파일명</param>
+    /// <param name="type">재생할 사운드의 종류</param>
     public static void Play(string clipName, AudioType type = AudioType.Effect)
     {
-      if(TryGetClip(clipName, out var clip)) Play(clip, type);
+      if(!HasInstance) return;
+      if(TryGetClip(clipName, out var clip, true))
+      {
+        Play(clip, type);
+        return;
+      }
+
+#if UNITY_EDITOR
+      Debug.LogWarning($"AudioClip {clipName} is not found.");
+#endif
+    }
+    
+    /// <summary>
+    /// 어드레서블 경로를 기반으로 사운드를 재생합니다.
+    /// </summary>
+    /// <param name="reference">재생할 클립의 경로입니다.</param>
+    /// <param name="type">재생할 사운드의 종류</param>
+    public static void Play(ReferenceWrapper reference, AudioType type = AudioType.Effect)
+    {
+      if(!HasInstance) return;
+      if(TryGetClip(reference, out var clip, true))
+      {
+        Play(clip, type);
+        return;
+      }
+      
       #if UNITY_EDITOR
-      else Debug.LogWarning($"AudioClip {clipName} is not found.");
+      Debug.LogWarning($"AudioClip {reference.path} is not found.");
       #endif
     }
 
+    /// <summary>
+    /// type의 사운드를 중지시킵니다.
+    /// </summary>
+    /// <param name="type">중지할 사운드의 타입입니다.</param>
     public static void Stop(AudioType type = AudioType.Background)
     {
       if(!HasInstance) return;

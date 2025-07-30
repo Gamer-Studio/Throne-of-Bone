@@ -9,6 +9,7 @@ using ToB.Entities.FieldObject;
 using ToB.Scenes.Stage;
 using UnityEditor;
 using UnityEngine;
+using AudioType = ToB.Core.AudioType;
 
 namespace ToB.Entities
 {
@@ -137,13 +138,15 @@ namespace ToB.Entities
 
         private IEnumerator FirstRatEarthQuake()
         {
+            firstSewerRat.audioPlayer.Play("Movement_Earth_Loop_01", true);
             mainCamNoise.m_AmplitudeGain = 5f;
             mainCamNoise.m_FrequencyGain = 25f;
             roomCamNoise.m_AmplitudeGain = 5f;
             roomCamNoise.m_FrequencyGain = 25f;
             
             yield return new WaitForSeconds(1f);
-
+            
+            firstSewerRat.audioPlayer.Stop("Movement_Earth_Loop_01");
             roomVirtualCamera.Priority = 50;
             roomVirtualCamera.transform.position = transform.position + new Vector3(0,0,-10);
             roomVirtualCamera.transform.position += Vector3.down * 5f;
@@ -208,6 +211,8 @@ namespace ToB.Entities
             
             yield return new WaitUntil(() => sewerRat.IsGrounded);
             
+            firstSewerRat.audioPlayer.Play("Footstep_05");
+            firstSewerRat.audioPlayer.Play("AgressiveShout_04");
             ratVirtualCamera.Priority = 0;
             roomVirtualCamera.Priority = 50;
             roomVirtualCamera.transform.position = transform.position + Vector3.down * 2.5f + new Vector3(0,0,-10);

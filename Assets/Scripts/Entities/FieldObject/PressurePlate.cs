@@ -87,7 +87,6 @@ namespace ToB.Entities.FieldObject
         /// <param name="width"></param>
         private void SetColliderWidth(float width)
         {
-            Debug.Log(width);
             if (width == 0)
             {
                 boxCollider.enabled = false;

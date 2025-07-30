@@ -2,6 +2,7 @@ using System;
 using Newtonsoft.Json.Linq;
 using TMPro;
 using ToB.IO;
+using ToB.Utils;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -17,6 +18,7 @@ namespace ToB.Entities.FieldObject
         [SerializeField] public Animator animator;
         public bool IsInteractable { get; set; }
         [SerializeField] public bool isLeverActivated;
+        private ObjectAudioPlayer audioPlayer;
         
         #region SaveLoad
 
@@ -26,6 +28,7 @@ namespace ToB.Entities.FieldObject
             isLeverActivated = json.Get(nameof(isLeverActivated), isLeverActivated);
             IsInteractable = json.Get(nameof(IsInteractable), true);
             animator.SetBool("IsActivated", isLeverActivated);
+            audioPlayer = GetComponent<ObjectAudioPlayer>();
         }
         
         public override void OnLoad()
@@ -53,6 +56,7 @@ namespace ToB.Entities.FieldObject
                 isLeverActivated = !isLeverActivated;
                 LeverStateUpdate();
                 onLeverInteract?.Invoke(isLeverActivated);
+                audioPlayer.Play("Part_Assembly_01");
             }
         }
         public void LeverStateUpdate()

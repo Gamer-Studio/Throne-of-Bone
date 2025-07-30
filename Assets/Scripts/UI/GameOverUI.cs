@@ -41,15 +41,12 @@ namespace ToB.UI
 
         private void Init()
         {
-            player.stat.onHpChanged.AddListener(GameOver);
+            player.stat.onDeath.AddListener(GameOver);
         }
         
-        private void GameOver(float curHp)
+        private void GameOver()
         {
-            if (curHp <= 0)
-            {
-                gameObject.SetActive(true);
-            }
+            gameObject.SetActive(true);
         }
 
         public void ReLoadScene()

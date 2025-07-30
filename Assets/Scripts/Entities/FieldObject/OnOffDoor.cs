@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using ToB.IO;
+using ToB.Utils;
 using UnityEngine;
 
 namespace ToB.Entities.FieldObject
@@ -30,6 +31,7 @@ namespace ToB.Entities.FieldObject
        private int activeInputCount;
        [SerializeField] private DoorMode doorMode;
        [SerializeField] private bool isOpened;
+       private ObjectAudioPlayer audioPlayer;
        public bool IsOpened
        {
            get => isOpened;
@@ -47,6 +49,7 @@ namespace ToB.Entities.FieldObject
        private void Awake()
        {
            if (_collider ==null) _collider = GetComponent<Collider2D>();
+           audioPlayer = GetComponent<ObjectAudioPlayer>();
        }
        public override void LoadJson(JObject json)
        {
@@ -77,6 +80,7 @@ namespace ToB.Entities.FieldObject
        /// <param name="leverState"></param>
        public void OnOffDoorInteract(bool leverState)
        {
+           bool temp = isOpened;
            activeInputCount = 0;
            switch (doorMode)
            {
@@ -100,6 +104,7 @@ namespace ToB.Entities.FieldObject
                case DoorMode.Fixed:
                    break;
            }
+           if (temp != IsOpened) audioPlayer.Play("Part_Assembly_30");
            UpdateDoorState();
        }
        

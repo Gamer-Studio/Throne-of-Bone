@@ -1,3 +1,4 @@
+using ToB.Entities.Interface;
 using UnityEngine;
 
 namespace ToB.Entities
@@ -23,6 +24,12 @@ namespace ToB.Entities
             dodgeEffectOffset = DodgeEffect.transform.localPosition;
         }
 
+        public override void OnTakeDamage(IAttacker sender)
+        {
+            base.OnTakeDamage(sender);
+            audioPlayer.Play("Spectre_Hurt_02");
+        }
+
         protected override void OnEnable()
         {
             base.OnEnable();
@@ -38,6 +45,8 @@ namespace ToB.Entities
         protected override void Die()
         {
             base.Die();
+            audioPlayer.StopAll();
+            audioPlayer.Play("Spectre_Death_02");
             Hitbox.enabled = false;
             FSM.ChangePattern(null);
             Animator.SetTrigger(EnemyAnimationString.Die);

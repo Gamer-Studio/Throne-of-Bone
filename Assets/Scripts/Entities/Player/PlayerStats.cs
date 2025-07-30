@@ -1,5 +1,6 @@
 using System;
 using NaughtyAttributes;
+using ToB.Core;
 using ToB.Entities.Skills;
 using ToB.Utils;
 using UnityEngine;
@@ -38,11 +39,21 @@ namespace ToB.Player
     public Stat def;
 
     /// <summary>
-    /// 플레이어의 임시 방어력입니다. \n
+    /// 플레이어의 임시 방어력입니다. <br/>
     /// 기본 방어력 스텟으로 취급되지않으며, 버프등에 활용할 수 있습니다.
     /// </summary>
     public float tempDef = 0;
+    
+    /// <summary>
+    /// 플레이어의 임시 최대 체력입니다. <br/>
+    /// 기본 방어력 스텟으로 취급되지않으며, 버프등에 활용할 수 있습니다.
+    /// </summary>
     public float tempMaxHP = 0;
+    
+    /// <summary>
+    /// 플레이어의 임시 공격력입니다. <br/>
+    /// 기본 방어력 스텟으로 취급되지않으며, 버프등에 활용할 수 있습니다.
+    /// </summary>
     public float tempAtk = 0;
 
     /// <summary>
@@ -104,7 +115,6 @@ namespace ToB.Player
       {
         Hp -= damage * (1 - def.Value / 100);
       }
-      
       return Hp;
     }
     
