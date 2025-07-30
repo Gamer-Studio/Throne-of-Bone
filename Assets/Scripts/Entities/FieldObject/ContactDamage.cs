@@ -16,17 +16,13 @@ namespace ToB.Entities.FieldObject
         
         public LayerMask playerMask;
 
-        private bool directional;
+        [SerializeField] private bool directional;
 
         private void Reset()
         {
             playerMask = LayerMask.GetMask("Player");
         }
-
-        private void Awake()
-        {
-            directional = true;
-        }
+        
 
         public void Init(IConatactDamageSO attackSO = null, Vector2 knockBackDirection = default, bool fixedDirection = true)
         {
@@ -55,10 +51,13 @@ namespace ToB.Entities.FieldObject
             }
         }
 
-        public bool Blockable { get; set; }
-        public bool Effectable { get; set; }
+        public bool Blockable => blockable;
+
+        public bool blockable;
+        public bool effectable;
+        [field:SerializeField] public bool Effectable => effectable;
         public Vector3 Position { get; set; }
-        public Team Team { get; set; }
+        [field:SerializeField] public Team Team { get; set; }
         
     }
 }
