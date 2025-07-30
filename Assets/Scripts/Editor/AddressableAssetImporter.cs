@@ -1,11 +1,14 @@
 using ToB.Core;
+using ToB.Utils.Extensions;
+using ToB.Worlds;
 using UnityEditor;
 using UnityEditor.AddressableAssets;
 using UnityEngine;
 
 public static class AddressableAssetImporter
 {
-  public const string InitAudioAssetName = "Assets/Asset Initializer/Init Audio Asset";
+  private const string InitAudioAssetName = "Assets/Asset Initializer/Init Audio Asset";
+  private const string ConvertLinkName = "Assets/Asset Initializer/Convert Link";
   
   [MenuItem(InitAudioAssetName, true)]
   private static bool ValidateInitAudioAsset()
@@ -66,4 +69,29 @@ public static class AddressableAssetImporter
     AssetDatabase.SaveAssets();
     EditorUtility.SetDirty(AddressableAssetSettingsDefaultObject.Settings);
   }
+
+  [MenuItem(ConvertLinkName)]
+  private static void ConvertRoomLink()
+  {
+    foreach (var target in Selection.objects)
+    {
+      if (target is GameObject obj)
+      {
+        obj.RunAllObject(child =>
+        {
+          if (child.TryGetComponent<RoomLink>(out var link))
+          {
+            link.connectedRoomReference = new(link.deprecated, 
+              AddressableAssetSettingsDefaultObject.Settings.FindAssetEntry(link.deprecated.AssetGUID)?
+              .address);
+            
+            EditorUtility.SetDirty(child);
+          }
+        });
+        
+        EditorUtility.SetDirty(target);
+      }
+    }
+  }
+  
 }
