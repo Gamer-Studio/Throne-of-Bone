@@ -4376,6 +4376,8 @@ MonoBehaviour:
       Value: {fileID: 3024019253326242964}
     - Key: Chest_Small (2)
       Value: {fileID: 2282066554891103663}
+    - Key: Reservior
+      Value: {fileID: 87252020193375965}
   enemies:
     array: []
   links:
@@ -10797,6 +10799,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 7516575371986976267}
     m_Modifications:
     - target: {fileID: 620386541024489084, guid: a222cb390395f7a4bbe37d4469e1d244, type: 3}
+      propertyPath: connectedLinkIndex
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 620386541024489084, guid: a222cb390395f7a4bbe37d4469e1d244, type: 3}
       propertyPath: connectedRoom.m_AssetGUID
       value: b0e1fa8409a24604bbcf010318ec931f
       objectReference: {fileID: 0}
@@ -10966,6 +10972,10 @@ PrefabInstance:
       propertyPath: m_Color.r
       value: 0.105882354
       objectReference: {fileID: 0}
+    - target: {fileID: 2420996387049141511, guid: b666f4bc3ab14b345be9d484dcba5c30, type: 3}
+      propertyPath: room
+      value: 
+      objectReference: {fileID: 4396329301837953947}
     - target: {fileID: 3870313516740563785, guid: b666f4bc3ab14b345be9d484dcba5c30, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.08
@@ -11095,6 +11105,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b666f4bc3ab14b345be9d484dcba5c30, type: 3}
+--- !u!114 &87252020193375965 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2420996387049141511, guid: b666f4bc3ab14b345be9d484dcba5c30, type: 3}
+  m_PrefabInstance: {fileID: 2354503146423632858}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e0a64f7c2514e56ae83228ed3bd8ab7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &1520806551188148371 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3870313516740563785, guid: b666f4bc3ab14b345be9d484dcba5c30, type: 3}
@@ -11347,6 +11368,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7516575371986976267}
     m_Modifications:
+    - target: {fileID: 620386541024489084, guid: a222cb390395f7a4bbe37d4469e1d244, type: 3}
+      propertyPath: connectedLinkIndex
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 620386541024489084, guid: a222cb390395f7a4bbe37d4469e1d244, type: 3}
       propertyPath: connectedRoom.m_AssetGUID
       value: 63637981263fd4f4abc4d08eeef19407

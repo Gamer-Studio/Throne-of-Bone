@@ -567,7 +567,10 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 6007639241811197621}
+  - {fileID: 4774423572867793468}
+  - {fileID: 2530199534509571747}
   m_Father: {fileID: 2903922225394110874}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2602460401470112943
@@ -13738,9 +13741,6 @@ Transform:
   - {fileID: 3079549862078919393}
   - {fileID: 7494192164206036255}
   - {fileID: 4009613474500239260}
-  - {fileID: 6007639241811197621}
-  - {fileID: 4774423572867793468}
-  - {fileID: 2530199534509571747}
   - {fileID: 7516575371986976267}
   - {fileID: 6416182101115832409}
   - {fileID: 1372945762838129313}
@@ -20572,7 +20572,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 2903922225394110874}
+    m_TransformParent: {fileID: 7516575371986976267}
     m_Modifications:
     - target: {fileID: 620386541024489084, guid: a222cb390395f7a4bbe37d4469e1d244, type: 3}
       propertyPath: connectedRoom.m_AssetGUID
@@ -20592,7 +20592,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4725004823454009049, guid: a222cb390395f7a4bbe37d4469e1d244, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 29.999996
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 4725004823454009049, guid: a222cb390395f7a4bbe37d4469e1d244, type: 3}
       propertyPath: m_LocalPosition.z
@@ -20811,8 +20811,12 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 2903922225394110874}
+    m_TransformParent: {fileID: 7516575371986976267}
     m_Modifications:
+    - target: {fileID: 620386541024489084, guid: a222cb390395f7a4bbe37d4469e1d244, type: 3}
+      propertyPath: connectedLinkIndex
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 620386541024489084, guid: a222cb390395f7a4bbe37d4469e1d244, type: 3}
       propertyPath: connectedRoom.m_AssetGUID
       value: 65bda6a04ce0a644eb8d59b5b9be8b3e
@@ -21204,7 +21208,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 2903922225394110874}
+    m_TransformParent: {fileID: 7516575371986976267}
     m_Modifications:
     - target: {fileID: 620386541024489084, guid: a222cb390395f7a4bbe37d4469e1d244, type: 3}
       propertyPath: connectedRoom.m_AssetGUID
@@ -21224,7 +21228,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4725004823454009049, guid: a222cb390395f7a4bbe37d4469e1d244, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 52.999996
+      value: 53
       objectReference: {fileID: 0}
     - target: {fileID: 4725004823454009049, guid: a222cb390395f7a4bbe37d4469e1d244, type: 3}
       propertyPath: m_LocalPosition.z
