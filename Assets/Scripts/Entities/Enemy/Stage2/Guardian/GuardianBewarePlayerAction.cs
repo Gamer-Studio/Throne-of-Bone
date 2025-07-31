@@ -17,8 +17,7 @@ public partial class GuardianBewarePlayerAction : Action
     private bool prevDetected;
     private float stateChangeTime;
     private float stateChangeTimeThreshold = 0.1f;
-    //private Guardian owner;
-    
+
     protected override Status OnStart()
     {   
         if(Time.time - stateChangeTime < stateChangeTimeThreshold) return Status.Success;
@@ -51,7 +50,6 @@ public partial class GuardianBewarePlayerAction : Action
 
     protected override Status OnUpdate()
     {
-        Debug.Log("Beware");
         return Status.Success;
     }
 

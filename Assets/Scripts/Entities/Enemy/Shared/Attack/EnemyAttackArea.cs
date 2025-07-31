@@ -5,16 +5,15 @@ using UnityEngine;
 
 namespace ToB.Entities
 {
+    public enum KnockbackType
+    {
+        Directional,
+        Sender,
+        FromEnemy
+    }
     [RequireComponent(typeof(Rigidbody2D))]
     public class EnemyAttackArea : MonoBehaviour
     {
-        
-        enum KnockbackType
-        {
-            Directional,
-            Sender
-        }
-        
         [SerializeField, ReadOnly] private Enemy owner;
         [SerializeField] private float damage;
         [SerializeField] private float knockBackForce;
@@ -43,12 +42,12 @@ namespace ToB.Entities
             knockbackType = KnockbackType.Directional;
         }
         
-        public void Init(Enemy character, float damage, float knockBackForce)
+        public void Init(Enemy character, float damage, float knockBackForce, KnockbackType knockbackType = KnockbackType.Sender)
         {
             owner = character;
             this.damage = damage;
             this.knockBackForce = knockBackForce;
-            knockbackType = KnockbackType.Sender;
+            this.knockbackType = knockbackType;
         }
 
         
@@ -58,8 +57,14 @@ namespace ToB.Entities
             if ((attackTargetLayers & 1 << other.gameObject.layer) != 0)
             {
                 other.Damage(damage, owner);
-                if (knockbackType == KnockbackType.Directional) other.KnockBack(knockBackForce, knockBackDirection * owner.LookDirectionHorizontal);
-                else other.KnockBack(knockBackForce, gameObject);
+                if (knockbackType == KnockbackType.Directional)
+                {
+                    other.KnockBack(knockBackForce, knockBackDirection * owner.LookDirectionHorizontal);
+                }
+                else if (knockbackType == KnockbackType.FromEnemy)
+                    other.KnockBack(knockBackForce,  other.transform.position - owner.transform.position);
+                else
+                    other.KnockBack(knockBackForce, gameObject);
             }
         }
     }

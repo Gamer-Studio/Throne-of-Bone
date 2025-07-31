@@ -15361,6 +15361,30 @@ PrefabInstance:
       propertyPath: room
       value: 
       objectReference: {fileID: 4396329301837953947}
+    - target: {fileID: 3256293103267792030, guid: 9c58efaefa91483478a84554e752cdb8, type: 3}
+      propertyPath: onPlateActivated.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3256293103267792030, guid: 9c58efaefa91483478a84554e752cdb8, type: 3}
+      propertyPath: onPlateActivated.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 5647234153686805687}
+    - target: {fileID: 3256293103267792030, guid: 9c58efaefa91483478a84554e752cdb8, type: 3}
+      propertyPath: onPlateActivated.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3256293103267792030, guid: 9c58efaefa91483478a84554e752cdb8, type: 3}
+      propertyPath: onPlateActivated.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnOffDoorInteract
+      objectReference: {fileID: 0}
+    - target: {fileID: 3256293103267792030, guid: 9c58efaefa91483478a84554e752cdb8, type: 3}
+      propertyPath: onPlateActivated.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: ToB.Entities.FieldObject.OnOffDoor, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3256293103267792030, guid: 9c58efaefa91483478a84554e752cdb8, type: 3}
+      propertyPath: onPlateActivated.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 4884528457960828278, guid: 9c58efaefa91483478a84554e752cdb8, type: 3}
       propertyPath: m_Name
       value: PressurePlate (1)
@@ -15395,12 +15419,24 @@ PrefabInstance:
     m_TransformParent: {fileID: 7516575371986976267}
     m_Modifications:
     - target: {fileID: 620386541024489084, guid: a222cb390395f7a4bbe37d4469e1d244, type: 3}
+      propertyPath: deprecated.m_AssetGUID
+      value: bd05f57be5f30d345ae518619a9981ce
+      objectReference: {fileID: 0}
+    - target: {fileID: 620386541024489084, guid: a222cb390395f7a4bbe37d4469e1d244, type: 3}
       propertyPath: connectedRoom.m_AssetGUID
       value: bd05f57be5f30d345ae518619a9981ce
       objectReference: {fileID: 0}
     - target: {fileID: 620386541024489084, guid: a222cb390395f7a4bbe37d4469e1d244, type: 3}
+      propertyPath: connectedRoomReference.path
+      value: Stage2/Room8
+      objectReference: {fileID: 0}
+    - target: {fileID: 620386541024489084, guid: a222cb390395f7a4bbe37d4469e1d244, type: 3}
       propertyPath: <CurrentIndex>k__BackingField
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 620386541024489084, guid: a222cb390395f7a4bbe37d4469e1d244, type: 3}
+      propertyPath: connectedRoomReference.assetReference.m_AssetGUID
+      value: bd05f57be5f30d345ae518619a9981ce
       objectReference: {fileID: 0}
     - target: {fileID: 2360943993276151954, guid: a222cb390395f7a4bbe37d4469e1d244, type: 3}
       propertyPath: m_Name
@@ -15680,6 +15716,18 @@ PrefabInstance:
       propertyPath: room
       value: 
       objectReference: {fileID: 4396329301837953947}
+    - target: {fileID: 176068101399305392, guid: 9425be2ed2066304799c8fc157f012e4, type: 3}
+      propertyPath: isOpened
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 176068101399305392, guid: 9425be2ed2066304799c8fc157f012e4, type: 3}
+      propertyPath: pressurePlates.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 176068101399305392, guid: 9425be2ed2066304799c8fc157f012e4, type: 3}
+      propertyPath: 'pressurePlates.Array.data[0]'
+      value: 
+      objectReference: {fileID: 6033786235109422191}
     - target: {fileID: 3103974419986188427, guid: 9425be2ed2066304799c8fc157f012e4, type: 3}
       propertyPath: m_Name
       value: OnOffDoor (3)
@@ -15765,6 +15813,14 @@ PrefabInstance:
       propertyPath: isOpened
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 176068101399305392, guid: 9425be2ed2066304799c8fc157f012e4, type: 3}
+      propertyPath: pressurePlates.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 176068101399305392, guid: 9425be2ed2066304799c8fc157f012e4, type: 3}
+      propertyPath: 'pressurePlates.Array.data[0]'
+      value: 
+      objectReference: {fileID: 9079249190434806891}
     - target: {fileID: 3103974419986188427, guid: 9425be2ed2066304799c8fc157f012e4, type: 3}
       propertyPath: m_Name
       value: OnOffDoor
@@ -15842,6 +15898,18 @@ PrefabInstance:
       propertyPath: room
       value: 
       objectReference: {fileID: 4396329301837953947}
+    - target: {fileID: 176068101399305392, guid: 9425be2ed2066304799c8fc157f012e4, type: 3}
+      propertyPath: isOpened
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 176068101399305392, guid: 9425be2ed2066304799c8fc157f012e4, type: 3}
+      propertyPath: pressurePlates.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 176068101399305392, guid: 9425be2ed2066304799c8fc157f012e4, type: 3}
+      propertyPath: 'pressurePlates.Array.data[0]'
+      value: 
+      objectReference: {fileID: 3671207640171730847}
     - target: {fileID: 3103974419986188427, guid: 9425be2ed2066304799c8fc157f012e4, type: 3}
       propertyPath: m_Name
       value: OnOffDoor (2)
@@ -15916,12 +15984,28 @@ PrefabInstance:
     m_TransformParent: {fileID: 7516575371986976267}
     m_Modifications:
     - target: {fileID: 620386541024489084, guid: a222cb390395f7a4bbe37d4469e1d244, type: 3}
+      propertyPath: connectedLinkIndex
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 620386541024489084, guid: a222cb390395f7a4bbe37d4469e1d244, type: 3}
+      propertyPath: deprecated.m_AssetGUID
+      value: 74c0b322836cb794aa3a76652863a7fe
+      objectReference: {fileID: 0}
+    - target: {fileID: 620386541024489084, guid: a222cb390395f7a4bbe37d4469e1d244, type: 3}
       propertyPath: connectedRoom.m_AssetGUID
       value: 74c0b322836cb794aa3a76652863a7fe
       objectReference: {fileID: 0}
     - target: {fileID: 620386541024489084, guid: a222cb390395f7a4bbe37d4469e1d244, type: 3}
+      propertyPath: connectedRoomReference.path
+      value: Stage2/Room6
+      objectReference: {fileID: 0}
+    - target: {fileID: 620386541024489084, guid: a222cb390395f7a4bbe37d4469e1d244, type: 3}
       propertyPath: <CurrentIndex>k__BackingField
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 620386541024489084, guid: a222cb390395f7a4bbe37d4469e1d244, type: 3}
+      propertyPath: connectedRoomReference.assetReference.m_AssetGUID
+      value: 74c0b322836cb794aa3a76652863a7fe
       objectReference: {fileID: 0}
     - target: {fileID: 2360943993276151954, guid: a222cb390395f7a4bbe37d4469e1d244, type: 3}
       propertyPath: m_Name
@@ -16040,6 +16124,30 @@ PrefabInstance:
       propertyPath: room
       value: 
       objectReference: {fileID: 4396329301837953947}
+    - target: {fileID: 3256293103267792030, guid: 9c58efaefa91483478a84554e752cdb8, type: 3}
+      propertyPath: onPlateActivated.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3256293103267792030, guid: 9c58efaefa91483478a84554e752cdb8, type: 3}
+      propertyPath: onPlateActivated.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 6620838969428806831}
+    - target: {fileID: 3256293103267792030, guid: 9c58efaefa91483478a84554e752cdb8, type: 3}
+      propertyPath: onPlateActivated.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3256293103267792030, guid: 9c58efaefa91483478a84554e752cdb8, type: 3}
+      propertyPath: onPlateActivated.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnOffDoorInteract
+      objectReference: {fileID: 0}
+    - target: {fileID: 3256293103267792030, guid: 9c58efaefa91483478a84554e752cdb8, type: 3}
+      propertyPath: onPlateActivated.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: ToB.Entities.FieldObject.OnOffDoor, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3256293103267792030, guid: 9c58efaefa91483478a84554e752cdb8, type: 3}
+      propertyPath: onPlateActivated.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 4884528457960828278, guid: 9c58efaefa91483478a84554e752cdb8, type: 3}
       propertyPath: m_Name
       value: PressurePlate (2)
@@ -16117,6 +16225,30 @@ PrefabInstance:
       propertyPath: room
       value: 
       objectReference: {fileID: 4396329301837953947}
+    - target: {fileID: 3256293103267792030, guid: 9c58efaefa91483478a84554e752cdb8, type: 3}
+      propertyPath: onPlateActivated.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3256293103267792030, guid: 9c58efaefa91483478a84554e752cdb8, type: 3}
+      propertyPath: onPlateActivated.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 5346907967842919883}
+    - target: {fileID: 3256293103267792030, guid: 9c58efaefa91483478a84554e752cdb8, type: 3}
+      propertyPath: onPlateActivated.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3256293103267792030, guid: 9c58efaefa91483478a84554e752cdb8, type: 3}
+      propertyPath: onPlateActivated.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnOffDoorInteract
+      objectReference: {fileID: 0}
+    - target: {fileID: 3256293103267792030, guid: 9c58efaefa91483478a84554e752cdb8, type: 3}
+      propertyPath: onPlateActivated.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: ToB.Entities.FieldObject.OnOffDoor, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3256293103267792030, guid: 9c58efaefa91483478a84554e752cdb8, type: 3}
+      propertyPath: onPlateActivated.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 4884528457960828278, guid: 9c58efaefa91483478a84554e752cdb8, type: 3}
       propertyPath: m_Name
       value: PressurePlate
@@ -16247,6 +16379,18 @@ PrefabInstance:
       propertyPath: room
       value: 
       objectReference: {fileID: 4396329301837953947}
+    - target: {fileID: 176068101399305392, guid: 9425be2ed2066304799c8fc157f012e4, type: 3}
+      propertyPath: isOpened
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 176068101399305392, guid: 9425be2ed2066304799c8fc157f012e4, type: 3}
+      propertyPath: pressurePlates.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 176068101399305392, guid: 9425be2ed2066304799c8fc157f012e4, type: 3}
+      propertyPath: 'pressurePlates.Array.data[0]'
+      value: 
+      objectReference: {fileID: 6926296927340674289}
     - target: {fileID: 3103974419986188427, guid: 9425be2ed2066304799c8fc157f012e4, type: 3}
       propertyPath: m_Name
       value: OnOffDoor (1)
@@ -16720,6 +16864,30 @@ PrefabInstance:
       propertyPath: room
       value: 
       objectReference: {fileID: 4396329301837953947}
+    - target: {fileID: 3256293103267792030, guid: 9c58efaefa91483478a84554e752cdb8, type: 3}
+      propertyPath: onPlateActivated.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3256293103267792030, guid: 9c58efaefa91483478a84554e752cdb8, type: 3}
+      propertyPath: onPlateActivated.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 5003796795056261131}
+    - target: {fileID: 3256293103267792030, guid: 9c58efaefa91483478a84554e752cdb8, type: 3}
+      propertyPath: onPlateActivated.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3256293103267792030, guid: 9c58efaefa91483478a84554e752cdb8, type: 3}
+      propertyPath: onPlateActivated.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnOffDoorInteract
+      objectReference: {fileID: 0}
+    - target: {fileID: 3256293103267792030, guid: 9c58efaefa91483478a84554e752cdb8, type: 3}
+      propertyPath: onPlateActivated.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: ToB.Entities.FieldObject.OnOffDoor, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3256293103267792030, guid: 9c58efaefa91483478a84554e752cdb8, type: 3}
+      propertyPath: onPlateActivated.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 4884528457960828278, guid: 9c58efaefa91483478a84554e752cdb8, type: 3}
       propertyPath: m_Name
       value: PressurePlate (3)

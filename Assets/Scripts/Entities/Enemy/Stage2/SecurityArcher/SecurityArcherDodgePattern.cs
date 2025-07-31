@@ -8,6 +8,8 @@ namespace ToB.Entities
     {
         private readonly SecurityArcher owner;
         private readonly SecurityArcherFSM fsm;
+
+        private bool siege;
         public SecurityArcherDodgePattern(EnemyStrategy strategy, Action EndCallback = null) : base(strategy, EndCallback)
         {
             owner = enemy as SecurityArcher;
@@ -20,6 +22,8 @@ namespace ToB.Entities
             enemy.Animator.SetTrigger(EnemyAnimationString.SpecialAttack);
             int randomSign = UnityEngine.Random.value < 0.5f ? -1 : 1;
             enemy.Physics.externalVelocity[EnemyPhysicsKeys.MOVE] = new Vector2(randomSign * owner.DataSO.DodgeMoveSpeed, 0);
+            StopOnLedge();
+            
             owner.LookHorizontal(DirectionUtil.GetHorizontalDirection(randomSign));
             owner.Hitbox.enabled = false;
             fsm.lastSpecialAttackTime = Time.time;
@@ -32,11 +36,18 @@ namespace ToB.Entities
             //dodgeEffectOffset.x *= randomSign;
             owner.DodgeEffect.transform.position = owner.transform.position + dodgeEffectOffset;
             owner.DodgeEffect.Play();
+
+            siege = false;
         }
 
         public override void Execute()
         {
             base.Execute();
+
+            if (!siege)
+            {
+               StopOnLedge();
+            }
 
             if (fsm.siegeTrigger)
             {
@@ -44,6 +55,7 @@ namespace ToB.Entities
                 owner.Hitbox.enabled = true;
                 enemy.Physics.externalVelocity.Remove(EnemyPhysicsKeys.MOVE);
                 fsm.siegeTrigger = false;
+                siege = true;
             }
         }
 
@@ -53,5 +65,17 @@ namespace ToB.Entities
             owner.DodgeEffect.gameObject.SetActive(false);
             enemy.Physics.externalVelocity.Remove(EnemyPhysicsKeys.MOVE); 
         }
+         
+        public void StopOnLedge()
+        {
+            Vector2 moveDirection =
+                DirectionUtil.GetHorizontalDirection(enemy.Physics.externalVelocity[EnemyPhysicsKeys.MOVE].x);
+
+            if (moveDirection != Vector2.zero && enemy.Physics.IsLedgeOnSide(moveDirection))
+            {
+                enemy.Physics.externalVelocity[EnemyPhysicsKeys.MOVE] = Vector2.zero;
+            }
+        }
     }
+   
 }

@@ -1,19 +1,28 @@
 using System;
 using System.Collections.Generic;
+using ToB.Entities.Interface;
+using ToB.Worlds;
 using UnityEngine;
 
 namespace ToB.Entities
 {
-    public class EnemyBeamAttack:MonoBehaviour
+    public class EnemyBeamAttack:MonoBehaviour, IAttacker
     {
-        private List<GameObject> objects;
+        public List<GameObject> objects;
 
         private float damage;
         private float endDamage;
 
+        public bool Blockable { get; private set;  }
+        public bool Effectable { get; private set; }
+        public Vector3 Position { get; private set; }
+        public Team Team { get; private set; }
+
         private void Awake()
         {
             objects = new List<GameObject>();
+            Team = Team.Enemy;
+            Blockable = false;
         }
 
         private void OnDisable()
@@ -41,7 +50,7 @@ namespace ToB.Entities
         {
             foreach (var obj in objects)
             {
-                obj.Damage(damage);
+                obj.Damage(damage, this);
                 obj.KnockBack(1, new  Vector2(obj.transform.eulerAngles.y == 0 ? 1 : -1, 0));
             }
         }

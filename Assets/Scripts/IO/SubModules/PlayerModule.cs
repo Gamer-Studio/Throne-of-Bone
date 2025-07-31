@@ -9,15 +9,6 @@ namespace ToB.IO.SubModules
 
     #region Data
 
-    /// <summary>
-    /// 초기 스테이지 기본값은 1
-    /// </summary>
-    [JsonProperty] public int currentStage = 1;
-    /// <summary>
-    /// 초기 방 기본값은 1
-    /// </summary>
-    [JsonProperty] public int currentRoom = 1;
-    [JsonProperty] public Vector3 savedPosition;
 
     #endregion
 

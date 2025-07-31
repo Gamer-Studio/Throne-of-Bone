@@ -64,7 +64,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d96dae62a5edd934a8c34b3d13155a75, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  stageIndex: 0
+  roomIndex: 0
   normalEnemyTable:
+    array: []
+  fieldObjects:
+    array: []
+  enemies:
     array: []
   links: []
   entityContainer: {fileID: 5793515335157275930}
@@ -81,7 +87,7 @@ MonoBehaviour:
   onExit:
     m_PersistentCalls:
       m_Calls: []
-  entities: []
+  pos: {x: 0, y: 0, z: 0}
 --- !u!1 &842764361558993969
 GameObject:
   m_ObjectHideFlags: 0
@@ -10421,6 +10427,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   backgroundCollider: {fileID: 7158030922902973250}
+  tilemap: {fileID: 0}
 --- !u!1 &5113490369795339112
 GameObject:
   m_ObjectHideFlags: 0
@@ -11429,7 +11436,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6221600684614603251, guid: bf61dc359a881fc41823c4c99309ea43, type: 3}
       propertyPath: m_SortingLayer
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6221600684614603251, guid: bf61dc359a881fc41823c4c99309ea43, type: 3}
       propertyPath: m_SortingOrder

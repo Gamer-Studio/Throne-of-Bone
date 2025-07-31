@@ -54,6 +54,11 @@ namespace ToB.Entities
             }
         }
         
+        public bool IsPointInLocation(Vector2 point)
+        {
+            return point.x >= transform.position.x - width / 2 && point.x <= transform.position.x + width / 2 &&
+                   point.y >= transform.position.y - height / 2 && point.y <= transform.position.y + height / 2;
+        }
         
     }
 }
