@@ -117,7 +117,11 @@ namespace ToB.Player
       {
         character.audioPlayer.Play("Footsteps_WaterV2_Walk_05", true);
       }
-      else yield break;
+      else
+      {
+        walkSoundCoroutine = null;
+        yield break;
+      }
       
       while (character.IsMoving && character.body.linearVelocity.x > 0.1f) 
       {
