@@ -109,5 +109,10 @@ namespace ToB.Entities
             if (def < 0) def = hittableSO.DEF;
             this.def = def;
         }
+        
+        public void ForceSetHP(float hp)
+        {
+            currentHP = hp;
+        }
     }
 }
