@@ -50,7 +50,7 @@ namespace ToB.Entities
             def = hittableSO.DEF;
         }
         
-        private void ChangeHP(float delta)
+        public void ChangeHP(float delta)
         {
             currentHP += delta;
             currentHP = Mathf.Clamp(CurrentHP, 0, MaxHP);
@@ -113,6 +113,11 @@ namespace ToB.Entities
         public void ForceSetHP(float hp)
         {
             currentHP = hp;
+        }
+
+        public void ForceOwner(Enemy enemy)
+        {
+            this.enemy = enemy;
         }
     }
 }

@@ -28,13 +28,19 @@ namespace ToB.Entities
         [SerializeField] private LayerMask groundLayer;
         [SerializeField] private GameObject rangeAttackPrefab;
         [SerializeField] private GameObject bloodBubblePrefab;
-        
+
+        [Header("영역 컴포넌트")] 
+        [SerializeField] private SentinelArea area;
+       
         [Header("점프 슬램")]
         [SerializeField] private GameObject shockwavePrefab;
         [SerializeField] private VisualEffect shockwaveEffect;
         [SerializeField] private Transform shockwaveSpawnPositionLeft;
         [SerializeField] private Transform shockwaveSpawnPositionRight;
         [SerializeField] private float shockwaveAccelPower = 3;
+
+        [Header("2페이즈")] 
+        [SerializeField] private VisualEffect phase2Aura;
         public int Phase { get; private set; }
         public Queue<float> SpecialAttackQueue { get; private set; }
 
@@ -42,6 +48,11 @@ namespace ToB.Entities
         public Coroutine attackCoroutine;
 
         public bool BubbleAttackEnd { get; private set; }
+
+        [Header("클론 전용 필드")] 
+        public bool isClone;
+        public Sentinel original;
+        public float prevHP;
 
         protected override void Awake()
         {
@@ -62,22 +73,38 @@ namespace ToB.Entities
             rangeAttackCooldown = DataSO.RangedAttackPhase1.cooldown;
 
             Phase = 1;
-            
-            SpecialAttackQueue.Clear();
-            SpecialAttackQueue.Enqueue(0.75f);
-            SpecialAttackQueue.Enqueue(0.5f);
-            SpecialAttackQueue.Enqueue(0.25f);
-            BubbleAttackEnd = false;
+            phase2Aura.gameObject.SetActive(false);
 
-            Agent.BlackboardReference.SetVariableValue("JumpSlamChargeTime", 2);
+            if (!isClone)
+            {
+                SpecialAttackQueue.Clear();
+                SpecialAttackQueue.Enqueue(0.75f);
+                SpecialAttackQueue.Enqueue(0.5f);
+                SpecialAttackQueue.Enqueue(0.25f);
+            }
+
+            BubbleAttackEnd = false;
+            prevHP = Stat.CurrentHP;
+
+            Agent.BlackboardReference.SetVariableValue("JumpSlamChargeTime", 2f);
+            Agent.BlackboardReference.SetVariableValue("Phase", 1);
         }
 
         public override void OnTakeDamage(IAttacker sender)
         {
             base.OnTakeDamage(sender);
 
+            if (!isAlive) return;
+            
             SaveDamagedForJudge();
-            PhaseCalculate();
+            
+            if(!isClone) PhaseCalculate();
+            else
+            {
+                float deltaHP = prevHP - Stat.CurrentHP;
+                original.Stat.ChangeHP(-deltaHP);
+                prevHP = Stat.CurrentHP;
+            }
         }
 
         private void PhaseCalculate()
@@ -88,7 +115,7 @@ namespace ToB.Entities
 
                 if (currentHP < 0)
                 {
-                    SetPhase2();
+                    StartCoroutine(SetPhase2());
                     return;
                 }
                 
@@ -120,20 +147,67 @@ namespace ToB.Entities
             }
             else if (Phase == 2)
             {
+                float currentHP = Stat.CurrentHP;
+                Debug.Log("HP perc :" + currentHP / (DataSO.HP - DataSO.HP_1Phase));
+
+                while (SpecialAttackQueue.Count > 0 && SpecialAttackQueue.Peek() > currentHP / (DataSO.HP - DataSO.HP_1Phase))    // 체력 캐싱은 리팩토링할 때 이 클래스의 필드에
+                {
+                    float value = SpecialAttackQueue.Dequeue();
+
+                    if (Mathf.Approximately(value, 0.8f))
+                    {
+                        Debug.Log("2페이즈 80%");
+                        Agent.BlackboardReference.SetVariableValue("CanUseSpecialAttack", true);
+                    }
+                    else if (Mathf.Approximately(value, 0.6f))
+                    {
+                        Debug.Log("2페이즈 60%");
+
+                        Agent.BlackboardReference.SetVariableValue("CanUseClone", true);
+                    }
+                    else if (Mathf.Approximately(value, 0.2f))
+                    {
+                        Debug.Log("2페이즈 20%");
+                        
+                        Agent.BlackboardReference.SetVariableValue("CanUseSpecialAttack", true);
+                    }
+                }
             }
         }
 
-        private void SetPhase2()
+        IEnumerator SetPhase2()
         {
+            Agent.End();
+            Agent.BlackboardReference.SetVariableValue("SentinelState", SentinelState.Idle);
+
             Phase = 2;
+            Agent.BlackboardReference.SetVariableValue("Phase", 2);
 
-            SpecialAttackQueue.Enqueue(0.75f);
-            SpecialAttackQueue.Enqueue(0.5f);
-            SpecialAttackQueue.Enqueue(0.25f);
+            SpecialAttackQueue.Clear();
+            SpecialAttackQueue.Enqueue(0.8f);
+            SpecialAttackQueue.Enqueue(0.6f);
+            SpecialAttackQueue.Enqueue(0.2f);
 
-            Agent.BlackboardReference.SetVariableValue("JumpSlamChargeTime", 1);
+            Agent.BlackboardReference.SetVariableValue("JumpSlamChargeTime", 1f);
 
             Stat.ForceSetHP(DataSO.HP - DataSO.HP_1Phase);
+            
+            
+            Animator.SetTrigger(EnemyAnimationString.Idle);
+            
+            Hitbox.enabled = false;
+
+            yield return new WaitUntil(() => IsGrounded);
+            
+            shockwaveEffect.SendEvent("OnPlay");
+            phase2Aura.gameObject.SetActive(true);
+            phase2Aura.Play();
+            
+            yield return new WaitForSeconds(1.5f);
+            
+            Hitbox.enabled = true;
+            Agent.Init();
+            Agent.Restart();
         }
 
         private void SaveDamagedForJudge()
@@ -167,6 +241,7 @@ namespace ToB.Entities
 
             if (isWeak)
             {
+                // Weak과 Strong 거의 중복이지만 작성 편의상 복사했습니다
                 GameObject raObj = rangeAttackPrefab.Pooling();
 
                 raObj.transform.position = BodyCenter + rangeAttackDirection * 0.2f;
@@ -181,6 +256,24 @@ namespace ToB.Entities
 
                 LinearMovement raMovement = raObj.GetComponent<LinearMovement>();
                 raMovement.Init(rangeAttackDirection, DataSO.RangedAttackPhase1.moveSpeed);
+            }
+            else
+            {
+                GameObject raObj = rangeAttackPrefab.Pooling();
+
+                raObj.transform.position = BodyCenter + rangeAttackDirection * 0.2f;
+                float angle = rangeAttackDirection.ToAngle();
+                raObj.transform.localScale = Vector3.one * 1.15f;
+
+                ContactDamage ra = raObj.GetComponent<ContactDamage>();
+                ra.Init(DataSO.RangedAttackPhase2.damage, DataSO.RangedAttackPhase2.knockbackForce, default, false);
+                ra.blockable = true;
+                ra.effectable = true;
+                ra.Position = transform.position;
+                ra.transform.eulerAngles = new Vector3(0, 0, angle);
+
+                LinearMovement raMovement = raObj.GetComponent<LinearMovement>();
+                raMovement.Init(rangeAttackDirection, DataSO.RangedAttackPhase2.moveSpeed);
             }
         }
 
@@ -204,6 +297,11 @@ namespace ToB.Entities
 
         private void SpawnBloodBubble()
         {
+            Vector2 origin = target.transform.position;
+            Vector2 direction = Vector2.down;
+            float distance = 100f;
+            Debug.DrawRay(origin, direction * distance, Color.cyan, 1.0f); // 마지막 인자는 지속 시간(1초)
+            
             RaycastHit2D hit = Physics2D.Raycast(target.transform.position, Vector2.down, 100, groundLayer);
             Vector2 spawnPos = hit.point;
             
@@ -242,6 +340,26 @@ namespace ToB.Entities
         
         #endregion
 
-        
+
+        public void ClonePattern()
+        {
+            Hitbox.enabled = false;
+            StartCoroutine(SpawnClones());
+        }
+
+        IEnumerator SpawnClones()
+        {
+            yield return new WaitForSeconds(1.5f);
+            area.SpawnClones();
+        }
+
+        public void ClonePatternDisable()
+        {
+            area.ClearClones();
+            DOVirtual.DelayedCall(1.5f, () =>
+            {
+                Hitbox.enabled = true;
+            });
+        }
     }
 }
