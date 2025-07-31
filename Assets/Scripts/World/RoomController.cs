@@ -63,14 +63,19 @@ namespace ToB.World
       }
 
       var currentLinkedRooms = room.GetLinkedRooms(true);
+      var removes = new List<string>();
 
       foreach (var pair in loadedRooms)
       {
         if (!currentLinkedRooms.Contains(pair.Value) && pair.Value && pair.Value != room)
         {
+          removes.Add(pair.Key);
           Destroy(pair.Value.gameObject);
         }
       }
+
+      foreach (var key in removes)
+        loadedRooms.Remove(key);
     }
   }
 }
