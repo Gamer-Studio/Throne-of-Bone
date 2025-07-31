@@ -71,7 +71,7 @@ namespace ToB.Utils
     /// <param name="loop">반복재생 여부</param>
     /// <returns>재생하는 오디오 소스를 반환합니다.</returns>
     public AudioSource Play(ReferenceWrapper reference, bool loop = false)
-      => AudioManager.TryGetClip(reference, out var clip) ? Play(clip, loop) : null;
+      => AudioManager.TryGetClip(reference, out var clip, true) ? Play(clip, loop) : null;
 
     /// <summary>
     /// 문자열 키를 기반으로 사운드를 재생합니다.
@@ -80,7 +80,7 @@ namespace ToB.Utils
     /// <param name="loop">반복재생 여부</param>
     /// <returns>재생하는 오디오 소스를 반환합니다.</returns>
     public AudioSource Play(string clipName, bool loop = false)
-      => AudioManager.TryGetClip(clipName, out var clip) ? Play(clip, loop) : null;
+      => AudioManager.TryGetClip(clipName, out var clip, true) ? Play(clip, loop) : null;
 
     /// <summary>
     /// 오디오클립을 받아서 사운드를 재생합니다.
@@ -95,7 +95,7 @@ namespace ToB.Utils
 
       if (source == null)
       {
-        source = new GameObject("AudioSource").GetComponent<AudioSource>();
+        source = new GameObject("AudioSource").AddComponent<AudioSource>();
         source.transform.SetParent(audioSourceParent);
         sourcePool.Add(source);
 

@@ -39,8 +39,8 @@ namespace ToB.Player
         attackEffect.gameObject.SetActive(true);  
       }
       // 크리티컬 계산
-      float finalDmg = character.stat.atk;
-      float chance = BattleSkillManager.Instance.BSStats.CritChance - Random.Range(0, 100) / 100;
+      float finalDmg = character.stat.atk.Value,
+        chance = BattleSkillManager.Instance.BSStats.CritChance - Random.Range(0, 100) / 100f;
       if (chance > 0) finalDmg += finalDmg * BattleSkillManager.Instance.BSStats.CritDmgMultiplier;
 
       if (character.parryableLayer.Contains(other.gameObject.layer))

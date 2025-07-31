@@ -16,6 +16,12 @@ namespace ToB.Entities
             fsm = strategy as FlyFSM;
         }
 
+        public override void Enter()
+        {
+            base.Enter();
+            owner.audioPlayer.Play("Insect_Fly_Loop_03",true);
+        }
+
         public override void Execute()
         {
             base.Execute();
@@ -56,6 +62,7 @@ namespace ToB.Entities
         public override void Exit()
         {
             base.Exit();
+            owner.audioPlayer.Stop("Insect_Fly_Loop_03");
         }
     }
 }

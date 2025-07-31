@@ -1,5 +1,6 @@
 using System;
 using ToB.Core;
+using ToB.Utils;
 using UnityEngine;
 using AudioType = ToB.Core.AudioType;
 
@@ -17,13 +18,12 @@ namespace ToB.Entities
         {
             base.Enter();
             owner.Animator.SetBool(EnemyAnimationString.Attack, true);
-            AudioManager.Play("fntgm_blade_whoosh_heavy_02",AudioType.Effect);
+            enemy.audioPlayer.Play("fntgm_blade_whoosh_heavy_02");
         }
 
         public override void Execute()
         {
             base.Execute();
-            
             // Attack bool 값 변경은 애니메이터에서 StateMachineBehaviour 스크립트가 직접 핸들링합니다
             if (!owner.Animator.GetBool(EnemyAnimationString.Attack))
             {

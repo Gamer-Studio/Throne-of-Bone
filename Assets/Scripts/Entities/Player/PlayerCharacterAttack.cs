@@ -198,6 +198,8 @@ namespace ToB.Player
       effect.Direction = direction;
       effect.damage = stat.atk / 2;
       effect.launcher = gameObject;
+      
+      AudioManager.Play("fntgm_arrow_whoosh", AudioType.Effect);
         
       if(rangeAttackGlowEffect.isPlaying) rangeAttackGlowEffect.Stop();
       rangeAttackGlowEffect.Play();
@@ -216,13 +218,13 @@ namespace ToB.Player
     {
       transform.eulerAngles = new Vector3(0, direction.x < 0 ? 180 : 0, 0);
       
-      var prevDamage = stat.atk;
+      var prevDamage = stat.atk.BaseValue;
       if (prevAttackMotion < 3) stat.atk *= attackDamageMultiplier[prevAttackMotion];
       else if (prevAttackMotion == 3) stat.atk *= (attackDamageMultiplier[prevAttackMotion] + BattleSkillManager.instance.BSStats.RangeAtkDmgMultiplier);
       SetMeleeAttackDelay(waitTime);
       yield return new WaitForSeconds(waitTime);
       isAttacking = false;
-      stat.atk = prevDamage;
+      stat.atk.BaseValue = prevDamage;
 
       yield return new WaitForSeconds(attackDelay[0]);
       prevAttackMotion = 0;

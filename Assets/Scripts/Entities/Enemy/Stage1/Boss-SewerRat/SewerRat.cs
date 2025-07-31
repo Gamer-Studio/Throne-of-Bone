@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using DG.Tweening;
 using ToB.Entities;
+using ToB.Entities.Interface;
 using UnityEngine;
 
 namespace ToB.Entities
@@ -34,6 +35,13 @@ namespace ToB.Entities
             deathExplode.gameObject.SetActive(false);
         }
 
+        public override void OnTakeDamage(IAttacker sender)
+        {
+            base.OnTakeDamage(sender);
+            audioPlayer.Play("Angry_03");
+            
+        }
+
         protected override void OnEnable()
         {
             base.OnEnable();
@@ -50,6 +58,7 @@ namespace ToB.Entities
             base.Die();
             
             Animator.SetTrigger(EnemyAnimationString.Die);
+            audioPlayer.Play("Death_03");
             Strategy.enabled = false;
 
             transform.DOKill();

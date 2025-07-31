@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &514682653799424790
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7179899334287840091}
+  m_Layer: 0
+  m_Name: Audio Sources
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7179899334287840091
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 514682653799424790}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2108481070329244631}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2659842704424178094
 GameObject:
   m_ObjectHideFlags: 0
@@ -109,6 +140,7 @@ GameObject:
   - component: {fileID: 1067526606140988756}
   - component: {fileID: 1910508927396576283}
   - component: {fileID: 7655265317321702560}
+  - component: {fileID: 7021586354722674037}
   m_Layer: 6
   m_Name: PlayerCharacter_SwordMaster
   m_TagString: Player
@@ -136,6 +168,7 @@ Transform:
   - {fileID: 4039226924033912917}
   - {fileID: 1328358240621833008}
   - {fileID: 4896863033312258467}
+  - {fileID: 7179899334287840091}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &1096863716109666581
@@ -272,7 +305,9 @@ MonoBehaviour:
   maxJumpCount: 0
   currentJumpCount: 0
   jumpPower: 18
+  airJumpPower: 10
   wallJumpPower: 10
+  downJumpPower: 10
   wallJumpReactionTime: 0.2
   jumpTimeLimit: 0.1
   gravityAcceleration: 7
@@ -307,6 +342,9 @@ MonoBehaviour:
   rangedAttackRegenTime: 1
   rangedAttackRegenAmount: 0
   shootDelay: 0.1
+  parryableLayer:
+    serializedVersion: 2
+    m_Bits: 0
   swordEffect:
     m_AssetGUID: bc76dc791a6561344bbec8478838ce65
     m_SubObjectName: 
@@ -355,7 +393,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buffs:
     array: []
+  immunedBuffs: []
   poisonEffect: {fileID: 4021767790769375958}
+--- !u!114 &7021586354722674037
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2968809511529205449}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 383646569fb04c2babfa49d0b40ea4bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sourcePool: []
+  audioSourceParent: {fileID: 7179899334287840091}
 --- !u!1 &3338924305840895927
 GameObject:
   m_ObjectHideFlags: 0

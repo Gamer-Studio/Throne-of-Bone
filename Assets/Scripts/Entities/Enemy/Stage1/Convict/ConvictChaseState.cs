@@ -19,7 +19,7 @@ namespace ToB.Entities
         {
             base.Enter();
             convict.Animator.SetTrigger(EnemyAnimationString.Move);
-            //AudioManager.Play("env_chains_03",enemy.gameObject);
+            enemy.audioPlayer.Play("Sand_Pebbles_02",true);
         }
 
         public override void FixedExecute()
@@ -45,6 +45,11 @@ namespace ToB.Entities
                     enemy.Physics.externalVelocity[ChaseKey] = ChaseSpeed * enemy.LookDirectionHorizontal;
                 }
             }
+        }
+        public override void Exit()
+        {
+            base.Exit();
+            enemy.audioPlayer.Stop("Sand_Pebbles_02");
         }
     }
 }

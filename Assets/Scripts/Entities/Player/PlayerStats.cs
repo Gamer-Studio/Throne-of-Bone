@@ -1,5 +1,6 @@
 using System;
 using NaughtyAttributes;
+using ToB.Core;
 using ToB.Entities.Skills;
 using ToB.Utils;
 using UnityEngine;
@@ -114,7 +115,6 @@ namespace ToB.Player
       {
         Hp -= damage * (1 - def.Value / 100);
       }
-      
       return Hp;
     }
     

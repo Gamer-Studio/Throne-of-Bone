@@ -3,6 +3,7 @@ using DG.Tweening;
 using ToB.Core;
 using ToB.Player;
 using ToB.Utils;
+using AudioType = ToB.Core.AudioType;
 
 namespace ToB.Entities.Effect
 {
@@ -63,6 +64,8 @@ namespace ToB.Entities.Effect
                         ResourceManager.Instance.GiveGoldToPlayer(amount);
                     else
                         ResourceManager.Instance.GiveManaToPlayer(amount);
+
+                    AudioManager.Play("env_coins_pickup_shake_05",AudioType.Effect);
                     gameObject.Release();
                     GameObject effect = obtainEffectPrefab.Pooling();
                     effect.transform.position = player.transform.position;

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using NaughtyAttributes;
+using ToB.Core;
 using ToB.Core.InputManager;
 using ToB.Entities;
 using ToB.Entities.Buffs;
@@ -14,6 +15,7 @@ using ToB.Utils.UI;
 using ToB.Worlds;
 using UnityEngine;
 using UnityEngine.Events;
+using Object = System.Object;
 
 namespace ToB.Player
 {
@@ -55,9 +57,10 @@ namespace ToB.Player
     
     public bool IsImmune => isDamageImmune || dashImmuneTime > 0;
     private bool isDamageImmune = false;
+    public ObjectAudioPlayer audioPlayer;
     
     // 플레이어 스텟 관리 클래스입니다.
-    [Label("캐릭터 스텟"), Foldout("State")] public PlayerStats stat = new();
+    [Label("캐릭터 스텟")] public PlayerStats stat = new();
 
     // Jump State
     private const string JumpState = nameof(JumpState);
@@ -142,12 +145,14 @@ namespace ToB.Player
       if (!body) body = GetComponent<Rigidbody2D>();
       if (!animator) animator = GetComponentInChildren<Animator>();
       if (!spriteRenderer) spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+      if (!audioPlayer) audioPlayer = GetComponent<ObjectAudioPlayer>();
     }
     
 #endif
 
     private void Awake()
     {
+      if (!audioPlayer) audioPlayer = GetComponent<ObjectAudioPlayer>();
       Load();
       InitDash();
       InitAttack();
@@ -157,6 +162,7 @@ namespace ToB.Player
         groundChecker.onLanding.AddListener(() =>
         {
           animator.SetBool(BOOL_IS_FLIGHT, false);
+          audioPlayer.Play(!inWater ? "Footsteps_DirtyGround_Jump_Land_02" : "Footsteps_Water_Jump_Light_01");
         });
       }
     }
@@ -441,10 +447,9 @@ namespace ToB.Player
       else
       {
         stat.Damage(value);
+        if (stat.Hp > 0) audioPlayer.Play("VOXReac_Death_HA_MaleCharVoc_21"); // 피통이 남았을 시
+        else audioPlayer.Play("VOXMisc_Drowning_HA_MaleCharVoc_02"); // 사망 시
         
-        // 독버프로 맞으면 화면에 경광등 켜져서 일단은 sender로 예외 처리.
-        // 추후 걸린 버프를 구분할 수 있는 방법이 생기면 (독 파워업 등등)
-        // 별도 이펙트 혹은 지속시간 인디케이터 UI를 만들기 좋을 것 같다고 생각해요!
         if (sender.Effectable)
         {
           UIManager.Instance.effectUI.PlayHitEffect();

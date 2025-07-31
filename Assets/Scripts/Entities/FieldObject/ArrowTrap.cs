@@ -1,6 +1,7 @@
 using System.Collections;
 using ToB.Entities.Projectiles;
 using ToB.Utils;
+using ToB.Worlds;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
@@ -54,6 +55,7 @@ namespace ToB.Entities.FieldObject
             eff.damage = ArrowDamage;
             eff.knockBackForce = ArrowKnockBack;
             eff.speed = ArrowSpeed;
+            eff.Team = Team.None;
             
             eff.ClearEffect();
             

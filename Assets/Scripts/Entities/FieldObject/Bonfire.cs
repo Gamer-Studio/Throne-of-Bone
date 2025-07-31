@@ -18,6 +18,7 @@ namespace ToB.Entities.FieldObject
         [SerializeField] public Transform TPTransform;
         [SerializeField] public GameObject BonfireUIPanel;
         public bool IsInteractable { get; set; }
+        private ObjectAudioPlayer audioPlayer;
         [SerializeField] private Animator animator;
         
         #region SaveLoad
@@ -26,6 +27,7 @@ namespace ToB.Entities.FieldObject
         {
             IsInteractable = true;
             BonfireUIPanel.SetActive(false);
+            audioPlayer = GetComponent<ObjectAudioPlayer>();
         }
         
 
@@ -51,7 +53,7 @@ namespace ToB.Entities.FieldObject
         
         public void Interact()
         {
-            AudioManager.Play("fntgm_magic_fire_08",AudioType.Effect);
+            audioPlayer.Play("fntgm_magic_fire_08");
             StageManager.Instance.player.stat.HealtoFullHp();
             if(!isDiscovered) BonfireDiscovered();
             else

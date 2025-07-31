@@ -2,6 +2,7 @@ using System.Collections;
 using DG.Tweening;
 using ToB.Utils;
 using ToB.Entities.Projectiles;
+using ToB.Worlds;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
@@ -47,6 +48,7 @@ namespace ToB.Entities.FieldObject
             eff.damage = RockDamage;
             eff.knockBackForce = RockKnockBack;
             eff.speed = RockSpeedMultiplier;
+            eff.Team = Team.None;
             
             eff.ClearEffect();
             
