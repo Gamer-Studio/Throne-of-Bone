@@ -28,6 +28,8 @@ namespace ToB.Core
             DialogCamera = GetComponentInChildren<CinemachineVirtualCamera>();
         }
 
+        
+        #region withNPC
         public void StartDialogWith(NPCBase npc)
         {
             CurrentNPC = npc;
@@ -91,5 +93,9 @@ namespace ToB.Core
             
             GameCameraManager.Instance.SwitchFirstCamera(DialogCamera);
         }
+        
+        #endregion
+        
+        
     }
 }

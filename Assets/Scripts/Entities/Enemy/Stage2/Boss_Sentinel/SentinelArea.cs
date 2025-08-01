@@ -15,10 +15,10 @@ namespace ToB.Entities
         [SerializeField] private GameObject exitBlocker;
         [SerializeField] private GameObject bloodBubblePrefab;
         [SerializeField] private Transform leftBottomPos;
-        
-        [Header("클론 스폰")]
-        [field:SerializeField] Sentinel clone1;
-        [field:SerializeField] Sentinel clone2;
+
+        [Header("클론 스폰")] [field: SerializeField]
+        Sentinel clone1;
+        [field: SerializeField] Sentinel clone2;
 
         private void Awake()
         {
@@ -33,26 +33,59 @@ namespace ToB.Entities
 
             clone1.Agent.enabled = false;
             clone2.Agent.enabled = false;
+
+            sentinel.gameObject.SetActive(false);
         }
 
         private void PlayerEntered()
         {
-            sentinel.SetTarget(StageManager.Instance.player.transform);
-            DOVirtual.DelayedCall(1f, () => exitBlocker.SetActive(true));
-
+            
             StartCoroutine(SentinelRoomCoroutine());
         }
+
         private void PlayerExit()
         {
             sentinel.SetTarget(null);
         }
 
+        #region BossSequence
         IEnumerator SentinelRoomCoroutine()
         {
+            yield return new WaitForSeconds(0.5f);
+            exitBlocker.SetActive(true);
+            yield return new WaitForSeconds(0.5f);
+            
+            // TODO: 효수된 시체 연출
+            
+            yield return StartCoroutine(SentinelRise());
+            
+            // TODO: 대화
+          
+            sentinel.SetTarget(StageManager.Instance.player.transform);
+
             yield return new WaitUntil(() => sentinel.Phase == 2);
             
+            yield return new WaitUntil(()=> !sentinel.IsAlive);
+            yield return StartCoroutine(SentinelDie());
         }
 
+        private string SentinelDie()
+        {
+            throw new NotImplementedException();
+        }
+
+        IEnumerator SentinelRise()
+        {
+            StageManager.Instance.ChangeGameState(GameState.UI);
+            sentinel.gameObject.SetActive(true);
+            sentinel.Animator.SetTrigger(CloneRise);
+            
+            yield return new WaitForSeconds(1.3f);
+            StageManager.Instance.ChangeGameState(GameState.Play);
+        }
+        
+        #endregion
+        
         public void StartBloodBubbles()
         {
             StartCoroutine(BloodBubbles());
@@ -66,12 +99,14 @@ namespace ToB.Entities
                 GameObject bubbleObj = bloodBubblePrefab.Pooling();
                 bubbleObj.transform.position = leftBottomPos.position + new Vector3(i, 0, 0);
             }
+
             yield return new WaitForSeconds(1.8f);
             for (int i = 3; i < 23; i += 4)
             {
                 GameObject bubbleObj = bloodBubblePrefab.Pooling();
                 bubbleObj.transform.position = leftBottomPos.position + new Vector3(i, 0, 0);
             }
+
             yield return new WaitForSeconds(1.8f);
             for (int i = 1; i < 23; i += 4)
             {
@@ -93,7 +128,7 @@ namespace ToB.Entities
             yield return null;
             clone.Hitbox.enabled = false;
             clone.Agent.enabled = true;
-            
+
             yield return new WaitForSeconds(1.3f);
             Debug.Log("히트박스 키기");
             clone.Hitbox.enabled = true;
@@ -112,11 +147,17 @@ namespace ToB.Entities
             clone.Agent.enabled = false;
             clone.SetTarget(null);
             clone.Animator.SetTrigger(EnemyAnimationString.Die);
-            
-            DOVirtual.DelayedCall(1.3f,()=>
-            {
-                clone.gameObject.SetActive(false);
-            });
+
+            DOVirtual.DelayedCall(1.3f, () => { clone.gameObject.SetActive(false); });
+        }
+
+        public Vector3 GetRandomFloorPosition()
+        {
+            Vector3 pos = leftBottomPos.position;
+
+            pos.x += UnityEngine.Random.Range(1, location.Width - 1);
+
+            return pos;
         }
     }
 }
