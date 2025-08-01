@@ -177,6 +177,7 @@ namespace ToB.Scenes.Stage
 
     public void ChangeGameState(GameState state)
     {
+      player.IsMoving = false;
       CurrentState = state;
     }
 

@@ -23,5 +23,12 @@ namespace ToB.Utils
                 sprite.material.SetFloat("_Alpha", remainedTime / duration);
             }
         }
+        
+        public static Vector3 ConvertGamePosToUIPos(Vector3 worldPos, Camera camera)
+        {
+            Vector3 screenPos = camera.WorldToScreenPoint(worldPos);
+            screenPos.z = 0;
+            return screenPos;
+        }
     }
 }

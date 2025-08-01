@@ -119,26 +119,20 @@ namespace ToB.Entities
                     return;
                 }
                 
-                Debug.Log(currentHP / DataSO.HP_1Phase);
                 while (SpecialAttackQueue.Count > 0 && SpecialAttackQueue.Peek() > currentHP / DataSO.HP_1Phase)
                 {
                     float value = SpecialAttackQueue.Dequeue();
 
                     if (Mathf.Approximately(value, 0.75f))
                     {
-                        Debug.Log("1페이즈 75%");
                         Agent.BlackboardReference.SetVariableValue("CanUseSpecialAttack", true);
                     }
                     else if (Mathf.Approximately(value, 0.5f))
                     {
-                        Debug.Log("1페이즈 50%");
-
                         Agent.BlackboardReference.SetVariableValue("CanUseJumpSlam", true);
                     }
                     else if (Mathf.Approximately(value, 0.25f))
                     {
-                        Debug.Log("1페이즈 25%");
-
                         int num = Random.Range(0, 2);
                         Agent.BlackboardReference.SetVariableValue(num == 0 ? "CanUseSpecialAttack" : "CanUseJumpSlam",
                             true);
@@ -148,7 +142,6 @@ namespace ToB.Entities
             else if (Phase == 2)
             {
                 float currentHP = Stat.CurrentHP;
-                Debug.Log("HP perc :" + currentHP / (DataSO.HP - DataSO.HP_1Phase));
 
                 while (SpecialAttackQueue.Count > 0 && SpecialAttackQueue.Peek() > currentHP / (DataSO.HP - DataSO.HP_1Phase))    // 체력 캐싱은 리팩토링할 때 이 클래스의 필드에
                 {
@@ -156,19 +149,14 @@ namespace ToB.Entities
 
                     if (Mathf.Approximately(value, 0.8f))
                     {
-                        Debug.Log("2페이즈 80%");
                         Agent.BlackboardReference.SetVariableValue("CanUseSpecialAttack", true);
                     }
                     else if (Mathf.Approximately(value, 0.6f))
                     {
-                        Debug.Log("2페이즈 60%");
-
                         Agent.BlackboardReference.SetVariableValue("CanUseClone", true);
                     }
                     else if (Mathf.Approximately(value, 0.2f))
                     {
-                        Debug.Log("2페이즈 20%");
-                        
                         Agent.BlackboardReference.SetVariableValue("CanUseSpecialAttack", true);
                     }
                 }
