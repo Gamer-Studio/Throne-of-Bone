@@ -292,6 +292,7 @@ namespace ToB.Entities
                 yield return new WaitForSeconds(1.2f);
             }
 
+            transform.position = area.GetRandomFloorPosition();
             BubbleAttackEnd = true;
         }
 
