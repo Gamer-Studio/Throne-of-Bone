@@ -1,6 +1,8 @@
 using System;
 using NaughtyAttributes;
 using ToB.Entities;
+using ToB.Entities.Interface;
+using ToB.Worlds;
 using UnityEngine;
 
 namespace ToB.Entities
@@ -12,7 +14,7 @@ namespace ToB.Entities
         FromEnemy
     }
     [RequireComponent(typeof(Rigidbody2D))]
-    public class EnemyAttackArea : MonoBehaviour
+    public class EnemyAttackArea : MonoBehaviour, IAttacker
     {
         [SerializeField, ReadOnly] private Enemy owner;
         [SerializeField] private float damage;
@@ -27,6 +29,10 @@ namespace ToB.Entities
         
         [SerializeField, ReadOnly] KnockbackType knockbackType;
         
+        [field:SerializeField] public bool Blockable { get; private set; }
+        public bool Effectable => false;
+        public Vector3 Position => transform.position;
+        public Team Team => Team.Enemy;
         private void Reset()
         {
             rb.bodyType = RigidbodyType2D.Kinematic;
@@ -67,5 +73,7 @@ namespace ToB.Entities
                     other.KnockBack(knockBackForce, gameObject);
             }
         }
+
+        
     }
 }

@@ -60,5 +60,9 @@ namespace ToB.Entities
                    point.y >= transform.position.y - height / 2 && point.y <= transform.position.y + height / 2;
         }
         
+        public void ForceChangeWidth(float width)
+        {
+            this.width = width;
+        }
     }
 }

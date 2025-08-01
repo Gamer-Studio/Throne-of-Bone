@@ -8,7 +8,7 @@ using UnityEngine.InputSystem;
 namespace ToB.Core.InputManager
 {
     
-    public partial class InputManager
+    public partial class TOBInputManager
     {
         public void UIProcess(InputAction.CallbackContext context)
         {

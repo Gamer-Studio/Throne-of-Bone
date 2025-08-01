@@ -69,7 +69,7 @@ namespace ToB.Entities
         {
             if (phaseCount != 0) return;
             phaseCount++;
-            InputManager.Instance.SetInputActive(false);
+            TOBInputManager.Instance.SetInputActive(false);
             StartCoroutine(Sequence());
         }
 
@@ -91,7 +91,7 @@ namespace ToB.Entities
             roomVirtualCamera.Priority = 0;
             
             firstSewerRat.target = StageManager.Instance.player.transform;
-            InputManager.Instance.SetInputActive(true);
+            TOBInputManager.Instance.SetInputActive(true);
             
             // Phase 2 : 두 마리
             if(!hardMode) yield break;

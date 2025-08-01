@@ -28,6 +28,7 @@ namespace ToB.Entities
         [SerializeField] private LayerMask groundLayer;
         [SerializeField] private GameObject rangeAttackPrefab;
         [SerializeField] private GameObject bloodBubblePrefab;
+        [field:SerializeField] public GameObject GlowObject { get; private set;  }
 
         [Header("영역 컴포넌트")] 
         [SerializeField] private SentinelArea area;
@@ -37,10 +38,11 @@ namespace ToB.Entities
         [SerializeField] private VisualEffect shockwaveEffect;
         [SerializeField] private Transform shockwaveSpawnPositionLeft;
         [SerializeField] private Transform shockwaveSpawnPositionRight;
-        [SerializeField] private float shockwaveAccelPower = 3;
+         private readonly float shockwaveAccelPower = 25;
 
         [Header("2페이즈")] 
         [SerializeField] private VisualEffect phase2Aura;
+        public VisualEffect Phase2Aura => phase2Aura;
         public int Phase { get; private set; }
         public Queue<float> SpecialAttackQueue { get; private set; }
 
@@ -106,6 +108,8 @@ namespace ToB.Entities
                 prevHP = Stat.CurrentHP;
             }
         }
+        
+        
 
         private void PhaseCalculate()
         {
@@ -119,26 +123,20 @@ namespace ToB.Entities
                     return;
                 }
                 
-                Debug.Log(currentHP / DataSO.HP_1Phase);
                 while (SpecialAttackQueue.Count > 0 && SpecialAttackQueue.Peek() > currentHP / DataSO.HP_1Phase)
                 {
                     float value = SpecialAttackQueue.Dequeue();
 
                     if (Mathf.Approximately(value, 0.75f))
                     {
-                        Debug.Log("1페이즈 75%");
                         Agent.BlackboardReference.SetVariableValue("CanUseSpecialAttack", true);
                     }
                     else if (Mathf.Approximately(value, 0.5f))
                     {
-                        Debug.Log("1페이즈 50%");
-
                         Agent.BlackboardReference.SetVariableValue("CanUseJumpSlam", true);
                     }
                     else if (Mathf.Approximately(value, 0.25f))
                     {
-                        Debug.Log("1페이즈 25%");
-
                         int num = Random.Range(0, 2);
                         Agent.BlackboardReference.SetVariableValue(num == 0 ? "CanUseSpecialAttack" : "CanUseJumpSlam",
                             true);
@@ -148,7 +146,6 @@ namespace ToB.Entities
             else if (Phase == 2)
             {
                 float currentHP = Stat.CurrentHP;
-                Debug.Log("HP perc :" + currentHP / (DataSO.HP - DataSO.HP_1Phase));
 
                 while (SpecialAttackQueue.Count > 0 && SpecialAttackQueue.Peek() > currentHP / (DataSO.HP - DataSO.HP_1Phase))    // 체력 캐싱은 리팩토링할 때 이 클래스의 필드에
                 {
@@ -156,19 +153,14 @@ namespace ToB.Entities
 
                     if (Mathf.Approximately(value, 0.8f))
                     {
-                        Debug.Log("2페이즈 80%");
                         Agent.BlackboardReference.SetVariableValue("CanUseSpecialAttack", true);
                     }
                     else if (Mathf.Approximately(value, 0.6f))
                     {
-                        Debug.Log("2페이즈 60%");
-
                         Agent.BlackboardReference.SetVariableValue("CanUseClone", true);
                     }
                     else if (Mathf.Approximately(value, 0.2f))
                     {
-                        Debug.Log("2페이즈 20%");
-                        
                         Agent.BlackboardReference.SetVariableValue("CanUseSpecialAttack", true);
                     }
                 }
@@ -179,7 +171,10 @@ namespace ToB.Entities
         {
             Agent.End();
             Agent.BlackboardReference.SetVariableValue("SentinelState", SentinelState.Idle);
-
+            
+            Animator.Rebind();
+            Animator.Update(0f);
+            
             Phase = 2;
             Agent.BlackboardReference.SetVariableValue("Phase", 2);
 
@@ -221,8 +216,17 @@ namespace ToB.Entities
         protected override void Die()
         {
             base.Die();
+            
+            shockwaveEffect.SendEvent("OnPlay");
             Agent.BlackboardReference.SetVariableValue("IsAlive", false);
+            Agent.End();
+            Agent.enabled = false;
+
+            Animator.Rebind();
+            Animator.Update(0);
+            
             if (attackCoroutine != null) StopCoroutine(attackCoroutine);
+            Hitbox.enabled = false;
         }
 
         public override void SetTarget(Transform target)
@@ -292,7 +296,7 @@ namespace ToB.Entities
                 yield return new WaitForSeconds(1.2f);
             }
 
-            transform.position = area.GetRandomFloorPosition();
+            if (Phase == 2) transform.position = area.GetRandomFloorPosition();
             BubbleAttackEnd = true;
         }
 

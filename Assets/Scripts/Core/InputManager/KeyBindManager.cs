@@ -26,7 +26,7 @@ namespace ToB.Core.InputManager
             Debug.Log("키셋팅 파일을 찾았습니다");
             string json = File.ReadAllText(KeyBindsFilePath);
             
-            InputManager.Instance.PlayerInput.actions.LoadBindingOverridesFromJson(json);
+            TOBInputManager.Instance.PlayerInput.actions.LoadBindingOverridesFromJson(json);
         }
 
         public void SaveCurrentKeySettings()

@@ -23,7 +23,8 @@ namespace ToB.Scenes.Stage
   {
     Play,
     UI,
-    Dialog
+    Dialog,
+    CutScene
   }
 
   [RequireComponent(typeof(RoomController))]
@@ -38,8 +39,12 @@ namespace ToB.Scenes.Stage
     [field: Foldout(State), SerializeField] public GameState CurrentState { get; private set; } = GameState.Play;
     [SerializeField, ReadOnly] private bool unloaded;
 
+    public bool cutSceneProcessCall = false;
+
     public int CurrentStageIndex => roomController.currentRoom.stageIndex;
     public int CurrentRoomIndex => roomController.currentRoom.roomIndex;
+
+    public bool isTestScene = false;
 
     #endregion
 
@@ -94,6 +99,7 @@ namespace ToB.Scenes.Stage
         if (tempObj) tempObj.SetActive(false);
       }
 
+      if (isTestScene) return;
       // 시작 방 로딩
       var savedInfo = SAVE.Current.SavePoints.GetLastSavePoint();
 
@@ -115,8 +121,8 @@ namespace ToB.Scenes.Stage
 
     private void Start()
     {
-      InputManager.Instance.player = FindAnyObjectByType<PlayerController>();
-      if (!InputManager.Instance.player)
+      TOBInputManager.Instance.player = FindAnyObjectByType<PlayerController>();
+      if (!TOBInputManager.Instance.player)
         DebugSymbol.Editor.Log("플레이어가 씬에 없습니다.");
       // InputManager.Instance.SetActionMap(InputActionMaps.Player);
     }
@@ -178,6 +184,7 @@ namespace ToB.Scenes.Stage
 
     public void ChangeGameState(GameState state)
     {
+      player.IsMoving = false;
       CurrentState = state;
     }
 
