@@ -12,7 +12,13 @@ namespace ToB.Entities.FieldObject
         [field: SerializeField] public bool Blockable { get; set; }
         [field: SerializeField] public bool Effectable { get; set; }
         public Vector3 Position => transform.position;
-        public Team Team => Team.None;
+        public Team Team => Team.Enemy;
+
+        private void Awake()
+        {
+            Blockable = false;
+            Effectable = true;
+        }
         
         private void OnTriggerEnter2D(Collider2D other)
         {

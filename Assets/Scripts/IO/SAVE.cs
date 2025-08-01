@@ -64,6 +64,11 @@ namespace ToB.IO
     /// Root/Player/PlayerStat 경로의 데이터입니다.
     /// </summary>
     public PlayerStatModule PlayerStat => Player.Node<PlayerStatModule>(nameof(PlayerStat), true);
+    
+    /// <summary>
+    /// Root/SavePoints 경로의 데이터입니다.
+    /// </summary>
+    public SavePointModule SavePoints => Current.Data.Node<SavePointModule>(nameof(SavePoints), true);
 
     #endregion
     

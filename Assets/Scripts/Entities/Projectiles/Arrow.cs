@@ -1,6 +1,7 @@
 using NaughtyAttributes;
 using ToB.Entities.Interface;
 using ToB.Utils;
+using ToB.Worlds;
 using UnityEngine;
 
 namespace ToB.Entities.Projectiles
@@ -90,6 +91,7 @@ namespace ToB.Entities.Projectiles
         {
           camera = Camera.main;
           timeAfterLaunch = 0.3f;
+          Team = Team.Enemy;
         }
 
        private void FixedUpdate()

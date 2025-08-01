@@ -5,6 +5,7 @@ using ToB.Core;
 using ToB.Core.InputManager;
 using ToB.Entities.NPC;
 using ToB.IO;
+using ToB.IO.SubModules;
 using ToB.Player;
 using ToB.UI;
 using ToB.Utils;
@@ -13,6 +14,7 @@ using ToB.World;
 using ToB.Worlds;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 namespace ToB.Scenes.Stage
 {
@@ -26,16 +28,17 @@ namespace ToB.Scenes.Stage
   [RequireComponent(typeof(RoomController))]
   public class StageManager : ManualSingleton<StageManager>
   {
+    public static RoomController RoomController => Instance.roomController;
+    
     #region State
     private const string State = "State";
 
     [Label("플레이어"), Tooltip("현재 활성화된 Player 태그가 붙은 플레이어 캐릭터입니다."), Foldout(State)] public PlayerCharacter player;
-    [Label("현재 플레이어가 있는 방"), Foldout(State)] public Room currentRoom;
     [field: Foldout(State), SerializeField] public GameState CurrentState { get; private set; } = GameState.Play;
     [SerializeField, ReadOnly] private bool unloaded;
 
-    public int CurrentStageIndex => currentRoom.stageIndex;
-    public int CurrentRoomIndex => currentRoom.roomIndex;
+    public int CurrentStageIndex => roomController.currentRoom.stageIndex;
+    public int CurrentRoomIndex => roomController.currentRoom.roomIndex;
 
     #endregion
 
@@ -46,7 +49,7 @@ namespace ToB.Scenes.Stage
     [Label("로딩된 Confiner 콜라이더 목록"), Foldout(Binding), SerializeField] private SerializableDictionary<Collider2D, GameObject> loadedColliders = new();
     [Label("시네머신 오류방지용 임시 오브젝트"), Foldout(Binding), SerializeField] private GameObject tempObj;
     [field: Foldout(Binding), SerializeField] public CinemachineVirtualCamera MainVirtualCamera { get; private set; }
-    [Foldout(Binding), SerializeField] private RoomController roomController;
+    [Foldout(Binding)] public RoomController roomController;
     [Foldout(Binding), SerializeField] private CinemachineConfiner2D confiner;
     [Foldout(Binding), SerializeField] private Transform roomContainer;
     [Foldout(Binding), SerializeField] private new Camera camera;
@@ -64,11 +67,6 @@ namespace ToB.Scenes.Stage
     /// 플레이어가 방에서 나갔을 때 이벤트. <br />
     /// </summary>
     public UnityEvent<Room> onRoomExit = new();
-
-    public void InvokeRoomExit(Room room)
-    {
-      if(!unloaded) onRoomExit.Invoke(room);
-    }
 
     #endregion
 
@@ -96,29 +94,21 @@ namespace ToB.Scenes.Stage
       }
 
       // 시작 방 로딩
+      var savedInfo = SAVE.Current.SavePoints.GetLastSavePoint();
+
+      if (!savedInfo.Equals(SavePointData.Default))
       {
-        
+        // 저장기록이 있을 경우 마지막 저장지점에서 소환
+        int stageIndex = savedInfo.stageIndex, roomIndex = savedInfo.roomIndex;
+        var room = RoomController.LoadRoom(stageIndex, roomIndex, true);
+        var bonfire = room.bonfires[savedInfo.pointIndex];
+        player.transform.position = bonfire.TPTransform.position;
       }
-
-      if (SAVE.Current != null) {
-        // 플레이어 소환 
-        
-        int stageIndex = SAVE.Current.Player.currentStage,
-          roomIndex = SAVE.Current.Player.currentRoom;
-        var playerPos = SAVE.Current.Player.savedPosition;
-
-        if (stageIndex != 0 && roomIndex != 0)
-        {
-          foreach (var room in roomController.loadedRooms)
-          {
-            if (room.stageIndex != stageIndex || room.roomIndex != roomIndex) continue;
-            
-            currentRoom = room;
-            player.transform.position = room.transform.TransformPoint(playerPos);
-            
-            break;
-          }
-        }
+      else
+      {
+        // 저장기록이 없을 경우 초기 지점에서 소환
+        var room = RoomController.LoadRoom(1, 1, true);
+        player.transform.position = room.transform.position.X(v => v + 12).Y(v => v - 11);
       }
     }
 

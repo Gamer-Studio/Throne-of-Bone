@@ -55,7 +55,7 @@ namespace ToB.Entities.FieldObject
             eff.damage = ArrowDamage;
             eff.knockBackForce = ArrowKnockBack;
             eff.speed = ArrowSpeed;
-            eff.Team = Team.None;
+            eff.Team = Team.Enemy;
             
             eff.ClearEffect();
             

@@ -58,7 +58,9 @@ namespace ToB.Entities
             {
                 other.Damage(damage, owner);
                 if (knockbackType == KnockbackType.Directional)
+                {
                     other.KnockBack(knockBackForce, knockBackDirection * owner.LookDirectionHorizontal);
+                }
                 else if (knockbackType == KnockbackType.FromEnemy)
                     other.KnockBack(knockBackForce,  other.transform.position - owner.transform.position);
                 else

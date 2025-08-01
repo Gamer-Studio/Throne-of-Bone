@@ -10,7 +10,7 @@ using Unity.Properties;
 public partial class DeleteExternalVelocityAction : Action
 {
     [SerializeReference] public BlackboardVariable<string> Key;
-    [SerializeReference] public BlackboardVariable<Guardian> Guardian;
+    [SerializeReference] public BlackboardVariable<Enemy> Enemy;
     
     protected override Status OnStart()
     {
@@ -24,7 +24,7 @@ public partial class DeleteExternalVelocityAction : Action
 
     protected override void OnEnd()
     {
-        Guardian.Value.Physics.externalVelocity.Remove(Key);
+        Enemy.Value.Physics.externalVelocity.Remove(Key);
     }
 }
 

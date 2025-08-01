@@ -435,6 +435,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1204086232}
   - component: {fileID: 1204086231}
+  - component: {fileID: 1204086233}
   m_Layer: 0
   m_Name: StageManager
   m_TagString: Untagged
@@ -455,18 +456,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 1706626440}
-  currentRoom: {fileID: 0}
   <CurrentState>k__BackingField: 0
   unloaded: 0
   confinerBorder: {fileID: 1906523113}
   loadedColliders:
     array: []
   tempObj: {fileID: 1790709148}
+  <MainVirtualCamera>k__BackingField: {fileID: 2052779203}
+  roomController: {fileID: 0}
   confiner: {fileID: 2052779205}
   roomContainer: {fileID: 640009867}
-  <MainCamera>k__BackingField: {fileID: 449858571}
-  <MainVirtualCamera>k__BackingField: {fileID: 2052779203}
-  loadedRooms: []
+  camera: {fileID: 0}
   onRoomEnter:
     m_PersistentCalls:
       m_Calls: []
@@ -489,6 +489,21 @@ Transform:
   - {fileID: 1906523114}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1204086233
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1204086230}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 334d80838b7e4784b2fe64b5cb7ba79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentRoom: {fileID: 0}
+  loadedRooms: []
+  roomContainer: {fileID: 0}
 --- !u!1 &1399526181
 GameObject:
   m_ObjectHideFlags: 3

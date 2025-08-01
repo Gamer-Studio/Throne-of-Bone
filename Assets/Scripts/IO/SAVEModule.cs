@@ -156,8 +156,10 @@ namespace ToB.IO
 
           ISAVEModule childModule = childModuleInfo.Get(fileName, nameof(SAVEModule)) switch
           {
+            nameof(SAVEModule) => Node(fileName, true),
             nameof(PlayerModule) => Node<PlayerModule>(fileName, true),
             nameof(PlayerStatModule) => Node<PlayerStatModule>(fileName, true),
+            nameof(SavePointModule) => Node<SavePointModule>(fileName, true),
             _ => Node(fileName, true),
           };
           await childModule.Load(System.IO.Path.Combine(path, fileName), true);
@@ -187,7 +189,6 @@ namespace ToB.IO
 
     /// <summary>
     /// 제네릭 바인딩 기능이 있는 노드를 반환합니다.
-    /// 아직 사용하지 말아주세요.. 구현중입니다.
     /// </summary>
     /// <param name="key"></param>
     /// <param name="force"></param>
@@ -208,6 +209,7 @@ namespace ToB.IO
         var type when type == typeof(SAVEModule) => (T) (object) new SAVEModule(key),
         var type when type == typeof(PlayerModule) => (T) (object) new PlayerModule(key),
         var type when type == typeof(PlayerStatModule) => (T) (object) new PlayerStatModule(key),
+        var type when type == typeof(SavePointModule) => (T)  (object) new SavePointModule(key),
         _ => (T) Activator.CreateInstance(typeof(T), key),
       };
       

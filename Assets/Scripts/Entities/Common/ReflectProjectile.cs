@@ -31,7 +31,7 @@ namespace ToB.Entities
                 
                 RaycastHit2D hit = Physics2D.Raycast(transform.position, swordEffect.direction, 100, hitPointRaycastLayer);
 
-                PlayEffect(hit.point);
+                if(effectPrefab) PlayEffect(hit.point);
                 
             }
         }
