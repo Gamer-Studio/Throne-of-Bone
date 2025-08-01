@@ -89,7 +89,7 @@ namespace ToB.UI.BookPanels
                     button.interactable = true;
 
                     action.Enable();
-                    InputManager.Instance.KeyBindManager.SaveCurrentKeySettings();
+                    TOBInputManager.Instance.KeyBindManager.SaveCurrentKeySettings();
                     ShowBindKey();
                 });
             

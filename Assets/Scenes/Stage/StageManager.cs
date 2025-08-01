@@ -121,8 +121,8 @@ namespace ToB.Scenes.Stage
 
     private void Start()
     {
-      InputManager.Instance.player = FindAnyObjectByType<PlayerController>();
-      if (!InputManager.Instance.player)
+      TOBInputManager.Instance.player = FindAnyObjectByType<PlayerController>();
+      if (!TOBInputManager.Instance.player)
         DebugSymbol.Editor.Log("플레이어가 씬에 없습니다.");
       // InputManager.Instance.SetActionMap(InputActionMaps.Player);
     }

@@ -22,7 +22,7 @@ namespace ToB.UI.BookPanels
 
         private void OnEnable()
         {
-            if (!playerInput) playerInput = InputManager.Instance.PlayerInput;
+            if (!playerInput) playerInput = TOBInputManager.Instance.PlayerInput;
             actionAsset ??= playerInput.currentActionMap;
         }
     }

@@ -7,7 +7,7 @@ using UnityEngine.InputSystem;
 namespace ToB.Core.InputManager
 {
     
-    public partial class InputManager
+    public partial class TOBInputManager
     {
         public void PlayerMove(InputAction.CallbackContext context)
         {

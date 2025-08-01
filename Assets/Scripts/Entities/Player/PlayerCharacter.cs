@@ -549,7 +549,7 @@ namespace ToB.Player
     {
       UIManager.Instance.effectUI.PlayFadeOutEffect();
       //순서상 플레이어를 조작하는 컨트롤러를 먼저 끄고, 플레이어 상태를 고정
-      InputManager.Instance.SetInputActive(false);
+      TOBInputManager.Instance.SetInputActive(false);
       IsMoving = false;
       body.constraints = RigidbodyConstraints2D.FreezeAll;
       while (isFadeOutEnded == false)
@@ -558,7 +558,7 @@ namespace ToB.Player
       }
       body.constraints = RigidbodyConstraints2D.FreezeRotation;
       this.transform.position = TPTransform.position;
-      InputManager.Instance.SetInputActive(true);
+      TOBInputManager.Instance.SetInputActive(true);
       // 안전하게 가시 콜라이더에서 탈출
       yield return new WaitForEndOfFrame();
       isFadeOutEnded = false;
