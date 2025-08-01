@@ -28,6 +28,7 @@ namespace ToB.Entities
         [SerializeField] private LayerMask groundLayer;
         [SerializeField] private GameObject rangeAttackPrefab;
         [SerializeField] private GameObject bloodBubblePrefab;
+        [field:SerializeField] public GameObject GlowObject { get; private set;  }
 
         [Header("영역 컴포넌트")] 
         [SerializeField] private SentinelArea area;
@@ -37,10 +38,11 @@ namespace ToB.Entities
         [SerializeField] private VisualEffect shockwaveEffect;
         [SerializeField] private Transform shockwaveSpawnPositionLeft;
         [SerializeField] private Transform shockwaveSpawnPositionRight;
-        [SerializeField] private float shockwaveAccelPower = 3;
+         private readonly float shockwaveAccelPower = 25;
 
         [Header("2페이즈")] 
         [SerializeField] private VisualEffect phase2Aura;
+        public VisualEffect Phase2Aura => phase2Aura;
         public int Phase { get; private set; }
         public Queue<float> SpecialAttackQueue { get; private set; }
 
@@ -169,7 +171,10 @@ namespace ToB.Entities
         {
             Agent.End();
             Agent.BlackboardReference.SetVariableValue("SentinelState", SentinelState.Idle);
-
+            
+            Animator.Rebind();
+            Animator.Update(0f);
+            
             Phase = 2;
             Agent.BlackboardReference.SetVariableValue("Phase", 2);
 
@@ -211,7 +216,15 @@ namespace ToB.Entities
         protected override void Die()
         {
             base.Die();
+            
+            shockwaveEffect.SendEvent("OnPlay");
             Agent.BlackboardReference.SetVariableValue("IsAlive", false);
+            Agent.End();
+            Agent.enabled = false;
+
+            Animator.Rebind();
+            Animator.Update(0);
+            
             if (attackCoroutine != null) StopCoroutine(attackCoroutine);
             Hitbox.enabled = false;
         }

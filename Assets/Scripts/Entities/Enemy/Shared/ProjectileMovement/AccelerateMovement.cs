@@ -24,7 +24,7 @@ namespace ToB.Entities
         
 
 
-        private void Update()
+        private void FixedUpdate()
         {
             rb.AddForce(accelerateDirection);
             if(rb.linearVelocity.magnitude > maxSpeed) 

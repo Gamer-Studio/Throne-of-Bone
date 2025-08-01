@@ -44,6 +44,8 @@ namespace ToB.Scenes.Stage
     public int CurrentStageIndex => roomController.currentRoom.stageIndex;
     public int CurrentRoomIndex => roomController.currentRoom.roomIndex;
 
+    public bool isTestScene = false;
+
     #endregion
 
     #region Binding
@@ -97,6 +99,7 @@ namespace ToB.Scenes.Stage
         if (tempObj) tempObj.SetActive(false);
       }
 
+      if (isTestScene) return;
       // 시작 방 로딩
       var savedInfo = SAVE.Current.SavePoints.GetLastSavePoint();
 

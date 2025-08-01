@@ -5,9 +5,14 @@ namespace ToB.UI
 {
     public class WorldSpaceUIScaler : MonoBehaviour
     {
+        [SerializeField] private Transform parentElement; 
         void LateUpdate()
         {
-            transform.localScale = Vector3.one * GameCameraManager.Instance.zoomRatio / 100;
+            Vector3 scaleUnit = Vector3.one;
+            
+            if (parentElement.localScale.x < 0) scaleUnit.x = -1;
+            
+            transform.localScale = scaleUnit * GameCameraManager.Instance.zoomRatio / 100;
         }
     }
 }

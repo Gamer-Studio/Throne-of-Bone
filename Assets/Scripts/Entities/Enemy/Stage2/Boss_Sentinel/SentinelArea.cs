@@ -5,18 +5,20 @@ using TMPro;
 using ToB.Scenes.Stage;
 using ToB.Utils;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace ToB.Entities
 {
     public class SentinelArea : MonoBehaviour
     {
         private static readonly int CloneRise = Animator.StringToHash("CloneRise");
+        private static readonly int DieContinue = Animator.StringToHash("DieContinue");
         [SerializeField] private Sentinel sentinel;
         [SerializeField] Location location;
         [SerializeField] private GameObject exitBlocker;
         [SerializeField] private GameObject bloodBubblePrefab;
         [SerializeField] private Transform leftBottomPos;
-        
+
         [Header("클론 스폰")] 
         [field: SerializeField] Sentinel clone1;
         [field: SerializeField] Sentinel clone2;
@@ -78,7 +80,13 @@ namespace ToB.Entities
             
             DebugSymbol.Get("LSH").Log("클리어");
             yield return new WaitUntil(()=> !sentinel.IsAlive);
+            
+            StageManager.Instance.ChangeGameState(GameState.CutScene);
+            
             yield return StartCoroutine(SentinelDie());
+            
+            StageManager.Instance.ChangeGameState(GameState.Play);
+            
         }
 
         IEnumerator Phase2TransitionMoment()
@@ -92,17 +100,32 @@ namespace ToB.Entities
         {
             speechBubbleRoot.SetActive(true);
             speechText.color = Color.red;
+            
+            sentinel.Phase2Aura.SendEvent("OnStop");
             yield return StartCoroutine(TextCoroutine("…아직… 끝나지 않았어…"));
             yield return StartCoroutine(TextCoroutine("지켜야 해… 지켜야 해…"));
+            sentinel.Animator.SetTrigger(EnemyAnimationString.Die);
             yield return StartCoroutine(TextCoroutine("그 분을… 그 분을… 반드시…"));
-            
+            yield return StartCoroutine(TextCoroutine("검을… 버릴 수 없어… 내 손으로…"));
+            yield return StartCoroutine(TextCoroutine("내 손으로 지켜야 했는데…"));
+            sentinel.Animator.SetTrigger(DieContinue);
+            yield return StartCoroutine(TextCoroutine("…안 돼… 안 돼… 무너진다… 다 무너져…"));
+            yield return StartCoroutine(TextCoroutine("막아야 해… 막아야…"));
+            sentinel.Animator.SetTrigger(DieContinue);
+            yield return StartCoroutine(TextCoroutine("으… 으아아아아악!!"));
+            sentinel.GlowObject.SetActive(false);
+            speechBubbleRoot.SetActive(false);
         }
 
         IEnumerator TextCoroutine(String text)
         {
             speechText.text = text;
+            LayoutRebuilder.ForceRebuildLayoutImmediate(speechText.rectTransform);
+            Canvas.ForceUpdateCanvases();
 
             yield return new WaitUntil(() => StageManager.Instance.cutSceneProcessCall);
+
+            StageManager.Instance.cutSceneProcessCall = false;
         }
 
         IEnumerator SentinelRise()
