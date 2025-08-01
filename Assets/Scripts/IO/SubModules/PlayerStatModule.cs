@@ -12,6 +12,8 @@ namespace ToB.IO.SubModules
 
     [JsonProperty]
     public Dictionary<int, SkillState> savedPlayerSkillState = new();
+    [JsonProperty]
+    public Dictionary<int, bool> savedMemoryStates = new();
 
     #endregion
 

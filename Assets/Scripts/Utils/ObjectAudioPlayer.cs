@@ -109,6 +109,8 @@ namespace ToB.Utils
       
       return source;
     }
+    
+    public void PlayInAnimationEvent(string key) => Play(key, false);
 
     /// <summary>
     /// 재생중인 모든 클립을 중지시킵니다.

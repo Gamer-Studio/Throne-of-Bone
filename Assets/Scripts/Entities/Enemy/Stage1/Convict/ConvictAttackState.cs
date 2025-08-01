@@ -18,7 +18,6 @@ namespace ToB.Entities
         {
             base.Enter();
             owner.Animator.SetBool(EnemyAnimationString.Attack, true);
-            enemy.audioPlayer.Play("fntgm_blade_whoosh_heavy_02");
         }
 
         public override void Execute()

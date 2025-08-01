@@ -1,7 +1,9 @@
 using System.Collections;
 using DG.Tweening;
 using NaughtyAttributes;
+using ToB.Entities.Interface;
 using ToB.Utils;
+using ToB.Worlds;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -30,6 +32,7 @@ namespace ToB.Entities.Projectiles
       private Material tilemapMaterialInstance;
       private bool IsContacted;
       private Color originalColor;
+      public override bool Blockable => false;
       public Vector2 Direction
         {
           get => direction;
@@ -142,6 +145,7 @@ namespace ToB.Entities.Projectiles
           tilemapMaterialInstance = Instantiate(spriteRenderer.material);
           spriteRenderer.material = tilemapMaterialInstance;
           body.AddForce(Vector2.down * speed, ForceMode2D.Impulse);
+          Team = Team.Enemy;
         }
 
        /*

@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using ToB.Core;
 using ToB.Utils.Singletons;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using AudioType = ToB.Core.AudioType;
 
 namespace ToB.UI
 {
@@ -54,6 +56,7 @@ namespace ToB.UI
                     gameOverUI.gameObject.SetActive(false);
                     effectUI.gameObject.SetActive(false);
                     toastUI.gameObject.SetActive(false);
+                    AudioManager.Play("RedClouds",AudioType.Background);
                     break;
                 
                 case "Intro":
