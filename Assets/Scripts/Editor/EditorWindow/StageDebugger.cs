@@ -63,6 +63,9 @@ namespace ToB.Editor
           
           PlayerCharacter.Instance.transform.position = room.transform.position + targetPosition;
         }
+        
+        EditorGUILayout.Space();
+        PlayerCharacter.Instance.invincibility = EditorGUILayout.Toggle("플레이어 무적 설정", PlayerCharacter.Instance.invincibility);
       }
       else
       {
