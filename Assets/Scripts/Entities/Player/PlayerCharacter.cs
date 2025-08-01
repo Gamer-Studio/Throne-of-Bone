@@ -126,13 +126,15 @@ namespace ToB.Player
     #endregion
     
     #region Binding
+    private const string Bindings = nameof(Bindings);
 
-    [Tooltip("캐릭터 바디"), Foldout("Bindings")] public Rigidbody2D body;
-    [Tooltip("캐릭터 콜라이더"), Foldout("Bindings")] public CapsuleCollider2D bodyCollider;
-    [Tooltip("캐릭터 애니메이터"), Foldout("Bindings"), SerializeField] protected Animator animator;
-    [Tooltip("캐릭터 스프라이트"), Foldout("Bindings"), SerializeField] protected SpriteRenderer spriteRenderer;
-    [Foldout("Bindings"), SerializeField] private PlayerGroundChecker groundChecker;
-    [Foldout("Bindings"), SerializeField] private WorldGaugeBar dashGaugeBar, attackGaugeBar;
+    [Tooltip("캐릭터 바디"), Foldout(Bindings)] public Rigidbody2D body;
+    [Tooltip("캐릭터 콜라이더"), Foldout(Bindings)] public CapsuleCollider2D bodyCollider;
+    [Tooltip("캐릭터 애니메이터"), Foldout(Bindings), SerializeField] protected Animator animator;
+    [Tooltip("캐릭터 스프라이트"), Foldout(Bindings), SerializeField] protected SpriteRenderer spriteRenderer;
+    [Foldout(Bindings), SerializeField] private PlayerGroundChecker groundChecker;
+    [Foldout(Bindings), SerializeField] private WorldGaugeBar dashGaugeBar, attackGaugeBar;
+    [Foldout(Bindings), SerializeField] private BuffController buffController;
 
     #endregion
 
@@ -165,6 +167,8 @@ namespace ToB.Player
           audioPlayer.Play(!inWater ? "Footsteps_DirtyGround_Jump_Land_02" : "Footsteps_Water_Jump_Light_01");
         });
       }
+      
+      // 버프
     }
 
     private void Update()
