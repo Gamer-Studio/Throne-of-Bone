@@ -14,7 +14,6 @@ public partial class CompareWithAddCondition : Condition
 
     public override bool IsTrue()
     {
-        Debug.Log(A.Value + " " + B.Value + " " + C.Value);
         return A.Value < B.Value + C.Value;
     }
 
