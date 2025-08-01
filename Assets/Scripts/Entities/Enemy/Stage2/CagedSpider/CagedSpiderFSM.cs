@@ -33,7 +33,9 @@ namespace ToB.Entities
             
             if (currentPattern == groundMovePattern && enemy.target)
             {
+                enemy.audioPlayer.Stop("Spider_footstep_Loop_01");
                 ChangePattern(groundChasePattern);
+                enemy.audioPlayer.Play("Spider_footstep_Loop_01",true);
                 return;
             }
             if (currentPattern == groundChasePattern && !enemy.target)
@@ -41,6 +43,8 @@ namespace ToB.Entities
                 ChangePattern(groundMovePattern);
                 return;
             }
+            
+            
             
             base.Update();
         }

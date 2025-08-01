@@ -11,5 +11,11 @@ namespace ToB.Core
     
     
     #endregion
+    
+    #region Stage Config
+
+    public static bool DynamicLoading = true;
+    
+    #endregion
   }
 }

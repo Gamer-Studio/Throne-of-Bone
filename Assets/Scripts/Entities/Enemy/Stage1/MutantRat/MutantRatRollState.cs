@@ -23,6 +23,7 @@ namespace ToB.Entities
             enemy.Animator.SetBool(EnemyAnimationString.Roll, true);
             owner.Knockback.isActive = false;
             enemy.Physics.externalVelocity[ROLL_KEY] = Vector2.zero;
+            enemy.audioPlayer.Play("WAV_DSGNMisc_Rock_Elements_Rolling_01_DR_GQ");
         }
 
         public override void Execute()

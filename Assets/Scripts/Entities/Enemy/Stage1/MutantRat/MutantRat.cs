@@ -1,3 +1,4 @@
+using ToB.Entities.Interface;
 using UnityEngine;
 
 namespace ToB.Entities
@@ -40,6 +41,12 @@ namespace ToB.Entities
             FSM = GetComponent<MutantRatFSM>();
         }
 
+        public override void OnTakeDamage(IAttacker sender)
+        {
+            base.OnTakeDamage(sender);
+            if (Stat.CurrentHP > 0) audioPlayer.Play("Scream_01");
+        }
+
         protected override void Die()
         {
             base.Die();
@@ -47,6 +54,7 @@ namespace ToB.Entities
             deathEffect.gameObject.SetActive(true);
             deathEffect.transform.SetParent(null);
             deathEffect.Play();
+            audioPlayer.Play("Death_01");
             
             Destroy(gameObject);
             Destroy(deathEffect,2);

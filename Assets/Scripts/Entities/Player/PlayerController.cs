@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Cinemachine;
 using NaughtyAttributes;
 using ToB.Core;
@@ -88,10 +89,44 @@ namespace ToB.Player
       if (!character.IsMoving)
       {
         stareDirectionVertical = context.ReadValue<Vector2>().y;
-        
       }
       
+      // 소리 재생
+      if (context.performed)
+      {
+        WalkSound();
+      }
     }
+    
+    #region WalkSound
+    private Coroutine walkSoundCoroutine;
+
+    private void WalkSound()
+    {
+      if (walkSoundCoroutine != null) return;
+      walkSoundCoroutine = StartCoroutine(WalkSoundCoroutine());
+    }
+
+    private IEnumerator WalkSoundCoroutine()
+    {
+      if (character.IsMoving && !character.inWater && !character.IsFlight)
+      {
+        character.audioPlayer.Play("Footsteps_DirtyGround_Run_02",true);
+      }
+      else if (character.IsMoving && character.inWater)
+      {
+        character.audioPlayer.Play("Footsteps_WaterV2_Walk_05", true);
+      }
+      else yield break;
+      
+      while (character.IsMoving && character.body.linearVelocity.x > 0.1f) 
+      {
+        yield return new WaitForFixedUpdate(); // 0.1초마다 체크
+      }
+      character.audioPlayer.StopAll();
+      walkSoundCoroutine = null;
+    }
+    #endregion
 
     private void Look()
     {

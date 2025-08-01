@@ -13,7 +13,7 @@ namespace ToB.UI
             [SerializeField] public Image redOverlay;
             [SerializeField] public float hitFadeInTime = 0.1f;
             [SerializeField] public float hitFadeOutTime = 0.2f;
-            [SerializeField] public float hitTargetAlpha = 0.3f;
+            [SerializeField] public float hitTargetAlpha = 0.5f;
             public UnityEvent onHitEffectEnd = new();
             
             [Header( "FadeOut Effect")]

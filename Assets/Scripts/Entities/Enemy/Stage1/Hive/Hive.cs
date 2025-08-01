@@ -82,6 +82,7 @@ namespace ToB
             Animator.SetTrigger(EnemyAnimationString.Die);
             Hitbox.enabled = false;
             enabled = false;
+            audioPlayer.Play("hit_blood_flesh_gore_03");
         }
 
         public bool IsFlyInPatrolArea(Fly fly)

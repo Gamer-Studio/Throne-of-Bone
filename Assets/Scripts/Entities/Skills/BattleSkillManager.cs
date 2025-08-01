@@ -58,10 +58,19 @@ namespace ToB.Entities.Skills
     /// </summary>
     private void InitializeSkillStates()
     {
-        if (SAVE.Current == null) return;
+        if (SAVE.Current == null)
+        {
+            Debug.Log("스킬 세이브 파일이 없습니다.");
+            foreach (var skill in skillDB.BattleSkillDataBase)
+            {
+                playerSkillStates.TryAdd(skill.id, SkillState.Unacquired);
+            }
+            return;
+        }
         // 이게 불러오기
         playerSkillStates = SAVE.Current.PlayerStat.savedPlayerSkillState;
         
+        // 확인차 한번 더 덮어쓰기 (없어도 무방할 것으로 생각합니다만 세이브가 안정화되면 그때 주석처리 하겠습니다)
         foreach (var skill in skillDB.BattleSkillDataBase)
         {
             playerSkillStates.TryAdd(skill.id, SkillState.Unacquired);

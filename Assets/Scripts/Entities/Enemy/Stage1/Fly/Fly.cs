@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections;
+using ToB.Entities.Interface;
 using ToB.Utils;
 using UnityEngine;
 
@@ -54,7 +55,14 @@ namespace ToB.Entities
             Stat.Init(this, DataSO);
             isAlive = true;
             Hitbox.enabled = true;
+            audioPlayer.Play("Organism_15");
             FSM.Init();
+        }
+
+        public override void OnTakeDamage(IAttacker sender)
+        {
+            base.OnTakeDamage(sender);
+            if (Stat.CurrentHP > 0) audioPlayer.Play("Insect_Hurt_04");
         }
 
         protected override void Die()
@@ -63,6 +71,7 @@ namespace ToB.Entities
             Animator.SetTrigger(EnemyAnimationString.Die);
             Hive.flies.Remove(gameObject);
             Hitbox.enabled = false;
+            audioPlayer.Play("Insect_Death_04");
             StartCoroutine(ReleaseSelf());
         }
 

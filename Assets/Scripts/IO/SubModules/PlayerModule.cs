@@ -1,6 +1,4 @@
-using System.Threading.Tasks;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using UnityEngine;
 
 namespace ToB.IO.SubModules
@@ -11,12 +9,15 @@ namespace ToB.IO.SubModules
 
     #region Data
 
-    [JsonProperty]
-    public int currentStage = 0;
-    [JsonProperty]
-    public int currentRoom = 0;
-    [JsonProperty]
-    public Vector3 savedPosition;
+    /// <summary>
+    /// 초기 스테이지 기본값은 1
+    /// </summary>
+    [JsonProperty] public int currentStage = 1;
+    /// <summary>
+    /// 초기 방 기본값은 1
+    /// </summary>
+    [JsonProperty] public int currentRoom = 1;
+    [JsonProperty] public Vector3 savedPosition;
 
     #endregion
 

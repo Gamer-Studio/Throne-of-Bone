@@ -14,7 +14,7 @@ namespace ToB.Entities
     // 지금은 안 쓰고 적군이 방어력 버프를 쓰는 등 처리가 복잡해질 때를 감안해서 보류
     public class EnemyStatHandler : MonoBehaviour, IDamageable
     {
-        private Enemy enemy;
+        public Enemy enemy;
         private IEnemyHittableSO hittableSO;
         
         [SerializeField] private float currentHP;

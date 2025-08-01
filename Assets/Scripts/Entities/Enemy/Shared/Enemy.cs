@@ -51,6 +51,7 @@ namespace ToB.Entities
         [SerializeField, ReadOnly] protected bool isAlive;
         [field:SerializeField] public bool ReactOnDamage { get; private set; }
         public bool IsAlive => isAlive;
+        public ObjectAudioPlayer audioPlayer;
         
         protected virtual void Awake()
         {
@@ -58,6 +59,7 @@ namespace ToB.Entities
             if(!Physics) Physics = GetComponent<EnemyPhysics>();
             if(!Animator) Animator = GetComponentInChildren<Animator>();
             if(!Sprite) Sprite = GetComponent<SpriteRenderer>();
+            if(!audioPlayer) audioPlayer = gameObject.AddComponent<ObjectAudioPlayer>();
             
             isAlive = true;
         }
@@ -96,7 +98,6 @@ namespace ToB.Entities
             if (isSenderLeft != isLookingLeft)
                 FlipBody();
         }
-
         private void FlipBody()
         {
             Vector3 localScale = transform.localScale;

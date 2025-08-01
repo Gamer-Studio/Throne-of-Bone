@@ -26,12 +26,15 @@ namespace ToB.Entities
         [Tooltip("단순 소멸할 지형"), SerializeField] private LayerMask terrainLayers;
 
         private Coroutine lifeCoroutine;
+        private ObjectAudioPlayer audioPlayer;
         private void Awake()
         {
             if(!LinearMovement)
                 LinearMovement = GetComponent<LinearMovement>();
             if(!SimpleRotate)
                 SimpleRotate = GetComponent<SimpleRotate>();
+            if(!audioPlayer)
+                audioPlayer = gameObject.AddComponent<ObjectAudioPlayer>();
         }
 
         private void Start()
@@ -68,6 +71,7 @@ namespace ToB.Entities
             if ((targetLayers & 1 << other.gameObject.layer) != 0)
             {
                 other.GetComponent<PlayerCharacter>().Damage(baseDamage, this);
+                audioPlayer.Play("Bite_03");
                 if (other.TryGetComponent<BuffController>(out var buffs))
                 {
                     buffs.Apply(Buff.Poison, new BuffInfo(2, 3), true);
