@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using NaughtyAttributes;
 using Newtonsoft.Json.Linq;
 using ToB.Entities;
+using ToB.Entities.FieldObject;
 using ToB.IO;
 using ToB.Scenes.Stage;
 using ToB.Utils;
@@ -22,9 +23,10 @@ namespace ToB.Worlds
     
     [Label("스테이지 인덱스"), Foldout(State)] public int stageIndex;
     [Label("방 인덱스"), Foldout(State)] public int roomIndex;
-    [Label("데이터 모듈"), Foldout(State), SerializeField] private SAVEModule saveModule;
+    [Label("데이터 모듈"), Foldout(State), SerializeField] private SAVEModule saveModule = null;
     [Label("일반 적 소환 정보"), Foldout(State)] public SerializableDictionary<Transform, AssetReference> normalEnemyTable = new();
     [Label("오브젝트"), Foldout(State)] public SerializableDictionary<string, FieldObjectProgress> fieldObjects = new();
+    [Label("모닥불 목록"), Foldout(State)] public List<Bonfire> bonfires = new();
     [Label("인스턴스된 적"), Foldout(State), SerializeField, ReadOnly] private SerializableDictionary<Transform, Enemy> enemies = new();
     
     #endregion
@@ -54,7 +56,7 @@ namespace ToB.Worlds
     #if UNITY_EDITOR
 
     [Button("내부 오브젝트 찾기")]
-    private void FindStructures()
+    public void FindStructures()
     {
       Undo.RecordObject(this, nameof(FindStructures));
       
@@ -79,6 +81,9 @@ namespace ToB.Worlds
           
           Undo.RecordObject(structure, nameof(FindStructure));
           EditorUtility.SetDirty(structure);
+          
+          if(structure is Bonfire bonfire)
+            bonfires.Add(bonfire);
         }
         
         FindStructure(child);
@@ -124,7 +129,7 @@ namespace ToB.Worlds
       FindStructures();
     }
 
-    public Vector3 pos;
+    [SerializeField] private Vector3 pos;
 
     private void OnDrawGizmos()
     {
@@ -179,6 +184,25 @@ namespace ToB.Worlds
     #region Feature
 
     /// <summary>
+    /// 링크로 연결되어있는 방들을 가져옵니다.
+    /// </summary>
+    /// <param name="onlyActive">참일 경우 활성화된 방만 가져옵니다.</param>
+    public List<Room> GetLinkedRooms(bool onlyActive)
+    {
+      var result = new List<Room>();
+
+      foreach (var link in links)
+      {
+        if (link.IsLoaded || !onlyActive)
+        {
+          result.Add(link.connectedRoom);
+        }
+      }
+      
+      return result;
+    }
+
+    /// <summary>
     /// Root/Stage/Room_{stageIndex}_{roomIndex} 경로로
     /// 방 데이터를 명시적으로 저장합니다.
     /// </summary>
@@ -198,7 +222,7 @@ namespace ToB.Worlds
 
         LoadJson(saveModule);
       }
-      
+
       onLoad?.Invoke();
     }
 
@@ -229,7 +253,7 @@ namespace ToB.Worlds
     {
       foreach (var pair in normalEnemyTable)
       {
-        if(pair.Value == null || (enemies.ContainsKey(pair.Key) && enemies[pair.Key].IsAlive)) continue;
+        if(pair.Key == null || pair.Value == null || (enemies.ContainsKey(pair.Key) && enemies[pair.Key].IsAlive)) continue;
         
         var enemy = (Enemy)pair.Value.Pooling();
         
@@ -244,7 +268,7 @@ namespace ToB.Worlds
 
       onEnter?.Invoke();
       StageManager.Instance.onRoomEnter.Invoke(this);
-      StageManager.Instance.currentRoom = this;
+      StageManager.RoomController.currentRoom = this;
     }
 
     /// <summary>

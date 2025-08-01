@@ -422,7 +422,7 @@ namespace ToB.Player
 
     #endregion Jump Feature
 
-    
+    public bool invincibility = false;
     [Foldout("Effect"), SerializeField] private ParticleSystem damagedEffect;
     /// <summary>
     /// 플레이어에게 방어력을 반영한 체력 피해를 줍니다.<br/>
@@ -433,6 +433,7 @@ namespace ToB.Player
     /// <param name="sender">피해량을 주는 주체입니다. null일시 플레이어에게 고정 피해를 주고, 효과를 발동시키지 않습니다.</param>
     public void Damage(float value, IAttacker sender)
     {
+      if(invincibility) return;
       var isBuff = sender is DamageDebuff;
       if (sender == null)
       {
@@ -471,7 +472,8 @@ namespace ToB.Player
     /// <param name="direction">넉백 방향입니다.</param>
     public void KnockBack(float value, Vector2 direction)
     {
-      if(IsImmune) return;
+      if (invincibility) return;
+      if (IsImmune) return;
       
       StartCoroutine(KnockBackCoroutine(value, direction));
     }

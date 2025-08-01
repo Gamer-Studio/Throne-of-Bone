@@ -97,16 +97,7 @@ namespace ToB.Entities.FieldObject
 
         public void Save()
         {
-            var player = SAVE.Current.Player;
-            player.currentRoom = RoomIndex;
-            player.currentStage = StageIndex;
-            
-            var parentTransform = transform.parent;
-            var pos = TPTransform.localPosition + transform.localPosition;
-            
-            player.savedPosition = pos.X(x => x * parentTransform.localScale.x).Y(y => y * parentTransform.localScale.y)
-                                   + room.transform.position;
-            SAVE.Current.Save();
+            StageManager.Save(this);
         }
 
         public void TeleportPointSelected()
