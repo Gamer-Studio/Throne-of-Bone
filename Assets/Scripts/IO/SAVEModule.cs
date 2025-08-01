@@ -156,7 +156,6 @@ namespace ToB.IO
 
           ISAVEModule childModule = childModuleInfo.Get(fileName, nameof(SAVEModule)) switch
           {
-            nameof(SAVEModule) => Node(fileName, true),
             nameof(PlayerModule) => Node<PlayerModule>(fileName, true),
             nameof(PlayerStatModule) => Node<PlayerStatModule>(fileName, true),
             nameof(SavePointModule) => Node<SavePointModule>(fileName, true),

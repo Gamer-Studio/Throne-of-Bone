@@ -3,6 +3,7 @@ using Cinemachine;
 using NaughtyAttributes;
 using ToB.Core;
 using ToB.Core.InputManager;
+using ToB.Entities.FieldObject;
 using ToB.Entities.NPC;
 using ToB.IO;
 using ToB.IO.SubModules;
@@ -178,6 +179,25 @@ namespace ToB.Scenes.Stage
     public void ChangeGameState(GameState state)
     {
       CurrentState = state;
+    }
+
+    public void UpdateRoomData()
+    {
+      var loadedRooms = roomController.loadedRooms;
+      
+    }
+
+    public static void Save(Bonfire bonfire = null)
+    {
+      if (!HasInstance) return;
+      
+      foreach (var pair in RoomController.loadedRooms)
+        if(pair.Value) pair.Value.Save();
+      
+      if(bonfire != null)
+        SAVE.Current.SavePoints.UpdateSavePoint(bonfire);
+      
+      SAVE.Current.Save();
     }
 
     #endregion

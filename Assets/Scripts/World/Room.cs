@@ -23,7 +23,7 @@ namespace ToB.Worlds
     
     [Label("스테이지 인덱스"), Foldout(State)] public int stageIndex;
     [Label("방 인덱스"), Foldout(State)] public int roomIndex;
-    [Label("데이터 모듈"), Foldout(State), SerializeField] private SAVEModule saveModule;
+    [Label("데이터 모듈"), Foldout(State), SerializeField] private SAVEModule saveModule = null;
     [Label("일반 적 소환 정보"), Foldout(State)] public SerializableDictionary<Transform, AssetReference> normalEnemyTable = new();
     [Label("오브젝트"), Foldout(State)] public SerializableDictionary<string, FieldObjectProgress> fieldObjects = new();
     [Label("모닥불 목록"), Foldout(State)] public List<Bonfire> bonfires = new();
@@ -56,7 +56,7 @@ namespace ToB.Worlds
     #if UNITY_EDITOR
 
     [Button("내부 오브젝트 찾기")]
-    private void FindStructures()
+    public void FindStructures()
     {
       Undo.RecordObject(this, nameof(FindStructures));
       
@@ -222,7 +222,7 @@ namespace ToB.Worlds
 
         LoadJson(saveModule);
       }
-      
+
       onLoad?.Invoke();
     }
 

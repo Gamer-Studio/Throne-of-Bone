@@ -21,7 +21,7 @@ namespace ToB.Utils.Singletons
         instance = (T)FindAnyObjectByType(typeof(T));
         if (instance != null) return instance;
         
-        var reference = new AssetReferenceGameObject(instance.GetType().Name);
+        var reference = new AssetReferenceGameObject(typeof(T).Name);
         var obj = reference.InstantiateAsync().WaitForCompletion();
         obj.GetComponent<PrefabSingleton<T>>().reference = reference;
         

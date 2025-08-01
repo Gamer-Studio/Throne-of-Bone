@@ -97,10 +97,7 @@ namespace ToB.Entities.FieldObject
 
         public void Save()
         {
-            var player = SAVE.Current.Player;
-            
-            SAVE.Current.SavePoints.UpdateSavePoint(this);
-            SAVE.Current.Save();
+            StageManager.Save(this);
         }
 
         public void TeleportPointSelected()

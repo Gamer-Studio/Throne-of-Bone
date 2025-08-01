@@ -55,7 +55,7 @@ namespace ToB.Editor
         if (GUILayout.Button("플레이어 이동"))
         {
           foreach (var pair in controller.loadedRooms)
-            if(pair.Value) Destroy(pair.Value);
+            if(pair.Value) Destroy(pair.Value.gameObject);
           
           controller.loadedRooms.Clear();
           
