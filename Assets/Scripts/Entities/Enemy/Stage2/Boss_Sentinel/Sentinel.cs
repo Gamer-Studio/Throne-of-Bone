@@ -106,6 +106,8 @@ namespace ToB.Entities
                 prevHP = Stat.CurrentHP;
             }
         }
+        
+        
 
         private void PhaseCalculate()
         {
@@ -211,6 +213,7 @@ namespace ToB.Entities
             base.Die();
             Agent.BlackboardReference.SetVariableValue("IsAlive", false);
             if (attackCoroutine != null) StopCoroutine(attackCoroutine);
+            Hitbox.enabled = false;
         }
 
         public override void SetTarget(Transform target)
@@ -280,7 +283,7 @@ namespace ToB.Entities
                 yield return new WaitForSeconds(1.2f);
             }
 
-            transform.position = area.GetRandomFloorPosition();
+            if (Phase == 2) transform.position = area.GetRandomFloorPosition();
             BubbleAttackEnd = true;
         }
 

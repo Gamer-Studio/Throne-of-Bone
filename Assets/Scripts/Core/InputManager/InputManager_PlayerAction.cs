@@ -41,14 +41,20 @@ namespace ToB.Core.InputManager
 
         public void PlayerInteract(InputAction.CallbackContext context)
         {
-            if (!CanMove())
+            if (StageManager.Instance.CurrentState == GameState.UI || StageManager.Instance.CurrentState == GameState.Dialog)
             {
                 UIProcess(context); // 같은 키 할당됨
                 return;
             }
+            else if (StageManager.Instance.CurrentState == GameState.CutScene)
+            {
+                StageManager.Instance.cutSceneProcessCall = true;
+            }
             
             if(context.performed)
                 player?.Interact();
+            
+            
         }
 
         public void PlayerBlock(InputAction.CallbackContext context)

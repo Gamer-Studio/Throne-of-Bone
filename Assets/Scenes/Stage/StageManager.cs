@@ -20,7 +20,8 @@ namespace ToB.Scenes.Stage
   {
     Play,
     UI,
-    Dialog
+    Dialog,
+    CutScene
   }
 
   [RequireComponent(typeof(RoomController))]
@@ -34,6 +35,7 @@ namespace ToB.Scenes.Stage
     [field: Foldout(State), SerializeField] public GameState CurrentState { get; private set; } = GameState.Play;
     [SerializeField, ReadOnly] private bool unloaded;
 
+    public bool cutSceneProcessCall = false;
     public int CurrentStageIndex => currentRoom.stageIndex;
     public int CurrentRoomIndex => currentRoom.roomIndex;
 

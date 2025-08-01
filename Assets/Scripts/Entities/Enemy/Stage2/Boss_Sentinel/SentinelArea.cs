@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using DG.Tweening;
+using TMPro;
 using ToB.Scenes.Stage;
 using ToB.Utils;
 using UnityEngine;
@@ -15,11 +16,19 @@ namespace ToB.Entities
         [SerializeField] private GameObject exitBlocker;
         [SerializeField] private GameObject bloodBubblePrefab;
         [SerializeField] private Transform leftBottomPos;
-
-        [Header("클론 스폰")] [field: SerializeField]
-        Sentinel clone1;
+        
+        [Header("클론 스폰")] 
+        [field: SerializeField] Sentinel clone1;
         [field: SerializeField] Sentinel clone2;
 
+        [Header("페이즈 배경")] 
+        [SerializeField] private GameObject phase1BG;
+        [SerializeField] private GameObject phase2BG;
+        
+        [Header("센티넬 말풍선")]
+        [SerializeField] private GameObject speechBubbleRoot;
+        [SerializeField] TextMeshProUGUI speechText;
+        
         private void Awake()
         {
             location.OnPlayerEntered += PlayerEntered;
@@ -49,6 +58,7 @@ namespace ToB.Entities
         }
 
         #region BossSequence
+        
         IEnumerator SentinelRoomCoroutine()
         {
             yield return new WaitForSeconds(0.5f);
@@ -64,14 +74,35 @@ namespace ToB.Entities
             sentinel.SetTarget(StageManager.Instance.player.transform);
 
             yield return new WaitUntil(() => sentinel.Phase == 2);
+            yield return StartCoroutine(Phase2TransitionMoment());
             
+            DebugSymbol.Get("LSH").Log("클리어");
             yield return new WaitUntil(()=> !sentinel.IsAlive);
             yield return StartCoroutine(SentinelDie());
         }
 
-        private string SentinelDie()
+        IEnumerator Phase2TransitionMoment()
         {
-            throw new NotImplementedException();
+            phase1BG.SetActive(false);
+            phase2BG.SetActive(true);
+            yield return null;
+        }
+
+        IEnumerator SentinelDie()
+        {
+            speechBubbleRoot.SetActive(true);
+            speechText.color = Color.red;
+            yield return StartCoroutine(TextCoroutine("…아직… 끝나지 않았어…"));
+            yield return StartCoroutine(TextCoroutine("지켜야 해… 지켜야 해…"));
+            yield return StartCoroutine(TextCoroutine("그 분을… 그 분을… 반드시…"));
+            
+        }
+
+        IEnumerator TextCoroutine(String text)
+        {
+            speechText.text = text;
+
+            yield return new WaitUntil(() => StageManager.Instance.cutSceneProcessCall);
         }
 
         IEnumerator SentinelRise()

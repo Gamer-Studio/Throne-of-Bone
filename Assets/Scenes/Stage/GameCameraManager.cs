@@ -29,12 +29,20 @@ namespace ToB.Core
         private Vector3 mainOffset;
 
         private bool UIResize;
+        
+        public float zoomRatio { get; private set; }
 
         private void Awake()
         {
             mainCamOriginalSize = MainCamera.orthographicSize;
+            zoomRatio = 1;
             mainTransposer = MainVirtualCamera.GetCinemachineComponent<CinemachineFramingTransposer>();
             mainOffset = mainTransposer.m_TrackedObjectOffset;
+        }
+
+        void Update()
+        {
+            zoomRatio = MainCamera.orthographicSize / mainCamOriginalSize;
         }
 
         private void LateUpdate()
