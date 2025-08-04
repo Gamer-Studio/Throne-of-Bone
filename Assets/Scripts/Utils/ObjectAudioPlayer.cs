@@ -97,9 +97,13 @@ namespace ToB.Utils
       {
         source = new GameObject("AudioSource").AddComponent<AudioSource>();
         source.transform.SetParent(audioSourceParent);
+        source.transform.localPosition = Vector3.zero;
+        source.transform.localRotation = Quaternion.identity;
+        source.transform.localScale = Vector3.one;
         sourcePool.Add(source);
 
         source.outputAudioMixerGroup = AudioManager.ObjectMixer;
+        source.spatialBlend = 1;
       }
 
       source.clip = clip;

@@ -8,7 +8,7 @@ namespace ToB.Entities.Projectiles
 {
     public class Arrow : Projectile
     { 
-      [ReadOnly] private new Camera camera;
+      [ReadOnly] private Camera mainCamera;
       [Label("피해량")] public float damage;
       [Label("속도")] public float speed;
       [Label("넉백 세기")] public float knockBackForce;
@@ -89,7 +89,7 @@ namespace ToB.Entities.Projectiles
 
        private void OnEnable()
         {
-          camera = Camera.main;
+          mainCamera = Camera.main;
           timeAfterLaunch = 0.3f;
           Team = Team.Enemy;
         }
@@ -104,7 +104,7 @@ namespace ToB.Entities.Projectiles
            timeAfterLaunch -= Time.deltaTime;
          }
       
-         var pos = camera.WorldToViewportPoint(transform.position);
+         var pos = mainCamera.WorldToViewportPoint(transform.position);
 
           if (pos.x < 0 || pos.x > 1 || pos.y < 0 || pos.y > 1)
           {

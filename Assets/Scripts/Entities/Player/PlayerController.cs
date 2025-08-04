@@ -7,12 +7,13 @@ using ToB.Entities;
 using ToB.Utils;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Serialization;
 
 namespace ToB.Player
 {
   public class PlayerController : MonoBehaviour
   {
-    [Label("활성화된 메인 카메라"), SerializeField, ReadOnly] private new Camera camera;
+    [Label("활성화된 메인 카메라"), SerializeField, ReadOnly] private new Camera mainCamera;
     [Label("시네머신 카메라"), SerializeField] protected CinemachineVirtualCamera vCam;
     [Label("플레이어 캐릭터"), SerializeField] protected PlayerCharacter character;
 
@@ -39,14 +40,14 @@ namespace ToB.Player
 
     private void Awake()
     {
-      camera = Camera.main;
+      mainCamera = Camera.main;
       if (!vCam) vCam = FindAnyObjectByType<CinemachineVirtualCamera>();
       if (!character) character = PlayerCharacter.Instance;
     }
 
     private void FixedUpdate()
     {
-      var cursorPos = camera.ScreenToWorldPoint(Input.mousePosition).Z(0);
+      var cursorPos = mainCamera.ScreenToWorldPoint(Input.mousePosition).Z(0);
       var characterPos = character.transform.position;
       var angle = (cursorPos - characterPos).normalized;
 
@@ -180,7 +181,7 @@ namespace ToB.Player
         return;
       }
       
-      var cursorPos = camera.ScreenToWorldPoint(Input.mousePosition).Z(0);
+      var cursorPos = mainCamera.ScreenToWorldPoint(Input.mousePosition).Z(0);
       var characterPos = character.transform.position.Y(v => v);
       var direction = (cursorPos - characterPos).normalized;
       
