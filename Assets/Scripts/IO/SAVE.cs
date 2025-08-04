@@ -8,6 +8,7 @@ using ToB.IO.SubModules;
 using ToB.Player;
 using ToB.Utils;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace ToB.IO
 {
@@ -47,7 +48,6 @@ namespace ToB.IO
     public JObject MetaData => Data.MetaData;
     public string fileName;
     public string name = "empty";
-    public int gold = 0;
     [field: SerializeField] public string SaveTime { get; private set; }
     [field: SerializeField] public int Version { get; private set; }
 
@@ -129,7 +129,6 @@ namespace ToB.IO
     private void InitMetaData()
     {
       MetaData[nameof(name)] = name;
-      MetaData[nameof(gold)] = gold;
       MetaData[nameof(SaveTime)] = SaveTime;
       MetaData[nameof(Version)] = Version;
     }
@@ -168,7 +167,6 @@ namespace ToB.IO
         // 메타데이터 불러오기
         
         target.name = target.MetaData.Get(nameof(name), target.name);
-        target.gold = target.MetaData.Get(nameof(gold), target.gold);
         target.SaveTime = target.MetaData.Get(nameof(SaveTime), target.SaveTime);
         target.Version = target.MetaData.Get(nameof(Version), CurrentVersion);
       }
@@ -224,7 +222,6 @@ namespace ToB.IO
       var meta = result.MetaData;
       
       result.name = meta.Get("name", "empty");
-      result.gold = meta.Get("gold", 0);
       result.SaveTime = meta.Get("saveTime", "not saved");
       result.Version = meta.Get("version", CurrentVersion);
 

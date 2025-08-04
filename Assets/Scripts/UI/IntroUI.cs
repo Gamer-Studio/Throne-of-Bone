@@ -48,7 +48,7 @@ namespace ToB.UI
                 if (save.name != "empty")
                 {
                     // 빈 슬롯이 아닐 때
-                    textField.text = $"세이브 슬롯 {i + 1} - {save.name}\n날짜 : {save.SaveTime}\n보유 골드 : {save.gold}";
+                    textField.text = $"세이브 슬롯 {i + 1} - {save.name}\n날짜 : {save.SaveTime}";
                     deleteSlotButtons[i].onClick.AddListener(() => DeleteSaveFileSelected(index));
                     deleteSlotButtons[i].gameObject.SetActive(true);
                 }
