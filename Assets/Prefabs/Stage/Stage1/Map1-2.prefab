@@ -1085,9 +1085,9 @@ PlatformEffector2D:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RotationalOffset: 0
-  m_UseOneWay: 0
+  m_UseOneWay: 1
   m_UseOneWayGrouping: 0
-  m_SurfaceArc: 150
+  m_SurfaceArc: 180
   m_UseSideFriction: 0
   m_UseSideBounce: 0
   m_SideArc: 1
@@ -1220,19 +1220,7 @@ MonoBehaviour:
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
   fieldObjects:
-    array:
-    - Key: Spikes
-      Value: {fileID: 7554703595297549820}
-    - Key: LetterBoxSign (1)
-      Value: {fileID: 6822321423019958897}
-    - Key: LetterBoxSign (3)
-      Value: {fileID: 4730248633055295750}
-    - Key: LetterBoxSign (2)
-      Value: {fileID: 4950212698600149871}
-    - Key: LetterBoxSign
-      Value: {fileID: 4218768933488372369}
-    - Key: LetterBoxSign (4)
-      Value: {fileID: 2007162692072848557}
+    array: []
   bonfires: []
   enemies:
     array: []
@@ -30129,17 +30117,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 107144498860309033, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
   m_PrefabInstance: {fileID: 3248349409557077630}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &6822321423019958897 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8338895900837133327, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
-  m_PrefabInstance: {fileID: 3248349409557077630}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5e94549cbc8f4437b6df026f0f522f0c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &3610916797237298441
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -30150,11 +30127,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 107144498860309033, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 57.000004
+      value: 52
       objectReference: {fileID: 0}
     - target: {fileID: 107144498860309033, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -19
+      value: -12.96
       objectReference: {fileID: 0}
     - target: {fileID: 107144498860309033, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
       propertyPath: m_LocalPosition.z
@@ -30233,6 +30210,10 @@ PrefabInstance:
       value: "\uADFC\uC811 \uACF5\uACA9 : \uC88C\uD074\uB9AD \\n\uAC80\uAE30 \uBC1C\uC0AC
         : \uC6B0\uD074\uB9AD\\n\uAC00\uB4DC : Q"
       objectReference: {fileID: 0}
+    - target: {fileID: 8338895900837133327, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
+      propertyPath: typingSpeed
+      value: 0.01
+      objectReference: {fileID: 0}
     - target: {fileID: 8437157396403981182, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
       propertyPath: m_Name
       value: LetterBoxSign (3)
@@ -30247,17 +30228,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 107144498860309033, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
   m_PrefabInstance: {fileID: 3610916797237298441}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &4730248633055295750 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8338895900837133327, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
-  m_PrefabInstance: {fileID: 3610916797237298441}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5e94549cbc8f4437b6df026f0f522f0c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &3966270060693761888
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -30350,6 +30320,10 @@ PrefabInstance:
       propertyPath: letter
       value: "\uBCBD\uD0C0\uAE30 : \uBCBD\uC5D0 \uBD99\uC5B4\uC11C \uC810\uD504"
       objectReference: {fileID: 0}
+    - target: {fileID: 8338895900837133327, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
+      propertyPath: typingSpeed
+      value: 0.01
+      objectReference: {fileID: 0}
     - target: {fileID: 8437157396403981182, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
       propertyPath: m_Name
       value: LetterBoxSign (2)
@@ -30364,17 +30338,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 107144498860309033, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
   m_PrefabInstance: {fileID: 3966270060693761888}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &4950212698600149871 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8338895900837133327, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
-  m_PrefabInstance: {fileID: 3966270060693761888}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5e94549cbc8f4437b6df026f0f522f0c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &4203617346579352256
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -30577,6 +30540,10 @@ PrefabInstance:
       propertyPath: letter
       value: "\uC810\uD504 : Space"
       objectReference: {fileID: 0}
+    - target: {fileID: 8338895900837133327, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
+      propertyPath: typingSpeed
+      value: 0.01
+      objectReference: {fileID: 0}
     - target: {fileID: 8437157396403981182, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
       propertyPath: m_Name
       value: LetterBoxSign
@@ -30586,17 +30553,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
---- !u!114 &4218768933488372369 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8338895900837133327, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
-  m_PrefabInstance: {fileID: 5275305460157421214}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5e94549cbc8f4437b6df026f0f522f0c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &5208695575224528055 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 107144498860309033, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
@@ -30694,6 +30650,10 @@ PrefabInstance:
       propertyPath: letter
       value: "\uC704\uCABD\uD654\uBA74 \uBCF4\uAE30 : W"
       objectReference: {fileID: 0}
+    - target: {fileID: 8338895900837133327, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
+      propertyPath: typingSpeed
+      value: 0.01
+      objectReference: {fileID: 0}
     - target: {fileID: 8437157396403981182, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
       propertyPath: m_Name
       value: LetterBoxSign (4)
@@ -30703,17 +30663,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
---- !u!114 &2007162692072848557 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8338895900837133327, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
-  m_PrefabInstance: {fileID: 7521972859677212834}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5e94549cbc8f4437b6df026f0f522f0c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &7574998690696542859 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 107144498860309033, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
@@ -30849,14 +30798,3 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8809011266944952559, guid: 7386e0e611f199242aa6e04fbac6b944, type: 3}
   m_PrefabInstance: {fileID: 9043995592833130427}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &7554703595297549820 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1537144707452760647, guid: 7386e0e611f199242aa6e04fbac6b944, type: 3}
-  m_PrefabInstance: {fileID: 9043995592833130427}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 88107e665eab4f43a200cf5f1b332a01, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
