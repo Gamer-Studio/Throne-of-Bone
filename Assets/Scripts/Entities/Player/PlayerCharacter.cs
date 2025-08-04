@@ -126,13 +126,15 @@ namespace ToB.Player
     #endregion
     
     #region Binding
+    private const string Bindings = nameof(Bindings);
 
-    [Tooltip("캐릭터 바디"), Foldout("Bindings")] public Rigidbody2D body;
-    [Tooltip("캐릭터 콜라이더"), Foldout("Bindings")] public CapsuleCollider2D bodyCollider;
-    [Tooltip("캐릭터 애니메이터"), Foldout("Bindings"), SerializeField] protected Animator animator;
-    [Tooltip("캐릭터 스프라이트"), Foldout("Bindings"), SerializeField] protected SpriteRenderer spriteRenderer;
-    [Foldout("Bindings"), SerializeField] private PlayerGroundChecker groundChecker;
-    [Foldout("Bindings"), SerializeField] private WorldGaugeBar dashGaugeBar, attackGaugeBar;
+    [Tooltip("캐릭터 바디"), Foldout(Bindings)] public Rigidbody2D body;
+    [Tooltip("캐릭터 콜라이더"), Foldout(Bindings)] public CapsuleCollider2D bodyCollider;
+    [Tooltip("캐릭터 애니메이터"), Foldout(Bindings), SerializeField] protected Animator animator;
+    [Tooltip("캐릭터 스프라이트"), Foldout(Bindings), SerializeField] protected SpriteRenderer spriteRenderer;
+    [Foldout(Bindings), SerializeField] private PlayerGroundChecker groundChecker;
+    [Foldout(Bindings), SerializeField] private WorldGaugeBar dashGaugeBar, attackGaugeBar;
+    [Foldout(Bindings), SerializeField] public BuffController buffController;
 
     #endregion
 
@@ -285,7 +287,6 @@ namespace ToB.Player
       if (body.linearVelocity.y < 0)
       {
         body.linearVelocity += Vector2.up * (Physics.gravity.y * (gravityAcceleration - 1) * Time.fixedDeltaTime);
-        if(body.linearVelocityY < maxFallSpeed) body.linearVelocityY = maxFallSpeed;
       }
     }
 
@@ -422,7 +423,7 @@ namespace ToB.Player
 
     #endregion Jump Feature
 
-    
+    public bool invincibility = false;
     [Foldout("Effect"), SerializeField] private ParticleSystem damagedEffect;
     /// <summary>
     /// 플레이어에게 방어력을 반영한 체력 피해를 줍니다.<br/>
@@ -433,6 +434,7 @@ namespace ToB.Player
     /// <param name="sender">피해량을 주는 주체입니다. null일시 플레이어에게 고정 피해를 주고, 효과를 발동시키지 않습니다.</param>
     public void Damage(float value, IAttacker sender)
     {
+      if(invincibility) return;
       var isBuff = sender is DamageDebuff;
       if (sender == null)
       {
@@ -471,7 +473,8 @@ namespace ToB.Player
     /// <param name="direction">넉백 방향입니다.</param>
     public void KnockBack(float value, Vector2 direction)
     {
-      if(IsImmune) return;
+      if (invincibility) return;
+      if (IsImmune) return;
       
       StartCoroutine(KnockBackCoroutine(value, direction));
     }
@@ -547,7 +550,7 @@ namespace ToB.Player
     {
       UIManager.Instance.effectUI.PlayFadeOutEffect();
       //순서상 플레이어를 조작하는 컨트롤러를 먼저 끄고, 플레이어 상태를 고정
-      InputManager.Instance.SetInputActive(false);
+      TOBInputManager.Instance.SetInputActive(false);
       IsMoving = false;
       body.constraints = RigidbodyConstraints2D.FreezeAll;
       while (isFadeOutEnded == false)
@@ -556,7 +559,7 @@ namespace ToB.Player
       }
       body.constraints = RigidbodyConstraints2D.FreezeRotation;
       this.transform.position = TPTransform.position;
-      InputManager.Instance.SetInputActive(true);
+      TOBInputManager.Instance.SetInputActive(true);
       // 안전하게 가시 콜라이더에서 탈출
       yield return new WaitForEndOfFrame();
       isFadeOutEnded = false;
@@ -573,6 +576,4 @@ namespace ToB.Player
     Left,
     Right,
   }
-  
-
 }

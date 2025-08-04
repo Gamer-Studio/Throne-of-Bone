@@ -81,6 +81,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   knockbackType: 0
+  <Blockable>k__BackingField: 0
 --- !u!60 &6512705002693193552
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -205,6 +206,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 483af85d756f13c479115a2d5741c54f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  type: 0
   enemySO: {fileID: 11400000, guid: ab1cdbdb084c12c448dc64ab9df52a80, type: 2}
   rb: {fileID: 2109608136561680154}
   <Physics>k__BackingField: {fileID: 305513862733806583}
@@ -215,6 +217,7 @@ MonoBehaviour:
   target: {fileID: 0}
   isAlive: 0
   <ReactOnDamage>k__BackingField: 1
+  audioPlayer: {fileID: 0}
   <SightSensor>k__BackingField: {fileID: 6131647231065914437}
   <Stat>k__BackingField: {fileID: 7113391482443047966}
   <EnemyBody>k__BackingField: {fileID: 3201697946199940857}
@@ -239,7 +242,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <enemy>k__BackingField: {fileID: 8366997287290514996}
   currentPatternString: 
-  <SavePosition>k__BackingField: {fileID: 0}
+  <SavePosition>k__BackingField: {fileID: 3609943267984117434}
 --- !u!1 &1472799288175207414
 GameObject:
   m_ObjectHideFlags: 0
@@ -321,6 +324,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   knockbackType: 0
+  <Blockable>k__BackingField: 0
 --- !u!60 &2827978930595195229
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -454,6 +458,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   knockbackType: 0
+  <Blockable>k__BackingField: 0
 --- !u!60 &5606043536370926397
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -742,7 +747,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   root: {fileID: 8366997287290514996}
-  collider: {fileID: 8903584288659925327}
+  boxCollider: {fileID: 8903584288659925327}
   groundLayer:
     serializedVersion: 2
     m_Bits: 128
@@ -842,6 +847,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   targets: []
+  entered: 0
+  lastEnteredTime: 0
+  senseDuration: 0
 --- !u!50 &685767760875417878
 Rigidbody2D:
   serializedVersion: 5
@@ -950,6 +958,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   knockbackType: 0
+  <Blockable>k__BackingField: 0
 --- !u!60 &5206440570007702324
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -1156,4 +1165,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53ab476cda1b5a342a8c9589483b3fc8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemy: {fileID: 0}
   currentHP: 0

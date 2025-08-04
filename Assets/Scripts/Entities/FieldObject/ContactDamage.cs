@@ -51,11 +51,11 @@ namespace ToB.Entities.FieldObject
             }
         }
 
-        public bool Blockable => blockable;
 
         public bool blockable;
+        public bool Blockable => blockable;
         public bool effectable;
-        [field:SerializeField] public bool Effectable => effectable;
+        public bool Effectable => effectable;
         public Vector3 Position { get; set; }
         [field:SerializeField] public Team Team { get; set; }
         

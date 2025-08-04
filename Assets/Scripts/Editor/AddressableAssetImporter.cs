@@ -80,12 +80,9 @@ public static class AddressableAssetImporter
       {
         obj.RunAllObject(child =>
         {
-          if (child.TryGetComponent<RoomLink>(out var link))
+          if (child.TryGetComponent<Room>(out var room))
           {
-            link.connectedRoomReference = new(link.deprecated, 
-              AddressableAssetSettingsDefaultObject.Settings.FindAssetEntry(link.deprecated.AssetGUID)?
-              .address);
-            
+            room.FindStructures();
             EditorUtility.SetDirty(child);
           }
         });

@@ -23,8 +23,9 @@ namespace ToB.Entities.Buffs
       
       if (!buffs.ContainsKey(buff))
       {
-        buff.Apply(gameObject, info);
-        buffs[buff] = info;
+        var infoClone = info.Clone();
+        buff.Apply(gameObject, infoClone);
+        buffs[buff] = infoClone;
 
         if (buff == Buff.Poison)
         {
@@ -72,8 +73,9 @@ namespace ToB.Entities.Buffs
           //TODO : 아래 if조건문은 추후 리팩토링해야 함. 지금 구조대로는 몬스터에게 중독을 걸 수 없음!
           if (buff.Key == Buff.Poison && !BattleSkillManager.Instance.BSStats.IsImmuneByPoison)
           {
-            buff.Key.Effect(gameObject, info);
           }
+          
+          buff.Key.Effect(gameObject, info);
           info.delayTime = 0;
         }
         

@@ -7,7 +7,7 @@ using UnityEngine.InputSystem;
 namespace ToB.Core.InputManager
 {
     
-    public partial class InputManager
+    public partial class TOBInputManager
     {
         public void PlayerMove(InputAction.CallbackContext context)
         {
@@ -17,6 +17,13 @@ namespace ToB.Core.InputManager
 
         public void PlayerMeleeAttack(InputAction.CallbackContext context)
         {
+            if (!StageManager.Instance) return;
+            if (StageManager.Instance.CurrentState == GameState.CutScene
+                && context.performed)
+            {
+                StageManager.Instance.cutSceneProcessCall = true;
+            }
+            
             if (!CanMove()) return;
             player?.MeleeAttack(context);
         }
@@ -41,14 +48,22 @@ namespace ToB.Core.InputManager
 
         public void PlayerInteract(InputAction.CallbackContext context)
         {
-            if (!CanMove())
+            if (!StageManager.Instance) return;
+            if (StageManager.Instance.CurrentState == GameState.UI || StageManager.Instance.CurrentState == GameState.Dialog)
             {
                 UIProcess(context); // 같은 키 할당됨
                 return;
             }
+            else if (StageManager.Instance.CurrentState == GameState.CutScene
+                     && context.performed)
+            {
+                StageManager.Instance.cutSceneProcessCall = true;
+            }
             
             if(context.performed)
                 player?.Interact();
+            
+            
         }
 
         public void PlayerBlock(InputAction.CallbackContext context)
