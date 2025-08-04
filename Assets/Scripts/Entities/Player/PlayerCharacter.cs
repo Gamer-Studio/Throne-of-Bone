@@ -434,24 +434,24 @@ namespace ToB.Player
     /// <param name="sender">피해량을 주는 주체입니다. null일시 플레이어에게 고정 피해를 주고, 효과를 발동시키지 않습니다.</param>
     public void Damage(float value, IAttacker sender)
     {
-      if(invincibility) return;
+      if (invincibility) return;
       var isBuff = sender is DamageDebuff;
+      
       if (sender == null)
       {
         stat.Hp -= value;
         return;
       }
-      if (IsImmune && !isBuff) return;
       if (sender.Team == Team) return;
 
       if (IsBlocking && sender.Blockable)
         Block(value, sender);
-      else
+      else if(!IsImmune || isBuff)
       {
         stat.Damage(value);
-        if (stat.Hp > 0) audioPlayer.Play("VOXReac_Death_HA_MaleCharVoc_21"); // 피통이 남았을 시
-        else audioPlayer.Play("VOXMisc_Drowning_HA_MaleCharVoc_02"); // 사망 시
-        
+
+        audioPlayer.Play(stat.Hp > 0 ? "VOXReac_Death_HA_MaleCharVoc_21" : "VOXMisc_Drowning_HA_MaleCharVoc_02"); // 사망 시
+        // 피통이 남았을 시
         if (sender.Effectable)
         {
           UIManager.Instance.effectUI.PlayHitEffect();
@@ -462,7 +462,7 @@ namespace ToB.Player
           damagedEffect.Play();
         }
 
-        if (isBuff && immuneTime < damageImmuneTime) immuneTime = damageImmuneTime;
+        if (!isBuff) immuneTime = damageImmuneTime;
       }
     }
 
