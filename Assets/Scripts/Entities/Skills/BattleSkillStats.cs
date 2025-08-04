@@ -1,4 +1,6 @@
 using System;
+using NUnit.Framework;
+using ToB.Entities.Buffs;
 using ToB.Scenes.Stage;
 using UnityEngine;
 using UnityEngine.ResourceManagement;
@@ -51,6 +53,11 @@ namespace ToB.Entities.Skills
             player.stat.tempAtk = Atk;
             player.stat.tempMaxHP = MaxHp;
             player.stat.tempDef = Def;
+
+            if (IsImmuneByPoison)
+            {
+                player.buffController.immunedBuffs.Add(Buff.Poison);
+            }
             
             // TODO : 출혈 관련은 디버프 미구현 관계로 적용 X
             

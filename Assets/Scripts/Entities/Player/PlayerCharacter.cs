@@ -134,7 +134,7 @@ namespace ToB.Player
     [Tooltip("캐릭터 스프라이트"), Foldout(Bindings), SerializeField] protected SpriteRenderer spriteRenderer;
     [Foldout(Bindings), SerializeField] private PlayerGroundChecker groundChecker;
     [Foldout(Bindings), SerializeField] private WorldGaugeBar dashGaugeBar, attackGaugeBar;
-    [Foldout(Bindings), SerializeField] private BuffController buffController;
+    [Foldout(Bindings), SerializeField] public BuffController buffController;
 
     #endregion
 
@@ -167,8 +167,6 @@ namespace ToB.Player
           audioPlayer.Play(!inWater ? "Footsteps_DirtyGround_Jump_Land_02" : "Footsteps_Water_Jump_Light_01");
         });
       }
-      
-      // 버프
     }
 
     private void Update()
@@ -289,7 +287,6 @@ namespace ToB.Player
       if (body.linearVelocity.y < 0)
       {
         body.linearVelocity += Vector2.up * (Physics.gravity.y * (gravityAcceleration - 1) * Time.fixedDeltaTime);
-        if(body.linearVelocityY < maxFallSpeed) body.linearVelocityY = maxFallSpeed;
       }
     }
 
@@ -579,6 +576,4 @@ namespace ToB.Player
     Left,
     Right,
   }
-  
-
 }
