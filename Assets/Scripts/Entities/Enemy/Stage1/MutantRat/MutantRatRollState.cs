@@ -24,6 +24,7 @@ namespace ToB.Entities
             owner.Knockback.isActive = false;
             enemy.Physics.externalVelocity[ROLL_KEY] = Vector2.zero;
             enemy.audioPlayer.Play("WAV_DSGNMisc_Rock_Elements_Rolling_01_DR_GQ");
+            owner.EnemyBody.ChangeDamage(owner.DataSO.RollDamage);
         }
 
         public override void Execute()
@@ -103,6 +104,8 @@ namespace ToB.Entities
             enemy.Animator.SetBool(EnemyAnimationString.Roll, false);
             owner.Knockback.isActive = true;
             enemy.Physics.externalVelocity.Remove(ROLL_KEY);
+            owner.EnemyBody.ChangeDamage(owner.DataSO.BodyDamage);
+            
         }
     }
 }
