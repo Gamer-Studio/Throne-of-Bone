@@ -75,9 +75,9 @@ namespace ToB.Worlds
 
     static Team()
     {
-      None = new Team("White", Color.white);
-      Player = new Team("Blue", Color.blue);
-      Enemy = new Team("Red", Color.red);
+      None = new Team("None", Color.white);
+      Player = new Team("Player", Color.blue);
+      Enemy = new Team("Enemy", Color.red);
     }
 
     #endregion

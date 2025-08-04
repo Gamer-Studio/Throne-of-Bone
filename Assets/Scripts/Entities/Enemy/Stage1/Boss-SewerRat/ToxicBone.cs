@@ -4,6 +4,7 @@ using ToB.Entities.Buffs;
 using ToB.Entities.Projectiles;
 using ToB.Player;
 using ToB.Utils;
+using ToB.Worlds;
 using UnityEngine;
 
 namespace ToB.Entities
@@ -35,6 +36,8 @@ namespace ToB.Entities
                 SimpleRotate = GetComponent<SimpleRotate>();
             if(!audioPlayer)
                 audioPlayer = gameObject.AddComponent<ObjectAudioPlayer>();
+
+            Team = Team.Enemy;
         }
 
         private void Start()
