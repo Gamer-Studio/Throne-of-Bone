@@ -122,10 +122,9 @@ namespace ToB.Player
         walkSoundCoroutine = null;
         yield break;
       }
-      
-      while (character.IsMoving && character.body.linearVelocity.x > 0.1f) 
+      while (character.IsMoving) 
       {
-        yield return new WaitForFixedUpdate(); // 0.1초마다 체크
+        yield return new WaitForFixedUpdate();
       }
       character.audioPlayer.StopAll();
       walkSoundCoroutine = null;
