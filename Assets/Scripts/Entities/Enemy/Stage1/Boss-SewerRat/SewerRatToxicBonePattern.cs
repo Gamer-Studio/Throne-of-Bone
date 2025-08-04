@@ -74,6 +74,7 @@ namespace ToB.Entities
                 Vector2 direction = enemy.target.transform.position - boneObj.transform.position ;
                 bone.LinearMovement.Init(direction, speed);
                 bone.SimpleRotate.SetRotationSpeed(enemy.IsTargetLeft ? -360 : 360);
+                enemy.audioPlayer.Play("Bite_02");
                 
                 yield return new WaitForSeconds(sewerRat.DataSO.ToxicBoneInterval);
             }

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using ToB.Core;
+using ToB.Entities.Skills;
 using ToB.Player;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -42,17 +43,14 @@ namespace ToB.UI
 
         private void Init()
         {
-            UpdateMaxCount(player.maxRangedAttack);
+            UpdateMaxCount(BattleSkillManager.Instance.BSStats.RangeAtkStack);
             player.OnRangedAttackStackChange.AddListener(UpdateCounter);
-            //player.OnMaxRangedAttackChange.AddListener(UpdateMaxCount);
+            BattleSkillManager.Instance.onRangeAtkStackChanged.AddListener(UpdateMaxCount);
         }
-
-        // 최대치 해방 시 최대치 늘려주고 카운터 갱신
-        // 추후 PlayerCharacter에서 이벤트 하나 더 만들어 줘야 할 듯.
-        
+      
         public void UpdateMaxCount(int count)
         {
-            maxRangeAttackCount = count;
+            maxRangeAttackCount = count + player.maxRangedAttack;
             UpdateCounter(player.AvailableRangedAttack);
         }
 

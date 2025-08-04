@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using DG.Tweening;
+using ToB.Entities.Skills;
 
 namespace ToB.UI
 {
@@ -32,11 +33,11 @@ namespace ToB.UI
         #region TestButton
         public void TestGoldAddButton()
         {
-            ResourceManager.Instance.GiveGoldToPlayer(10);
+            ResourceManager.Instance.GiveGoldToPlayer(100);
         }
         public void TestManaAddButton()
         {
-            ResourceManager.Instance.GiveManaToPlayer(10);
+            ResourceManager.Instance.GiveManaToPlayer(100);
         }
         public void TestGoldSubButton()
         {
@@ -55,7 +56,7 @@ namespace ToB.UI
         public void TestHPAddButton()
         {
             PlayerCharacter player = PlayerCharacter.Instance;
-            player.stat.Hp = player.stat.maxHp;
+            player.stat.HealtoFullHp();
         }
 
         #endregion

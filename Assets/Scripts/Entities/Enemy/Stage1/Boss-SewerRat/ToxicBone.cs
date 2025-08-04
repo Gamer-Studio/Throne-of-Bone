@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using ToB.Entities.Buffs;
+using ToB.Entities.Projectiles;
 using ToB.Player;
 using ToB.Utils;
 using UnityEngine;
@@ -8,7 +9,7 @@ using UnityEngine;
 namespace ToB.Entities
 {
     [RequireComponent(typeof(BoxCollider2D))]
-    public class ToxicBone : MonoBehaviour
+    public class ToxicBone : Projectile
     {
         [Header("기본 컴포넌트")]
         [field:SerializeField] public LinearMovement LinearMovement { get; private set; }
@@ -25,12 +26,15 @@ namespace ToB.Entities
         [Tooltip("단순 소멸할 지형"), SerializeField] private LayerMask terrainLayers;
 
         private Coroutine lifeCoroutine;
+        private ObjectAudioPlayer audioPlayer;
         private void Awake()
         {
             if(!LinearMovement)
                 LinearMovement = GetComponent<LinearMovement>();
             if(!SimpleRotate)
                 SimpleRotate = GetComponent<SimpleRotate>();
+            if(!audioPlayer)
+                audioPlayer = gameObject.AddComponent<ObjectAudioPlayer>();
         }
 
         private void Start()
@@ -67,6 +71,7 @@ namespace ToB.Entities
             if ((targetLayers & 1 << other.gameObject.layer) != 0)
             {
                 other.GetComponent<PlayerCharacter>().Damage(baseDamage, this);
+                audioPlayer.Play("Bite_03");
                 if (other.TryGetComponent<BuffController>(out var buffs))
                 {
                     buffs.Apply(Buff.Poison, new BuffInfo(2, 3), true);

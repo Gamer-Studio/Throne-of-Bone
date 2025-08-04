@@ -2,6 +2,7 @@ using System;
 using Newtonsoft.Json.Linq;
 using TMPro;
 using ToB.IO;
+using ToB.Utils;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -17,15 +18,9 @@ namespace ToB.Entities.FieldObject
         [SerializeField] public Animator animator;
         public bool IsInteractable { get; set; }
         [SerializeField] public bool isLeverActivated;
+        private ObjectAudioPlayer audioPlayer;
         
         #region SaveLoad
-
-        private void Awake()
-        {
-            IsInteractable = true;
-            LeverSR.sprite = sprites[isLeverActivated ? 1 : 0];
-            interactionText.text = "";
-        }
 
         public override void LoadJson(JObject json)
         {
@@ -33,18 +28,19 @@ namespace ToB.Entities.FieldObject
             isLeverActivated = json.Get(nameof(isLeverActivated), isLeverActivated);
             IsInteractable = json.Get(nameof(IsInteractable), true);
             animator.SetBool("IsActivated", isLeverActivated);
+            audioPlayer = GetComponent<ObjectAudioPlayer>();
         }
         
         public override void OnLoad()
         {
             LeverSR.sprite = sprites[isLeverActivated ? 1 : 0];
-            interactionText.text = "";
+            //interactionText.text = "";
         }
         public override JObject ToJson()
         {
             JObject json = base.ToJson();
-            json.Add(nameof(isLeverActivated), isLeverActivated);
-            json.Add(nameof(IsInteractable), IsInteractable);
+            json[nameof(isLeverActivated)] = isLeverActivated;
+            json[nameof(IsInteractable)] = IsInteractable;
             return json;
         }
       
@@ -55,25 +51,31 @@ namespace ToB.Entities.FieldObject
         /// </summary>
         public void Interact()
         {
-            isLeverActivated = !isLeverActivated;
-            animator.SetBool("IsActivated", isLeverActivated);
-            UpdateLeverText();
             if (IsInteractable)
             {
+                isLeverActivated = !isLeverActivated;
+                LeverStateUpdate();
                 onLeverInteract?.Invoke(isLeverActivated);
+                audioPlayer.Play("Part_Assembly_01");
             }
         }
-
-        private void UpdateLeverText()
+        public void LeverStateUpdate()
         {
-            if (!isLeverActivated) interactionText.text = "F : 켜기";
-            else interactionText.text = "F : 끄기";
+            animator.SetBool("IsActivated", isLeverActivated);
+            UpdateLeverText();
+        }
+        
+
+        public void UpdateLeverText()
+        {
+            interactionText.text = !isLeverActivated ? "F : 켜기" : "F : 끄기";
         }
 
         private void OnTriggerEnter2D(Collider2D other)
         {
             if (other.CompareTag("Player") && IsInteractable)
             {
+                interactionText.enabled = true;
                 UpdateLeverText();
             }
         }
@@ -81,6 +83,7 @@ namespace ToB.Entities.FieldObject
         {
             if (other.CompareTag("Player"))
             {
+                interactionText.enabled = false;
                 interactionText.text = "";
             }
         }

@@ -46,13 +46,13 @@ namespace ToB.Core
     
     public void Play(AudioClip clip, AudioType type)
     {
-      if (!clip || !AudioManager.Loaded) return;
+      if (!clip) return;
       AudioManager.Play(clip, type);
     }
 
     public void PlayBackground(AudioClip clip)
     {
-      if (!clip || !AudioManager.Loaded) return;
+      if (!clip) return;
       AudioManager.Play(clip, AudioType.Background);
     }
 
@@ -60,7 +60,7 @@ namespace ToB.Core
     
     public void PlayEffect(AudioClip clip)
     {
-      if (!clip || !AudioManager.Loaded) return;
+      if (!clip) return;
       AudioManager.Play(clip, AudioType.Effect);
     }
     
@@ -68,7 +68,6 @@ namespace ToB.Core
 
     public void Stop(AudioType type)
     {
-      if (!AudioManager.Loaded) return;
       AudioManager.Stop(type);
     }
     

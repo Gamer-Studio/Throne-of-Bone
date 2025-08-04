@@ -1,4 +1,5 @@
 using System;
+using NaughtyAttributes;
 using UnityEditor;
 using UnityEngine;
 
@@ -7,7 +8,7 @@ namespace ToB.Entities
     [RequireComponent(typeof(CircleCollider2D))]
     public class EnemyRangeBaseSightSensor : MonoBehaviour
     {
-        private Enemy enemy;
+        [SerializeField, ReadOnly] private Enemy enemy;
 
         [SerializeField] private CircleCollider2D circleCollider;
         [SerializeField] private LayerMask playerMask;
@@ -76,21 +77,21 @@ namespace ToB.Entities
             {
                 targetInRange = null;
                 TargetRB = null;
-                enemy.target = null;
+                enemy.SetTarget(null);
             }
         }
 
         private void Update()
         {
-            if (!dontMissOutOfRay) enemy.target = null;
+            if (!dontMissOutOfRay) enemy.SetTarget(null);
             if (!targetInRange) return;
 
             Vector2 posDiff = TargetRB.position - (Vector2)transform.position;
             float distance = posDiff.magnitude;
 
-            if (distance < 1f)
+            if (distance < 0.25f)
             {
-                enemy.target = targetInRange;
+                enemy.SetTarget(targetInRange);
                 return;
             }
 
@@ -114,7 +115,7 @@ namespace ToB.Entities
                 return;
             }
 
-            enemy.target = targetInRange;
+            enemy.SetTarget(targetInRange);
         }
     }
 }

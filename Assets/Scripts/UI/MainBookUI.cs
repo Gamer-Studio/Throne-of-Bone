@@ -198,7 +198,7 @@ namespace ToB.UI
             CloseBook();
         }
 
-        private void CloseBook()
+        public void CloseBook()
         {
             gameObject.SetActive(false);
             UIManager.Instance.panelStack.Pop();

@@ -1,9 +1,11 @@
 using ToB.Core;
+using ToB.Entities.Interface;
+using ToB.Utils;
 using UnityEngine;
 
 namespace ToB.Entities.FieldObject
 {
-    public class Chest_Small : MonoBehaviour, IDamageable
+    public class Chest_Small : FieldObjectProgress, IDamageable
     {
         [SerializeField] private int gold;
         [SerializeField] private int mana;
@@ -11,11 +13,7 @@ namespace ToB.Entities.FieldObject
         [SerializeField] private Animator animator;
         private Collider2D _collider;
         private Rigidbody2D _rb;
-        
-        private void Awake()
-        {
-    
-        }
+        private ObjectAudioPlayer audioPlayer;
         
         private void OnEnable()
         {
@@ -24,11 +22,12 @@ namespace ToB.Entities.FieldObject
             if (_rb == null) _rb = GetComponent<Rigidbody2D>();
             _rb.constraints = RigidbodyConstraints2D.FreezeAll;
             if (animator == null) animator = GetComponent<Animator>();
+            if (audioPlayer == null) audioPlayer = GetComponent<ObjectAudioPlayer>();
             animator.SetBool("IsOpened", false);
             HP = 1;
             _collider.enabled = true;
         }
-        public void Damage(float damage, MonoBehaviour sender = null)
+        public void Damage(float damage, IAttacker sender = null)
         {
             HP -= damage;
             if (HP <= 0)
@@ -43,6 +42,7 @@ namespace ToB.Entities.FieldObject
             Core.ResourceManager.Instance.SpawnResources(InfiniteResourceType.Mana, mana, transform);
             _collider.enabled = false;
             animator.SetBool("IsOpened", true);
+            audioPlayer.Play("Wood_04");
         }
         
     }

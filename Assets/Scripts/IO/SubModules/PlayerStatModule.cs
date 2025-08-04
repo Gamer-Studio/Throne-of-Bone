@@ -1,35 +1,22 @@
-using Newtonsoft.Json.Linq;
-using UnityEngine;
+using System.Collections.Generic;
+using Newtonsoft.Json;
+using ToB.Entities.Skills;
 
 namespace ToB.IO.SubModules
 {
-  public class PlayerStatModule : SAVEModule
+  public class PlayerStatModule : SubModule
   {
-    protected override string ModuleType => nameof(PlayerStatModule);
-    
+    public override string ModuleType => nameof(PlayerStatModule);
+
     #region Data
 
-    // 예시 데이터
-    public int additionalHp = 0;
-    
+    [JsonProperty]
+    public Dictionary<int, SkillState> savedPlayerSkillState = new();
+    [JsonProperty]
+    public Dictionary<int, bool> savedMemoryStates = new();
+
     #endregion
 
-    public PlayerStatModule(string name) : base(name)
-    {
-    }
-
-    protected override void BeforeSave()
-    {
-      base.BeforeSave();
-      
-      this[nameof(additionalHp)] = additionalHp;
-    }
-    
-    public override void Read(JObject data)
-    {
-      base.Read(data);
-
-      additionalHp = data.Get(nameof(additionalHp), additionalHp);
-    }
+    public PlayerStatModule(string name) : base(name) { }
   }
 }

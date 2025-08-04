@@ -262,9 +262,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 835baa890cad401fa2f6dc419eb899a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 1
-  delay: 1
   onlyPlayer: 1
+  buffs:
+    array:
+    - Key: {fileID: 11400000, guid: 0fa6bd1a20a678b46ae9d23c84c89af3, type: 2}
+      Value:
+        level: 5
+        duration: 5
+        delay: 1
+        delayTime: 0
 --- !u!50 &4379065553847355048
 Rigidbody2D:
   serializedVersion: 5
@@ -431,6 +437,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e0a64f7c2514e56ae83228ed3bd8ab7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  room: {fileID: 0}
   WaterLevel: 0
   WaterLevelPos:
   - {fileID: 8219032027679697252}

@@ -1,6 +1,7 @@
 using System.Collections;
 using NaughtyAttributes;
 using ToB.Core;
+using ToB.Entities.Skills;
 using UnityEngine;
 using AudioType = ToB.Core.AudioType;
 
@@ -31,7 +32,7 @@ namespace ToB.Player
 
     private void InitDash()
     {
-      dashGaugeBar.max = dashCoolTime;
+      dashGaugeBar.max = dashCoolTime - BattleSkillManager.Instance.BSStats.DashCooldown;
     }
     
     /// <summary>
@@ -64,7 +65,7 @@ namespace ToB.Player
         body.linearVelocityY = -0.1f;
         dashCoroutine = null;
 
-        DashDelay = dashCoolTime;
+        DashDelay = dashCoolTime - BattleSkillManager.Instance.BSStats.DashCooldown ;
       }
     }
 
@@ -88,7 +89,7 @@ namespace ToB.Player
         if (!immuned && dashTime > dashImmuneStartTime)
         {
           immuned = true;
-          dashImmuneTime = dashMaxImmuneTime;
+          dashImmuneTime = dashMaxImmuneTime + BattleSkillManager.Instance.BSStats.DashImmuneTime;
         }
         
         yield return new WaitForFixedUpdate();
@@ -99,7 +100,7 @@ namespace ToB.Player
       body.linearVelocity = Vector2.zero;
       dashCoroutine = null;
 
-      DashDelay = dashCoolTime;
+      DashDelay = dashCoolTime - BattleSkillManager.Instance.BSStats.DashCooldown;
     }
   }
 }

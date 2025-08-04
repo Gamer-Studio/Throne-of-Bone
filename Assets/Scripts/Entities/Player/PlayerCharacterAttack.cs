@@ -2,8 +2,11 @@ using System;
 using System.Collections;
 using NaughtyAttributes;
 using ToB.Core;
+using ToB.Entities.Interface;
 using ToB.Entities.Projectiles;
+using ToB.Entities.Skills;
 using ToB.Utils;
+using ToB.Worlds;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
@@ -11,28 +14,44 @@ using AudioType = ToB.Core.AudioType;
 
 namespace ToB.Player
 {
-  public partial class PlayerCharacter
+  public partial class PlayerCharacter : IAttacker
   {
     #region State
+
+    private const string AttackState = "Attack State";
     
-    [Label("공격 모션 재생 여부"), Foldout("Attack State")] public bool isAttacking = false; 
-    [Label("공격 딜레이"), Tooltip("0번 인덱스는 모션 리셋 시간 / 1, 2, 3번은 근접 공격 대기시간, 4번은 원거리 대기 시간입니다."), Foldout("Attack State")] 
+    [Label("공격 모션 재생 여부"), Foldout(AttackState)] public bool isAttacking = false; 
+    [Label("공격 딜레이"), Tooltip("0번 인덱스는 모션 리셋 시간 / 1, 2, 3번은 근접 공격 대기시간, 4번은 원거리 대기 시간입니다."), Foldout(AttackState)] 
     public float[] attackDelay = {1, 0.3f, 0.3f, 0.1f};
-    [Label("근접 공격 피해 계수"), Tooltip("기본 캐릭터 공격력에 비례한 모션당 피해 계수입니다."), Foldout("Attack State")] public float[] attackDamageMultiplier = {1, 1, 2, 0.5f};
-    [Label("근접 공격 대기 시간"), Foldout("Attack State"), SerializeField] private float meleeAttackDelay = 0;
-    [Label("최대 원거리 공격 횟수"), Tooltip("원거리 공격의 충전되는 최대 횟수입니다."), Foldout("Attack State")] public int maxRangedAttack = 3;
-    [Label("검기 스택"), Foldout("Attack State"), SerializeField, ReadOnly] private int availableRangedAttack = 5;
-    [Label("검기 재생 시간(초)"), Foldout("Attack State")] public float rangedAttackRegenTime = 1;
-    [Label("검기 초당 회복량"), Foldout("Attack State")] public int rangedAttackRegenAmount = 0;
-    [Label("검기 발사 대기시간"), Foldout("Attack State")] public float shootDelay = 0.1f;
-    
+    [Label("근접 공격 피해 계수"), Tooltip("기본 캐릭터 공격력에 비례한 모션당 피해 계수입니다."), Foldout(AttackState)] public float[] attackDamageMultiplier = {1, 1, 2, 0.5f};
+    [Label("근접 공격 대기 시간"), Foldout(AttackState), SerializeField] private float meleeAttackDelay = 0;
+    [Label("최대 원거리 공격 횟수"), Tooltip("원거리 공격의 충전되는 최대 횟수입니다."), Foldout(AttackState)] public int maxRangedAttack = 3;
+    [Label("검기 스택"), Foldout(AttackState), SerializeField] private int availableRangedAttack = 3;
+    [Label("검기 재생 시간(초)"), Foldout(AttackState)] public float rangedAttackRegenTime = 1;
+    [Label("검기 초당 회복량"), Foldout(AttackState)] public int rangedAttackRegenAmount = 0;
+    [Label("검기 발사 대기시간"), Foldout(AttackState)] public float shootDelay = 0.1f;
+    [Label("패링 가능 레이어"), Foldout(AttackState)] public LayerMask parryableLayer;
+
+    /// <summary>
+    /// 적이 플레이어의 공격을 막을 수 있는지 여부입니다.
+    /// </summary>
+    public bool Blockable => true;
+
+    /// <summary>
+    /// 플레이어의 공격에 피격됬을 때 이펙트를 발생시키는지 여부입니다.
+    /// </summary>
+    public bool Effectable => true;
+
+    public Vector3 Position => transform.position;
+    public Team Team => Team.None;
+
     // 현재 원거리 공격 가능 횟수입니다.
     public int AvailableRangedAttack
     {
       get => availableRangedAttack;
       set
       {
-        var input = Math.Min(maxRangedAttack, Math.Max(value, 0));
+        var input = Math.Min(maxRangedAttack + BattleSkillManager.instance.BSStats.RangeAtkStack, Math.Max(value, 0));
 
         if (input != availableRangedAttack)
         {
@@ -79,7 +98,9 @@ namespace ToB.Player
       attackGaugeBar.max = 1;
       attackGaugeBar.Value = 0;
     }
-    
+
+    [NonSerialized] public bool bottomJumpAvailable = false;
+
     /// <summary>
     /// direction 방향으로 공격합니다.
     /// isMelee를 false로 하여 원거리 공격을 할 수 있습니다.
@@ -104,10 +125,12 @@ namespace ToB.Player
 
         isAttacking = true;
       
+        // 아래공격
         if(bottomAttack && IsFlight)
         {
+          bottomJumpAvailable = true;
           attackCoroutine = StartCoroutine(AttackWaiter(direction, 0.1f));
-          AudioManager.Play("fntgm_blade_whoosh_light_02",AudioType.Effect); // 아래공격 사운드
+          AudioManager.Play("fntgm_blade_whoosh_light_02", AudioType.Effect); // 아래공격 사운드
         }
         else
         {
@@ -161,18 +184,22 @@ namespace ToB.Player
     /// </summary>
     public void AttackEnd()
     {
+      bottomJumpAvailable = false;
       // transform.eulerAngles = new Vector3(0, MoveDirection == PlayerMoveDirection.Left ? 180 : 0, 0);
     }
 
     private IEnumerator Shoot(Vector2 direction)
     {
       yield return new WaitForSeconds(shootDelay);
-      var eff = swordEffect.Pooling().GetComponent<SwordEffect>();
+      var effect = (SwordEffect)swordEffect.Pooling();
+      effect.ClearEffect();
 
-      eff.transform.position = transform.position;
-      eff.Direction = direction;
-      eff.damage = stat.atk / 2;
-      eff.ClearEffect();
+      effect.transform.position = transform.position;
+      effect.Direction = direction;
+      effect.damage = stat.atk / 2;
+      effect.launcher = gameObject;
+      
+      AudioManager.Play("fntgm_arrow_whoosh", AudioType.Effect);
         
       if(rangeAttackGlowEffect.isPlaying) rangeAttackGlowEffect.Stop();
       rangeAttackGlowEffect.Play();
@@ -191,12 +218,13 @@ namespace ToB.Player
     {
       transform.eulerAngles = new Vector3(0, direction.x < 0 ? 180 : 0, 0);
       
-      var prevDamage = stat.atk;
-      stat.atk *= attackDamageMultiplier[prevAttackMotion];
+      var prevDamage = stat.atk.BaseValue;
+      if (prevAttackMotion < 3) stat.atk *= attackDamageMultiplier[prevAttackMotion];
+      else if (prevAttackMotion == 3) stat.atk *= (attackDamageMultiplier[prevAttackMotion] + BattleSkillManager.instance.BSStats.RangeAtkDmgMultiplier);
       SetMeleeAttackDelay(waitTime);
       yield return new WaitForSeconds(waitTime);
       isAttacking = false;
-      stat.atk = prevDamage;
+      stat.atk.BaseValue = prevDamage;
 
       yield return new WaitForSeconds(attackDelay[0]);
       prevAttackMotion = 0;
@@ -206,7 +234,7 @@ namespace ToB.Player
 
     private IEnumerator RegenRangedAttack()
     {
-      for (;availableRangedAttack < maxRangedAttack;)
+      for (;availableRangedAttack < maxRangedAttack + BattleSkillManager.instance.BSStats.RangeAtkStack;)
       {
         yield return new WaitForSeconds(rangedAttackRegenTime);
         AvailableRangedAttack += rangedAttackRegenAmount;

@@ -1,8 +1,11 @@
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TMPro;
 using ToB.Core;
+using ToB.Entities.Skills;
 using ToB.IO;
+using ToB.Scenes.Stage;
+using ToB.UI;
+using ToB.Utils;
 using UnityEngine;
 using AudioType = ToB.Core.AudioType;
 
@@ -13,8 +16,9 @@ namespace ToB.Entities.FieldObject
         public bool isDiscovered;
         [SerializeField] public TMP_Text interactionText;
         [SerializeField] public Transform TPTransform;
-        //[SerializeField] public TMP_Text TPText;
+        [SerializeField] public GameObject BonfireUIPanel;
         public bool IsInteractable { get; set; }
+        private ObjectAudioPlayer audioPlayer;
         [SerializeField] private Animator animator;
         
         #region SaveLoad
@@ -22,24 +26,25 @@ namespace ToB.Entities.FieldObject
         private void Awake()
         {
             IsInteractable = true;
-            animator.SetBool("IsDiscovered", isDiscovered);
+            BonfireUIPanel.SetActive(false);
+            audioPlayer = GetComponent<ObjectAudioPlayer>();
         }
         
 
         public override void LoadJson(JObject json)
         {
             base.LoadJson(json);
-            isDiscovered = json.Get(nameof(isDiscovered), isDiscovered);;
+            isDiscovered = json.Get(nameof(isDiscovered), isDiscovered);
         }
 
         public override void OnLoad()
         {
-            
+            animator.SetBool("IsDiscovered", isDiscovered);
         }
         public override JObject ToJson()
         {
             JObject json = base.ToJson();
-            json.Add(nameof(isDiscovered), isDiscovered);
+            json[nameof(isDiscovered)] = isDiscovered;
             return json;
         }
 
@@ -48,18 +53,16 @@ namespace ToB.Entities.FieldObject
         
         public void Interact()
         {
-            AudioManager.Play("fntgm_magic_fire_08",AudioType.Effect);
+            audioPlayer.Play("fntgm_magic_fire_08");
+            StageManager.Instance.player.stat.HealtoFullHp();
             if(!isDiscovered) BonfireDiscovered();
             else
             {
-                var playerData = SAVE.Current.Player;
-
-                playerData.currentStage = StageIndex;
-                playerData.currentRoom = RoomIndex;
-                playerData.savedPosition = TPTransform.localPosition + transform.localPosition;
-                SAVE.Current.Save();
+                BonfireUIPanel.SetActive(true);
+                interactionText.text = "";
+                StageManager.Instance.ChangeGameState(GameState.Dialog);
+                animator.SetBool("IsUsing", true);
             }
-            animator.SetTrigger("IsActivated");
         }
 
         private void BonfireDiscovered()
@@ -67,6 +70,7 @@ namespace ToB.Entities.FieldObject
             isDiscovered = true;
             animator.SetBool("IsDiscovered", isDiscovered);
             Debug.Log("화톳불 발견");
+            interactionText.text = "F : 쉬어가기";
             // 이후 TP포인트에 추가, 지도에 추가 등등
         }
 
@@ -74,8 +78,9 @@ namespace ToB.Entities.FieldObject
         private void OnTriggerEnter2D(Collider2D other)
         {
             if (other.CompareTag("Player"))
-            { 
-                interactionText.text = "F : 상호작용";
+            {
+                
+                interactionText.text = isDiscovered ? "F : 쉬어가기" : "F : 발견하기";
             }
         }
         
@@ -83,8 +88,38 @@ namespace ToB.Entities.FieldObject
         {
             if (other.CompareTag("Player"))
             {
+                BonfireUIPanel.SetActive(false);
                 interactionText.text = "";
             }
         }
+        
+        #region ButtonAction
+
+        public void Save()
+        {
+            StageManager.Save(this);
+        }
+
+        public void TeleportPointSelected()
+        {
+            Debug.Log("티피합니다!");
+            TPPanelToggle();
+            LeaveBonfire();
+        }
+
+        public void TPPanelToggle()
+        {
+            UIManager.Instance.wideMapUI.TPPanelToggle();
+        }
+        
+        public void LeaveBonfire()
+        {
+            BonfireUIPanel.SetActive(false);
+            interactionText.text = "F : 쉬어가기";
+            StageManager.Instance.ChangeGameState(GameState.Play);
+            animator.SetBool("IsUsing", false);
+        }
+        
+        #endregion
     }
 }

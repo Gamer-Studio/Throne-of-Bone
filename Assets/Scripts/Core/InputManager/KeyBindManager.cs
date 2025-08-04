@@ -17,6 +17,7 @@ namespace ToB.Core.InputManager
 
         public void LoadKeySettings()
         {
+            Debug.Log(KeyBindsFilePath);
             if (!File.Exists(KeyBindsFilePath))
             {
                 Debug.Log("사전 키셋팅이 없어 기본값을 불러옵니다.");
@@ -25,7 +26,7 @@ namespace ToB.Core.InputManager
             Debug.Log("키셋팅 파일을 찾았습니다");
             string json = File.ReadAllText(KeyBindsFilePath);
             
-            InputManager.Instance.PlayerInput.actions.LoadBindingOverridesFromJson(json);
+            TOBInputManager.Instance.PlayerInput.actions.LoadBindingOverridesFromJson(json);
         }
 
         public void SaveCurrentKeySettings()

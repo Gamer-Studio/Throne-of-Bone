@@ -16,7 +16,7 @@ namespace ToB.Utils
       else Destroy(gameObject);
     }
 
-    public PooledObject Duplicate() => pool != null ? pool.Get() : gameObject.GetComponent<PooledObject>();
+    public virtual PooledObject Duplicate() => pool != null ? pool.Get() : gameObject.GetComponent<PooledObject>();
 
     public static implicit operator GameObject(PooledObject obj) => obj.gameObject;
   }

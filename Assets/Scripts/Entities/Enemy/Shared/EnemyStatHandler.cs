@@ -1,6 +1,11 @@
 using System;
 using System.Collections;
 using NaughtyAttributes;
+using ToB.Entities.Interface;
+using ToB.Entities.Projectiles;
+using ToB.Entities.Skills;
+using ToB.Player;
+using ToB.Scenes.Stage;
 using UnityEngine;
 
 namespace ToB.Entities
@@ -9,16 +14,20 @@ namespace ToB.Entities
     // 지금은 안 쓰고 적군이 방어력 버프를 쓰는 등 처리가 복잡해질 때를 감안해서 보류
     public class EnemyStatHandler : MonoBehaviour, IDamageable
     {
-        private Enemy enemy;
+        public Enemy enemy;
         private IEnemyHittableSO hittableSO;
         
-        [SerializeField, ReadOnly] private float currentHP;
-        private float CurrentHP => currentHP;
-        private float MaxHP => hittableSO.HP;
-        public float DEF => hittableSO.DEF;
+        [SerializeField] private float currentHP;
+        public float CurrentHP => currentHP;
+        public float MaxHP => hittableSO.HP;
+
+        private float def;
+        public float DEF => def;
 
         public Coroutine DamageEffectCoroutine { get; private set; }
         public bool OnDamageEffect { get; private set; }
+
+        public event Action OnTakeDamage;
         
         /// <summary>
         /// 아직까지는 본체가 HP를 갖기에 본체의 데이터가 고스란히 들어가지만
@@ -38,9 +47,10 @@ namespace ToB.Entities
             }
             this.hittableSO = hittableSO;
             currentHP = MaxHP;
+            def = hittableSO.DEF;
         }
         
-        private void ChangeHP(float delta)
+        public void ChangeHP(float delta)
         {
             currentHP += delta;
             currentHP = Mathf.Clamp(CurrentHP, 0, MaxHP);
@@ -51,11 +61,19 @@ namespace ToB.Entities
             }
         }
 
-        public void Damage(float damage, MonoBehaviour sender = null)
+        public void Damage(float damage, IAttacker sender = null)
         {
             float actualDamage = damage * (100 - DEF) / 100;
             ChangeHP(-actualDamage);
             enemy.OnTakeDamage(sender);
+            OnTakeDamage?.Invoke();
+            
+            if (sender is SwordEffect)
+            {
+                StageManager.Instance.player.stat.Hp +=
+                    (StageManager.Instance.player.stat.maxHp + StageManager.Instance.player.stat.tempMaxHP)
+                    * BattleSkillManager.Instance.BSStats.RangeAtkHeal;
+            }
             DamageEffectCoroutine = StartCoroutine(DamageColorOverlay());
         }
         
@@ -84,6 +102,22 @@ namespace ToB.Entities
         public void SetDefault()
         {
             currentHP = MaxHP;
+        }
+
+        public void SetDEF(float def = -1)
+        {
+            if (def < 0) def = hittableSO.DEF;
+            this.def = def;
+        }
+        
+        public void ForceSetHP(float hp)
+        {
+            currentHP = hp;
+        }
+
+        public void ForceOwner(Enemy enemy)
+        {
+            this.enemy = enemy;
         }
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using Cinemachine;
+using DG.Tweening;
 using NaughtyAttributes;
 using ToB.UI;
 using ToB.Utils.Singletons;
@@ -26,18 +27,27 @@ namespace ToB.Core
         
         private CinemachineFramingTransposer mainTransposer;
         private Vector3 mainOffset;
+
+        private bool UIResize;
         
+        public float zoomRatio { get; private set; }
 
         private void Awake()
         {
             mainCamOriginalSize = MainCamera.orthographicSize;
+            zoomRatio = 1;
             mainTransposer = MainVirtualCamera.GetCinemachineComponent<CinemachineFramingTransposer>();
             mainOffset = mainTransposer.m_TrackedObjectOffset;
         }
 
+        void Update()
+        {
+            zoomRatio = MainCamera.orthographicSize / mainCamOriginalSize;
+        }
+
         private void LateUpdate()
         {
-            if (IsBlending()) AdjustUISize();
+            if (IsBlending() && UIResize) AdjustUISize();
             else if (currentVirtualCamera == MainVirtualCamera && UIManager.Instance.gamePlayUI.transform.localScale != Vector3.one)
             {
                 if(Mathf.Abs(UIManager.Instance.gamePlayUI.transform.localScale.x - 1) < 0.001f)
@@ -58,19 +68,20 @@ namespace ToB.Core
         /// 파라미터에 넣는 버추얼 카메라가 제일 높은 Priority를 갖습니다
         /// </summary>
         /// <param name="newCamera"></param>
-        public void SwitchFirstCamera(CinemachineVirtualCamera newCamera)
+        public void SwitchFirstCamera(CinemachineVirtualCamera newCamera, bool uiResize = true)
         {
             if (currentVirtualCamera) currentVirtualCamera.Priority = 0;
             currentVirtualCamera = newCamera;
             newCamera.Priority = 50;
+            UIResize = uiResize;
         }
         
         /// <summary>
         /// 파라미터를 비울 경우 메인 카메라가 제일 높은 Priority를 갖습니다
         /// </summary>
-        public void SwitchFirstCamera()
+        public void SwitchFirstCamera(bool uiResize = true)
         {
-            SwitchFirstCamera(MainVirtualCamera);
+            SwitchFirstCamera(MainVirtualCamera, uiResize);
         }
 
         /// <summary>
@@ -100,6 +111,19 @@ namespace ToB.Core
             {
                 mainTransposer.m_TrackedObjectOffset.y = Mathf.Lerp(mainTransposer.m_TrackedObjectOffset.y, mainOffset.y, 0.1f);
             }
+        }
+
+        public void EarthQuake(float frequency, float amplitude, float duration)
+        {
+            CinemachineBasicMultiChannelPerlin perlin = currentVirtualCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+            perlin.m_AmplitudeGain = amplitude;
+            perlin.m_FrequencyGain = frequency;
+
+            DOVirtual.DelayedCall(duration, () =>
+            {
+                perlin.m_AmplitudeGain = 0;
+                perlin.m_FrequencyGain = 0;
+            });
         }
     }
 }

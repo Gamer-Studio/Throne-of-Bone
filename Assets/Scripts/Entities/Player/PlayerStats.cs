@@ -1,5 +1,7 @@
 using System;
 using NaughtyAttributes;
+using ToB.Core;
+using ToB.Entities.Skills;
 using ToB.Utils;
 using UnityEngine;
 using UnityEngine.Events;
@@ -37,10 +39,22 @@ namespace ToB.Player
     public Stat def;
 
     /// <summary>
-    /// 플레이어의 임시 방어력입니다. \n
+    /// 플레이어의 임시 방어력입니다. <br/>
     /// 기본 방어력 스텟으로 취급되지않으며, 버프등에 활용할 수 있습니다.
     /// </summary>
     public float tempDef = 0;
+    
+    /// <summary>
+    /// 플레이어의 임시 최대 체력입니다. <br/>
+    /// 기본 방어력 스텟으로 취급되지않으며, 버프등에 활용할 수 있습니다.
+    /// </summary>
+    public float tempMaxHP = 0;
+    
+    /// <summary>
+    /// 플레이어의 임시 공격력입니다. <br/>
+    /// 기본 방어력 스텟으로 취급되지않으며, 버프등에 활용할 수 있습니다.
+    /// </summary>
+    public float tempAtk = 0;
 
     /// <summary>
     /// 플레이어의 현재 체력을 고정적으로 변경하거나 받아올 수 있습니다. 
@@ -49,7 +63,7 @@ namespace ToB.Player
     {
       get => currentHp;
       set {
-        currentHp = Math.Max(0, Math.Min(value, maxHp));
+        currentHp = Math.Max(0, Math.Min(value, maxHp + tempMaxHP));
         onHpChanged?.Invoke(currentHp);
         if (currentHp <= 0)
         {
@@ -58,6 +72,11 @@ namespace ToB.Player
       }
     }
 
+    public void HealtoFullHp()
+    {
+      Hp = maxHp + tempMaxHP;
+    }
+    
     /// <summary>
     /// 플레이어의 현재 방어 게이지를 변경하거나 가져올 수 있습니다.
     /// </summary>
@@ -73,11 +92,13 @@ namespace ToB.Player
     /// <summary>
     /// 플레이어의 공격력입니다.
     /// </summary>
-    [Label("공격력")] public float atk = 10;
+    [Label("공격력")] public Stat atk;
+    
 
     public PlayerStats()
     {
       def = new Stat(0, v => v + tempDef);
+      atk = new Stat(10, v => v + tempAtk);
     }
 
     /// <summary>
@@ -94,8 +115,9 @@ namespace ToB.Player
       {
         Hp -= damage * (1 - def.Value / 100);
       }
-      
       return Hp;
     }
+    
+    
   }
 }

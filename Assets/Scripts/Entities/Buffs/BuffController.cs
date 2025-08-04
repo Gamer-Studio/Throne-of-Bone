@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using ToB.Entities.Skills;
 using UnityEngine;
 
 namespace ToB.Entities.Buffs
@@ -5,6 +7,7 @@ namespace ToB.Entities.Buffs
   public class BuffController : MonoBehaviour
   {
     [SerializeField] private SerializableDictionary<Buff, BuffInfo> buffs = new();
+    public List<Buff> immunedBuffs = new();
 
     [SerializeField] private ParticleSystem poisonEffect;
     
@@ -16,10 +19,13 @@ namespace ToB.Entities.Buffs
     /// <param name="force">true일 경우 버프가 존재할 경우 info를 덮어씌웁니다.</param>
     public void Apply(Buff buff, BuffInfo info, bool force = false)
     {
+      if(immunedBuffs.Contains(buff)) return;
+      
       if (!buffs.ContainsKey(buff))
       {
-        buff.Apply(gameObject, info);
-        buffs[buff] = info;
+        var infoClone = info.Clone();
+        buff.Apply(gameObject, infoClone);
+        buffs[buff] = infoClone;
 
         if (buff == Buff.Poison)
         {
@@ -64,6 +70,11 @@ namespace ToB.Entities.Buffs
         
         if (info.delayTime >= info.delay)
         {
+          //TODO : 아래 if조건문은 추후 리팩토링해야 함. 지금 구조대로는 몬스터에게 중독을 걸 수 없음!
+          if (buff.Key == Buff.Poison && !BattleSkillManager.Instance.BSStats.IsImmuneByPoison)
+          {
+          }
+          
           buff.Key.Effect(gameObject, info);
           info.delayTime = 0;
         }

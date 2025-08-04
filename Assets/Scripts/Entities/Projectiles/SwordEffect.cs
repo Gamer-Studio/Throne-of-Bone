@@ -1,18 +1,20 @@
+using System;
 using NaughtyAttributes;
 using ToB.Utils;
 using UnityEngine;
 
 namespace ToB.Entities.Projectiles
 {
-  public class SwordEffect : PooledObject
+  public class SwordEffect : Projectile
   {
     [ReadOnly] private new Camera camera;
     [Label("피해량")] public float damage;
-    [Label("발사 방향")] private Vector2 direction = Vector2.zero;
     [Label("속도")] public float speed = 1;
     [Label("넉백 세기")] public float knockBackForce = 15;
     
     public LayerMask hitLayers;
+
+    private LayerMask hitLayersDefault;
     
     [SerializeField] private Rigidbody2D body;
     [SerializeField] private TrailRenderer trail;
@@ -34,7 +36,13 @@ namespace ToB.Entities.Projectiles
       if(trail) trail.Clear();
       if(ps) ps.Clear();
     }
-    
+
+    public override void Release()
+    {
+      launcher = null;
+      base.Release();
+    }
+
     #region Unity Event
     
     #if UNITY_EDITOR
@@ -48,6 +56,7 @@ namespace ToB.Entities.Projectiles
     
     private void OnTriggerEnter2D(Collider2D other)
     {
+      if (!gameObject.activeSelf) return;
       if ((hitLayers & 1 << other.gameObject.layer) == 0) return;
       
       other.KnockBack(knockBackForce, direction);
@@ -83,14 +92,20 @@ namespace ToB.Entities.Projectiles
       attackEffect.gameObject.SetActive(true);
     }
 
+    private void Awake()
+    {
+      hitLayersDefault = hitLayers;
+    }
+
     private void OnEnable()
     {
       camera = Camera.main;
+      hitLayers = hitLayersDefault;
     }
 
     private void FixedUpdate()
     {
-      body.MovePosition(body.position + direction * speed * Time.fixedDeltaTime);
+      body.MovePosition(body.position + direction * (speed * Time.fixedDeltaTime));
       
       var pos = camera.WorldToViewportPoint(transform.position);
 

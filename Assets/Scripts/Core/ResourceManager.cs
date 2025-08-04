@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using ToB.Entities;
 using ToB.Entities.Effect;
+using ToB.Entities.Skills;
 using ToB.IO;
 using ToB.Utils;
 using ToB.Utils.Singletons;
@@ -38,7 +39,8 @@ namespace ToB.Core
         {
 
         }
-       
+
+        public float GoldUP;
         public int PlayerGold
         { 
             get => playerGold;
@@ -76,6 +78,8 @@ namespace ToB.Core
         /// <param name="드랍할 지점"></param>
         public void SpawnResources(InfiniteResourceType type, int resourceAmount, Transform spawnPoint)
         {
+            if (resourceAmount <= 0) return;
+            
             //자원 오브젝트 생성할 수량 및 그 안에 들어갈 값 할당
             int prefabCount = Mathf.Clamp((resourceAmount / ResourcePerObject)+1, 1, maxPrefabCount);
             int resourceLeft = resourceAmount;
@@ -104,14 +108,17 @@ namespace ToB.Core
                 resourceLeft -= ResourcePerObject;
             }
         }
-        
+
         /// <summary>
-        /// 플레이어에게 골드를 줍니다.
+        /// 플레이어에게 골드를 줍니다. isGoldUpApplied는 골드 획득량 증가 옵션 적용 여부입니다(기본 true)
+        /// 은행에서 출금하는 경우에는 false로 매개변수 넣어주시면 그대로 증가합니다.
         /// </summary>
         /// <param name="gold"></param>
-        public void GiveGoldToPlayer(int gold)
+        /// <param name="isGoldUPApplied"></param>
+        public void GiveGoldToPlayer(int gold, bool isGoldUPApplied = true)
         {
-            PlayerGold += gold;
+            if (isGoldUPApplied) PlayerGold += (int)(gold * (1 + GoldUP));
+            else PlayerGold += gold;
         }
         
         /// <summary>
@@ -162,7 +169,7 @@ namespace ToB.Core
         public void UseGold(int requiredGold)
         {
             PlayerGold -= requiredGold;
-            UsedGold += requiredGold;
+            //UsedGold += requiredGold;
             Debug.Log($"{requiredGold} 골드를 사용했습니다.");
         }
         
@@ -173,9 +180,22 @@ namespace ToB.Core
         public void UseMana(int requiredMana)
         {
             PlayerMana -= requiredMana;
-            UsedMana += requiredMana;
+            //UsedMana += requiredMana;
             Debug.Log($"{requiredMana} 마나결정을 사용했습니다");
         }
+
+        /// <summary>
+        /// 스킬 초기화 시 사용한 골드를 돌려주는 메서드입니다.
+        /// </summary>
+        public void ReturnUsedResources()
+        {
+            GiveGoldToPlayer(UsedGold, false);
+            GiveManaToPlayer(UsedMana);
+            UsedGold = 0;
+            UsedMana = 0;
+        }
+        
+        
         #region Keys
         
         //public Dictionary<string, string> IndexedKey = new();
@@ -236,14 +256,16 @@ namespace ToB.Core
         */
         public int DropAllGoldsToCorpse()
         {
-            int totalGold = PlayerGold;
+            int totalGold = PlayerGold + UsedGold;
             PlayerGold = 0;
+            UsedGold = 0;
             return totalGold;
         }
         public int DropAllManaToCorpse()
         {
             int totalMana = PlayerMana + UsedMana;
             PlayerMana = 0;
+            UsedMana = 0;
             return totalMana;
         }
         
@@ -252,8 +274,8 @@ namespace ToB.Core
         #region Serialization
         public void LoadJson(JObject json)
         {
-            PlayerMana = json.Get(nameof(playerGold), 0);
-            PlayerGold = json.Get(nameof(playerMana), 0);
+            PlayerMana = json.Get(nameof(playerMana), 0);
+            PlayerGold = json.Get(nameof(playerGold), 0);
             MasterKey = json.Get(nameof(MasterKey), 0);
             UsedGold = json.Get(nameof(UsedGold), 0);
             UsedMana = json.Get(nameof(UsedMana), 0);

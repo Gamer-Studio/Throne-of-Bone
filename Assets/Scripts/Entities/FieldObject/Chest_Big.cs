@@ -2,6 +2,7 @@ using Newtonsoft.Json.Linq;
 using TMPro;
 using ToB.Core;
 using ToB.IO;
+using ToB.Utils;
 using UnityEngine;
 using AudioType = ToB.Core.AudioType;
 
@@ -13,20 +14,21 @@ namespace ToB.Entities.FieldObject
         [SerializeField] public int mana;
         [SerializeField] public TMP_Text interactionText;
         [SerializeField] private Animator animator;
+        
+        private ObjectAudioPlayer audioPlayer;
         public bool IsInteractable { get; set; }
         private bool IsOpened;
 
         private void Awake()
         {
-            IsOpened = false;
-            IsInteractable = true;
-            animator.SetBool("IsOpened", IsOpened);
+            
         }
 
         public override void LoadJson(JObject json)
         {
             base.LoadJson(json);
             IsOpened = json.Get(nameof(IsOpened), IsOpened);
+            audioPlayer = GetComponent<ObjectAudioPlayer>();
         }
         
         public override void OnLoad()
@@ -37,7 +39,7 @@ namespace ToB.Entities.FieldObject
         public override JObject ToJson()
         {
             JObject json = base.ToJson();
-            json.Add(nameof(IsOpened), IsOpened);
+            json[nameof(IsOpened)] = IsOpened;
             return json;
         }
         public void Interact()
@@ -47,7 +49,7 @@ namespace ToB.Entities.FieldObject
             IsOpened = true;
             IsInteractable = false;
             interactionText.text = "";
-            AudioManager.Play("env_chest_open_01", AudioType.Effect);
+            audioPlayer.Play("env_chest_open_01");
             animator.SetBool("IsOpened", IsOpened);
         }
         private void OnTriggerEnter2D(Collider2D other)

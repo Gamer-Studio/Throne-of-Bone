@@ -2,8 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using NaughtyAttributes;
+using ToB.Core;
 using ToB.Core.InputManager;
 using ToB.Entities;
+using ToB.Entities.Buffs;
+using ToB.Entities.Interface;
 using ToB.IO;
 using ToB.UI;
 using ToB.Utils;
@@ -12,6 +15,7 @@ using ToB.Utils.UI;
 using ToB.Worlds;
 using UnityEngine;
 using UnityEngine.Events;
+using Object = System.Object;
 
 namespace ToB.Player
 {
@@ -53,18 +57,25 @@ namespace ToB.Player
     
     public bool IsImmune => isDamageImmune || dashImmuneTime > 0;
     private bool isDamageImmune = false;
+    public ObjectAudioPlayer audioPlayer;
     
     // 플레이어 스텟 관리 클래스입니다.
-    [Label("캐릭터 스텟"), Foldout("State")] public PlayerStats stat = new();
+    [Label("캐릭터 스텟")] public PlayerStats stat = new();
 
     // Jump State
-    [Label("점프 파워"), Foldout("Jump State")] public float jumpPower = 10;
-    [Label("벽점프 파워"), Foldout("Jump State")] public float wallJumpPower = 10;
-    [Label("벽점프 반동 제어불가 시간"), Foldout("Jump State")] public float wallJumpReactionTime = 0.4f; 
-    [Label("최대 점프 시간"), Foldout("Jump State")] public float jumpTimeLimit = 0.2f;
-    [Label("낙하시 중력가속도 보정값"), Foldout("Jump State")] public float gravityAcceleration = 10;
-    [Label("낙하시 시작 중력값"), Foldout("Jump State")] public float gravityStart = -10;
-    [Label("낙하 최고 속력"), Foldout("Jump State")] public float maxFallSpeed = -10;
+    private const string JumpState = nameof(JumpState);
+    
+    [Label("최대 점프 가능 횟수"), Foldout(JumpState)] public int maxJumpCount = 0;
+    [Label("현재 점프 가능 횟수"), Foldout(JumpState)] public int currentJumpCount = 0;
+    [Label("점프 파워"), Foldout(JumpState)] public float jumpPower = 10;
+    [Label("공중 점프 파워"), Foldout(JumpState)] public float airJumpPower = 10;
+    [Label("벽점프 파워"), Foldout(JumpState)] public float wallJumpPower = 10;
+    [Label("하단 패링 점프 파워"), Foldout(JumpState)] public float downJumpPower = 10;
+    [Label("벽점프 반동 제어불가 시간"), Foldout(JumpState)] public float wallJumpReactionTime = 0.4f; 
+    [Label("최대 점프 시간"), Foldout(JumpState)] public float jumpTimeLimit = 0.2f;
+    [Label("낙하시 중력가속도 보정값"), Foldout(JumpState)] public float gravityAcceleration = 10;
+    [Label("낙하시 시작 중력값"), Foldout(JumpState)] public float gravityStart = -10;
+    [Label("낙하 최고 속력"), Foldout(JumpState)] public float maxFallSpeed = -10;
 
     // 이 아래는 외부 접근용 연결 필드입니다.
     // 캐릭터가 공중인지 여부입니다.
@@ -115,13 +126,15 @@ namespace ToB.Player
     #endregion
     
     #region Binding
+    private const string Bindings = nameof(Bindings);
 
-    [Tooltip("캐릭터 바디"), Foldout("Bindings")] public Rigidbody2D body;
-    [Tooltip("캐릭터 콜라이더"), Foldout("Bindings")] public CapsuleCollider2D bodyCollider;
-    [Tooltip("캐릭터 애니메이터"), Foldout("Bindings"), SerializeField] protected Animator animator;
-    [Tooltip("캐릭터 스프라이트"), Foldout("Bindings"), SerializeField] protected SpriteRenderer spriteRenderer;
-    [Foldout("Bindings"), SerializeField] private PlayerGroundChecker groundChecker;
-    [Foldout("Bindings"), SerializeField] private WorldGaugeBar dashGaugeBar, attackGaugeBar;
+    [Tooltip("캐릭터 바디"), Foldout(Bindings)] public Rigidbody2D body;
+    [Tooltip("캐릭터 콜라이더"), Foldout(Bindings)] public CapsuleCollider2D bodyCollider;
+    [Tooltip("캐릭터 애니메이터"), Foldout(Bindings), SerializeField] protected Animator animator;
+    [Tooltip("캐릭터 스프라이트"), Foldout(Bindings), SerializeField] protected SpriteRenderer spriteRenderer;
+    [Foldout(Bindings), SerializeField] private PlayerGroundChecker groundChecker;
+    [Foldout(Bindings), SerializeField] private WorldGaugeBar dashGaugeBar, attackGaugeBar;
+    [Foldout(Bindings), SerializeField] public BuffController buffController;
 
     #endregion
 
@@ -134,12 +147,14 @@ namespace ToB.Player
       if (!body) body = GetComponent<Rigidbody2D>();
       if (!animator) animator = GetComponentInChildren<Animator>();
       if (!spriteRenderer) spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+      if (!audioPlayer) audioPlayer = GetComponent<ObjectAudioPlayer>();
     }
     
 #endif
 
     private void Awake()
     {
+      if (!audioPlayer) audioPlayer = GetComponent<ObjectAudioPlayer>();
       Load();
       InitDash();
       InitAttack();
@@ -149,6 +164,7 @@ namespace ToB.Player
         groundChecker.onLanding.AddListener(() =>
         {
           animator.SetBool(BOOL_IS_FLIGHT, false);
+          audioPlayer.Play(!inWater ? "Footsteps_DirtyGround_Jump_Land_02" : "Footsteps_Water_Jump_Light_01");
         });
       }
     }
@@ -271,7 +287,6 @@ namespace ToB.Player
       if (body.linearVelocity.y < 0)
       {
         body.linearVelocity += Vector2.up * (Physics.gravity.y * (gravityAcceleration - 1) * Time.fixedDeltaTime);
-        if(body.linearVelocityY < maxFallSpeed) body.linearVelocityY = maxFallSpeed;
       }
     }
 
@@ -323,17 +338,35 @@ namespace ToB.Player
     // 점프 관리용 코루틴
     private Coroutine jumpCoroutine = null;
     private Coroutine wallJumpControlLockCoroutine = null;
+
+    /// <summary>
+    /// 공중 점프 가능횟수를 초기화합니다.
+    /// </summary>
+    public void RegenJump() => currentJumpCount = maxJumpCount;
     
     /// <summary>
     /// Jump()를 호출하여 점프를 시작할 수 있습니다. <br/>
     /// 빠르게 CancelJump()를 호출하여 낮은 점프를 할 수 있습니다.
     /// </summary>
-    public void Jump()
+    public void Jump(bool bottomJump = false)
     {
       if (!isControlable) return;
+
+      if (bottomJump && bottomJumpAvailable)
+      {
+        bottomJumpAvailable = false;
+        jumpCoroutine = StartCoroutine(JumpCoroutine(downJumpPower));
+        return;
+      }
+      
       if ((inWater || (!IsFlight || isClimbing)) && !IsDashing && jumpCoroutine == null)
       {
-        jumpCoroutine = StartCoroutine(JumpCoroutine());
+        jumpCoroutine = StartCoroutine(JumpCoroutine(jumpPower));
+      }
+      else if (currentJumpCount > 0 && !isClimbing)
+      {
+        currentJumpCount--;
+        jumpCoroutine = StartCoroutine(JumpCoroutine(airJumpPower));
       }
     }
 
@@ -350,7 +383,7 @@ namespace ToB.Player
       }
     }
 
-    private IEnumerator JumpCoroutine()
+    private IEnumerator JumpCoroutine(float power)
     {
       animator.SetTrigger(TRIGGER_JUMP);
 
@@ -369,7 +402,7 @@ namespace ToB.Player
       var jumpTime = 0f;
       while (jumpTime < jumpTimeLimit)
       {
-        body.linearVelocityY = jumpPower;
+        body.linearVelocityY = power;
         jumpTime += Time.deltaTime;
         yield return new WaitForFixedUpdate();
       }
@@ -390,7 +423,7 @@ namespace ToB.Player
 
     #endregion Jump Feature
 
-    
+    public bool invincibility = false;
     [Foldout("Effect"), SerializeField] private ParticleSystem damagedEffect;
     /// <summary>
     /// 플레이어에게 방어력을 반영한 체력 피해를 줍니다.<br/>
@@ -398,31 +431,38 @@ namespace ToB.Player
     /// 0이 될 시 stats.onDeath 이벤트를 호출합니다.
     /// </summary>
     /// <param name="value">피해량입니다.</param>
-    /// <param name="sender">피해량을 주는 주체입니다.</param>
-    public void Damage(float value, MonoBehaviour sender)
+    /// <param name="sender">피해량을 주는 주체입니다. null일시 플레이어에게 고정 피해를 주고, 효과를 발동시키지 않습니다.</param>
+    public void Damage(float value, IAttacker sender)
     {
-      if(IsImmune) return;
+      if (invincibility) return;
+      var isBuff = sender is DamageDebuff;
+      
+      if (sender == null)
+      {
+        stat.Hp -= value;
+        return;
+      }
+      if (sender.Team == Team) return;
 
-      if (IsBlocking && sender)
+      if (IsBlocking && sender.Blockable)
         Block(value, sender);
-      else
+      else if(!IsImmune || isBuff)
       {
         stat.Damage(value);
-        
-        // 독버프로 맞으면 화면에 경광등 켜져서 일단은 sender로 예외 처리.
-        // 추후 걸린 버프를 구분할 수 있는 방법이 생기면 (독 파워업 등등)
-        // 별도 이펙트 혹은 지속시간 인디케이터 UI를 만들기 좋을 것 같다고 생각해요!
-        if (sender !=null) UIManager.Instance.effectUI.PlayHitEffect();
 
-        if (sender)
+        audioPlayer.Play(stat.Hp > 0 ? "VOXReac_Death_HA_MaleCharVoc_21" : "VOXMisc_Drowning_HA_MaleCharVoc_02"); // 사망 시
+        // 피통이 남았을 시
+        if (sender.Effectable)
         {
+          UIManager.Instance.effectUI.PlayHitEffect();
+          
           damagedEffect.transform.eulerAngles = Vector3.zero;
 
           if (damagedEffect.isPlaying) damagedEffect.Stop();
           damagedEffect.Play();
         }
 
-        if (sender != null && immuneTime < damageImmuneTime) immuneTime = damageImmuneTime;
+        if (!isBuff) immuneTime = damageImmuneTime;
       }
     }
 
@@ -433,7 +473,8 @@ namespace ToB.Player
     /// <param name="direction">넉백 방향입니다.</param>
     public void KnockBack(float value, Vector2 direction)
     {
-      if(IsImmune) return;
+      if (invincibility) return;
+      if (IsImmune) return;
       
       StartCoroutine(KnockBackCoroutine(value, direction));
     }
@@ -443,7 +484,7 @@ namespace ToB.Player
     /// </summary>
     /// <param name="value">넉백 세기입니다.</param>
     /// <param name="sender">넉백을 가하는 오브젝트입니다.</param>
-    public void KnockBack(float value, GameObject sender) => KnockBack(value, sender.transform.position - transform.position);
+    public void KnockBack(float value, GameObject sender) => KnockBack(value, transform.position - sender.transform.position);
 
     private IEnumerator KnockBackCoroutine(float value, Vector2 direction)
     {
@@ -490,7 +531,7 @@ namespace ToB.Player
     private Coroutine tpCoroutine;
     public bool isFadeOutEnded = false;
 
-    public void TeleportByObstacle()
+    public void TeleportByObject()
     {
       if (stat.Hp <= 0) return;
       // 플레이어가 사망 시 스폰위치로 TP해야 하니 예외처리
@@ -509,7 +550,7 @@ namespace ToB.Player
     {
       UIManager.Instance.effectUI.PlayFadeOutEffect();
       //순서상 플레이어를 조작하는 컨트롤러를 먼저 끄고, 플레이어 상태를 고정
-      InputManager.Instance.SetInputActive(false);
+      TOBInputManager.Instance.SetInputActive(false);
       IsMoving = false;
       body.constraints = RigidbodyConstraints2D.FreezeAll;
       while (isFadeOutEnded == false)
@@ -518,7 +559,7 @@ namespace ToB.Player
       }
       body.constraints = RigidbodyConstraints2D.FreezeRotation;
       this.transform.position = TPTransform.position;
-      InputManager.Instance.SetInputActive(true);
+      TOBInputManager.Instance.SetInputActive(true);
       // 안전하게 가시 콜라이더에서 탈출
       yield return new WaitForEndOfFrame();
       isFadeOutEnded = false;
@@ -535,6 +576,4 @@ namespace ToB.Player
     Left,
     Right,
   }
-  
-
 }

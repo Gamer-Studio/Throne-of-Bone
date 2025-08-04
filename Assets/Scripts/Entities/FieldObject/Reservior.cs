@@ -1,5 +1,7 @@
 using Newtonsoft.Json.Linq;
+using ToB.Entities.Buffs;
 using ToB.IO;
+using ToB.Worlds;
 using UnityEngine;
 
 namespace ToB.Entities.FieldObject
@@ -26,7 +28,7 @@ namespace ToB.Entities.FieldObject
         public override JObject ToJson()
         {
             JObject json = base.ToJson();
-            json.Add(nameof(WaterLevel), WaterLevel);
+            json[nameof(WaterLevel)] = WaterLevel;
             return json;
         }
 
@@ -44,6 +46,10 @@ namespace ToB.Entities.FieldObject
         private void SetWaterLevel()
         {
             WaterBlock.transform.localPosition = WaterLevelPos[WaterLevel].localPosition;
+           //WaterBlock.TryGetComponent<WaterObject>(out var water);
+           //water.buffs[Buff.Poison].level = 5;
+           //water.buffs[Buff.Poison].duration = 5;
+           //water.buffs[Buff.Poison].delay = 1;
         }
 
     }

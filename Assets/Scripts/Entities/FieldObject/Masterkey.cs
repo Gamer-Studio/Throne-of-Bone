@@ -1,5 +1,6 @@
 using Newtonsoft.Json.Linq;
 using ToB.IO;
+using ToB.UI;
 using UnityEngine;
 
 namespace ToB.Entities.FieldObject
@@ -26,7 +27,7 @@ namespace ToB.Entities.FieldObject
         public override JObject ToJson()
         {
             JObject json = base.ToJson();
-            json.Add(nameof(isAcquired), isAcquired);
+            json[nameof(isAcquired)] = isAcquired;
             return json;
         }
 
@@ -37,6 +38,7 @@ namespace ToB.Entities.FieldObject
             if (other.CompareTag("Player"))
             {
                 isAcquired = true;
+                UIManager.Instance.toastUI.Show("열쇠를 획득했다!");
                 Core.ResourceManager.Instance.GiveMasterKeyToPlayer();
                 gameObject.SetActive(false);
             }

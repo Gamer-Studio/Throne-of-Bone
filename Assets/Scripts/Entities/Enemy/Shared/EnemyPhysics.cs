@@ -8,8 +8,9 @@ namespace ToB.Entities
     public class EnemyPhysics : MonoBehaviour
     {
         private Enemy enemy;
-        [SerializeField] private float skinWidth = 0.02f;
+        [SerializeField] private float skinWidth = 0.005f;
         [SerializeField] BoxCollider2D terrainSensor;
+        public BoxCollider2D TerrainSensor => terrainSensor;
 
         private float bodyWidth; // 임시
         
@@ -27,8 +28,9 @@ namespace ToB.Entities
         [Header("현재 속도")] 
         public Vector2 velocity;
         public readonly Dictionary<string, Vector2> externalVelocity = new Dictionary<string, Vector2>();
-        
-        public bool HasCollided { get; private set; }
+
+        [SerializeField] private bool hasCollided;
+        public bool HasCollided => hasCollided;
 
         public bool IsWallLeft;
         public bool IsWallRight;
@@ -80,7 +82,7 @@ namespace ToB.Entities
 
         private void ClearCollideResults()
         {
-            HasCollided = false;
+            hasCollided = false;
             IsWallLeft = false;
             IsWallRight = false;
         }
@@ -117,7 +119,7 @@ namespace ToB.Entities
 
             if (hit.collider)
             {
-                HasCollided = true;
+                hasCollided = true;
                 Vector2 resultMoveDelta = hit.distance * moveDelta.normalized;
 
                 if (hit.normal.y < 0.5f) // 벽에 닿은 경우
@@ -206,7 +208,7 @@ namespace ToB.Entities
             castSize.x -= skinWidth;
             castSize.y -= skinWidth;
        
-            RaycastHit2D hit = Physics2D.BoxCast(origin, castSize, 0, direction, skinWidth*2f, terrainLayer);
+            RaycastHit2D hit = Physics2D.BoxCast(origin, castSize, 0, direction, skinWidth * 2, terrainLayer);
             
             if(direction == Vector2.down)  // 디버그 시각화
                 DrawBoxCast(origin, castSize, direction.normalized, skinWidth*2f, Color.Lerp(Color.red, Color.yellow, 0.5f));
@@ -262,12 +264,14 @@ namespace ToB.Entities
         
         public bool IsLedgeOnSide(Vector2 direction)
         {
-            Vector2 origin = (Vector2)transform.position +
-                             direction * terrainSensor.size.x / 2f +
-                             new Vector2(0, skinWidth);
+            Vector2 origin = (Vector2)terrainSensor.bounds.center +
+                             direction * terrainSensor.bounds.extents.x +
+                             new Vector2(0, - terrainSensor.bounds.extents.y + skinWidth);
 
             float rayDistance = 0.1f;
             
+            // 디버그 선 그리기 (씬 뷰에서 확인 가능)
+            //Debug.DrawRay(origin, Vector2.down * rayDistance, Color.red, 0.1f);
             RaycastHit2D hit = Physics2D.Raycast(origin, Vector2.down, rayDistance, terrainLayer);
             return !hit.collider;
         }

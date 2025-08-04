@@ -1,6 +1,7 @@
 using System.Resources;
 using NaughtyAttributes;
 using ToB.Core;
+using ToB.Entities.Interface;
 using UnityEngine;
 
 namespace ToB.Entities
@@ -55,9 +56,16 @@ namespace ToB.Entities
             EnemyBody.Init(this, DataSO.BodyDamage);
         }
 
+        public override void OnTakeDamage(IAttacker sender)
+        {
+            base.OnTakeDamage(sender);
+            if (Stat.CurrentHP > 0) audioPlayer.Play("Skeleton_Hurt_02");
+        }
+
         protected override void Die()
         {
             base.Die();
+            audioPlayer.Play("Skeleton_Death_02");
             Animator.SetTrigger(EnemyAnimationString.Die);
             Hitbox.enabled = false;
             FSM.ChangePattern(null);

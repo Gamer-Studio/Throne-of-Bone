@@ -1,11 +1,15 @@
 using ToB.Core;
+using ToB.Utils.Extensions;
+using ToB.Worlds;
 using UnityEditor;
 using UnityEditor.AddressableAssets;
 using UnityEngine;
+#pragma warning disable CS0612 // 형식 또는 멤버는 사용되지 않습니다.
 
 public static class AddressableAssetImporter
 {
-  public const string InitAudioAssetName = "Assets/Asset Initializer/Init Audio Asset";
+  private const string InitAudioAssetName = "Assets/Asset Initializer/Init Audio Asset";
+  private const string ConvertLinkName = "Assets/Asset Initializer/Convert Link";
   
   [MenuItem(InitAudioAssetName, true)]
   private static bool ValidateInitAudioAsset()
@@ -66,4 +70,26 @@ public static class AddressableAssetImporter
     AssetDatabase.SaveAssets();
     EditorUtility.SetDirty(AddressableAssetSettingsDefaultObject.Settings);
   }
+
+  [MenuItem(ConvertLinkName)]
+  private static void ConvertRoomLink()
+  {
+    foreach (var target in Selection.objects)
+    {
+      if (target is GameObject obj)
+      {
+        obj.RunAllObject(child =>
+        {
+          if (child.TryGetComponent<Room>(out var room))
+          {
+            room.FindStructures();
+            EditorUtility.SetDirty(child);
+          }
+        });
+        
+        EditorUtility.SetDirty(target);
+      }
+    }
+  }
+  
 }

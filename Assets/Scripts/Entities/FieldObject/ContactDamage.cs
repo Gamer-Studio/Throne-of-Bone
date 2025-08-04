@@ -1,8 +1,11 @@
+using ToB.Entities.Interface;
+using ToB.Scenes.Stage;
+using ToB.Worlds;
 using UnityEngine;
 
 namespace ToB.Entities.FieldObject
 {
-    public class ContactDamage : MonoBehaviour
+    public class ContactDamage : MonoBehaviour, IAttacker
     {
         private IConatactDamageSO attackSO;
         public float ATK => attackSO?.ATK ?? nonSODamage;
@@ -13,17 +16,13 @@ namespace ToB.Entities.FieldObject
         
         public LayerMask playerMask;
 
-        private bool directional;
+        [SerializeField] private bool directional;
 
         private void Reset()
         {
             playerMask = LayerMask.GetMask("Player");
         }
-
-        private void Awake()
-        {
-            directional = true;
-        }
+        
 
         public void Init(IConatactDamageSO attackSO = null, Vector2 knockBackDirection = default, bool fixedDirection = true)
         {
@@ -31,7 +30,15 @@ namespace ToB.Entities.FieldObject
             this.knockBackDirection = knockBackDirection;
             directional = fixedDirection;
         }
-        
+
+        public void Init(float atk, float knockbackPower, Vector2 knockBackDirection = default,
+            bool fixedDirection = true)
+        {
+            nonSODamage = atk;
+            this.knockBackPower = knockbackPower;
+            this.knockBackDirection = knockBackDirection;
+            directional = fixedDirection;
+        }
         
 
         private void OnTriggerEnter2D(Collider2D other)
@@ -43,5 +50,14 @@ namespace ToB.Entities.FieldObject
                 else other.KnockBack(knockBackPower, gameObject);
             }
         }
+
+
+        public bool blockable;
+        public bool Blockable => blockable;
+        public bool effectable;
+        public bool Effectable => effectable;
+        public Vector3 Position { get; set; }
+        [field:SerializeField] public Team Team { get; set; }
+        
     }
 }
