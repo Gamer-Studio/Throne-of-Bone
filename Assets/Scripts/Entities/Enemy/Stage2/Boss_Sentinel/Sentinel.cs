@@ -257,7 +257,8 @@ namespace ToB.Entities
                 ra.Init(DataSO.RangedAttackPhase1.damage, DataSO.RangedAttackPhase1.knockbackForce, default, false);
                 ra.blockable = true;
                 ra.effectable = true;
-                ra.Position = transform.position;
+                ra.isSelfDamagePos = false;
+                ra.anotherDamagePos = transform.position;
                 ra.transform.eulerAngles = new Vector3(0, 0, angle);
 
                 LinearMovement raMovement = raObj.GetComponent<LinearMovement>();
@@ -275,7 +276,8 @@ namespace ToB.Entities
                 ra.Init(DataSO.RangedAttackPhase2.damage, DataSO.RangedAttackPhase2.knockbackForce, default, false);
                 ra.blockable = true;
                 ra.effectable = true;
-                ra.Position = transform.position;
+                ra.isSelfDamagePos = false;
+                ra.anotherDamagePos = transform.position;
                 ra.transform.eulerAngles = new Vector3(0, 0, angle);
 
                 LinearMovement raMovement = raObj.GetComponent<LinearMovement>();

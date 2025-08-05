@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections;
+using ToB.Entities.FieldObject;
 using ToB.Entities.Interface;
 using ToB.Utils;
 using UnityEngine;
@@ -84,12 +85,13 @@ namespace ToB.Entities
         public void StingAttack()
         {
             GameObject stingObj = StingPrefab.Pooling();
-            LinearProjectile sting = stingObj.GetComponent<LinearProjectile>();
+            LinearMovement linearMovement = stingObj.GetComponent<LinearMovement>();
+            ContactDamage contactDamage = stingObj.GetComponent<ContactDamage>();
             Vector2 direction = GetTargetDirection();
             
             stingObj.transform.position = transform.position;
-            sting.LinearMovement.Init(direction, DataSO.StingSpeed);
-            sting.ContactDamage.Init(DataSO, direction);
+            linearMovement.Init(direction, DataSO.StingSpeed);
+            contactDamage.Init(DataSO, direction);
         }
     }
 }

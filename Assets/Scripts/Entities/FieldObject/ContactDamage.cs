@@ -13,7 +13,9 @@ namespace ToB.Entities.FieldObject
         public float nonSODamage;
         public float knockBackPower;
         public Vector2 knockBackDirection;
-        
+
+        public bool isSelfDamagePos = true;
+        public Vector3 anotherDamagePos;
         public LayerMask playerMask;
 
         [SerializeField] private bool directional;
@@ -56,7 +58,7 @@ namespace ToB.Entities.FieldObject
         public bool Blockable => blockable;
         public bool effectable;
         public bool Effectable => effectable;
-        public Vector3 Position { get; set; }
+        public Vector3 Position => isSelfDamagePos ? transform.position : anotherDamagePos;
         [field:SerializeField] public Team Team { get; set; }
         
     }
