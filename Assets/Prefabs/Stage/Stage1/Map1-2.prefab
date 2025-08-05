@@ -1085,9 +1085,9 @@ PlatformEffector2D:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RotationalOffset: 0
-  m_UseOneWay: 0
+  m_UseOneWay: 1
   m_UseOneWayGrouping: 0
-  m_SurfaceArc: 150
+  m_SurfaceArc: 180
   m_UseSideFriction: 0
   m_UseSideBounce: 0
   m_SideArc: 1
@@ -1221,6 +1221,10 @@ MonoBehaviour:
         m_EditorAssetChanged: 0
   fieldObjects:
     array:
+    - Key: LetterBoxSign (5)
+      Value: {fileID: 4114142363711000996}
+    - Key: LetterBoxSign (4)
+      Value: {fileID: 2007162692072848557}
     - Key: Spikes
       Value: {fileID: 7554703595297549820}
     - Key: LetterBoxSign (1)
@@ -1231,8 +1235,6 @@ MonoBehaviour:
       Value: {fileID: 4950212698600149871}
     - Key: LetterBoxSign
       Value: {fileID: 4218768933488372369}
-    - Key: LetterBoxSign (4)
-      Value: {fileID: 2007162692072848557}
   bonfires: []
   enemies:
     array: []
@@ -29609,6 +29611,7 @@ Transform:
   - {fileID: 5208695575224528055}
   - {fileID: 7574998690696542859}
   - {fileID: 3200040397448111191}
+  - {fileID: 5466609463371650946}
   - {fileID: 3924784552251200841}
   - {fileID: 3702006072687902496}
   m_Father: {fileID: 1996821444672983580}
@@ -30033,7 +30036,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 107144498860309033, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 29
+      value: 20.38
       objectReference: {fileID: 0}
     - target: {fileID: 107144498860309033, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
       propertyPath: m_LocalPosition.y
@@ -30115,6 +30118,10 @@ PrefabInstance:
       propertyPath: letter
       value: "\uC544\uB798\uD654\uBA74 \uBCF4\uAE30 : S"
       objectReference: {fileID: 0}
+    - target: {fileID: 8338895900837133327, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
+      propertyPath: typingSpeed
+      value: 0.01
+      objectReference: {fileID: 0}
     - target: {fileID: 8437157396403981182, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
       propertyPath: m_Name
       value: LetterBoxSign (1)
@@ -30150,11 +30157,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 107144498860309033, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 57.000004
+      value: 52
       objectReference: {fileID: 0}
     - target: {fileID: 107144498860309033, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -19
+      value: -12.96
       objectReference: {fileID: 0}
     - target: {fileID: 107144498860309033, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
       propertyPath: m_LocalPosition.z
@@ -30232,6 +30239,10 @@ PrefabInstance:
       propertyPath: letter
       value: "\uADFC\uC811 \uACF5\uACA9 : \uC88C\uD074\uB9AD \\n\uAC80\uAE30 \uBC1C\uC0AC
         : \uC6B0\uD074\uB9AD\\n\uAC00\uB4DC : Q"
+      objectReference: {fileID: 0}
+    - target: {fileID: 8338895900837133327, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
+      propertyPath: typingSpeed
+      value: 0.01
       objectReference: {fileID: 0}
     - target: {fileID: 8437157396403981182, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
       propertyPath: m_Name
@@ -30349,6 +30360,10 @@ PrefabInstance:
     - target: {fileID: 8338895900837133327, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
       propertyPath: letter
       value: "\uBCBD\uD0C0\uAE30 : \uBCBD\uC5D0 \uBD99\uC5B4\uC11C \uC810\uD504"
+      objectReference: {fileID: 0}
+    - target: {fileID: 8338895900837133327, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
+      propertyPath: typingSpeed
+      value: 0.01
       objectReference: {fileID: 0}
     - target: {fileID: 8437157396403981182, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
       propertyPath: m_Name
@@ -30577,6 +30592,10 @@ PrefabInstance:
       propertyPath: letter
       value: "\uC810\uD504 : Space"
       objectReference: {fileID: 0}
+    - target: {fileID: 8338895900837133327, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
+      propertyPath: typingSpeed
+      value: 0.01
+      objectReference: {fileID: 0}
     - target: {fileID: 8437157396403981182, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
       propertyPath: m_Name
       value: LetterBoxSign
@@ -30601,6 +30620,127 @@ MonoBehaviour:
 Transform:
   m_CorrespondingSourceObject: {fileID: 107144498860309033, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
   m_PrefabInstance: {fileID: 5275305460157421214}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &5377837872537333163
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 795698669684969795}
+    m_Modifications:
+    - target: {fileID: 107144498860309033, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 29
+      objectReference: {fileID: 0}
+    - target: {fileID: 107144498860309033, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -15
+      objectReference: {fileID: 0}
+    - target: {fileID: 107144498860309033, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 107144498860309033, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 107144498860309033, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 107144498860309033, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 107144498860309033, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 107144498860309033, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 107144498860309033, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 107144498860309033, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3317541732087758786, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3317541732087758786, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5765678373105516426, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5765678373105516426, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5765678373105516426, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5765678373105516426, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5765678373105516426, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5765678373105516426, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7049945994673633854, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8338895900837133327, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
+      propertyPath: room
+      value: 
+      objectReference: {fileID: 541374954613349110}
+    - target: {fileID: 8338895900837133327, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
+      propertyPath: letter
+      value: "\uB300\uC26C : Shift"
+      objectReference: {fileID: 0}
+    - target: {fileID: 8338895900837133327, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
+      propertyPath: typingSpeed
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 8437157396403981182, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
+      propertyPath: m_Name
+      value: LetterBoxSign (5)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
+--- !u!114 &4114142363711000996 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8338895900837133327, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
+  m_PrefabInstance: {fileID: 5377837872537333163}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e94549cbc8f4437b6df026f0f522f0c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &5466609463371650946 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 107144498860309033, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
+  m_PrefabInstance: {fileID: 5377837872537333163}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &7521972859677212834
 PrefabInstance:
@@ -30693,6 +30833,10 @@ PrefabInstance:
     - target: {fileID: 8338895900837133327, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
       propertyPath: letter
       value: "\uC704\uCABD\uD654\uBA74 \uBCF4\uAE30 : W"
+      objectReference: {fileID: 0}
+    - target: {fileID: 8338895900837133327, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
+      propertyPath: typingSpeed
+      value: 0.01
       objectReference: {fileID: 0}
     - target: {fileID: 8437157396403981182, guid: ebeb6b0ca440b404f8703c8a8f89c0dd, type: 3}
       propertyPath: m_Name
