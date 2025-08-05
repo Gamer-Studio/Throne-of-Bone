@@ -219,7 +219,6 @@ namespace ToB.Player
       if (context.performed)
       {
         if(!character.IsBlocking) character.StartBlock();
-        else character.CancelBlock();
       }
       else if (context.canceled && !guardImprove) character.CancelBlock();
     }
