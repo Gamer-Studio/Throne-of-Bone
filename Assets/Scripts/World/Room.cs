@@ -171,7 +171,7 @@ namespace ToB.Worlds
 
     private void OnDisable()
     {
-      StageManager.Instance?.RemoveCameraCollision(Background.backgroundCollider);
+      StageManager.Instance?.RemoveCameraCollision(Background.CameraCollider);
     }
 
     private void OnDestroy()
