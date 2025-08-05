@@ -40,13 +40,17 @@ namespace ToB.Player
 
     #region State
 
-    [Label("조작 가능")] [Foldout("State")] public bool isControlable = true;
+    [Label("조작 가능")] [Foldout("State")] 
+    public bool isControlable = true;
 
     [Label("애니메이션 상태")] [Foldout("State")] [SerializeField] [GetSet(nameof(AnimationState))]
     protected PlayerAnimationState animationState = PlayerAnimationState.Idle;
 
-    [Label("이동속도")] [Foldout("State")] public float moveSpeed = 2;
-    [Label("최대 이동 속도")] [Foldout("State")] public float maxMoveSpeed = 12;
+    [Label("이동속도")] [Foldout("State")] 
+    public float moveSpeed = 2;
+    
+    [Label("최대 이동 속도")] [Foldout("State")] 
+    public float maxMoveSpeed = 12;
 
     [Label("좌/우 마찰력 보정값")] [Foldout("State")]
     public float moveResistanceForce = 1;
@@ -173,21 +177,12 @@ namespace ToB.Player
     #endregion
 
     #region Binding
-
     private const string Bindings = nameof(Bindings);
 
-    [Tooltip("캐릭터 바디")] [Foldout(Bindings)]
-    public Rigidbody2D body;
-
-    [Tooltip("캐릭터 콜라이더")] [Foldout(Bindings)]
-    public CapsuleCollider2D bodyCollider;
-
-    [Tooltip("캐릭터 애니메이터")] [Foldout(Bindings)] [SerializeField]
-    protected Animator animator;
-
-    [Tooltip("캐릭터 스프라이트")] [Foldout(Bindings)] [SerializeField]
-    protected SpriteRenderer spriteRenderer;
-
+    [Tooltip("캐릭터 바디"), Foldout(Bindings)] public Rigidbody2D body;
+    [Tooltip("캐릭터 콜라이더"), Foldout(Bindings)] public CapsuleCollider2D bodyCollider;
+    [Tooltip("캐릭터 애니메이터"), Foldout(Bindings), SerializeField] protected Animator animator;
+    [Tooltip("캐릭터 스프라이트"), Foldout(Bindings), SerializeField] protected SpriteRenderer spriteRenderer;
     [Foldout(Bindings)] [SerializeField] private PlayerGroundChecker groundChecker;
     [Foldout(Bindings)] [SerializeField] private WorldGaugeBar dashGaugeBar, attackGaugeBar;
     [Foldout(Bindings)] [SerializeField] public BuffController buffController;

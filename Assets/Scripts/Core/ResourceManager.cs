@@ -274,8 +274,8 @@ namespace ToB.Core
         #region Serialization
         public void LoadJson(JObject json)
         {
-            PlayerMana = json.Get(nameof(playerGold), 0);
-            PlayerGold = json.Get(nameof(playerMana), 0);
+            PlayerMana = json.Get(nameof(playerMana), 0);
+            PlayerGold = json.Get(nameof(playerGold), 0);
             MasterKey = json.Get(nameof(MasterKey), 0);
             UsedGold = json.Get(nameof(UsedGold), 0);
             UsedMana = json.Get(nameof(UsedMana), 0);
