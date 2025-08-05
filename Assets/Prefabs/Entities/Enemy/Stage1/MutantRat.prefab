@@ -5140,6 +5140,7 @@ MonoBehaviour:
   gravityEnabled: 1
   collisionEnabled: 1
   velocity: {x: 0, y: 0}
+  hasCollided: 0
   IsWallLeft: 0
   IsWallRight: 0
 --- !u!114 &2819896792318818303
@@ -5154,6 +5155,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29855afa1bbef104b9a8dbbdce60686a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  type: 0
   enemySO: {fileID: 11400000, guid: 4e6b9ea21159c034f95d103847606583, type: 2}
   rb: {fileID: 6685939770580543676}
   <Physics>k__BackingField: {fileID: 815481810760052133}
@@ -5164,10 +5166,12 @@ MonoBehaviour:
   target: {fileID: 0}
   isAlive: 0
   <ReactOnDamage>k__BackingField: 0
+  audioPlayer: {fileID: 0}
   <Stat>k__BackingField: {fileID: 1539153958177849217}
   <RangeBaseSightSensor>k__BackingField: {fileID: 4811512345246605601}
   <AttackSensor>k__BackingField: {fileID: 9021337739228606595}
   <FSM>k__BackingField: {fileID: 3701184343488558151}
+  <EnemyBody>k__BackingField: {fileID: 4801627140324403369}
   <deathEffect>k__BackingField: {fileID: 6789150588234296531}
 --- !u!114 &3701184343488558151
 MonoBehaviour:
@@ -5264,6 +5268,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   targets: []
+  entered: 0
+  lastEnteredTime: 0
+  senseDuration: 0
 --- !u!61 &4796011313702688942
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -5463,6 +5470,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53ab476cda1b5a342a8c9589483b3fc8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemy: {fileID: 0}
   currentHP: 0
 --- !u!1 &7867520725022994676
 GameObject:
@@ -5545,6 +5553,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5016a7510144320448bfa478f60dfefc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemy: {fileID: 0}
   circleCollider: {fileID: 7054495709061207520}
   playerMask:
     serializedVersion: 2

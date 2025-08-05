@@ -7,7 +7,7 @@ namespace ToB.Entities.Projectiles
 {
   public class SwordEffect : Projectile
   {
-    [ReadOnly] private new Camera camera;
+    [ReadOnly] private Camera mainCamera;
     [Label("피해량")] public float damage;
     [Label("속도")] public float speed = 1;
     [Label("넉백 세기")] public float knockBackForce = 15;
@@ -99,7 +99,7 @@ namespace ToB.Entities.Projectiles
 
     private void OnEnable()
     {
-      camera = Camera.main;
+      mainCamera = Camera.main;
       hitLayers = hitLayersDefault;
     }
 
@@ -107,7 +107,7 @@ namespace ToB.Entities.Projectiles
     {
       body.MovePosition(body.position + direction * (speed * Time.fixedDeltaTime));
       
-      var pos = camera.WorldToViewportPoint(transform.position);
+      var pos = mainCamera.WorldToViewportPoint(transform.position);
 
       if (pos.x < 0 || pos.x > 1 || pos.y < 0 || pos.y > 1)
       {
