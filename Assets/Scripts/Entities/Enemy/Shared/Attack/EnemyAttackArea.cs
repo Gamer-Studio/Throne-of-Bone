@@ -44,7 +44,7 @@ namespace ToB.Entities
             owner = character;
             this.damage = damage;
             this.knockBackForce = knockBackForce;
-            this.knockBackDirection = knockBackDirection;
+            this.knockBackDirection = knockBackDirection.normalized;
             knockbackType = KnockbackType.Directional;
         }
         

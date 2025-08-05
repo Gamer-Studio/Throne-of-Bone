@@ -205,6 +205,8 @@ MonoBehaviour:
   attackTargetLayers:
     serializedVersion: 2
     m_Bits: 0
+  knockbackType: 0
+  <Blockable>k__BackingField: 0
 --- !u!1 &1879976254422125519
 GameObject:
   m_ObjectHideFlags: 0
@@ -5203,7 +5205,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5602635579923835130}
@@ -10120,6 +10122,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ac671beddd203b4eb5bab039c208f54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  type: 0
   enemySO: {fileID: 11400000, guid: fe5cc8a158a39a54e8e5f2b84ce29dba, type: 2}
   rb: {fileID: 1086493658396314520}
   <Physics>k__BackingField: {fileID: 3274423059247459717}
@@ -10130,6 +10133,7 @@ MonoBehaviour:
   target: {fileID: 0}
   isAlive: 0
   <ReactOnDamage>k__BackingField: 0
+  audioPlayer: {fileID: 0}
   <Strategy>k__BackingField: {fileID: 9076656960145260971}
   stat: {fileID: 6337745576739767016}
   deathBleed: {fileID: 6080410680826482338}
@@ -10183,6 +10187,7 @@ MonoBehaviour:
   gravityEnabled: 0
   collisionEnabled: 0
   velocity: {x: 0, y: 0}
+  hasCollided: 0
   IsWallLeft: 0
   IsWallRight: 0
 --- !u!1 &5742384321724983965
@@ -10371,6 +10376,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53ab476cda1b5a342a8c9589483b3fc8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemy: {fileID: 0}
   currentHP: 0
 --- !u!1 &7292867093486872287
 GameObject:
@@ -20234,7 +20240,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5602635579923835130}
