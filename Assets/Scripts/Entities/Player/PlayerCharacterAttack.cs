@@ -43,7 +43,7 @@ namespace ToB.Player
     public bool Effectable => true;
 
     public Vector3 Position => transform.position;
-    public Team Team => Team.None;
+    public Team Team => Team.Player;
 
     // 현재 원거리 공격 가능 횟수입니다.
     public int AvailableRangedAttack

@@ -490,7 +490,8 @@ namespace ToB.Player
     {
       for (var time = 0f; time < knockbackTime; time += Time.deltaTime)
       {
-        body.AddForce(direction * (value * knockbackMultiplier), ForceMode2D.Impulse);
+        body.linearVelocity = direction * (value * knockbackMultiplier);
+        //body.AddForce(direction * (value * knockbackMultiplier), ForceMode2D.Impulse);
         yield return new WaitForFixedUpdate();
       }
     }
