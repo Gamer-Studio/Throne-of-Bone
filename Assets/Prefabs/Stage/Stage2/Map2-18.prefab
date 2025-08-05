@@ -10018,14 +10018,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af132a98d81e420bbbcb63c8ed1649f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <CurrentIndex>k__BackingField: -1
-  connectedRoom:
+  <CurrentIndex>k__BackingField: 0
+  deprecated:
     m_AssetGUID: 
     m_SubObjectName: 
     m_SubObjectType: 
     m_SubObjectGUID: 
     m_EditorAssetChanged: 0
+  connectedRoomReference:
+    assetReference:
+      m_AssetGUID: 
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    path: 
   connectedLinkIndex: 0
+  connectedRoom: {fileID: 0}
 --- !u!1 &3896808137577812762
 GameObject:
   m_ObjectHideFlags: 0
@@ -15764,9 +15773,11 @@ MonoBehaviour:
     array: []
   fieldObjects:
     array: []
+  bonfires: []
   enemies:
     array: []
-  links: []
+  links:
+  - {fileID: 2137310311455528740}
   entityContainer: {fileID: 6416182101115832409}
   <Background>k__BackingField: {fileID: 3862053101447277060}
   onLoad:
@@ -19054,6 +19065,10 @@ MonoBehaviour:
   leftBottomPos: {fileID: 2509425919412731294}
   clone1: {fileID: 2577694914711834843}
   clone2: {fileID: 684888503029061446}
+  phase1BG: {fileID: 0}
+  phase2BG: {fileID: 0}
+  speechBubbleRoot: {fileID: 0}
+  speechText: {fileID: 0}
 --- !u!114 &2206295159978971013
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -25927,7 +25942,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &6216360851327438379
 Transform:
   m_ObjectHideFlags: 0
@@ -26498,7 +26513,21 @@ CompositeCollider2D:
   m_GeometryType: 1
   m_GenerationType: 0
   m_EdgeRadius: 0
-  m_ColliderPaths: []
+  m_ColliderPaths:
+  - m_Collider: {fileID: 5630248702782751574}
+    m_ColliderPaths:
+    - - X: -30000000
+        Y: 306249984
+      - X: -30000000
+        Y: 310000000
+      - X: -60000000
+        Y: 310000000
+      - X: -60000000
+        Y: 306249984
+      - X: -59375000
+        Y: 305624992
+      - X: -30625000
+        Y: 305624992
   m_CompositePaths:
     m_Paths:
     - - {x: -3.0625107, y: 30.5625}
@@ -26524,9 +26553,9 @@ PlatformEffector2D:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RotationalOffset: 0
-  m_UseOneWay: 0
+  m_UseOneWay: 1
   m_UseOneWayGrouping: 0
-  m_SurfaceArc: 150
+  m_SurfaceArc: 180
   m_UseSideFriction: 0
   m_UseSideBounce: 0
   m_SideArc: 1

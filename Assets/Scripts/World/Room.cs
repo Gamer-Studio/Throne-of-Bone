@@ -166,12 +166,12 @@ namespace ToB.Worlds
 
     private void OnEnable()
     {
-      StageManager.Instance?.AddCameraCollision(Background.backgroundCollider);
+      StageManager.Instance?.AddCameraCollision(Background.CameraCollider);
     }
 
     private void OnDisable()
     {
-      StageManager.Instance?.RemoveCameraCollision(Background.backgroundCollider);
+      StageManager.Instance?.RemoveCameraCollision(Background.CameraCollider);
     }
 
     private void OnDestroy()
