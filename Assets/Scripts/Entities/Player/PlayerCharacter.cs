@@ -503,7 +503,7 @@ namespace ToB.Player
           damagedEffect.Play();
         }
 
-        if (isBuff && immuneTime < damageImmuneTime) immuneTime = damageImmuneTime;
+        if (!isBuff && immuneTime < damageImmuneTime) immuneTime = damageImmuneTime;
       }
     }
 
