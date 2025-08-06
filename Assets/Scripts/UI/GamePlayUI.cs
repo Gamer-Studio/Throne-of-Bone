@@ -19,6 +19,9 @@ namespace ToB.UI
         [SerializeField] public GameObject KeyUI;
         [SerializeField] public TMPro.TextMeshProUGUI KeyText;
         [SerializeField] public Image saveIndicator;
+        [SerializeField] UIGaugeBar hpGaugeBar;
+        [SerializeField] UIGaugeBar manaGaugeBar;
+        
         private void Awake()
         {
             playerInfoPanel.SetActive(true);
@@ -29,6 +32,8 @@ namespace ToB.UI
             ResourceManager.Instance.onMasterKeyChanged.AddListener(UpdateKeyText);
             InitText();
         }
+        
+        
 
         #region TestButton
         public void TestGoldAddButton()
@@ -67,6 +72,12 @@ namespace ToB.UI
             UpdateGoldText(ResourceManager.Instance.PlayerGold);
             UpdateManaText(ResourceManager.Instance.PlayerMana);
             UpdateKeyText(ResourceManager.Instance.MasterKey);
+        }
+
+        public void InitGages()
+        {
+            hpGaugeBar.Init();
+            manaGaugeBar.Init();
         }
 
         private void UpdateGoldText(int gold)

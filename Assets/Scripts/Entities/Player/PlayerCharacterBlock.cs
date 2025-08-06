@@ -68,8 +68,6 @@ namespace ToB.Player
       var blockDir = (sender.Position - transform.position).normalized;
       var angle = Mathf.Atan2(blockDir.y, blockDir.x) * Mathf.Rad2Deg + 360;
       
-      Debug.Log(blockDir);
-      
       if (MathUtil.GetAngleDiff(angle, shield.transform.rotation.eulerAngles.z) > blockAngle / 2)
       {
         stat.Damage(damage);

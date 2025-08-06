@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using DG.Tweening;
+using NaughtyAttributes;
 using TMPro;
 using ToB.Core;
 using ToB.Core.InputManager;
@@ -12,6 +13,7 @@ namespace ToB.CutScene
 {
     public class StageIntroSequence : MonoBehaviour
     {
+        [Scene] public string stageSceneName;
         public TextMeshProUGUI centerText;
         public TextMeshProUGUI skipText;
 
@@ -70,7 +72,7 @@ namespace ToB.CutScene
             KillTweens();
             //glowObj.SetActive(false);
             yield return null;
-            SceneManager.LoadScene(Defines.StageScene);
+            SceneManager.LoadScene(stageSceneName);
         }
 
         private void KillTweens()
