@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Cinemachine;
 using DG.Tweening;
+using NaughtyAttributes;
 using ToB.Core;
 using ToB.Scenes.Stage;
 using UnityEngine;
@@ -20,6 +21,8 @@ namespace ToB.Entities
         [SerializeField] private GameObject exitBlocker; 
         
         private List<Guardian> guardians;
+
+        [SerializeField, ReadOnly] private bool isCleared = false;
         private void Awake()
         {
             areaDetection.OnPlayerEntered += PlayerEntered;
@@ -32,6 +35,7 @@ namespace ToB.Entities
 
         private void PlayerEntered()
         {
+            if (isCleared) return;
             Sequence seq = DOTween.Sequence();
 
             seq.AppendInterval(1f);
@@ -55,11 +59,18 @@ namespace ToB.Entities
             seq.AppendCallback(()=> guardian1.SetTarget(StageManager.Instance.player.transform));
             seq.AppendInterval(1f);
             seq.AppendCallback(()=> guardian2.SetTarget(StageManager.Instance.player.transform));
-            
-            StartCoroutine(WaitUntilGuardiansDefeated(() =>
+
+            seq.AppendCallback(() =>
             {
-                exitBlocker.SetActive(false);
-            }));
+                StartCoroutine(WaitUntilGuardiansDefeated(() =>
+                {
+                    Debug.Log("Hi");
+                    isCleared = true;
+                    exitBlocker.SetActive(false);
+                    areaDetection.OnPlayerEntered -= PlayerEntered;
+                    areaDetection.OnPlayerExit -= PlayerExit;
+                }));
+            });
         }
 
         IEnumerator WaitUntilGuardiansDefeated(Action callback)

@@ -59,7 +59,6 @@ namespace ToB.UI
 
         private void UpdateCounter(int curCount)
         {
-            Debug.Log("Count");
             int value = curCount;
             for (int i = 0; i < 5; i++)
             {
