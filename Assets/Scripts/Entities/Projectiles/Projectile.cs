@@ -12,7 +12,7 @@ namespace ToB.Entities.Projectiles
     private const string Label = "Projectile";
     [Label("발사 방향")] public Vector2 direction;
     [Label("발사하는 주체")] public GameObject launcher;
-    [Label("충돌하는 오브젝트 레이어")] protected LayerMask hitLayers;
+    [Label("충돌하는 오브젝트 레이어")] public LayerMask hitLayers;
     [Label("피해량")] public float damage;
 
     public virtual bool Blockable => true;
