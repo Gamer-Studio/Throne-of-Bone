@@ -26,7 +26,7 @@ namespace ToB.UI
         private void Awake()
         {
             playerInfoPanel.SetActive(true);
-            miniMapPanel.SetActive(true);
+            miniMapPanel.SetActive(false);
             saveIndicatorPanel.SetActive(false);
             ResourceManager.Instance.onGoldChanged.AddListener(UpdateGoldText);
             ResourceManager.Instance.onManaChanged.AddListener(UpdateManaText);

@@ -254,6 +254,7 @@ namespace ToB.Worlds
 
       foreach (var enemy in enemiesList)
       {
+        //Debug.Log(enemy.GetType().Name + " is trying to Release");
         enemy.Release();
       }
       

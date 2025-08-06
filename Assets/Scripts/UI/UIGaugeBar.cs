@@ -29,9 +29,7 @@ namespace ToB.UI
       Health,
       BlockEnergy
     }
-
-    public FillDirection fillDirection = FillDirection.Vertical;
-    public FillMode fillMode = FillMode.Rect;
+    
     public float max;
     private Color originalColor;
     [SerializeField] [GetSet("Value")] private float value;
@@ -50,13 +48,7 @@ namespace ToB.UI
       set
       {
         this.value = value < 0 ? 0 : Math.Min(value, max);
-
-        if (fillMode == FillMode.Rect)
-          rect.localScale = fillDirection == FillDirection.Vertical
-            ? new Vector3(1, this.value / max, 1)
-            : new Vector3(this.value / max, 1, 1);
-        else
-          image.fillAmount = value / max;
+        image.fillAmount = value / max;
       }
     }
 
