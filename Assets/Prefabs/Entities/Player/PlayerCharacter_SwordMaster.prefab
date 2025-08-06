@@ -344,9 +344,9 @@ MonoBehaviour:
   meleeAttackDelay: 0
   maxRangedAttack: 3
   availableRangedAttack: 3
-  rangedAttackRegenTime: 1
-  rangedAttackRegenAmount: 999
-  shootDelay: 0.1
+  rangedAttackRegenTime: 0
+  rangedAttackRegenAmount: 0
+  shootDelay: 0.3
   parryableLayer:
     serializedVersion: 2
     m_Bits: 10240
@@ -365,16 +365,16 @@ MonoBehaviour:
   blockEnergyRequireRegenDelay: 0.5
   blockEnergyRegenDelay: 0
   blockEnergyRegenTime: 0.1
-  blockEnergyRegenAmount: 1
-  requireBlockEnergy: 20
-  requireKeepBlockEnergy: 20
-  blockCoolTime: 1
+  blockEnergyRegenAmount: 2
+  requireBlockEnergy: 15
+  requireKeepBlockEnergy: 15
+  blockCoolTime: 0.1
   currentBlockCoolTime: 0
   parryTimeLimit: 0.3
   blockTimeLimit: 1.7
   isParrying: 0
-  parryImmuneTime: 0.5
-  parryFreezeTime: 0.2
+  parryImmuneTime: 0.3
+  parryFreezeTime: 0.3
   parryReward: 2
   blockReward: 1
   freezeBlockable: 0
