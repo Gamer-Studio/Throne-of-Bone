@@ -7,13 +7,14 @@ using ToB.Core;
 using ToB.Core.InputManager;
 using ToB.Entities.FieldObject;
 using ToB.Scenes.Stage;
+using ToB.Worlds;
 using UnityEditor;
 using UnityEngine;
 using AudioType = ToB.Core.AudioType;
 
 namespace ToB.Entities
 {
-    public class SewerRatRoomSequence : MonoBehaviour
+    public class SewerRatRoomSequence : Room
     {
         [Header( "보스 오브젝트" )]
         [SerializeField] private SewerRat firstSewerRat;
