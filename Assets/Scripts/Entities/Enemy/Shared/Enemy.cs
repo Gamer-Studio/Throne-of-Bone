@@ -108,7 +108,7 @@ namespace ToB.Entities
         protected virtual void Die()
         {
             Core.ResourceManager.Instance.SpawnResources(InfiniteResourceType.Gold,enemySO.DropGold,transform);
-            Core.ResourceManager.Instance.SpawnResources(InfiniteResourceType.Mana,enemySO.DropMana,transform);
+            Core.ResourceManager.Instance.SpawnResources(InfiniteResourceType.Mana,enemySO.DropMana,transform, enemySO.ManaDropRate);
             
             Physics.enabled = false;
             isAlive = false;

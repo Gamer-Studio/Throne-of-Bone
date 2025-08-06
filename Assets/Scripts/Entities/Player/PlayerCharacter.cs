@@ -498,6 +498,9 @@ namespace ToB.Player
         if (stat.Hp > 0) audioPlayer.Play("VOXReac_Death_HA_MaleCharVoc_21"); // 피통이 남았을 시
         else audioPlayer.Play("VOXMisc_Drowning_HA_MaleCharVoc_02"); // 사망 시
 
+        if (stat.Hp > 0 && !isBuff) audioPlayer.Play("VOXReac_Death_HA_MaleCharVoc_21"); // 피격 시
+        else if (stat.Hp <= 0) audioPlayer.Play("VOXMisc_Drowning_HA_MaleCharVoc_02"); // 사망 시
+        
         if (sender.Effectable)
         {
           UIManager.Instance.effectUI.PlayHitEffect();

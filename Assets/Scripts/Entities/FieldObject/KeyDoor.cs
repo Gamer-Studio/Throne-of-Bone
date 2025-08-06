@@ -9,6 +9,9 @@ namespace ToB.Entities.FieldObject
     public class KeyDoor: FieldObjectProgress, IInteractable
     {
         [SerializeField] public TMP_Text interactionText;
+        [SerializeField] public SpriteRenderer DoorSR;
+        [SerializeField] public Canvas Infocanvas;
+        [SerializeField] public Collider2D DoorCollider;
         public bool IsInteractable { get; set; }
         public bool isOpened;
         private ObjectAudioPlayer audioPlayer;
@@ -24,7 +27,7 @@ namespace ToB.Entities.FieldObject
         public override void LoadJson(JObject json)
         {
             base.LoadJson(json);
-            isOpened = json.Get(nameof(isOpened), isOpened);;
+            isOpened = json.Get(nameof(isOpened), isOpened);
             
         }
         
@@ -42,16 +45,7 @@ namespace ToB.Entities.FieldObject
         private void InitState()
         {
             interactionText.text = "";
-            if (isOpened)
-            {
-                IsInteractable = false;
-                gameObject.SetActive(false);
-            }
-            else
-            {
-                IsInteractable = true;
-                gameObject.SetActive(true);
-            }
+            ApplyDoorStates(isOpened);
         }
         /// <summary>
         /// 문과의 상호작용. 열쇠가 있으면 문 오브젝트를 Destroy 하는 방식이 좋을지 SetActive(false)하는게 나을지는
@@ -62,7 +56,9 @@ namespace ToB.Entities.FieldObject
             if (ToB.Core.ResourceManager.Instance.IsPlayerHaveEnoughMasterKey())
             {
                 ToB.Core.ResourceManager.Instance.UseMasterKey();
-                OpenedDoorProcess();
+                isOpened = true;
+                audioPlayer.Play("Part_Assembly_30");
+                ApplyDoorStates(isOpened);
             }
             else
             {
@@ -71,13 +67,13 @@ namespace ToB.Entities.FieldObject
             }
         }
 
-        private void OpenedDoorProcess()
+        private void ApplyDoorStates(bool _opened)
         {
-            IsInteractable = false;
-            isOpened = true;
             interactionText.text = "";
-            gameObject.SetActive(false);
-            audioPlayer.Play("Part_Assembly_30");
+            IsInteractable = !_opened;
+            DoorSR.enabled = !_opened;
+            DoorCollider.enabled = !_opened;
+            Infocanvas.enabled = !_opened;
         }
 
         private void OnTriggerEnter2D(Collider2D other)

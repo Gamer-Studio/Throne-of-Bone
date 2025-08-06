@@ -38,7 +38,7 @@ namespace ToB.Entities.FieldObject
         private SpriteRenderer SpriteRenderer;
         private Sprite lastSprite;
 
-        private void Awake()
+        private void OnEnable()
         {
             if(!animator) animator = GetComponent<Animator>();
             if(!PolygonCollider) PolygonCollider = GetComponent<PolygonCollider2D>();

@@ -8,5 +8,7 @@ namespace ToB.Entities
         [field: SerializeField] public string Name { get; private set; }
         [field: SerializeField] public int DropGold { get; private set; }
         [field: SerializeField] public int DropMana { get; private set; }
+        
+        [field : SerializeField] public float ManaDropRate { get; private set; }
     }
 }
