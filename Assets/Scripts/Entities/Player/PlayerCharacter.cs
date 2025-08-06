@@ -88,6 +88,7 @@ namespace ToB.Player
 
     public bool IsImmune => isDamageImmune || dashImmuneTime > 0;
     private bool isDamageImmune;
+    private bool attackHandledCurrentFrame;
     public ObjectAudioPlayer audioPlayer;
 
     // 플레이어 스텟 관리 클래스입니다.
@@ -220,6 +221,7 @@ namespace ToB.Player
 
     private void Update()
     {
+      attackHandledCurrentFrame = false;
       if (freezeTime > 0)
       {
         freezeTime -= Time.unscaledDeltaTime;
@@ -482,7 +484,10 @@ namespace ToB.Player
 
       if (IsImmune && !isBuff) return;
       if (sender.Team == Team) return;
+      if (attackHandledCurrentFrame) return;
 
+      attackHandledCurrentFrame = true;
+      
       if (IsBlocking && sender.Blockable)
       {
         Block(value, sender);
