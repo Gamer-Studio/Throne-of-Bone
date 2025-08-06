@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using ToB.Core;
 using ToB.Utils.Singletons;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using AudioType = ToB.Core.AudioType;
 
@@ -21,6 +22,8 @@ namespace ToB.UI
         public GameOverUI gameOverUI;
         public EffectUI effectUI;
         public ToastUI toastUI;
+
+        [SerializeField] private EventSystem eventSystem;
         
         public readonly Stack<UIPanelBase> panelStack = new Stack<UIPanelBase>();
         
@@ -29,6 +32,7 @@ namespace ToB.UI
         private void OnEnable()
         {
             SceneManager.sceneLoaded += OnSceneLoaded;
+            eventSystem.enabled = true;
         }
 
         private void OnDisable()

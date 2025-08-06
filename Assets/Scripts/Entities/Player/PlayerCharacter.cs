@@ -439,7 +439,7 @@ namespace ToB.Player
       var jumpTime = 0f;
       while (jumpTime < jumpTimeLimit)
       {
-        if (body.linearVelocityY < maxJumpSpeed) body.AddForceY(power, ForceMode2D.Impulse);
+        body.linearVelocityY = power;
         jumpTime += Time.deltaTime;
         yield return new WaitForFixedUpdate();
       }

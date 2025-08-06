@@ -1,3 +1,4 @@
+using System;
 using DG.Tweening;
 using UnityEngine;
 
@@ -7,11 +8,18 @@ namespace ToB
     {
         public float scaleMultiplier = 1.2f;
         public float frequency = 0.5f;
-        void Start()
+        
+        private Tween scaleTween;
+        void OnEnable()
         {
-            transform.DOScale(Vector3.one * scaleMultiplier, frequency)
+            scaleTween = transform.DOScale(Vector3.one * scaleMultiplier, frequency)
                 .SetLoops(-1, LoopType.Yoyo)
                 .SetEase(Ease.InOutSine);
+        }
+
+        private void OnDisable()
+        {
+            scaleTween.Kill();
         }
     }
 }

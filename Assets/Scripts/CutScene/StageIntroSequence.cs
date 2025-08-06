@@ -55,21 +55,33 @@ namespace ToB.CutScene
             
             glowFadeTween?.Kill();
             glowScaleTween?.Kill();
-            glowSprite.DOFade(0.7f, 0.5f);
-            glowObj.transform.DOScale(100, 0.5f);
+            glowFadeTween = glowSprite.DOFade(0.7f, 0.5f);
+            glowScaleTween = glowObj.transform.DOScale(100, 0.5f);
             yield return StartCoroutine(ShowText("이제 … 일어나 주세요.", stopDuration:1.8f));
             
             glowFadeTween?.Kill();
             glowScaleTween?.Kill();
-            glowSprite.DOFade(1f, 0.5f);
-            glowObj.transform.DOScale(8000, 10f);
+            glowFadeTween =  glowSprite.DOFade(1f, 0.5f);
+            glowScaleTween = glowObj.transform.DOScale(8000, 10f);
             centerText.color = Color.black;
             yield return StartCoroutine(ShowText("그대는… 마지막 희망이니까요.",2f, 2.5f));
             TOBInputManager.Instance.anyInteractionKeyAction -= Skip;
+
+            KillTweens();
+            //glowObj.SetActive(false);
+            yield return null;
             SceneManager.LoadScene(Defines.StageScene);
         }
 
-        
+        private void KillTweens()
+        {
+            glowFadeTween?.Kill();
+            glowScaleTween?.Kill();
+            skipText.DOKill();
+            seq?.Kill();
+        }
+
+
         IEnumerator ShowText(string text, float fadeDuration = 1.4f, float stopDuration = 1.2f)
         {
             if (seq != null && seq.IsActive())
@@ -111,6 +123,7 @@ namespace ToB.CutScene
             glowFadeTween?.Kill();
             glowScaleTween?.Kill();
             skipText.DOKill();
+            seq.Kill();
         }
     }
 }
