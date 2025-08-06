@@ -12,7 +12,6 @@ namespace ToB.Entities.Projectiles
     public class Rock :Projectile
     { 
       //[ReadOnly] private new Camera camera;
-      [Label("피해량")] public float damage;
       [Label("속도")] public float speed;
       [Label("넉백 세기")] public float knockBackForce;
       
@@ -59,7 +58,7 @@ namespace ToB.Entities.Projectiles
     
          #endif
     
-       private void OnTriggerEnter2D(Collider2D other)
+       protected override void OnTriggerEnter2D(Collider2D other)
         {
           if ((hitLayers & 1 << other.gameObject.layer) == 0) return;
           if (IsContacted) return;
