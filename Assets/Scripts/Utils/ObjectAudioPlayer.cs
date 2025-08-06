@@ -41,7 +41,7 @@ namespace ToB.Utils
 
     private void OnDestroy()
     {
-      AudioManager.Instance?.onObjectVolumeChanged.RemoveListener(UpdateVolume);
+      if(AudioManager.HasInstance) AudioManager.Instance.onObjectVolumeChanged.RemoveListener(UpdateVolume);
       Destroy(audioSourceParent.gameObject);
     }
     
