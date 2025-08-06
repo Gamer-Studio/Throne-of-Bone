@@ -149,7 +149,7 @@ namespace ToB.Entities
             
             firstSewerRat.audioPlayer.Stop("Movement_Earth_Loop_01");
             roomVirtualCamera.Priority = 50;
-            roomVirtualCamera.transform.position = transform.position + new Vector3(0,0,-10);
+            roomVirtualCamera.transform.position = roomLocation.transform.position + new Vector3(0,0,-10);
             roomVirtualCamera.transform.position += Vector3.down * 5f;
             roomVirtualCamera.m_Lens.OrthographicSize = 4f;
             
@@ -180,7 +180,7 @@ namespace ToB.Entities
         private void CreateDust(SewerRat sewerRat)
         {
             Vector2 rayOrigin = sewerRat.transform.position;
-            rayOrigin.y = transform.position.y;
+            rayOrigin.y = roomLocation.transform.position.y;
             Vector2 groundPoint = Physics2D.Raycast(rayOrigin, Vector2.down, 100f, groundMask).point;
 
             ParticleSystem groundDustEffect = sewerRat.Strategy.GroundDustEffect;
@@ -216,7 +216,7 @@ namespace ToB.Entities
             firstSewerRat.audioPlayer.Play("AgressiveShout_04");
             ratVirtualCamera.Priority = 0;
             roomVirtualCamera.Priority = 50;
-            roomVirtualCamera.transform.position = transform.position + Vector3.down * 2.5f + new Vector3(0,0,-10);
+            roomVirtualCamera.transform.position = roomLocation.transform.position + Vector3.down * 2.5f + new Vector3(0,0,-10);
             sewerRat.Animator.SetBool(EnemyAnimationString.Roll, false);
         }
     }
