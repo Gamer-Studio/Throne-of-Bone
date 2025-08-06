@@ -2946,7 +2946,6 @@ GameObject:
   - component: {fileID: 2382961984958981444}
   - component: {fileID: 3938089247213123069}
   - component: {fileID: 2236357272575406839}
-  - component: {fileID: 8483929916544955427}
   m_Layer: 0
   m_Name: BossRoomLocation
   m_TagString: Untagged
@@ -3069,31 +3068,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &8483929916544955427
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 77920560514088303}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 12bb3cbcc7b77d943a502b20b4747692, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  firstSewerRat: {fileID: 7069797240517738029}
-  anotherSewerRats:
-  - {fileID: 2803293989921543985}
-  - {fileID: 5517469057484211861}
-  roomLocation: {fileID: 2382961984958981444}
-  ascendLocation: {fileID: 6512257946835805415}
-  roomVirtualCamera: {fileID: 6178955241119275188}
-  ratVirtualCamera: {fileID: 7302717259915004065}
-  doors:
-  - {fileID: 2149664545570062403}
-  - {fileID: 8965640482003692804}
-  hardMode: 1
-  phaseCount: 0
 --- !u!1 &955490476487007651
 GameObject:
   m_ObjectHideFlags: 0
@@ -3378,7 +3352,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e2fda4b2ee770c4d8994af783f7bcad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  room: {fileID: 4396329301837953947}
+  room: {fileID: 6942651274868773771}
   doorState: 0
   heightToOpen: 3
   doorMoveSpeed: 10
@@ -3530,7 +3504,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e2fda4b2ee770c4d8994af783f7bcad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  room: {fileID: 4396329301837953947}
+  room: {fileID: 6942651274868773771}
   doorState: 1
   heightToOpen: 3
   doorMoveSpeed: 10
@@ -4065,7 +4039,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2903922225394110874}
   - component: {fileID: 410403060601839520}
-  - component: {fileID: 4396329301837953947}
+  - component: {fileID: 6942651274868773771}
   m_Layer: 0
   m_Name: Map1-19
   m_TagString: Untagged
@@ -4106,7 +4080,7 @@ Grid:
   m_CellGap: {x: 0, y: 0, z: 0}
   m_CellLayout: 0
   m_CellSwizzle: 0
---- !u!114 &4396329301837953947
+--- !u!114 &6942651274868773771
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4115,11 +4089,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 4515992609482120507}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d96dae62a5edd934a8c34b3d13155a75, type: 3}
+  m_Script: {fileID: 11500000, guid: 12bb3cbcc7b77d943a502b20b4747692, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stageIndex: 1
-  roomIndex: 19
+  stageIndex: 0
+  roomIndex: 0
   normalEnemyTable:
     array: []
   fieldObjects:
@@ -4149,6 +4123,19 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   pos: {x: -13, y: -30, z: 0}
+  firstSewerRat: {fileID: 7069797240517738029}
+  anotherSewerRats:
+  - {fileID: 2803293989921543985}
+  - {fileID: 5517469057484211861}
+  roomLocation: {fileID: 2382961984958981444}
+  ascendLocation: {fileID: 6512257946835805415}
+  roomVirtualCamera: {fileID: 6178955241119275188}
+  ratVirtualCamera: {fileID: 7302717259915004065}
+  doors:
+  - {fileID: 2149664545570062403}
+  - {fileID: 8965640482003692804}
+  hardMode: 1
+  phaseCount: 0
 --- !u!1 &6310603924267118937
 GameObject:
   m_ObjectHideFlags: 0
@@ -10456,6 +10443,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   backgroundCollider: {fileID: 7074738989043311013}
+  cameraCollider: {fileID: 0}
   tilemap: {fileID: 2657623600618320808}
 --- !u!1 &8073871474734245471
 GameObject:
