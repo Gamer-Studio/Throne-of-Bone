@@ -43,7 +43,7 @@ namespace ToB.Player
         chance = BattleSkillManager.Instance.BSStats.CritChance - Random.Range(0, 100) / 100f;
       if (chance > 0) finalDmg += finalDmg * BattleSkillManager.Instance.BSStats.CritDmgMultiplier;
 
-      if (character.parryableLayer.Contains(other.gameObject.layer))
+      if (character.parryableLayer.Contains(other.gameObject.layer) && character.inBottomAttack)
       {
         character.Jump(true);
       }
