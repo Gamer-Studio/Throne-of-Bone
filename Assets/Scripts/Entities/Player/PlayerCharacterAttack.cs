@@ -100,6 +100,8 @@ namespace ToB.Player
     }
 
     [NonSerialized] public bool bottomJumpAvailable = false;
+    // PlayerAttackArea에서 아래공격인지 상태받아오는 용도입니다.
+    [NonSerialized] public bool inBottomAttack = false;
 
     /// <summary>
     /// direction 방향으로 공격합니다.
@@ -110,6 +112,7 @@ namespace ToB.Player
     /// <param name="bottomAttack"></param>
     public void Attack(Vector2 direction, bool isMelee = true, bool bottomAttack = false)
     {
+      inBottomAttack = bottomAttack;
       if (bottomAttack) animator.SetInteger(INT_ATTACK_MOTION, 4);
       
       if (isAttacking) return;
