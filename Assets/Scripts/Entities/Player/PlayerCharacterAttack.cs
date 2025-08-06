@@ -197,7 +197,12 @@ namespace ToB.Player
       var effect = (SwordEffect)swordEffect.Pooling();
       effect.transform.position = transform.position;
       effect.Direction = direction;
-      effect.damage = stat.atk / 2;
+
+      float atk = stat.atk;
+      effect.damage = atk / 2;
+      
+      //effect.damage = stat.atk / 2;
+      
       effect.launcher = gameObject;
       effect.ClearEffect();
 
