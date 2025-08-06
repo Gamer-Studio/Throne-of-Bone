@@ -15,6 +15,7 @@ namespace ToB.Entities
         public SentinelSO DataSO => enemySO as SentinelSO;
         [field: SerializeField] public EnemyStatHandler Stat { get; private set; }
         [field: SerializeField] public BehaviorGraphAgent Agent { get; private set; }
+        [field: SerializeField] public EnemyBody EnemyBody { get; private set; }
 
         [field: SerializeField] public EnemyAttackArea SprintArea { get; private set; }
         [field: SerializeField] public EnemyAttackArea LongSprintArea { get; private set; }
@@ -73,6 +74,7 @@ namespace ToB.Entities
             SprintArea.Init(this, DataSO.SprintAttackDamage_1Phase, 15, Vector2.right);
             LongSprintArea.Init(this, DataSO.SprintAttackDamage_1Phase, 15, Vector2.right);
             rangeAttackCooldown = DataSO.RangedAttackPhase1.cooldown;
+            EnemyBody.Init(this, DataSO.BodyDamage);
 
             Phase = 1;
             phase2Aura.gameObject.SetActive(false);
@@ -255,7 +257,8 @@ namespace ToB.Entities
                 ra.Init(DataSO.RangedAttackPhase1.damage, DataSO.RangedAttackPhase1.knockbackForce, default, false);
                 ra.blockable = true;
                 ra.effectable = true;
-                ra.Position = transform.position;
+                ra.isSelfDamagePos = false;
+                ra.anotherDamagePos = transform.position;
                 ra.transform.eulerAngles = new Vector3(0, 0, angle);
 
                 LinearMovement raMovement = raObj.GetComponent<LinearMovement>();
@@ -273,7 +276,8 @@ namespace ToB.Entities
                 ra.Init(DataSO.RangedAttackPhase2.damage, DataSO.RangedAttackPhase2.knockbackForce, default, false);
                 ra.blockable = true;
                 ra.effectable = true;
-                ra.Position = transform.position;
+                ra.isSelfDamagePos = false;
+                ra.anotherDamagePos = transform.position;
                 ra.transform.eulerAngles = new Vector3(0, 0, angle);
 
                 LinearMovement raMovement = raObj.GetComponent<LinearMovement>();

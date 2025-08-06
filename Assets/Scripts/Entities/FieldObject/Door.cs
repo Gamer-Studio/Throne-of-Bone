@@ -25,12 +25,12 @@ namespace ToB.Entities.FieldObject
         
         private void Awake()
         {
-            closedPos = transform.position;
+            closedPos = transform.localPosition;
             openPos = closedPos + Vector3.up * heightToOpen;
 
             if (openAtStart)
             {
-                transform.position = openPos;
+                transform.localPosition = openPos;
                 doorState = DoorState.Open;
             }
         }
@@ -51,23 +51,23 @@ namespace ToB.Entities.FieldObject
 
         IEnumerator DoorOpenCoroutine()
         {
-            while (transform.position.y < openPos.y)
+            while (transform.localPosition.y < openPos.y)
             {
                 yield return null;
-                transform.position += Vector3.up * (Time.deltaTime * doorMoveSpeed);
+                transform.localPosition += Vector3.up * (Time.deltaTime * doorMoveSpeed);
             }
-            transform.position = openPos;
+            transform.localPosition = openPos;
             doorState = DoorState.Open;
             
         }
         IEnumerator DoorCloseCoroutine()
         {
-            while (transform.position.y > closedPos.y)
+            while (transform.localPosition.y > closedPos.y)
             {
                 yield return null;
-                transform.position -= Vector3.up * (Time.deltaTime * doorMoveSpeed);
+                transform.localPosition -= Vector3.up * (Time.deltaTime * doorMoveSpeed);
             }
-            transform.position = closedPos;
+            transform.localPosition = closedPos;
             doorState = DoorState.Close;
         }
     }
