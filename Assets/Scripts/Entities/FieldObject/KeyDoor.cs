@@ -27,7 +27,7 @@ namespace ToB.Entities.FieldObject
         public override void LoadJson(JObject json)
         {
             base.LoadJson(json);
-            isOpened = json.Get(nameof(isOpened), isOpened);;
+            isOpened = json.Get(nameof(isOpened), isOpened);
             
         }
         

@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 
 namespace ToB.Memories
 {
@@ -48,7 +47,7 @@ namespace ToB.Memories
 
         private void ImportCSV(TextAsset csv, MemoriesDataSO database)
         {
-            database.memoriesDataBase.Clear();
+            if (database !=null) database.memoriesDataBase.Clear();
             
             string[] lines = csv.text.Split('\n');
 
