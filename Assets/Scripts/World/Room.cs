@@ -28,6 +28,7 @@ namespace ToB.Worlds
     [Label("오브젝트"), Foldout(State)] public SerializableDictionary<string, FieldObjectProgress> fieldObjects = new();
     [Label("모닥불 목록"), Foldout(State)] public List<Bonfire> bonfires = new();
     [Label("인스턴스된 적"), Foldout(State), SerializeField, ReadOnly] private SerializableDictionary<Transform, Enemy> enemies = new();
+    List<Enemy> enemiesList = new();
     
     #endregion
     
@@ -230,8 +231,9 @@ namespace ToB.Worlds
         
           enemy.transform.SetParent(entityContainer);
           enemy.transform.position = pair.Key.position;
-        
+          
           enemies[pair.Key] = enemy;
+          enemiesList.Add(enemy);
         }
       }
 
@@ -244,10 +246,15 @@ namespace ToB.Worlds
     /// </summary>
     public virtual void Unload()
     {
-      foreach (var pair in enemies)
+      // foreach (var pair in enemies)
+      // {
+      //   if(pair.Value)
+      //     pair.Value.Release();
+      // }
+
+      foreach (var enemy in enemiesList)
       {
-        if(pair.Value)
-          pair.Value.Release();
+        enemy.Release();
       }
       
       enemies.Clear();
@@ -276,14 +283,14 @@ namespace ToB.Worlds
     /// </summary>
     protected virtual void Exit()
     {
-      foreach (var pair in enemies)
-      {
-        if (!pair.Value.IsAlive)
-        {
-          pair.Value.Release();
-          enemies.Remove(pair.Key);
-        }
-      }
+      // foreach (var pair in enemies)
+      // {
+      //   if (!pair.Value.IsAlive)
+      //   {
+      //     pair.Value.Release();
+      //     enemies.Remove(pair.Key);
+      //   }
+      // }
 
       foreach (var obj in fieldObjects)
         obj.Value.OnUnLoad();
