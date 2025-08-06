@@ -9,11 +9,9 @@ namespace ToB.Entities.Projectiles
     public class Arrow : Projectile
     { 
       [ReadOnly] private Camera mainCamera;
-      [Label("피해량")] public float damage;
       [Label("속도")] public float speed;
       [Label("넉백 세기")] public float knockBackForce;
       
-      public LayerMask hitLayers;
       private float timeAfterLaunch = 0.3f;
       
       [SerializeField] private TrailRenderer trail;
@@ -48,9 +46,9 @@ namespace ToB.Entities.Projectiles
     
          #endif
 
-     private void OnTriggerEnter2D(Collider2D other)
+     protected override void OnTriggerEnter2D(Collider2D other)
         {
-          if ((hitLayers & 1 << other.gameObject.layer) == 0) return;
+          if (!hitLayers.Contains(other)) return;
           
           // 발사된 뒤 시간이 얼마 지나지 않았을 경우 벽과의 충돌 무시 (발사되자마자 벽에 충돌해 사라짐 방지)
           if (other.gameObject.CompareTag("Ground") && timeAfterLaunch > 0) return;

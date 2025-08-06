@@ -141,6 +141,8 @@ namespace ToB.Utils
     #region Layer
     
     public static bool Contains(this LayerMask mask, int layer) => (mask.value & (1 << layer)) != 0;
+    public static bool Contains(this LayerMask mask, GameObject gameObject) => gameObject && Contains(mask, gameObject.layer);
+    public static bool Contains(this LayerMask mask, Component component) => component && Contains(mask, component.gameObject);
     
     #endregion
   }

@@ -13,11 +13,11 @@ namespace ToB.Player
 {
   public class PlayerController : MonoBehaviour
   {
-    [Label("활성화된 메인 카메라"), SerializeField, ReadOnly] private new Camera mainCamera;
+    [Label("활성화된 메인 카메라"), SerializeField, ReadOnly] private Camera mainCamera;
     [Label("시네머신 카메라"), SerializeField] protected CinemachineVirtualCamera vCam;
     [Label("플레이어 캐릭터"), SerializeField] protected PlayerCharacter character;
-
     [Label("시선 처리 시간"), SerializeField] private float stareTime;
+    [Label("방어 개선"), SerializeField] private bool guardImprove = true;
     
     private bool isMeleeAttacking = false;
     private bool isRangedAttacking = false;
@@ -157,7 +157,7 @@ namespace ToB.Player
     public void Jump(InputAction.CallbackContext context)
     {
       if (context.performed) character.Jump();
-      else if (context.canceled) character.CancelJump();
+      if (context.canceled) character.CancelJump();
     }
 
     /// <summary>
@@ -216,8 +216,11 @@ namespace ToB.Player
 
     public void Block(InputAction.CallbackContext context)
     {
-      if (context.performed) character.StartBlock();
-      else if (context.canceled) character.CancelBlock();
+      if (context.performed)
+      {
+        if(!character.IsBlocking) character.StartBlock();
+      }
+      else if (context.canceled && !guardImprove) character.CancelBlock();
     }
     
     #endregion

@@ -8,14 +8,9 @@ namespace ToB.Entities.Projectiles
   public class SwordEffect : Projectile
   {
     [ReadOnly] private Camera mainCamera;
-    [Label("피해량")] public float damage;
     [Label("속도")] public float speed = 1;
     [Label("넉백 세기")] public float knockBackForce = 15;
-    
-    public LayerMask hitLayers;
 
-    private LayerMask hitLayersDefault;
-    
     [SerializeField] private Rigidbody2D body;
     [SerializeField] private TrailRenderer trail;
     [SerializeField] private ParticleSystem ps;
@@ -54,10 +49,10 @@ namespace ToB.Entities.Projectiles
     
     #endif
     
-    private void OnTriggerEnter2D(Collider2D other)
+    protected override void OnTriggerEnter2D(Collider2D other)
     {
       if (!gameObject.activeSelf) return;
-      if ((hitLayers & 1 << other.gameObject.layer) == 0) return;
+      if (!hitLayers.Contains(other)) return;
       
       other.KnockBack(knockBackForce, direction);
       
@@ -68,7 +63,7 @@ namespace ToB.Entities.Projectiles
           damageable.Damage(damage, this);
           HitEffect(other);
         }
-
+        
         Release();
       }
     }
@@ -92,15 +87,16 @@ namespace ToB.Entities.Projectiles
       attackEffect.gameObject.SetActive(true);
     }
 
-    private void Awake()
-    {
-      hitLayersDefault = hitLayers;
-    }
 
     private void OnEnable()
     {
+      ClearEffect();
       mainCamera = Camera.main;
-      hitLayers = hitLayersDefault;
+    }
+
+    private void OnDisable()
+    {
+      ClearEffect();
     }
 
     private void FixedUpdate()

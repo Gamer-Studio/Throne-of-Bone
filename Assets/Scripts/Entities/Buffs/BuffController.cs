@@ -70,11 +70,6 @@ namespace ToB.Entities.Buffs
         
         if (info.delayTime >= info.delay)
         {
-          //TODO : 아래 if조건문은 추후 리팩토링해야 함. 지금 구조대로는 몬스터에게 중독을 걸 수 없음!
-          if (buff.Key == Buff.Poison && !BattleSkillManager.Instance.BSStats.IsImmuneByPoison)
-          {
-          }
-          
           buff.Key.Effect(gameObject, info);
           info.delayTime = 0;
         }

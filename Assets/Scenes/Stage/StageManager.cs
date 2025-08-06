@@ -58,7 +58,7 @@ namespace ToB.Scenes.Stage
     [Foldout(Binding)] public RoomController roomController;
     [Foldout(Binding), SerializeField] private CinemachineConfiner2D confiner;
     [Foldout(Binding), SerializeField] private Transform roomContainer;
-    [Foldout(Binding), SerializeField] private new Camera camera;
+    [Foldout(Binding), SerializeField] private Camera mainCamera;
 
     #endregion
 
