@@ -70,6 +70,16 @@ namespace ToB.UI
                     toastUI.gameObject.SetActive(false);
                     break;
         
+                case Defines.StageIntroScene:
+                    introUI.gameObject.SetActive(false);
+                    crossHairUI.gameObject.SetActive(false);
+                    gamePlayUI.gameObject.SetActive(false);
+                    mainBookUI.gameObject.SetActive(false);
+                    wideMapUI.gameObject.SetActive(false);
+                    gameOverUI.gameObject.SetActive(false);
+                    effectUI.gameObject.SetActive(false);
+                    toastUI.gameObject.SetActive(false);
+                    break;
                 //메인메뉴와 인트로 씬 말고는 다 Stage씬이니 일단은 이렇게.
                 //TODO: 추후 로딩씬이 생길 경우 케이스 추가할 필요 있음
                 default:
@@ -99,9 +109,6 @@ namespace ToB.UI
             }
         }
         #endregion
-            
-
-
-
+        
     }
 }

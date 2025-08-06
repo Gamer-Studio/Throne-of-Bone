@@ -48,6 +48,7 @@ namespace ToB.IO
     public JObject MetaData => Data.MetaData;
     public string fileName;
     public string name = "empty";
+    public bool isFirstEnter = true;
     [field: SerializeField] public string SaveTime { get; private set; }
     [field: SerializeField] public int Version { get; private set; }
 
@@ -131,6 +132,7 @@ namespace ToB.IO
       MetaData[nameof(name)] = name;
       MetaData[nameof(SaveTime)] = SaveTime;
       MetaData[nameof(Version)] = Version;
+      MetaData[nameof(isFirstEnter)] = false;
     }
     
     public SAVEModule Node(string key, bool force = false) => Data.Node(key, force);
@@ -193,6 +195,7 @@ namespace ToB.IO
       if (Directory.Exists(rootPath) && Validate(rootPath))
       {
         await Data.Load(rootPath, true);
+        isFirstEnter = false;
       }
         
       Current = this;
@@ -221,9 +224,10 @@ namespace ToB.IO
       // 메타 데이터 세팅
       var meta = result.MetaData;
       
-      result.name = meta.Get("name", "empty");
-      result.SaveTime = meta.Get("saveTime", "not saved");
-      result.Version = meta.Get("version", CurrentVersion);
+      result.name = meta.Get(nameof(name), "empty");
+      result.SaveTime = meta.Get(nameof(SaveTime), "not saved");
+      result.Version = meta.Get(nameof(Version), CurrentVersion);
+      result.isFirstEnter = meta.Get(nameof(isFirstEnter), true);
 
       return result;
     }

@@ -2,9 +2,11 @@ using System;
 using System.Collections;
 using DG.Tweening;
 using TMPro;
+using ToB.Core;
 using ToB.Core.InputManager;
 using ToB.Utils.Extensions;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace ToB.CutScene
 {
@@ -62,8 +64,9 @@ namespace ToB.CutScene
             glowSprite.DOFade(1f, 0.5f);
             glowObj.transform.DOScale(8000, 10f);
             centerText.color = Color.black;
-            TOBInputManager.Instance.anyInteractionKeyAction -= Skip;
             yield return StartCoroutine(ShowText("그대는… 마지막 희망이니까요.",2f, 2.5f));
+            TOBInputManager.Instance.anyInteractionKeyAction -= Skip;
+            SceneManager.LoadScene(Defines.StageScene);
         }
 
         
