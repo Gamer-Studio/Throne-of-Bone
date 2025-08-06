@@ -192,13 +192,12 @@ namespace ToB.Player
     {
       yield return new WaitForSeconds(shootDelay);
       var effect = (SwordEffect)swordEffect.Pooling();
-      effect.ClearEffect();
-
       effect.transform.position = transform.position;
       effect.Direction = direction;
       effect.damage = stat.atk / 2;
       effect.launcher = gameObject;
-      
+      effect.ClearEffect();
+
       AudioManager.Play("fntgm_arrow_whoosh", AudioType.Effect);
         
       if(rangeAttackGlowEffect.isPlaying) rangeAttackGlowEffect.Stop();

@@ -10,11 +10,7 @@ namespace ToB.Entities.Projectiles
     [ReadOnly] private Camera mainCamera;
     [Label("속도")] public float speed = 1;
     [Label("넉백 세기")] public float knockBackForce = 15;
-    
-    public LayerMask hitLayers;
 
-    private LayerMask hitLayersDefault;
-    
     [SerializeField] private Rigidbody2D body;
     [SerializeField] private TrailRenderer trail;
     [SerializeField] private ParticleSystem ps;
@@ -67,7 +63,7 @@ namespace ToB.Entities.Projectiles
           damageable.Damage(damage, this);
           HitEffect(other);
         }
-
+        
         Release();
       }
     }
@@ -91,15 +87,16 @@ namespace ToB.Entities.Projectiles
       attackEffect.gameObject.SetActive(true);
     }
 
-    private void Awake()
-    {
-      hitLayersDefault = hitLayers;
-    }
 
     private void OnEnable()
     {
+      ClearEffect();
       mainCamera = Camera.main;
-      hitLayers = hitLayersDefault;
+    }
+
+    private void OnDisable()
+    {
+      ClearEffect();
     }
 
     private void FixedUpdate()
