@@ -21,6 +21,7 @@ namespace ToB.UI
         [SerializeField] public Image saveIndicator;
         [SerializeField] UIGaugeBar hpGaugeBar;
         [SerializeField] UIGaugeBar manaGaugeBar;
+        [SerializeField] RangeAtkCountUI rangeAtkCountUI;
         
         private void Awake()
         {
@@ -78,6 +79,7 @@ namespace ToB.UI
         {
             hpGaugeBar.Init();
             manaGaugeBar.Init();
+            rangeAtkCountUI.Init();
         }
 
         private void UpdateGoldText(int gold)

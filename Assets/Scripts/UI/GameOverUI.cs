@@ -11,16 +11,14 @@ namespace ToB.UI
     {
         
         private PlayerCharacter player;
-
-
-      
+        
         private void Awake()
         {
-            SceneManager.sceneLoaded += OnSceneLoaded;
+            // SceneManager.sceneLoaded += OnSceneLoaded;
         }
         private void OnDestroy()
         {
-            SceneManager.sceneLoaded -= OnSceneLoaded;
+            // SceneManager.sceneLoaded -= OnSceneLoaded;
         }
         
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -39,8 +37,10 @@ namespace ToB.UI
             }
         }
 
-        private void Init()
+        public void Init()
         {
+            player = PlayerCharacter.Instance;
+            
             player.stat.onDeath.AddListener(GameOver);
         }
         

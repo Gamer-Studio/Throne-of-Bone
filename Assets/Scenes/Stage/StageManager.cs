@@ -126,6 +126,7 @@ namespace ToB.Scenes.Stage
         DebugSymbol.Editor.Log("플레이어가 씬에 없습니다.");
       
       UIManager.Instance?.gamePlayUI.InitGages();
+      UIManager.Instance?.InitsAfterStageAwake();
       // InputManager.Instance.SetActionMap(InputActionMaps.Player);
     }
 

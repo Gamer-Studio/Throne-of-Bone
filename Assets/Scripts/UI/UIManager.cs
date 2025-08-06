@@ -113,6 +113,10 @@ namespace ToB.UI
             }
         }
         #endregion
-        
+
+        public void InitsAfterStageAwake()
+        {
+            gameOverUI.Init();
+        }
     }
 }

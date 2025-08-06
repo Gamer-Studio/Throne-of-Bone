@@ -16,12 +16,12 @@ namespace ToB.UI
         
         private void Awake()
         {
-            SceneManager.sceneLoaded += OnSceneLoaded;
+            //SceneManager.sceneLoaded += OnSceneLoaded;
         }
 
         private void OnDestroy()
         {
-            SceneManager.sceneLoaded -= OnSceneLoaded;
+            //SceneManager.sceneLoaded -= OnSceneLoaded;
         }
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -41,8 +41,11 @@ namespace ToB.UI
             }
         }
 
-        private void Init()
+        public void Init()
         {
+            gameObject.SetActive(true);
+            
+            player = PlayerCharacter.Instance;
             UpdateMaxCount(BattleSkillManager.Instance.BSStats.RangeAtkStack);
             player.OnRangedAttackStackChange.AddListener(UpdateCounter);
             BattleSkillManager.Instance.onRangeAtkStackChanged.AddListener(UpdateMaxCount);
@@ -56,6 +59,7 @@ namespace ToB.UI
 
         private void UpdateCounter(int curCount)
         {
+            Debug.Log("Count");
             int value = curCount;
             for (int i = 0; i < 5; i++)
             {
