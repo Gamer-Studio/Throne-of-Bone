@@ -23,7 +23,6 @@ namespace ToB.Memories
         {
             LoadMemoriesDataBase();
             InitializeMemoriesStates();
-            ApplyStatesToUI();
         }
 
         private void LoadMemoriesDataBase()
@@ -46,9 +45,14 @@ namespace ToB.Memories
 
             memoriesStates = SAVE.Current.PlayerStat.savedMemoryStates;
         }
-        private void ApplyStatesToUI()
+
+        public void MonsterMemoryAcquired(int _id)
         {
+            if (memoriesStates[_id]) return; // true인 경우, 즉 이미 습득한 경우 리턴
             
+            memoriesStates[_id] = true;
+            onMemoryAcquired.Invoke(true);
+
         }
 
 

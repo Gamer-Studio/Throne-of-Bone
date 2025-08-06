@@ -76,9 +76,12 @@ namespace ToB.Core
         /// <param name="자원 타입 - Gold / Mana "></param>
         /// <param name="드랍할 자원의 양"></param>
         /// <param name="드랍할 지점"></param>
-        public void SpawnResources(InfiniteResourceType type, int resourceAmount, Transform spawnPoint)
+        public void SpawnResources(InfiniteResourceType type, int resourceAmount, Transform spawnPoint, float dropRate = 1f)
         {
             if (resourceAmount <= 0) return;
+            
+            if (type == InfiniteResourceType.Mana && dropRate < Random.Range(0f, 1f)) return;
+            // 마나의 경우 드랍 확률에 따라 랜덤 드랍
             
             //자원 오브젝트 생성할 수량 및 그 안에 들어갈 값 할당
             int prefabCount = Mathf.Clamp((resourceAmount / ResourcePerObject)+1, 1, maxPrefabCount);

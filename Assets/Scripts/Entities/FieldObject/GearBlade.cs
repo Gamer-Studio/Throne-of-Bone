@@ -25,7 +25,7 @@ namespace ToB.Entities.FieldObject
         private bool isActivated;
         private Coroutine C_SpinningTimer;
 
-        private void Awake()
+        private void OnEnable()
         {
             if (!animator) animator = GetComponent<Animator>();
             GearBladeModeToggle(bladeMode);
