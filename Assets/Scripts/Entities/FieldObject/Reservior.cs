@@ -1,5 +1,4 @@
 using Newtonsoft.Json.Linq;
-using ToB.Entities.Buffs;
 using ToB.IO;
 using ToB.Worlds;
 using UnityEngine;
@@ -10,8 +9,11 @@ namespace ToB.Entities.FieldObject
     {
         public int WaterLevel;
         [SerializeField] public Transform[] WaterLevelPos;
-        [SerializeField] public Lever[] levers;
         [SerializeField] public GameObject WaterBlock;
+        private JObject _lever1;
+        private JObject _lever2;
+        private bool _isLever1Activated;
+        private bool _isLever2Activated;
 
         #region SaveLoad
 
@@ -23,6 +25,12 @@ namespace ToB.Entities.FieldObject
         
         public override void OnLoad()
         {
+            _lever1 = Room.GetData(1, 12, "Lever");
+            _lever2 = Room.GetData(1, 14, "Lever");
+            
+            _isLever1Activated = _lever1.Get("isLeverActivated", false);
+            _isLever2Activated = _lever2.Get("isLeverActivated", false);
+            
             SetWaterLevel();
         }
         public override JObject ToJson()
@@ -34,22 +42,12 @@ namespace ToB.Entities.FieldObject
 
         #endregion
 
-        public void LeverInteraction()
-        { 
-            WaterLevel = 0;
-            foreach (var lever in levers)
-            {
-                if (lever.isLeverActivated) WaterLevel++;
-            }
-            SetWaterLevel();
-        }
         private void SetWaterLevel()
         {
+            WaterLevel = 0;
+            if (_isLever1Activated) WaterLevel++;
+            if (_isLever2Activated) WaterLevel++;
             WaterBlock.transform.localPosition = WaterLevelPos[WaterLevel].localPosition;
-           //WaterBlock.TryGetComponent<WaterObject>(out var water);
-           //water.buffs[Buff.Poison].level = 5;
-           //water.buffs[Buff.Poison].duration = 5;
-           //water.buffs[Buff.Poison].delay = 1;
         }
 
     }

@@ -18,10 +18,10 @@ namespace ToB.Entities.FieldObject
         
         #region SaveLoad
 
-        private void Awake()
+        private void OnEnable()
         {
             IsInteractable = true;
-            audioPlayer = GetComponent<ObjectAudioPlayer>();
+            if (audioPlayer == null) audioPlayer = GetComponent<ObjectAudioPlayer>();
         }
 
         public override void LoadJson(JObject json)

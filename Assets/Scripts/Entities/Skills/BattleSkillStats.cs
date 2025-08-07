@@ -56,6 +56,7 @@ namespace ToB.Entities.Skills
 
             if (IsImmuneByPoison)
             {
+                Debug.Log(Buff.Poison);
                 player.buffController.immunedBuffs.Add(Buff.Poison);
             }
             
