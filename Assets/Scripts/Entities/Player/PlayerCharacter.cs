@@ -286,9 +286,8 @@ namespace ToB.Player
       {
         isClimbing = true;
         animator.SetBool(BOOL_CLIMB, true);
-        
+        SnapToWall(dir);
         if (body.linearVelocityY < wallEnduringSpeed) body.linearVelocityY = Mathf.Max(body.linearVelocityY, wallEnduringSpeed);
-        body.linearVelocityX = 0;
         // Debug.Log(body.linearVelocityY);
       }
       else
@@ -298,10 +297,23 @@ namespace ToB.Player
       }
     }
 
+    private void SnapToWall(Vector2 rayDir)
+    {
+      Vector2 rayOrigin = bodyCollider.bounds.center;
+      RaycastHit2D hit = Physics2D.Raycast(rayOrigin, rayDir, bodyCollider.bounds.extents.x + 0.01f, LayerMask.GetMask("Ground"));
+      Debug.DrawRay(rayOrigin, rayDir * (bodyCollider.bounds.extents.x + 0.01f), Color.red, 0.1f);  // 0.1초간 표시
+      
+      if (hit)
+      {
+        transform.position.X(hit.point.x + rayDir.x * (-bodyCollider.bounds.extents.x -0.005f));
+        body.linearVelocityX = 0;
+      }
+    }
+
     private bool DetectWall(Vector2 dir)
     {
       var colliderCenterPos = (Vector2)transform.position +
-                              new Vector2(bodyCollider.offset.x * dir.x, bodyCollider.offset.y);
+                              new Vector2(bodyCollider.offset.x * dir.x * transform.localScale.x, bodyCollider.offset.y* transform.localScale.x);
       var rayOrigin = colliderCenterPos + dir * (bodyCollider.size.x * 0.5f);
 
       if (Physics2D.Raycast(rayOrigin, dir, 0.03f, LayerMask.GetMask("Ground"))) return true;
