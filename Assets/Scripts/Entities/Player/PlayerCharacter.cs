@@ -553,8 +553,7 @@ namespace ToB.Player
         stat.Hp -= value;
         return;
       }
-
-      if (IsImmune && !isBuff) return;
+      
       if (sender.Team == Team) return;
       if (attackHandledCurrentFrame) return;
 
@@ -564,6 +563,7 @@ namespace ToB.Player
       {
         Block(value, sender);
       }
+      else if (IsImmune) return;
       else
       {
         stat.Damage(value);
