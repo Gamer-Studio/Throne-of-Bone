@@ -10,6 +10,9 @@ namespace ToB.IO.SubModules
 
     [JsonProperty]
     public bool KillRat = false;
+    
+    [JsonProperty]
+    public bool KillSentinel = false;
 
     #endregion
 
