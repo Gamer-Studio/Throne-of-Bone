@@ -11,7 +11,7 @@ namespace ToB.Memories
         private MemoriesDataSO memoriesDataBase;
         
         [MenuItem("Tools/Import Memories CSV")]
-        public static void ShowWindow()
+        public static void ShowWindows()
         {
             GetWindow<MemoriesCSVImporter>("Import Memories CSV");
         }

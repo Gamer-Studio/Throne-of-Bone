@@ -200,6 +200,7 @@ namespace ToB.Player
       if (!animator) animator = GetComponentInChildren<Animator>();
       if (!spriteRenderer) spriteRenderer = GetComponentInChildren<SpriteRenderer>();
       if (!audioPlayer) audioPlayer = GetComponent<ObjectAudioPlayer>();
+      if (!buffController) buffController = GetComponent<BuffController>();
     }
 
 #endif
