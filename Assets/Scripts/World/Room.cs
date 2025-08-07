@@ -319,9 +319,7 @@ namespace ToB.Worlds
     public JObject ToJson()
     {
       var objects = new JObject();
-      var result = new JObject
-      {
-      };
+      var result = new JObject { };
       
       foreach (var pair in fieldObjects)
       {
@@ -331,6 +329,35 @@ namespace ToB.Worlds
       result[nameof(fieldObjects)] = objects;
       
       return result;
+    }
+    
+    /// <summary>
+    /// 다른 방의 오브젝트 데이터에 접근합니다.
+    /// </summary>
+    /// <param name="stageIndex">받아올 데이터가 있는 스테이지입니다.</param>
+    /// <param name="roomIndex">받아올 데이터가 있는 방입니다.</param>
+    /// <param name="objectName">받아올 데이터의 오브젝트 이름입니다.</param>
+    /// <returns></returns>
+    public static JObject GetData(int stageIndex, int roomIndex, string objectName)
+    {
+      var node = SAVE.Current.Node("Stage").Node($"Room_{stageIndex}_{roomIndex}");
+      return node.Get(nameof(fieldObjects), JsonUtil.Blank).Get(objectName, JsonUtil.Blank);
+    }
+
+    /// <summary>
+    /// 다른 방의 오브젝트 데이터를 설정할 수 있습니다.
+    /// </summary>
+    /// <param name="stageIndex">설정할 데이터의 스테이지입니다.</param>
+    /// <param name="roomIndex">설정할 데이터의 방입니다.</param>
+    /// <param name="objectName">설정할 데이터의 오브젝트 이름입니다.</param>
+    /// <param name="data">저장할 데이터입니다.</param>
+    public static void SetData(int stageIndex, int roomIndex, string objectName, JObject data)
+    {
+      var node = SAVE.Current.Node("Stage").Node($"Room_{stageIndex}_{roomIndex}");
+
+      var roomData = node.Get(nameof(fieldObjects), JsonUtil.Blank);
+      roomData[objectName] = data;
+      node[nameof(fieldObjects)] = roomData;
     }
     
     #endregion
