@@ -33,6 +33,8 @@ namespace ToB.Entities
         {
             base.OnEnable();
             Stat.Init(this, DataSO);
+            Hitbox.enabled = true;
+            FSM.Init();
             
         }
 
@@ -56,9 +58,10 @@ namespace ToB.Entities
             deathEffect.transform.SetParent(null);
             deathEffect.Play();
             audioPlayer.Play("Death_01");
-            
-            Destroy(gameObject);
-            Destroy(deathEffect,2);
+
+            Hitbox.enabled = false;
+            Sprite.enabled = false;
+            FSM.ChangePattern(null);
         }
     }
 }
