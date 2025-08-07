@@ -291,7 +291,6 @@ namespace ToB.Player
         animator.SetBool(BOOL_CLIMB, true);
         
         if (body.linearVelocityY < wallEnduringSpeed) body.linearVelocityY = Mathf.Max(body.linearVelocityY, wallEnduringSpeed);
-        body.linearVelocityX = 0;
         // Debug.Log(body.linearVelocityY);
       }
       else
@@ -299,15 +298,78 @@ namespace ToB.Player
         isClimbing = false;
         animator.SetBool(BOOL_CLIMB, false);
       }
+
+      if (isMoving && DetectWallCapsule(dir))
+      {
+        SnapToWallCapsule(dir);
+        
+      }
+    }
+
+    private void SnapToWallCapsule(Vector2 dir)
+    {
+      var bounds = bodyCollider.bounds;
+      Vector2 size = bounds.size;
+      Vector2 origin = bounds.center;
+
+      RaycastHit2D[] hits = Physics2D.CapsuleCastAll(
+        origin,
+        size,
+        bodyCollider.direction,
+        0f,
+        dir,
+        0.03f,
+        LayerMask.GetMask("Ground")
+      );
+
+      foreach (var hit in hits)
+      {
+        if (hit.collider != null && !hit.collider.CompareTag("SemiPlatform"))
+        {
+          float capsuleExtentX = bounds.extents.x;
+          float newX = hit.point.x + dir.x * (-capsuleExtentX - 0.005f);
+
+          body.position = new Vector2(newX, body.position.y);
+          body.linearVelocityX = 0f;
+          break; // 첫 유효 벽에 스냅 후 종료
+        }
+      }
     }
 
     private bool DetectWall(Vector2 dir)
     {
       var colliderCenterPos = (Vector2)transform.position +
-                              new Vector2(bodyCollider.offset.x * dir.x, bodyCollider.offset.y);
+                              new Vector2(bodyCollider.offset.x * dir.x * transform.localScale.x, bodyCollider.offset.y* transform.localScale.x);
       var rayOrigin = colliderCenterPos + dir * (bodyCollider.size.x * 0.5f);
 
-      if (Physics2D.Raycast(rayOrigin, dir, 0.03f, LayerMask.GetMask("Ground"))) return true;
+      var hit = Physics2D.Raycast(rayOrigin, dir, 0.03f, LayerMask.GetMask("Ground"));
+      if (hit && !hit.collider.CompareTag("SemiPlatform")) return true;
+      return false;
+    }
+    private bool DetectWallCapsule(Vector2 dir)
+    {
+      var bounds = bodyCollider.bounds;
+      Vector2 size = bounds.size;
+      Vector2 origin = bounds.center;
+
+      RaycastHit2D[] hits = Physics2D.CapsuleCastAll(
+        origin,
+        size,
+        bodyCollider.direction,
+        0f,
+        dir,
+        0.03f,
+        LayerMask.GetMask("Ground")
+      );
+
+      foreach (var hit in hits)
+      {
+        if (hit.collider != null && !hit.collider.CompareTag("SemiPlatform"))
+        {
+          return true;
+        }
+      }
+
       return false;
     }
 
@@ -494,8 +556,7 @@ namespace ToB.Player
         stat.Hp -= value;
         return;
       }
-
-      if (IsImmune && !isBuff) return;
+      
       if (sender.Team == Team) return;
       if (attackHandledCurrentFrame) return;
 
@@ -505,6 +566,7 @@ namespace ToB.Player
       {
         Block(value, sender);
       }
+      else if (IsImmune) return;
       else
       {
         stat.Damage(value);
