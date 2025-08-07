@@ -340,7 +340,7 @@ namespace ToB.Worlds
     /// <returns></returns>
     public static JObject GetData(int stageIndex, int roomIndex, string objectName)
     {
-      var node = SAVE.Current.Node("Stage").Node($"Room_{stageIndex}_{roomIndex}");
+      var node = SAVE.Current.Node("Stage", true).Node($"Room_{stageIndex}_{roomIndex}",true);
       return node.Get(nameof(fieldObjects), JsonUtil.Blank).Get(objectName, JsonUtil.Blank);
     }
 
