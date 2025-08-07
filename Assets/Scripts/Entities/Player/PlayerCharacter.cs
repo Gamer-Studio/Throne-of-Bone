@@ -274,7 +274,7 @@ namespace ToB.Player
       // isMoving이 true일떄 이동합니다.
       if (IsMoving && !IsDashing && !IsAttackMotion)
         // 최대이동속도 설정 및 이동 구현
-        body.linearVelocity = body.linearVelocity.X((moveDirection == PlayerMoveDirection.Left ? 1 : -1) * moveSpeed);
+        body.linearVelocity = body.linearVelocity.X((moveDirection == PlayerMoveDirection.Left ? -1 : 1) * moveSpeed);
 
         // if (Math.Abs(body.linearVelocityX) < maxMoveSpeed)
           // body.AddForce(dir * moveSpeed, ForceMode2D.Impulse);
@@ -318,9 +318,11 @@ namespace ToB.Player
     private void TakeEnvironmentalForces()
     {
       // 이동시 마찰력 보정
-      if (Math.Abs(body.linearVelocityX) > 1)
-        body.AddForce(-body.linearVelocity.normalized.Y(0) * moveResistanceForce, ForceMode2D.Impulse);
-
+      if (!IsMoving)
+      {
+        body.linearVelocity = body.linearVelocity.X(v => Mathf.Lerp(v, 0, Time.fixedDeltaTime * 10));
+      }
+      
       // 떨어질 떄 빨리 떨어지게
       if (body.linearVelocity.y < 0)
         body.linearVelocity += Vector2.up * (Physics.gravity.y * (gravityAcceleration - 1) * Time.fixedDeltaTime);
