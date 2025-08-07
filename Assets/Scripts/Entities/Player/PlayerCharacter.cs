@@ -272,13 +272,14 @@ namespace ToB.Player
         (isAttacking ? attackDirection : MoveDirection) == PlayerMoveDirection.Left ? 180 : 0, 0);
 
       // isMoving이 true일떄 이동합니다.
-      if (isMoving && !IsDashing &&
-          (IsFlight || !IsAttackMotion))
+      if (IsMoving && !IsDashing && !IsAttackMotion)
         // 최대이동속도 설정 및 이동 구현
-        if (Math.Abs(body.linearVelocityX) < maxMoveSpeed)
-          body.AddForce(dir * moveSpeed, ForceMode2D.Impulse);
+        body.linearVelocity = body.linearVelocity.X((moveDirection == PlayerMoveDirection.Left ? 1 : -1) * moveSpeed);
 
-      if (isMoving && IsFlight && DetectWall(dir))
+        // if (Math.Abs(body.linearVelocityX) < maxMoveSpeed)
+          // body.AddForce(dir * moveSpeed, ForceMode2D.Impulse);
+
+      if (IsMoving && IsFlight && DetectWall(dir))
       {
         isClimbing = true;
         animator.SetBool(BOOL_CLIMB, true);
@@ -443,7 +444,7 @@ namespace ToB.Player
       var jumpTime = 0f;
       while (jumpTime < jumpTimeLimit)
       {
-        body.linearVelocityY = power;
+        body.linearVelocity = body.linearVelocity.Y(power);
         jumpTime += Time.deltaTime;
         yield return new WaitForFixedUpdate();
       }
