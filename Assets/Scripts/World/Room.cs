@@ -62,6 +62,7 @@ namespace ToB.Worlds
       Undo.RecordObject(this, nameof(FindStructures));
       
       fieldObjects.Clear();
+      bonfires.Clear();
       
       FindStructure(transform);
       FindLinks();
@@ -209,7 +210,8 @@ namespace ToB.Worlds
     /// </summary>
     public void Save()
     {
-      saveModule.Read(this);
+      var data = ToJson();
+      saveModule.Read(data);
     }
 
     /// <summary>

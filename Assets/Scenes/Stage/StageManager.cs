@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Cinemachine;
 using NaughtyAttributes;
 using ToB.Core;
@@ -201,8 +202,7 @@ namespace ToB.Scenes.Stage
     {
       if (!HasInstance) return;
       
-      foreach (var pair in RoomController.loadedRooms)
-        if(pair.Value) pair.Value.Save();
+      foreach (var pair in RoomController.loadedRooms.Where(pair => pair.Value)) pair.Value.Save();
       
       if(bonfire != null)
         SAVE.Current.SavePoints.UpdateSavePoint(bonfire);
