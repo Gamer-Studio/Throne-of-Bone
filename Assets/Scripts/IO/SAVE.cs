@@ -70,6 +70,11 @@ namespace ToB.IO
     /// Root/SavePoints 경로의 데이터입니다.
     /// </summary>
     public SavePointModule SavePoints => Current.Data.Node<SavePointModule>(nameof(SavePoints), true);
+    
+    /// <summary>
+    /// Root/Achievements 경로의 도전과제 데이터입니다.
+    /// </summary>
+    public AchievementModule Achievements => Current.Data.Node<AchievementModule>(nameof(Achievements), true);
 
     #endregion
     

@@ -179,6 +179,8 @@ namespace ToB.IO.SubModules
         var type when type == typeof(SAVEModule) => (T) (object) new SAVEModule(key),
         var type when type == typeof(PlayerModule) => (T) (object) new PlayerModule(key),
         var type when type == typeof(PlayerStatModule) => (T) (object) new PlayerStatModule(key),
+        var type when type == typeof(SavePointModule) => (T)  (object) new SavePointModule(key),
+        var type when type == typeof(AchievementModule) => (T)  (object) new AchievementModule(key),
         _ => (T) Activator.CreateInstance(typeof(T), key),
       };
       
