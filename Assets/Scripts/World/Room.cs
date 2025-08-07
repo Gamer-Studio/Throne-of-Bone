@@ -28,7 +28,7 @@ namespace ToB.Worlds
     [Label("오브젝트"), Foldout(State)] public SerializableDictionary<string, FieldObjectProgress> fieldObjects = new();
     [Label("모닥불 목록"), Foldout(State)] public List<Bonfire> bonfires = new();
     [Label("인스턴스된 적"), Foldout(State), SerializeField, ReadOnly] private SerializableDictionary<Transform, Enemy> enemies = new();
-    List<Enemy> enemiesList = new();
+    [SerializeField] private List<Enemy> enemiesList = new();
     
     #endregion
     
@@ -303,7 +303,7 @@ namespace ToB.Worlds
     #endregion
     
     #region Serialization
-
+    
     public void LoadJson(JObject json)
     {
       var dummy = new JObject();
@@ -340,8 +340,19 @@ namespace ToB.Worlds
     /// <returns></returns>
     public static JObject GetData(int stageIndex, int roomIndex, string objectName)
     {
-      var node = SAVE.Current.Node("Stage", true).Node($"Room_{stageIndex}_{roomIndex}",true);
-      return node.Get(nameof(fieldObjects), JsonUtil.Blank).Get(objectName, JsonUtil.Blank);
+      if (StageManager.RoomController.loadedRooms.TryGetValue($"Stage{stageIndex}/Room{roomIndex}", out var room))
+      {
+        // 방이 로딩되어있을경우
+        if (room.fieldObjects.TryGetValue(objectName, out var obj) && obj)
+          return obj.ToJson();
+        else return JsonUtil.Blank;
+      }
+      else
+      {
+        // 방이 로딩되어있지 않을 경우
+        var node = SAVE.Current.Node("Stage", true).Node($"Room_{stageIndex}_{roomIndex}", true);
+        return node.Get(nameof(fieldObjects), JsonUtil.Blank).Get(objectName, JsonUtil.Blank);
+      }
     }
 
     /// <summary>
@@ -353,11 +364,23 @@ namespace ToB.Worlds
     /// <param name="data">저장할 데이터입니다.</param>
     public static void SetData(int stageIndex, int roomIndex, string objectName, JObject data)
     {
-      var node = SAVE.Current.Node("Stage").Node($"Room_{stageIndex}_{roomIndex}");
+      if (StageManager.RoomController.loadedRooms.TryGetValue($"Stage{stageIndex}/Room{roomIndex}", out var room))
+      {
+        // 방이 로딩되어있을경우
+        if (room.fieldObjects.TryGetValue(objectName, out var obj) && obj)
+        {
+          obj.LoadJson(data);
+        }
+      }
+      else
+      {
+        // 방이 로딩되어있지 않을 경우
+        var node = SAVE.Current.Node("Stage", true).Node($"Room_{stageIndex}_{roomIndex}", true);
 
-      var roomData = node.Get(nameof(fieldObjects), JsonUtil.Blank);
-      roomData[objectName] = data;
-      node[nameof(fieldObjects)] = roomData;
+        var roomData = node.Get(nameof(fieldObjects), JsonUtil.Blank);
+        roomData[objectName] = data;
+        node[nameof(fieldObjects)] = roomData;
+      }
     }
     
     #endregion

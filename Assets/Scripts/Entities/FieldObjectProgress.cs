@@ -46,6 +46,11 @@ namespace ToB.Entities
       
     }
 
+    protected void UpdateData()
+    {
+      
+    }
+
     /// <summary>
     /// 오브젝트를 저장할 떄 호출합니다.
     /// </summary>
