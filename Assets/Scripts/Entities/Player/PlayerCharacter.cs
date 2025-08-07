@@ -30,6 +30,7 @@ namespace ToB.Player
     private static readonly int INT_DASH_STATE = Animator.StringToHash("DashState");
     private static readonly int TRIGGER_ATTACK = Animator.StringToHash("Attack");
     private static readonly int INT_ATTACK_MOTION = Animator.StringToHash("AttackMotion");
+    private static readonly int BOOL_DEATH = Animator.StringToHash("Death");
 
     protected enum PlayerAnimationState
     {
@@ -211,6 +212,7 @@ namespace ToB.Player
       Load();
       InitDash();
       InitAttack();
+      stat.onDeath.AddListener(() => animator.SetBool(BOOL_DEATH, true));
 
       if (groundChecker)
         groundChecker.onLanding.AddListener(() =>
