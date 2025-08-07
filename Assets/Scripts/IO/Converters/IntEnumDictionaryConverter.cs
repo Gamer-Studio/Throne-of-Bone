@@ -13,6 +13,7 @@ namespace ToB.IO.Converters
 
       foreach (var (key, value) in dictionary)
       {
+        // data[key.ToString()] = Convert.ToInt32(value);
         data[key.ToString()] = value.ToString();
       }
       
