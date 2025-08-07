@@ -28,8 +28,9 @@ namespace ToB.Memories
                     Debug.LogError("CSV 파일과 Memories Database SO를 지정해 주세요.");
                     return;
                 }
+                
+                ImportCSV(csvFile, memoriesDataBase);
             }
-            ImportCSV(csvFile, memoriesDataBase);
         }
         
         private List<string> ParseCsvLine(string line)
@@ -47,7 +48,7 @@ namespace ToB.Memories
 
         private void ImportCSV(TextAsset csv, MemoriesDataSO database)
         {
-            if (database !=null) database.memoriesDataBase.Clear();
+            database.memoriesDataBase.Clear();
             
             string[] lines = csv.text.Split('\n');
 
@@ -57,9 +58,9 @@ namespace ToB.Memories
                 if (string.IsNullOrEmpty(line)) continue;
 
                 var tokens = ParseCsvLine(line);
-                if (tokens.Count < 12) continue;
+                if (tokens.Count < 4) continue;
 
-                Memories memories = new Memories
+                Memories memory = new Memories
                 {
                     id = int.Parse(tokens[0]),
                     name = tokens[1],
@@ -68,7 +69,7 @@ namespace ToB.Memories
                     //relatedIcon = Addressables.LoadAssetAsync<Sprite>($"MemoriesImages/{memories.relatedIconFileName}")
                 };
                 
-                database.memoriesDataBase.Add(memories);
+                database.memoriesDataBase.Add(memory);
             }
             
             EditorUtility.SetDirty(database);
