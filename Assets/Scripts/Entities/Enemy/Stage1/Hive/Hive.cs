@@ -26,16 +26,18 @@ namespace ToB
             
             if(!DataSO) Debug.LogError("HiveSO가 없습니다");
             
-            flies = new List<GameObject>();
+            
             
             PatrolRange.Init(DataSO.PatrolRange);
             ChaseRange.Init(DataSO.ChaseRange);
-            RangeBaseSightSensor.Init(this);
         }
 
         protected override void OnEnable()
         {
             base.OnEnable();
+            flies = new List<GameObject>();
+            RangeBaseSightSensor.Init(this);
+            
             stat.Init(this, DataSO);
         }
 
@@ -89,12 +91,12 @@ namespace ToB
         {
             return (fly.transform.position - PatrolRange.transform.position).sqrMagnitude < Mathf.Pow(DataSO.PatrolRange, 2);
         }
-        private void OnDestroy()
-        {
-            foreach (var fly in flies)
-            {
-                if (fly) fly.Release();
-            }
-        }
+        // private void OnDestroy()
+        // {
+        //     foreach (var fly in flies)
+        //     {
+        //         if (fly) fly.Release();
+        //     }
+        // }
     }
 }

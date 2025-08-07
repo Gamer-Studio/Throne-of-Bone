@@ -58,7 +58,7 @@ namespace ToB.Scenes.Stage
     [Foldout(Binding)] public RoomController roomController;
     [Foldout(Binding), SerializeField] private CinemachineConfiner2D confiner;
     [Foldout(Binding), SerializeField] private Transform roomContainer;
-    [Foldout(Binding), SerializeField] private new Camera camera;
+    [Foldout(Binding), SerializeField] private Camera mainCamera;
 
     #endregion
 
@@ -124,6 +124,9 @@ namespace ToB.Scenes.Stage
       TOBInputManager.Instance.player = FindAnyObjectByType<PlayerController>();
       if (!TOBInputManager.Instance.player)
         DebugSymbol.Editor.Log("플레이어가 씬에 없습니다.");
+      
+      UIManager.Instance?.gamePlayUI.InitGages();
+      UIManager.Instance?.InitsAfterStageAwake();
       // InputManager.Instance.SetActionMap(InputActionMaps.Player);
     }
 

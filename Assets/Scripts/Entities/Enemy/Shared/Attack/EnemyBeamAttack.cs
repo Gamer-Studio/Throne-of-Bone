@@ -59,7 +59,7 @@ namespace ToB.Entities
         {
             foreach (var obj in objects)
             {
-                obj.Damage(endDamage);
+                obj.Damage(endDamage, this);
                 obj.KnockBack(8, new  Vector2(obj.transform.eulerAngles.y == 0 ? 1 : -1, 0));
             }
         }

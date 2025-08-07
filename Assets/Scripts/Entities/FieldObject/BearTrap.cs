@@ -42,7 +42,7 @@ namespace ToB.Entities.FieldObject
             {
                 if (state != State.Opened) return;
                 
-                other.Damage(damage, (IAttacker)this);
+                other.Damage(damage, this);
                 other.KnockBack(knockBackPower, new Vector2(other.transform.eulerAngles.y == 0 ? 1 : -1, 1));
                 animator.SetTrigger(ObstacleAnimationString.Activate);
                 audioPlayer.Play("env_trap_activate_01");
@@ -55,7 +55,7 @@ namespace ToB.Entities.FieldObject
         {
             yield return new WaitForSeconds(resetDuration);
             state = State.Opened;
-            animator.SetTrigger(ObstacleAnimationString.Reset);
+            //animator.SetTrigger(ObstacleAnimationString.Reset);
             
         }
 

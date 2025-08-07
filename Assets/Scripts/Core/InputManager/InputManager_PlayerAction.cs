@@ -1,3 +1,4 @@
+using System;
 using ToB.Player;
 using ToB.Scenes.Stage;
 using ToB.Utils.Singletons;
@@ -9,6 +10,7 @@ namespace ToB.Core.InputManager
     
     public partial class TOBInputManager
     {
+        public event Action anyInteractionKeyAction;
         public void PlayerMove(InputAction.CallbackContext context)
         {
             if (!CanMove()) return;
@@ -48,6 +50,11 @@ namespace ToB.Core.InputManager
 
         public void PlayerInteract(InputAction.CallbackContext context)
         {
+            if (context.performed)
+            {
+                anyInteractionKeyAction?.Invoke();
+            }
+            
             if (!StageManager.Instance) return;
             if (StageManager.Instance.CurrentState == GameState.UI || StageManager.Instance.CurrentState == GameState.Dialog)
             {
@@ -62,8 +69,6 @@ namespace ToB.Core.InputManager
             
             if(context.performed)
                 player?.Interact();
-            
-            
         }
 
         public void PlayerBlock(InputAction.CallbackContext context)

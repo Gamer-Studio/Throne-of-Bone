@@ -16,12 +16,12 @@ namespace ToB.UI
         
         private void Awake()
         {
-            SceneManager.sceneLoaded += OnSceneLoaded;
+            //SceneManager.sceneLoaded += OnSceneLoaded;
         }
 
         private void OnDestroy()
         {
-            SceneManager.sceneLoaded -= OnSceneLoaded;
+            //SceneManager.sceneLoaded -= OnSceneLoaded;
         }
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -41,8 +41,11 @@ namespace ToB.UI
             }
         }
 
-        private void Init()
+        public void Init()
         {
+            gameObject.SetActive(true);
+            
+            player = PlayerCharacter.Instance;
             UpdateMaxCount(BattleSkillManager.Instance.BSStats.RangeAtkStack);
             player.OnRangedAttackStackChange.AddListener(UpdateCounter);
             BattleSkillManager.Instance.onRangeAtkStackChanged.AddListener(UpdateMaxCount);
@@ -62,7 +65,7 @@ namespace ToB.UI
                 // 일단 SetActive를 true한 다음
                 images[i].gameObject.SetActive(true);
                 if (i < value)
-                    images[i].color = new Color(0.8f, 0, 1, 1);
+                    images[i].color = new Color(0f, 0.6f, 1, 1);
                 else if (i < maxRangeAttackCount)
                     images[i].color = new Color(1, 1, 1, 0.5f);
                 else

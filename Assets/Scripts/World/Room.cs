@@ -23,11 +23,12 @@ namespace ToB.Worlds
     
     [Label("스테이지 인덱스"), Foldout(State)] public int stageIndex;
     [Label("방 인덱스"), Foldout(State)] public int roomIndex;
-    [Label("데이터 모듈"), Foldout(State), SerializeField] private SAVEModule saveModule = null;
+    [Label("데이터 모듈"), Foldout(State), SerializeField] public SAVEModule saveModule = null;
     [Label("일반 적 소환 정보"), Foldout(State)] public SerializableDictionary<Transform, AssetReference> normalEnemyTable = new();
     [Label("오브젝트"), Foldout(State)] public SerializableDictionary<string, FieldObjectProgress> fieldObjects = new();
     [Label("모닥불 목록"), Foldout(State)] public List<Bonfire> bonfires = new();
     [Label("인스턴스된 적"), Foldout(State), SerializeField, ReadOnly] private SerializableDictionary<Transform, Enemy> enemies = new();
+    List<Enemy> enemiesList = new();
     
     #endregion
     
@@ -166,12 +167,12 @@ namespace ToB.Worlds
 
     private void OnEnable()
     {
-      StageManager.Instance?.AddCameraCollision(Background.backgroundCollider);
+      StageManager.Instance?.AddCameraCollision(Background.CameraCollider);
     }
 
     private void OnDisable()
     {
-      StageManager.Instance?.RemoveCameraCollision(Background.backgroundCollider);
+      StageManager.Instance?.RemoveCameraCollision(Background.CameraCollider);
     }
 
     private void OnDestroy()
@@ -221,6 +222,19 @@ namespace ToB.Worlds
         saveModule = SAVE.Current.Node("Stage", true).Node($"Room_{stageIndex}_{roomIndex}", true);
 
         LoadJson(saveModule);
+        
+        foreach (var pair in normalEnemyTable)
+        {
+          if(pair.Key == null || pair.Value == null || (enemies.ContainsKey(pair.Key) && enemies[pair.Key].IsAlive)) continue;
+        
+          var enemy = (Enemy)pair.Value.Pooling();
+        
+          enemy.transform.SetParent(entityContainer);
+          enemy.transform.position = pair.Key.position;
+          
+          enemies[pair.Key] = enemy;
+          enemiesList.Add(enemy);
+        }
       }
 
       onLoad?.Invoke();
@@ -232,10 +246,16 @@ namespace ToB.Worlds
     /// </summary>
     public virtual void Unload()
     {
-      foreach (var pair in enemies)
+      // foreach (var pair in enemies)
+      // {
+      //   if(pair.Value)
+      //     pair.Value.Release();
+      // }
+
+      foreach (var enemy in enemiesList)
       {
-        if(pair.Value)
-          pair.Value.Release();
+        //Debug.Log(enemy.GetType().Name + " is trying to Release");
+        enemy.Release();
       }
       
       enemies.Clear();
@@ -251,18 +271,6 @@ namespace ToB.Worlds
     /// </summary>
     protected virtual void Enter()
     {
-      foreach (var pair in normalEnemyTable)
-      {
-        if(pair.Key == null || pair.Value == null || (enemies.ContainsKey(pair.Key) && enemies[pair.Key].IsAlive)) continue;
-        
-        var enemy = (Enemy)pair.Value.Pooling();
-        
-        enemy.transform.SetParent(entityContainer);
-        enemy.transform.position = pair.Key.position;
-        
-        enemies[pair.Key] = enemy;
-      }
-      
       foreach (var obj in fieldObjects)
         obj.Value.OnLoad();
 
@@ -276,16 +284,14 @@ namespace ToB.Worlds
     /// </summary>
     protected virtual void Exit()
     {
-      DebugSymbol.Save.Log($"Exit room {stageIndex} / {roomIndex}");
-      
-      foreach (var pair in enemies)
-      {
-        if (!pair.Value.IsAlive)
-        {
-          pair.Value.Release();
-          enemies.Remove(pair.Key);
-        }
-      }
+      // foreach (var pair in enemies)
+      // {
+      //   if (!pair.Value.IsAlive)
+      //   {
+      //     pair.Value.Release();
+      //     enemies.Remove(pair.Key);
+      //   }
+      // }
 
       foreach (var obj in fieldObjects)
         obj.Value.OnUnLoad();

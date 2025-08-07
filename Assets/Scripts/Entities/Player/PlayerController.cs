@@ -7,16 +7,17 @@ using ToB.Entities;
 using ToB.Utils;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Serialization;
 
 namespace ToB.Player
 {
   public class PlayerController : MonoBehaviour
   {
-    [Label("활성화된 메인 카메라"), SerializeField, ReadOnly] private new Camera camera;
+    [Label("활성화된 메인 카메라"), SerializeField, ReadOnly] private Camera mainCamera;
     [Label("시네머신 카메라"), SerializeField] protected CinemachineVirtualCamera vCam;
     [Label("플레이어 캐릭터"), SerializeField] protected PlayerCharacter character;
-
     [Label("시선 처리 시간"), SerializeField] private float stareTime;
+    [Label("방어 개선"), SerializeField] private bool guardImprove = true;
     
     private bool isMeleeAttacking = false;
     private bool isRangedAttacking = false;
@@ -39,14 +40,14 @@ namespace ToB.Player
 
     private void Awake()
     {
-      camera = Camera.main;
+      mainCamera = Camera.main;
       if (!vCam) vCam = FindAnyObjectByType<CinemachineVirtualCamera>();
       if (!character) character = PlayerCharacter.Instance;
     }
 
     private void FixedUpdate()
     {
-      var cursorPos = camera.ScreenToWorldPoint(Input.mousePosition).Z(0);
+      var cursorPos = mainCamera.ScreenToWorldPoint(Input.mousePosition).Z(0);
       var characterPos = character.transform.position;
       var angle = (cursorPos - characterPos).normalized;
 
@@ -155,7 +156,7 @@ namespace ToB.Player
     public void Jump(InputAction.CallbackContext context)
     {
       if (context.performed) character.Jump();
-      else if (context.canceled) character.CancelJump();
+      if (context.canceled) character.CancelJump();
     }
 
     /// <summary>
@@ -179,7 +180,7 @@ namespace ToB.Player
         return;
       }
       
-      var cursorPos = camera.ScreenToWorldPoint(Input.mousePosition).Z(0);
+      var cursorPos = mainCamera.ScreenToWorldPoint(Input.mousePosition).Z(0);
       var characterPos = character.transform.position.Y(v => v);
       var direction = (cursorPos - characterPos).normalized;
       
@@ -214,8 +215,11 @@ namespace ToB.Player
 
     public void Block(InputAction.CallbackContext context)
     {
-      if (context.performed) character.StartBlock();
-      else if (context.canceled) character.CancelBlock();
+      if (context.performed)
+      {
+        if(!character.IsBlocking) character.StartBlock();
+      }
+      else if (context.canceled && !guardImprove) character.CancelBlock();
     }
     
     #endregion

@@ -15,6 +15,7 @@ namespace ToB.World
     #region State
 
     [Label("현재 플레이어가 있는 방")] public Room currentRoom;
+    public List<Room> enteredRooms = new();
     [Label("로딩된 방 목록")] public SerializableDictionary<string, Room> loadedRooms = new();
     
     #endregion
@@ -31,6 +32,7 @@ namespace ToB.World
     private void Awake()
     {
       StageManager.Instance.onRoomEnter.AddListener(LoadLinkedRoom);
+      StageManager.Instance.onRoomExit.AddListener(OnRoomExit);
     }
     
     #endregion
@@ -55,14 +57,31 @@ namespace ToB.World
       return room;
     }
 
+    private void OnRoomExit(Room room)
+    {
+      enteredRooms.Remove(room);
+    }
+
     private void LoadLinkedRoom(Room room)
     {
+      if(!enteredRooms.Contains(room))
+        enteredRooms.Add(room);
+      
       foreach (var link in room.links)
       {
         if (!link.IsLoaded) link.LoadRoom(room);
       }
 
-      var currentLinkedRooms = room.GetLinkedRooms(true);
+      List<Room> currentLinkedRooms = new();
+
+      foreach (var enteredRoom in enteredRooms)
+      {
+        foreach (var target in enteredRoom.GetLinkedRooms(true))
+        {
+          if(!currentLinkedRooms.Contains(target)) currentLinkedRooms.Add(target);
+        }
+      }
+      
       var removes = new List<string>();
 
       foreach (var pair in loadedRooms)

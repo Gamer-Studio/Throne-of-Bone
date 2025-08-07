@@ -4,6 +4,7 @@ using ToB.Entities.Buffs;
 using ToB.Entities.Projectiles;
 using ToB.Player;
 using ToB.Utils;
+using ToB.Worlds;
 using UnityEngine;
 
 namespace ToB.Entities
@@ -35,6 +36,8 @@ namespace ToB.Entities
                 SimpleRotate = GetComponent<SimpleRotate>();
             if(!audioPlayer)
                 audioPlayer = gameObject.AddComponent<ObjectAudioPlayer>();
+
+            Team = Team.Enemy;
         }
 
         private void Start()
@@ -65,10 +68,10 @@ namespace ToB.Entities
             
         }
 
-        private void OnTriggerEnter2D(Collider2D other)
+        protected override void OnTriggerEnter2D(Collider2D other)
         {
             // 중독 가능한 개체들
-            if ((targetLayers & 1 << other.gameObject.layer) != 0)
+            if (targetLayers.Contains(other))
             {
                 other.GetComponent<PlayerCharacter>().Damage(baseDamage, this);
                 audioPlayer.Play("Bite_03");
@@ -79,7 +82,7 @@ namespace ToB.Entities
                 HandleCollide();
             }
             
-            if ((terrainLayers & 1 << other.gameObject.layer) != 0)
+            if (terrainLayers.Contains(other))
             {
                 HandleCollide();
             }

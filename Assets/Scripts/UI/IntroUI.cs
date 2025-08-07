@@ -1,6 +1,8 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using DG.Tweening;
 using NaughtyAttributes;
 using TMPro;
 using ToB.Core;
@@ -20,6 +22,9 @@ namespace ToB.UI
         [SerializeField] public GameObject SaveSlotPanel;
         [SerializeField] public GameObject SettingPanel;
         
+        
+        [SerializeField] public CanvasGroup introUIGroup;
+        
         [Header("Setting Panel")]
         
         [Header("Save Slot Panel")]
@@ -30,7 +35,21 @@ namespace ToB.UI
         [Label("로딩된 세이브파일 목록"), Foldout("Save Slot Panel"), SerializeField] private SAVE[] saves;
         [Label("선택된 세이브파일"), Foldout("Save Slot Panel"), SerializeField] private SAVE selectedSave;
 
-        
+        void OnEnable()
+        {
+            MainPanel.SetActive(true);
+            SaveSlotPanel.SetActive(false);
+            SettingPanel.SetActive(false);
+            
+            StartCoroutine(FadeCoroutine());
+        }
+
+        IEnumerator FadeCoroutine()
+        {
+            introUIGroup.alpha = 0;
+            yield return null;
+            introUIGroup.DOFade(1, 1f);
+        }
 
         private async Task SaveSlotsInit()
         {
@@ -158,7 +177,8 @@ namespace ToB.UI
         public void LoadGame()
         {
             CloseAllPanels();
-            SceneManager.LoadScene(stageSceneName);
+            if (SAVE.Current.isFirstEnter) SceneManager.LoadScene(Defines.StageIntroScene);
+            else SceneManager.LoadScene(stageSceneName);
             Debug.Log("테스트 신 시작");       
         }
       
@@ -235,7 +255,7 @@ namespace ToB.UI
 
         public override void Process(InputAction.CallbackContext context)
         {
-            throw new NotImplementedException();
+            
         }
 
         public override void Cancel(InputAction.CallbackContext context)

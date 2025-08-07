@@ -12,11 +12,10 @@ namespace ToB.Entities.Projectiles
     public class Rock :Projectile
     { 
       //[ReadOnly] private new Camera camera;
-      [Label("피해량")] public float damage;
       [Label("속도")] public float speed;
       [Label("넉백 세기")] public float knockBackForce;
       
-      public LayerMask hitLayers;
+      public LayerMask rockHitLayers;
       
       [SerializeField] private TrailRenderer trail;
       [SerializeField] private ParticleSystem ps;
@@ -59,9 +58,9 @@ namespace ToB.Entities.Projectiles
     
          #endif
     
-       private void OnTriggerEnter2D(Collider2D other)
+       protected override void OnTriggerEnter2D(Collider2D other)
         {
-          if ((hitLayers & 1 << other.gameObject.layer) == 0) return;
+          if ((rockHitLayers & 1 << other.gameObject.layer) == 0) return;
           if (IsContacted) return;
           
           Debug.Log("충돌 시퀀스 실행");
@@ -121,7 +120,7 @@ namespace ToB.Entities.Projectiles
           Vector2 posDiff = otherCenter - (Vector2)transform.position;
           Vector2 posDiffDir = posDiff.normalized;
           
-          RaycastHit2D hit = Physics2D.Raycast(transform.position, posDiffDir, posDiff.magnitude, hitLayers);
+          RaycastHit2D hit = Physics2D.Raycast(transform.position, posDiffDir, posDiff.magnitude, rockHitLayers);
           
           GameObject attackEffect = hitEffectPrefab.Pooling();
           attackEffect.transform.position = hit.point;

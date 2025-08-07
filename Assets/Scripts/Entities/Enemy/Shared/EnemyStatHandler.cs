@@ -6,6 +6,7 @@ using ToB.Entities.Projectiles;
 using ToB.Entities.Skills;
 using ToB.Player;
 using ToB.Scenes.Stage;
+using ToB.Worlds;
 using UnityEngine;
 
 namespace ToB.Entities
@@ -63,6 +64,8 @@ namespace ToB.Entities
 
         public void Damage(float damage, IAttacker sender = null)
         {
+            if (sender != null && sender.Team == Team.Enemy) return;
+            
             float actualDamage = damage * (100 - DEF) / 100;
             ChangeHP(-actualDamage);
             enemy.OnTakeDamage(sender);

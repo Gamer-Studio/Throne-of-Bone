@@ -7,6 +7,9 @@ namespace ToB.Core
     public const string IntroScene = "Intro";
     public const string MainMenuScene = "MainMenu";
     public const string StageScene = "Stage";
+    public const string StageManageScene = "Stage_Manage";
+    public const string StageIntroScene = "StageIntro";
+    
     public const string MonsterTestScene = "Stage 2_0727Copy";
     
     

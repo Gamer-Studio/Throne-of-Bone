@@ -45,6 +45,7 @@ namespace ToB.Entities
             Tween tween = enemy.transform.DOShakePosition(1, new Vector3(0.5f, 0.5f, 0), 20, 90);
             yield return tween.WaitForCompletion();
 
+            sewerRat.Hitbox.enabled = false;
             tween = enemy.transform.DOMoveY(enemy.transform.position.y - 5, 0.7f);
             yield return tween.WaitForCompletion();
             enemy.audioPlayer.Stop("Movement_Earth_Loop_01");
@@ -70,6 +71,7 @@ namespace ToB.Entities
             ratStrategy.GroundRubble.gameObject.SetActive(true);
             ratStrategy.GroundRubble.Play();
             
+            sewerRat.Hitbox.enabled = true;
             enemy.Physics.velocityY = sewerRat.DataSO.AscendPower;
             enemy.Physics.gravityEnabled = true;
             ratStrategy.LookPlayer();

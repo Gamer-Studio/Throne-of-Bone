@@ -1,9 +1,14 @@
+using System;
+using System.Collections;
 using System.Linq;
+using Cysharp.Threading.Tasks;
+using DG.Tweening;
 using TMPro;
 using ToB.Core;
 using ToB.Entities.Buffs;
 using UnityEngine;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using UnityEngine.SceneManagement;
 
 namespace ToB.Scenes.Intro
 {
@@ -13,8 +18,10 @@ namespace ToB.Scenes.Intro
     public static bool isLoaded { get; private set; } = false;
     
     [SerializeField] private TMP_Text loadingText;
+    Tween loadingTween;
+    private bool loadStageIsNew;
 
-    private void LoadContent()
+    private async UniTask LoadContent()
     {
       if(isLoaded) return;
       
@@ -43,19 +50,43 @@ namespace ToB.Scenes.Intro
         };
       }
 
-      foreach (var operation in loaderList)
-      {
-        operation.loader.WaitForCompletion();
-      }
+      await WaitForLoadAll(loaderList);
       
       isLoaded = true;
     }
-    
-    private void Start()
-    {
-      LoadContent();
 
-      //SceneManager.LoadScene(Defines.MainMenuScene);
+    private async UniTask WaitForLoadAll( (string name, AsyncOperationHandle loader)[] loaderList)
+    {
+      foreach (var operation in loaderList)
+      {
+        await operation.loader.ToUniTask();
+      }
+    } 
+    IEnumerator Start()
+    {
+
+      loadingText.alpha = 0;
+
+      yield return null;
+      loadingTween = loadingText.DOFade(1, 0.5f).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.InOutQuad);
+      yield return LoadContent().ToCoroutine();
+    }
+
+    private void Update()
+    {
+      if (isLoaded) 
+      {
+        StartCoroutine(LoadSceneAfterTween());
+      }
+    }
+
+    IEnumerator LoadSceneAfterTween()
+    {
+      loadingTween.Kill();
+      loadingTween = loadingText.DOFade(0, 0.5f);
+      yield return new WaitForSeconds(0.5f);
+      loadingTween.Kill();
+      SceneManager.LoadScene(Defines.MainMenuScene);
     }
     
   }
