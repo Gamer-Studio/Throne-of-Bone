@@ -291,10 +291,5 @@ namespace ToB.Player
       }
     }
     #endregion
-
-    public void StopMove()
-    {
-      character.IsMoving = false;
-    }
   }
 }
