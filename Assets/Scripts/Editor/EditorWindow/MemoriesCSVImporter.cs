@@ -45,7 +45,7 @@ public class MemoriesCSVImporter : EditorWindow
 
   private void ImportCSV(TextAsset csv, MemoriesDataSO database)
   {
-    database.memoriesDataBase.Clear();
+    if (database != null) database.memoriesDataBase.Clear();
 
     var lines = csv.text.Split('\n');
 
