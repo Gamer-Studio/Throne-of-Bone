@@ -20,7 +20,7 @@ namespace ToB.Editor
             return false;
         }
         
-        [MenuItem("Assets/Tag SemiPlatforms")]
+        [MenuItem(SemiPlatformTagChangerPath)]
         private static void TagSemiPlatforms()
         {
             int modifiedCount = 0;
@@ -36,11 +36,14 @@ namespace ToB.Editor
 
                 foreach (Transform t in instance.GetComponentsInChildren<Transform>(true))
                 {
-                    if (t.TryGetComponent<PlatformEffector2D>(out _) &&
-                        t.gameObject.tag != "SemiPlatform")
+                    if (t.TryGetComponent<PlatformEffector2D>(out var effector) &&
+                        !t.gameObject.CompareTag("SemiPlatform"))
                     {
-                        t.gameObject.tag = "SemiPlatform";
-                        modified = true;
+                        if (effector.useOneWay)
+                        {
+                            t.gameObject.tag = "SemiPlatform";
+                            modified = true;
+                        }
                     }
                 }
 
