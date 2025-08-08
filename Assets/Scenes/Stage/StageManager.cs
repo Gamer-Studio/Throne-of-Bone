@@ -8,6 +8,7 @@ using ToB.Entities.FieldObject;
 using ToB.Entities.NPC;
 using ToB.IO;
 using ToB.IO.SubModules;
+using ToB.IO.SubModules.SavePoint;
 using ToB.Player;
 using ToB.UI;
 using ToB.Utils;
@@ -107,10 +108,7 @@ namespace ToB.Scenes.Stage
       if (!savedInfo.Equals(SavePointData.Default))
       {
         // 저장기록이 있을 경우 마지막 저장지점에서 소환
-        int stageIndex = savedInfo.stageIndex, roomIndex = savedInfo.roomIndex;
-        var room = RoomController.LoadRoom(stageIndex, roomIndex, true);
-        var bonfire = room.bonfires[savedInfo.pointIndex];
-        player.transform.position = bonfire.TPTransform.position;
+        savedInfo.Teleport();
       }
       else
       {
