@@ -5,6 +5,7 @@ using Cysharp.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using ToB.Core;
 using ToB.IO.SubModules;
+using ToB.IO.SubModules.SavePoint;
 using ToB.Player;
 using ToB.Utils;
 using UnityEngine;
@@ -42,6 +43,7 @@ namespace ToB.IO
     public event Action OnSave;
     
     [field: SerializeField] public SAVEModule Data { get; private set; }
+    [field: SerializeField] public bool IsLoaded { get; private set; } = false;
     
     #region MetaData
     
@@ -204,6 +206,7 @@ namespace ToB.IO
       }
         
       Current = this;
+      IsLoaded = true;
       
       OnCurrentLoad.Invoke(this);
     }
