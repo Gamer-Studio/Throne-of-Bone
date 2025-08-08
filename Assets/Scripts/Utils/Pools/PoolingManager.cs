@@ -78,8 +78,10 @@ namespace ToB.Utils
       {
         // release
         obj.gameObject.SetActive(false);
-        obj.transform.SetParent(container.transform);
+        if (container)
+          obj.transform.SetParent(container.transform);
         obj.pool = null;
+
       }, Destroy);
 
       pools.Add(key, result);
