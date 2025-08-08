@@ -19,7 +19,7 @@ namespace ToB.Editor.Unique
 
                 if (GUILayout.Button("▶ Appear 연출 실행"))
                 {
-                    grimoire.OnAppear();
+                    grimoire.Appear();
                 }
 
                 if (GUILayout.Button("⏹ Disappear 연출 실행"))
