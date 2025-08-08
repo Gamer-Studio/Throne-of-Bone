@@ -46,8 +46,6 @@ namespace ToB.IO.Converters
         
         // int 값 → Enum 변환
         result[id] = Enum.IsDefined(typeof(V), valueInt) ? (V) Enum.ToObject(typeof(V), valueInt) : default;
-        
-        Debug.Log($"load {id} : {result[id]}");
       }
 
       return result;
