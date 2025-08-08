@@ -429,6 +429,7 @@ namespace ToB.Player
     private IEnumerator JumpCoroutine(float power)
     {
       animator.SetTrigger(TRIGGER_JUMP);
+      audioPlayer.Play("Jump_woosh");
 
       if (isClimbing)
       {

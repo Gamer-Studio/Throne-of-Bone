@@ -192,7 +192,7 @@ namespace ToB.Player
       else if (freezeBlockable && value >= 100)
       {
         freezeBlockable = false;
-        audioPlayer.Play("fntgm_magic_shield_04");
+        audioPlayer.Play("fntgm_magic_shield_05");
       }
     }
 

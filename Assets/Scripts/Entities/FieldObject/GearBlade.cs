@@ -1,5 +1,6 @@
 using System.Collections;
 using ToB.Entities.Interface;
+using ToB.Utils;
 using ToB.Worlds;
 using UnityEngine;
 
@@ -24,11 +25,13 @@ namespace ToB.Entities.FieldObject
         [SerializeField] public float safeTime;
         private bool isActivated;
         private Coroutine C_SpinningTimer;
+        [SerializeField] private ObjectAudioPlayer audioPlayer;
 
         private void OnEnable()
         {
             if (!animator) animator = GetComponent<Animator>();
-            GearBladeModeToggle(bladeMode);
+            if (audioPlayer == null) audioPlayer = GetComponentInParent<ObjectAudioPlayer>();
+            audioPlayer.StopAll();
         }
 
         private void SpinningCoroutine()
@@ -48,10 +51,12 @@ namespace ToB.Entities.FieldObject
             {
                 isActivated = true;
                 animator.SetBool(IsActivated, true);
+                audioPlayer.Play("Saw_Trap");
                 yield return new WaitForSeconds(activeTime);
 
                 isActivated = false;
                 animator.SetBool(IsActivated, false);
+                audioPlayer.Stop("Saw_Trap");
                 yield return new WaitForSeconds(safeTime);
             }
 
@@ -68,12 +73,14 @@ namespace ToB.Entities.FieldObject
         public void GearBladeModeToggle(BladeMode _bladeMode)
         {
             bladeMode = _bladeMode;
+            audioPlayer.StopAll();
 
             if (_bladeMode == BladeMode.Always)
             {
                 if (C_SpinningTimer != null) StopCoroutine(C_SpinningTimer);
                 C_SpinningTimer = null;
                 isActivated = true;
+                audioPlayer.Play("Saw_Trap", true);
                 animator.SetBool(IsActivated, true);
             }
             else if (_bladeMode == BladeMode.Timed)
@@ -91,6 +98,10 @@ namespace ToB.Entities.FieldObject
 
         }
 
+        public override void OnLoad()
+        {
+            GearBladeModeToggle(bladeMode);
+        }
         private void OnTriggerEnter2D(Collider2D other)
         {
             if (other.gameObject.CompareTag("Player") && isActivated)

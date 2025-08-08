@@ -21,11 +21,13 @@ namespace ToB.Entities.FieldObject
         public bool IsActivated;
         private Coroutine shootingCo;
         private Tween vibrateTween;
+        private ObjectAudioPlayer audioPlayer;
         public override void OnLoad()
         {
             TrapSprite.SetActive(true);
             IsActivated = false;
             IsDetected = false;
+            if (audioPlayer == null) audioPlayer = GetComponent<ObjectAudioPlayer>();
         }
         
         private void Update()
@@ -43,12 +45,13 @@ namespace ToB.Entities.FieldObject
             FallingWarning();
             yield return new WaitForSeconds(FallDelayTime);
             var eff = RockPrefab.Pooling().GetComponent<Rock>();
+            audioPlayer.Play("Rock_Trap");
             eff.transform.position = SpawnPos.position;
             eff.Direction = Vector2.down;
             eff.damage = RockDamage;
             eff.knockBackForce = RockKnockBack;
             eff.speed = RockSpeedMultiplier;
-            eff.Team = Team.None;
+            eff.Team = Team.Enemy;
             
             eff.ClearEffect();
             

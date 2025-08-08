@@ -92,7 +92,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   popUpBlade: {fileID: 323123105246794282}
---- !u!1 &3335033002716890929
+--- !u!1 &3064884209817520108
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -100,7 +100,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1069237975726934810}
+  - component: {fileID: 1958859674082178697}
   m_Layer: 0
   m_Name: Audio Sources
   m_TagString: Untagged
@@ -108,20 +108,20 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &1069237975726934810
+--- !u!4 &1958859674082178697
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3335033002716890929}
+  m_GameObject: {fileID: 3064884209817520108}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.05, z: 0}
-  m_LocalScale: {x: 0.125, y: 0.125, z: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 6812208511503497810}
+  m_Father: {fileID: 909554331818503044}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4366524683818364360
 GameObject:
@@ -136,7 +136,6 @@ GameObject:
   - component: {fileID: 212063132005875757}
   - component: {fileID: 6826590340404549569}
   - component: {fileID: 7144951914765969416}
-  - component: {fileID: 555364624437720098}
   m_Layer: 0
   m_Name: Sprite_1
   m_TagString: Untagged
@@ -156,8 +155,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0.4, z: 0}
   m_LocalScale: {x: 8, y: 8, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1069237975726934810}
+  m_Children: []
   m_Father: {fileID: 909554331818503044}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &323123105246794282
@@ -179,6 +177,7 @@ MonoBehaviour:
   safeTime: 3
   knockBackPower: 10
   damage: 20
+  audioPlayer: {fileID: 6950757626088679992}
   <Blockable>k__BackingField: 0
   <Effectable>k__BackingField: 1
 --- !u!95 &212063132005875757
@@ -313,20 +312,6 @@ PolygonCollider2D:
       - {x: 0.03, y: 0.13499999}
       - {x: 0.03, y: 0.16499999}
   m_UseDelaunayMesh: 0
---- !u!114 &555364624437720098
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4366524683818364360}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 383646569fb04c2babfa49d0b40ea4bf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sourcePool: []
-  audioSourceParent: {fileID: 1069237975726934810}
 --- !u!1 &4958291124137089625
 GameObject:
   m_ObjectHideFlags: 0
@@ -336,6 +321,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 909554331818503044}
+  - component: {fileID: 6950757626088679992}
   m_Layer: 0
   m_Name: PopUpBlade
   m_TagString: Untagged
@@ -359,8 +345,23 @@ Transform:
   - {fileID: 6812208511503497810}
   - {fileID: 6310369243305497270}
   - {fileID: 6119858151707853184}
+  - {fileID: 1958859674082178697}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6950757626088679992
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4958291124137089625}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 383646569fb04c2babfa49d0b40ea4bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sourcePool: []
+  audioSourceParent: {fileID: 1958859674082178697}
 --- !u!1 &6768783189624435431
 GameObject:
   m_ObjectHideFlags: 0

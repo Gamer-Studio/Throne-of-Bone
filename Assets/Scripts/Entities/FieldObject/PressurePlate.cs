@@ -1,5 +1,6 @@
 using Newtonsoft.Json.Linq;
 using ToB.IO;
+using ToB.Utils;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -27,6 +28,7 @@ namespace ToB.Entities.FieldObject
         // 상자가 여러 개 눌린다거나 깊게 눌린다거나 하는 게 없으니 콜라이더 기반 충돌로 해결.
         private float initialWidth;
         private int objectCount;
+        private ObjectAudioPlayer audioPlayer;
         [SerializeField] public UnityEvent<bool> onPlateActivated;
 
         /// <summary>
@@ -46,8 +48,9 @@ namespace ToB.Entities.FieldObject
             if (!IsCleared &&(other.CompareTag("Player") || other.CompareTag("Box")))
             {
                 objectCount++;
+                bool temp = IsActivated;
                 IsActivated = objectCount > 0;
-                // 소리 여기서 재생 if(IsActivated) Play~
+                if (temp != IsActivated) audioPlayer.Play("Pressure_button");
                 SetPlateSprite(plateType, IsActivated);
             }
         }
@@ -57,8 +60,9 @@ namespace ToB.Entities.FieldObject
             if (!IsCleared &&(other.CompareTag("Player") || other.CompareTag("Box")))
             {
                 objectCount--;
+                bool temp = IsActivated;
                 IsActivated = objectCount > 0;
-                // 소리 여기서 재생 if(!IsActivated) Play~
+                if (temp != IsActivated) audioPlayer.Play("Pressure_button");
                 SetPlateSprite(plateType, IsActivated);
                 
             }
@@ -113,6 +117,7 @@ namespace ToB.Entities.FieldObject
                 initialWidth = boxCollider.size.x;
                 SetColliderWidth(DetectionWidth);
                 SetPlateSprite(plateType, IsCleared);
+                if (audioPlayer == null) audioPlayer = GetComponent<ObjectAudioPlayer>();
             }
             else Clear();
         }

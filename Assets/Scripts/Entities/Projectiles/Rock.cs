@@ -33,7 +33,7 @@ namespace ToB.Entities.Projectiles
       private Color originalColor;
 
       private float innerTimer;
-      private float groundCollisionIgnoreTime = 1f;
+      private float groundCollisionIgnoreTime = 0.5f;
       public override bool Blockable => false;
       public Vector2 Direction
         {

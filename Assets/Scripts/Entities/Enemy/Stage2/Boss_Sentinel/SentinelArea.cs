@@ -2,10 +2,12 @@ using System;
 using System.Collections;
 using DG.Tweening;
 using TMPro;
+using ToB.Core;
 using ToB.Scenes.Stage;
 using ToB.Utils;
 using UnityEngine;
 using UnityEngine.UI;
+using AudioType = ToB.Core.AudioType;
 
 namespace ToB.Entities
 {
@@ -65,6 +67,8 @@ namespace ToB.Entities
         {
             yield return new WaitForSeconds(0.5f);
             exitBlocker.SetActive(true);
+            AudioManager.Stop(AudioType.Background);
+            AudioManager.Play("3. Eclipsed Desolation",AudioType.Background);
             yield return new WaitForSeconds(0.5f);
             
             // TODO: 효수된 시체 연출
@@ -81,6 +85,7 @@ namespace ToB.Entities
             DebugSymbol.Get("LSH").Log("클리어");
             yield return new WaitUntil(()=> !sentinel.IsAlive);
             
+            AudioManager.Stop(AudioType.Background);
             StageManager.Instance.ChangeGameState(GameState.CutScene);
             
             yield return StartCoroutine(SentinelDie());
