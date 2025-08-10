@@ -5,6 +5,7 @@ using TMPro;
 using ToB.Core;
 using ToB.IO;
 using ToB.IO.SubModules.SavePoint;
+using ToB.Scenes.Stage;
 using UnityEngine;
 using UnityEngine.Localization.SmartFormat;
 using UnityEngine.Serialization;
@@ -31,26 +32,27 @@ namespace ToB.UI.WideMap
 
     private void OnEnable()
     {
-      if(SAVE.Current == null || SAVE.Current.IsLoaded) return;
-      
-      foreach (var button in buttons.Where(button => button))
-        Destroy(button.gameObject);
-
-      buttons.Clear();
+      if(SAVE.Current == null || !SAVE.Current.IsLoaded) return;
       
       var module = SAVE.Current.SavePoints;
 
       var currentPoint = module.GetLastSavePoint();
       var savePoints = module.activeSavePoints;
 
-      foreach (var data in savePoints)
+      for (var i = 0; i < savePoints.Count; i++)
       {
+        var data = savePoints[i];
+        // Debug.Log($"load save point {data.stageIndex} {data.roomIndex}");
         var button = Instantiate(originButton, buttonContainer);
 
         button.GetComponentInChildren<TMP_Text>().text =
           "TPPointButton".Localize("Global").FormatSmart(data.stageIndex, data.roomIndex);
 
-        if(data != currentPoint) button.onClick.AddListener(() => data.Teleport());
+        if(data != currentPoint)
+        {
+          var i1 = i;
+          button.onClick.AddListener(() => Teleport(data, i1));
+        }
         else
         {
           button.interactable = false;
@@ -58,7 +60,27 @@ namespace ToB.UI.WideMap
         }
         
         button.gameObject.SetActive(true);
+        buttons.Add(button);
       }
+    }
+
+    private void Teleport(SavePointData data, int pointIndex)
+    {
+      data.Teleport();
+      transform.parent?.gameObject.SetActive(false);
+      StageManager.Instance.ChangeGameState(GameState.Play);
+      SAVE.Current.SavePoints.lastSavePoint = pointIndex;
+    }
+    
+    private void OnDisable()
+    {
+      Debug.Log("TPPanel OnDisable");
+      foreach (var button in buttons)
+      {
+        Destroy(button.gameObject);
+      }
+      
+      buttons.Clear();
     }
   }
 }
