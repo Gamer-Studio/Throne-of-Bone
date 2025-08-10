@@ -7662,7 +7662,7 @@ GameObject:
   - component: {fileID: 5663925966552135591}
   m_Layer: 7
   m_Name: SemiPlatform
-  m_TagString: SemiPlatform
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
@@ -9047,9 +9047,13 @@ MonoBehaviour:
       Value: {fileID: 1969994034729334381}
   bonfires:
   - {fileID: 7912842569107726834}
+  - {fileID: 7912842569107726834}
+  - {fileID: 7912842569107726834}
+  - {fileID: 7912842569107726834}
+  - {fileID: 7912842569107726834}
+  - {fileID: 7912842569107726834}
   enemies:
     array: []
-  enemiesList: []
   links:
   - {fileID: 135040552341103449}
   - {fileID: 8023974400189268669}
@@ -9067,7 +9071,7 @@ MonoBehaviour:
   onExit:
     m_PersistentCalls:
       m_Calls: []
-  pos: {x: -21, y: -31, z: 0}
+  pos: {x: 326, y: 19, z: 0}
 --- !u!1 &5076151314866993067
 GameObject:
   m_ObjectHideFlags: 0
@@ -27884,6 +27888,10 @@ PrefabInstance:
     - target: {fileID: 7513139298637677647, guid: b666f4bc3ab14b345be9d484dcba5c30, type: 3}
       propertyPath: onlyPlayer
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7513139298637677647, guid: b666f4bc3ab14b345be9d484dcba5c30, type: 3}
+      propertyPath: buffs.array.Array.size
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8791234467110326554, guid: b666f4bc3ab14b345be9d484dcba5c30, type: 3}
       propertyPath: m_Density
