@@ -188,6 +188,7 @@ namespace ToB.Player
     [Foldout(Bindings)] [SerializeField] private PlayerGroundChecker groundChecker;
     [Foldout(Bindings)] [SerializeField] private WorldGaugeBar dashGaugeBar, attackGaugeBar;
     [Foldout(Bindings)] [SerializeField] public BuffController buffController;
+    [Foldout(Bindings)] [SerializeField] public Grimoire grimoire;
 
     #endregion
 
