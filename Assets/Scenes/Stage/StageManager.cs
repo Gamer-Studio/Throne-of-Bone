@@ -17,6 +17,7 @@ using ToB.World;
 using ToB.Worlds;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 
 namespace ToB.Scenes.Stage
@@ -221,5 +222,10 @@ namespace ToB.Scenes.Stage
     }
     
     #endregion
+
+    public void EndGame()
+    {
+      SceneManager.LoadScene("Outro");
     }
+  }
 }
