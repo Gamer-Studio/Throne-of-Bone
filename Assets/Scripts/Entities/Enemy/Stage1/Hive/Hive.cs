@@ -89,6 +89,15 @@ namespace ToB
             MemoriesManager.Instance.MemoryAcquired(10002);
         }
 
+        public override void Release()
+        {
+            foreach (var fly in flies)
+            {
+                if (fly) fly.Release();
+            }
+            base.Release();
+        }
+
         public bool IsFlyInPatrolArea(Fly fly)
         {
             return (fly.transform.position - PatrolRange.transform.position).sqrMagnitude < Mathf.Pow(DataSO.PatrolRange, 2);

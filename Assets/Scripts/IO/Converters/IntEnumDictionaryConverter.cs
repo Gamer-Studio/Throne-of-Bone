@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using UnityEngine;
 
 namespace ToB.IO.Converters
 {
@@ -13,7 +14,8 @@ namespace ToB.IO.Converters
 
       foreach (var (key, value) in dictionary)
       {
-        data[key.ToString()] = value.ToString();
+        data[key.ToString()] = Convert.ToInt32(value);
+        // data[key.ToString()] = value.ToString();
       }
       
       data.WriteTo(writer);
@@ -25,27 +27,25 @@ namespace ToB.IO.Converters
       var result = hasExistingValue && existingValue != null
         ? new Dictionary<int, V>(existingValue) // 기존 값을 복사해서 사용
         : new Dictionary<int, V>();
-      JObject json;
       
-      try
+      var dictionaryData = new JObject();
+      
+      if (reader.TokenType == JsonToken.StartObject)
       {
-        // JSON을 JObject로 로드
-        json = JObject.Load(reader);
-      }
-      catch (JsonReaderException)
-      {
-        return result;
+        dictionaryData = JObject.Load(reader);
       }
       
-      foreach (var (key, value) in json)
+      foreach (var (key, value) in dictionaryData)
       {
         // 문자열 키 → int 변환
-        if (!int.TryParse(key, out var id)) continue;
-        if (value is not { Type: JTokenType.Integer }) continue;
+        if (!int.TryParse(key, out var id) || 
+            value is not { Type: JTokenType.Integer }) 
+          continue;
         
-        // 문자열 값 → Enum 변환
+        var valueInt = value.Get(0);
         
-        result[id] = Enum.IsDefined(typeof(V), value) ? (V) Enum.ToObject(typeof(V), value) : default;
+        // int 값 → Enum 변환
+        result[id] = Enum.IsDefined(typeof(V), valueInt) ? (V) Enum.ToObject(typeof(V), valueInt) : default;
       }
 
       return result;

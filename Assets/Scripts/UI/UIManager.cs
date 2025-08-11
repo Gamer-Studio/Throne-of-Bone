@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using ToB.Core;
+using ToB.UI.WideMap;
 using ToB.Utils.Singletons;
 using UnityEngine;
 using UnityEngine.EventSystems;

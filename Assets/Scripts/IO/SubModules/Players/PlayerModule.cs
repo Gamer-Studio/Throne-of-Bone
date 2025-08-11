@@ -1,7 +1,7 @@
 using Newtonsoft.Json;
 using UnityEngine;
 
-namespace ToB.IO.SubModules
+namespace ToB.IO.SubModules.Players
 {
   public class PlayerModule : SubModule
   {

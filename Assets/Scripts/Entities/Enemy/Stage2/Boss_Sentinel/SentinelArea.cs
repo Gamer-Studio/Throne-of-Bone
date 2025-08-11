@@ -2,16 +2,18 @@ using System;
 using System.Collections;
 using DG.Tweening;
 using TMPro;
+using ToB.IO;
 using ToB.Core;
 using ToB.Scenes.Stage;
 using ToB.Utils;
+using ToB.Worlds;
 using UnityEngine;
 using UnityEngine.UI;
 using AudioType = ToB.Core.AudioType;
 
 namespace ToB.Entities
 {
-    public class SentinelArea : MonoBehaviour
+    public class SentinelArea : Room
     {
         private static readonly int CloneRise = Animator.StringToHash("CloneRise");
         private static readonly int DieContinue = Animator.StringToHash("DieContinue");
@@ -52,6 +54,7 @@ namespace ToB.Entities
 
         private void PlayerEntered()
         {
+            if(SAVE.Current.Achievements.KillSentinel) return;
             
             StartCoroutine(SentinelRoomCoroutine());
         }
@@ -84,6 +87,9 @@ namespace ToB.Entities
             
             DebugSymbol.Get("LSH").Log("클리어");
             yield return new WaitUntil(()=> !sentinel.IsAlive);
+            
+            // 센티넬 처치 기록
+            SAVE.Current.Achievements.KillSentinel = true;
             
             AudioManager.Stop(AudioType.Background);
             StageManager.Instance.ChangeGameState(GameState.CutScene);

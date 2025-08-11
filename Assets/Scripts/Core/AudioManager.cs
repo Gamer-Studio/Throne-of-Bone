@@ -57,6 +57,11 @@ namespace ToB.Core
       ObjectVolume = PlayerPrefs.GetFloat("ObjectVolume", 80);
     }
 
+    private void FixedUpdate()
+    {
+      transform.eulerAngles = Vector3.zero;
+    }
+
     protected override void OnDestroy()
     {
       onObjectVolumeChanged.RemoveAllListeners();

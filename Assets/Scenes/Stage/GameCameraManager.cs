@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Cinemachine;
 using DG.Tweening;
 using NaughtyAttributes;
@@ -21,7 +22,8 @@ namespace ToB.Core
         [SerializeField] private float stareSpeed = 1;
         
         [Header("현재 포커싱 중인 카메라")]
-        [SerializeField, ReadOnly] private CinemachineVirtualCamera currentVirtualCamera;
+        [SerializeField, ReadOnly] private CinemachineVirtualCamera currentCamera;
+        public CinemachineVirtualCamera CurrentCamera => currentCamera ? currentCamera : MainVirtualCamera;
         
         public float MainCamOriginalSize => mainCamOriginalSize;
         
@@ -48,7 +50,7 @@ namespace ToB.Core
         private void LateUpdate()
         {
             if (IsBlending() && UIResize) AdjustUISize();
-            else if (currentVirtualCamera == MainVirtualCamera && UIManager.Instance.gamePlayUI.transform.localScale != Vector3.one)
+            else if (currentCamera == MainVirtualCamera && UIManager.Instance.gamePlayUI.transform.localScale != Vector3.one)
             {
                 if(Mathf.Abs(UIManager.Instance.gamePlayUI.transform.localScale.x - 1) < 0.001f)
                     UIManager.Instance.gamePlayUI.transform.localScale = Vector3.one;
@@ -70,8 +72,8 @@ namespace ToB.Core
         /// <param name="newCamera"></param>
         public void SwitchFirstCamera(CinemachineVirtualCamera newCamera, bool uiResize = true)
         {
-            if (currentVirtualCamera) currentVirtualCamera.Priority = 0;
-            currentVirtualCamera = newCamera;
+            if (currentCamera) currentCamera.Priority = 0;
+            currentCamera = newCamera;
             newCamera.Priority = 50;
             UIResize = uiResize;
         }
@@ -115,7 +117,7 @@ namespace ToB.Core
 
         public void EarthQuake(float frequency, float amplitude, float duration)
         {
-            CinemachineBasicMultiChannelPerlin perlin = currentVirtualCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+            CinemachineBasicMultiChannelPerlin perlin = currentCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
             perlin.m_AmplitudeGain = amplitude;
             perlin.m_FrequencyGain = frequency;
 
@@ -124,6 +126,13 @@ namespace ToB.Core
                 perlin.m_AmplitudeGain = 0;
                 perlin.m_FrequencyGain = 0;
             });
+        }
+
+        public IEnumerator Zoom(float zoomSize, float duration)
+        {
+            DOTween.To(()=>CurrentCamera.m_Lens.OrthographicSize, x => CurrentCamera.m_Lens.OrthographicSize = x, zoomSize, duration);
+            yield return new WaitForSeconds(duration);
+            CurrentCamera.m_Lens.OrthographicSize = zoomSize;
         }
     }
 }

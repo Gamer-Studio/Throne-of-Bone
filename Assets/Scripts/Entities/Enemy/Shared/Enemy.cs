@@ -110,7 +110,6 @@ namespace ToB.Entities
             Core.ResourceManager.Instance.SpawnResources(InfiniteResourceType.Gold,enemySO.DropGold,transform);
             Core.ResourceManager.Instance.SpawnResources(InfiniteResourceType.Mana,enemySO.DropMana,transform, enemySO.ManaDropRate);
             
-            Physics.enabled = false;
             isAlive = false;
         }
 

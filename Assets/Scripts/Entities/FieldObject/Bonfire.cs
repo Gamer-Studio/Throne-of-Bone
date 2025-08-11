@@ -3,6 +3,7 @@ using TMPro;
 using ToB.Core;
 using ToB.Entities.Skills;
 using ToB.IO;
+using ToB.IO.SubModules.SavePoint;
 using ToB.Scenes.Stage;
 using ToB.UI;
 using ToB.Utils;
@@ -58,6 +59,10 @@ namespace ToB.Entities.FieldObject
             if(!isDiscovered) BonfireDiscovered();
             else
             {
+                var savePointModule = SAVE.Current.SavePoints;
+                var pointData = new SavePointData(StageIndex, RoomIndex, room.bonfires.FindIndex(v => v == this));
+                
+                savePointModule.lastSavePoint = savePointModule.activeSavePoints.FindIndex(v => v.Equals(pointData));
                 BonfireUIPanel.SetActive(true);
                 interactionText.text = "";
                 StageManager.Instance.ChangeGameState(GameState.Dialog);
@@ -69,7 +74,7 @@ namespace ToB.Entities.FieldObject
         {
             isDiscovered = true;
             animator.SetBool("IsDiscovered", isDiscovered);
-            Debug.Log("화톳불 발견");
+            DebugSymbol.ETC.Log("화톳불 발견");
             interactionText.text = "F : 쉬어가기";
             // 이후 TP포인트에 추가, 지도에 추가 등등
         }

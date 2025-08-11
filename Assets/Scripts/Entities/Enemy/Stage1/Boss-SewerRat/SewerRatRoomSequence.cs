@@ -6,6 +6,7 @@ using DG.Tweening;
 using ToB.Core;
 using ToB.Core.InputManager;
 using ToB.Entities.FieldObject;
+using ToB.IO;
 using ToB.Scenes.Stage;
 using ToB.Worlds;
 using UnityEditor;
@@ -68,6 +69,8 @@ namespace ToB.Entities
 
         private void PlayerEntered()
         {
+            if(SAVE.Current.Achievements.KillRat) return;
+            
             if (phaseCount != 0) return;
             phaseCount++;
             TOBInputManager.Instance.SetInputActive(false);
@@ -120,6 +123,7 @@ namespace ToB.Entities
             anotherSewerRats[1].target = StageManager.Instance.player.transform;
             
             yield return new WaitUntil(() => !anotherSewerRats[0].IsAlive && !anotherSewerRats[1].IsAlive);
+            SAVE.Current.Achievements.KillRat = true;
 
             OpenDoors();
             AudioManager.Play("1.Stage",AudioType.Background);

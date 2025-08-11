@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ToB.IO.SubModules;
+using ToB.IO.SubModules.Players;
+using ToB.IO.SubModules.SavePoint;
 using ToB.Utils;
 using UnityEngine;
 
@@ -36,7 +38,7 @@ namespace ToB.IO
     /// name으로 root를 명시적으로 지정하지 마세요. 
     /// </summary>
     /// <param name="name">모듈의 명칭입니다.</param>
-    public SAVEModule(string name)
+    public SAVEModule(string name) : base()
     {
       this.name = name;
       this["metaData"] = new JObject();
@@ -90,6 +92,8 @@ namespace ToB.IO
     /// <param name="data"></param>
     public virtual void Read(JObject data)
     {
+      if(data == null) return;
+      
       foreach (var (key, value) in data)
       {
         if (value is null) continue;
@@ -159,6 +163,7 @@ namespace ToB.IO
             nameof(PlayerModule) => Node<PlayerModule>(fileName, true),
             nameof(PlayerStatModule) => Node<PlayerStatModule>(fileName, true),
             nameof(SavePointModule) => Node<SavePointModule>(fileName, true),
+            nameof(AchievementModule) => Node<AchievementModule>(fileName, true),
             _ => Node(fileName, true),
           };
           await childModule.Load(System.IO.Path.Combine(path, fileName), true);
@@ -209,6 +214,7 @@ namespace ToB.IO
         var type when type == typeof(PlayerModule) => (T) (object) new PlayerModule(key),
         var type when type == typeof(PlayerStatModule) => (T) (object) new PlayerStatModule(key),
         var type when type == typeof(SavePointModule) => (T)  (object) new SavePointModule(key),
+        var type when type == typeof(AchievementModule) => (T)  (object) new AchievementModule(key),
         _ => (T) Activator.CreateInstance(typeof(T), key),
       };
       

@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using ToB.Entities.FieldObject;
+using ToB.Player;
+using ToB.Scenes.Stage;
 using UnityEngine;
 
-namespace ToB.IO.SubModules
+namespace ToB.IO.SubModules.SavePoint
 {
   public class SavePointModule : SubModule
   {
@@ -53,38 +55,4 @@ namespace ToB.IO.SubModules
     }
   }
 
-  [Serializable]
-  public struct SavePointData : IEquatable<SavePointData>
-  {
-    public static SavePointData Default => new(0, 0, 0);
-    
-    [JsonProperty]
-    public int stageIndex;
-    [JsonProperty]
-    public int roomIndex;
-    [JsonProperty]
-    public int pointIndex;
-
-    public SavePointData(int stageIndex, int roomIndex, int pointIndex)
-    {
-      this.stageIndex = stageIndex;
-      this.roomIndex = roomIndex;
-      this.pointIndex = pointIndex;
-    }
-
-    public bool Equals(SavePointData other)
-    {
-      return stageIndex == other.stageIndex && roomIndex == other.roomIndex && pointIndex == other.pointIndex;
-    }
-
-    public override bool Equals(object obj)
-    {
-      return obj is SavePointData other && Equals(other);
-    }
-
-    public override int GetHashCode()
-    {
-      return HashCode.Combine(stageIndex, roomIndex, pointIndex);
-    }
-  }
 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using ToB.IO;
 using ToB.UI;
+using ToB.Utils;
 using ToB.Utils.Singletons;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -50,7 +51,7 @@ namespace ToB.Entities.Skills
     {
         var handle = Addressables.LoadAssetAsync<BattleSkillData>("Assets/Data/BattleSkill/BattleSkillSO.asset");
         skillDB = handle.WaitForCompletion();
-        if (skillDB != null) Debug.Log("스킬 DB 어드레서블로 불러오기 성공");
+        if (skillDB != null) DebugSymbol.ETC.Log("스킬 DB 어드레서블로 불러오기 성공");
     }
     /// <summary>
     /// 불러온 정보를 바탕으로 초기에 플레이어의 스킬 정보 딕셔너리가 없는 경우 플레이어의 스킬 정보 딕셔너리를 기록합니다.
@@ -60,7 +61,7 @@ namespace ToB.Entities.Skills
     {
         if (SAVE.Current == null)
         {
-            Debug.Log("스킬 세이브 파일이 없습니다.");
+            DebugSymbol.ETC.Log("스킬 세이브 파일이 없습니다.");
             foreach (var skill in skillDB.BattleSkillDataBase)
             {
                 playerSkillStates.TryAdd(skill.id, SkillState.Unacquired);
