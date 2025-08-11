@@ -20,7 +20,7 @@ namespace ToB.Entities
         }
         public override void Enter()
         {
-            enemy.audioPlayer.Stop("Spider_footstep_Loop_01");
+            enemy.audioPlayer.StopAll();
             actionStarted = false;
             delayCoroutine = enemy.StartCoroutine(Delay());
         }

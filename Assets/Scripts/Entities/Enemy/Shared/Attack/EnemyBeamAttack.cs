@@ -23,6 +23,7 @@ namespace ToB.Entities
             objects = new List<GameObject>();
             Team = Team.Enemy;
             Blockable = false;
+            Effectable = true;
         }
 
         private void OnDisable()

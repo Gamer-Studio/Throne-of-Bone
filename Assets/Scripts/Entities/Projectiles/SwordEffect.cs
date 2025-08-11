@@ -63,8 +63,7 @@ namespace ToB.Entities.Projectiles
           damageable.Damage(damage, this);
           HitEffect(other);
         }
-        
-        Release();
+        //Release();
       }
     }
 

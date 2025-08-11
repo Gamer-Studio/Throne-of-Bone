@@ -1,8 +1,9 @@
 using System;
 using Newtonsoft.Json;
+using ToB.Core;
 using ToB.Player;
 using ToB.Scenes.Stage;
-using UnityEngine;
+using AudioType = UnityEngine.AudioType;
 
 namespace ToB.IO.SubModules.SavePoint
 {
@@ -33,6 +34,10 @@ namespace ToB.IO.SubModules.SavePoint
       var room = roomController.LoadRoom(stageIndex, roomIndex, true);
       var bonfire = room.bonfires[pointIndex];
       player.transform.position = bonfire.TPTransform.position;
+      
+      AudioManager.Stop(Core.AudioType.Background);
+      if (room.stageIndex == 1) AudioManager.Play("1.Stage", Core.AudioType.Background);
+      else if (room.stageIndex == 2) AudioManager.Play("2.Stage", Core.AudioType.Background);
     }
 
     public bool Equals(SavePointData other)

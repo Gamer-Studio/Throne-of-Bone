@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using DG.Tweening;
 using ToB.Entities.Interface;
+using ToB.Memories;
 using Unity.Behavior;
 using UnityEngine;
 
@@ -86,7 +87,17 @@ namespace ToB.Entities
         {
             base.OnTakeDamage(sender);
             agent.BlackboardReference.SetVariableValue("Damaged", true);
-
+            if (isAlive)
+            {
+                if (ShieldAreaObject.activeSelf)
+                {
+                    audioPlayer.Play("ui_confirm_levelup_04");
+                }
+                else
+                {
+                    audioPlayer.Play("ui_confirm_levelup_01");
+                }
+            }
             DamagedJudge.Kill();
             DamagedJudge = DOVirtual.DelayedCall(0.4f, ()=> agent.BlackboardReference.SetVariableValue("Damaged", false));
         }
@@ -96,6 +107,8 @@ namespace ToB.Entities
             base.Die();
             
             Animator.SetTrigger(EnemyAnimationString.Die);
+            audioPlayer.Play("Guardian_Death");
+            MemoriesManager.Instance.MemoryAcquired(10009);
             agent.BlackboardReference.SetVariableValue("IsAlive", false);
             deathImpact.gameObject.SetActive(true);
             deathImpact.Play();

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using DG.Tweening;
 using ToB.Entities.FieldObject;
 using ToB.Entities.Interface;
+using ToB.Memories;
 using ToB.Utils;
 using Unity.Behavior;
 using UnityEngine;
@@ -229,6 +230,7 @@ namespace ToB.Entities
         {
             base.Die();
             
+            MemoriesManager.Instance.MemoryAcquired(10010);
             shockwaveEffect.SendEvent("OnPlay");
             Agent.BlackboardReference.SetVariableValue("IsAlive", false);
             Agent.End();

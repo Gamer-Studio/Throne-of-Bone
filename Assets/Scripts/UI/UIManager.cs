@@ -65,7 +65,7 @@ namespace ToB.UI
                     gameOverUI.gameObject.SetActive(false);
                     effectUI.gameObject.SetActive(false);
                     toastUI.gameObject.SetActive(false);
-                    AudioManager.Play("RedClouds",AudioType.Background);
+                    AudioManager.Play("0.Title",AudioType.Background);
                     break;
                 
                 case "Intro":

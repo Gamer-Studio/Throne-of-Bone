@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using ToB.Entities.FieldObject;
 using ToB.Entities.Interface;
+using ToB.Memories;
 using ToB.Utils;
 using UnityEngine;
 
@@ -73,6 +74,7 @@ namespace ToB.Entities
             Hive.flies.Remove(gameObject);
             Hitbox.enabled = false;
             audioPlayer.Play("Insect_Death_04");
+            MemoriesManager.Instance.MemoryAcquired(10003);
             StartCoroutine(ReleaseSelf());
         }
 

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using ToB.Entities.Interface;
+using ToB.Utils;
 using ToB.Worlds;
 using UnityEngine;
 
@@ -37,12 +38,14 @@ namespace ToB.Entities.FieldObject
         private PolygonCollider2D PolygonCollider;
         private SpriteRenderer SpriteRenderer;
         private Sprite lastSprite;
+        [SerializeField] public ObjectAudioPlayer audioPlayer;
 
         private void OnEnable()
         {
             if(!animator) animator = GetComponent<Animator>();
             if(!PolygonCollider) PolygonCollider = GetComponent<PolygonCollider2D>();
             if(!SpriteRenderer) SpriteRenderer = GetComponent<SpriteRenderer>();
+            if(audioPlayer == null) audioPlayer = GetComponentInParent<ObjectAudioPlayer>();
             lastSprite = SpriteRenderer.sprite;
             
             SetState(state);
@@ -77,19 +80,23 @@ namespace ToB.Entities.FieldObject
             {
                 isActivated = true;
                 animator.SetBool(IsActivated, true);
+                audioPlayer.Play("Knife_Trap");
                 yield return new WaitForSeconds(activeTime);
                 isActivated = false;
                 animator.SetBool(IsActivated, false);
+                audioPlayer.Stop("Knife_Trap");
                 yield return new WaitForSeconds(safeTime);
             }
             // 오류방지용 중단코드
             isActivated = false;
             animator.SetBool(IsActivated, false);
             C_popUpTimer = null;
+            audioPlayer.StopAll();
         }
         private void SetState(PopUpBladeState _state)
         {
             this.state = _state;
+            audioPlayer.StopAll();
             
             if (state == PopUpBladeState.Detect)
             {

@@ -1,5 +1,6 @@
 using System.Collections;
 using ToB.Entities.Interface;
+using ToB.Memories;
 using UnityEngine;
 
 namespace ToB.Entities
@@ -45,6 +46,7 @@ namespace ToB.Entities
         {
             base.Die();
             audioPlayer.StopAll();
+            MemoriesManager.Instance.MemoryAcquired(10006);
             Animator.SetTrigger(EnemyAnimationString.Die);
             Hitbox.enabled = false;
             explodeArea.gameObject.SetActive(true);

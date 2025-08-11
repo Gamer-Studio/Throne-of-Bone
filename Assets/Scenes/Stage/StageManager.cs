@@ -19,6 +19,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
+using AudioType = ToB.Core.AudioType;
 
 namespace ToB.Scenes.Stage
 {
@@ -116,6 +117,8 @@ namespace ToB.Scenes.Stage
         // 저장기록이 없을 경우 초기 지점에서 소환
         var room = RoomController.LoadRoom(1, 1, true);
         player.transform.position = room.transform.position.X(v => v + 12).Y(v => v - 11);
+        AudioManager.Stop(AudioType.Background);
+        AudioManager.Play("1.Stage", AudioType.Background);
       }
     }
 

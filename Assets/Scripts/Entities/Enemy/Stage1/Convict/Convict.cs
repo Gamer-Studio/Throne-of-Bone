@@ -2,6 +2,7 @@ using System.Resources;
 using NaughtyAttributes;
 using ToB.Core;
 using ToB.Entities.Interface;
+using ToB.Memories;
 using UnityEngine;
 
 namespace ToB.Entities
@@ -66,6 +67,7 @@ namespace ToB.Entities
         {
             base.Die();
             audioPlayer.Play("Skeleton_Death_02");
+            MemoriesManager.Instance.MemoryAcquired(10001);
             Animator.SetTrigger(EnemyAnimationString.Die);
             Hitbox.enabled = false;
             FSM.ChangePattern(null);

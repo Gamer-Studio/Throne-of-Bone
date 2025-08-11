@@ -213,7 +213,7 @@ namespace ToB.Player
       Load();
       InitDash();
       InitAttack();
-      stat.onDeath.AddListener(() => animator.SetBool(BOOL_DEATH, true));
+      OnDeath.AddListener(OnDeathHandler);
 
       if (groundChecker)
         groundChecker.onLanding.AddListener(() =>
@@ -237,7 +237,6 @@ namespace ToB.Player
       }
     }
 
-    // 
     private void FixedUpdate()
     {
       AirStateAnimationHandle(); // 사전 구햔 3
@@ -246,6 +245,8 @@ namespace ToB.Player
       ImmunePropsHandle(); // 사전 구현 1
       UpdateResources();
     }
+    
+    #endregion Unity Event
 
     private void UpdateResources()
     {
@@ -293,7 +294,7 @@ namespace ToB.Player
         animator.SetBool(BOOL_CLIMB, true);
         
         if (body.linearVelocityY < wallEnduringSpeed) body.linearVelocityY = Mathf.Max(body.linearVelocityY, wallEnduringSpeed);
-        // Debug.Log(body.linearVelocityY);
+        
       }
       else
       {
@@ -426,8 +427,6 @@ namespace ToB.Player
       }
     }
 
-    #endregion
-
     #region Event
 
     /// <summary>
@@ -439,6 +438,12 @@ namespace ToB.Player
     ///   플레이어의 체력이 변경될 시 호출되며, 매개변수로 현재 체력을 넘겨줍니다.
     /// </summary>
     public UnityEvent<float> OnHpChange => stat.onHpChanged;
+
+    private void OnDeathHandler()
+    {
+      
+      animator.SetBool(BOOL_DEATH, true);
+    }
 
     #endregion Event
 
@@ -500,6 +505,7 @@ namespace ToB.Player
     private IEnumerator JumpCoroutine(float power)
     {
       animator.SetTrigger(TRIGGER_JUMP);
+      audioPlayer.Play("Jump_woosh");
 
       if (isClimbing)
       {

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using NaughtyAttributes;
 using ToB.Entities;
+using ToB.Memories;
 using ToB.Utils;
 using UnityEngine;
 
@@ -84,7 +85,8 @@ namespace ToB
             Animator.SetTrigger(EnemyAnimationString.Die);
             Hitbox.enabled = false;
             enabled = false;
-            audioPlayer.Play("hit_blood_flesh_gore_03");
+            audioPlayer.Play("hit_blood_flesh_gore_01");
+            MemoriesManager.Instance.MemoryAcquired(10002);
         }
 
         public override void Release()

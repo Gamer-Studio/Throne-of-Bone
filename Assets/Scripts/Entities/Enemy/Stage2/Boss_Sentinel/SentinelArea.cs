@@ -3,12 +3,14 @@ using System.Collections;
 using DG.Tweening;
 using TMPro;
 using ToB.IO;
+using ToB.Core;
 using ToB.Scenes.Stage;
 using ToB.UI;
 using ToB.Utils;
 using ToB.Worlds;
 using UnityEngine;
 using UnityEngine.UI;
+using AudioType = ToB.Core.AudioType;
 
 namespace ToB.Entities
 {
@@ -73,6 +75,8 @@ namespace ToB.Entities
         {
             yield return new WaitForSeconds(0.5f);
             exitBlocker.SetActive(true);
+            AudioManager.Stop(AudioType.Background);
+            AudioManager.Play("3. Eclipsed Desolation",AudioType.Background);
             yield return new WaitForSeconds(0.5f);
             
             // TODO: 효수된 시체 연출
@@ -92,6 +96,7 @@ namespace ToB.Entities
             // 센티넬 처치 기록
             if(SAVE.Current != null) SAVE.Current.Achievements.KillSentinel = true;
             
+            AudioManager.Stop(AudioType.Background);
             StageManager.Instance.ChangeGameState(GameState.CutScene);
             
             yield return StartCoroutine(SentinelDie());

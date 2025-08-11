@@ -164,14 +164,14 @@ namespace ToB.UI
         {
             CloseAllPanels();
             SceneManager.LoadScene(Defines.MainMenuScene);
-            Debug.Log("메인 메뉴");
+            DebugSymbol.ETC.Log("메인 메뉴");
         }
         
         public void StartGame()
         {
             CloseAllPanels();
             SceneManager.LoadScene(stageSceneName);
-            Debug.Log("게임 시작");
+            DebugSymbol.ETC.Log("게임 시작");
         }
         
         public void LoadGame()
@@ -179,7 +179,7 @@ namespace ToB.UI
             CloseAllPanels();
             if (SAVE.Current.isFirstEnter) SceneManager.LoadScene(Defines.StageIntroScene);
             else SceneManager.LoadScene(stageSceneName);
-            Debug.Log("테스트 신 시작");       
+            DebugSymbol.ETC.Log("테스트 신 시작");       
         }
       
         public void SettingPanelOn()

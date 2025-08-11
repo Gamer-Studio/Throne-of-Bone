@@ -11,6 +11,7 @@ namespace ToB.Entities.FieldObject
             if (other.CompareTag("Player") && popUpBlade.GetState() == PopUpBlade.PopUpBladeState.Detect)
             {
                popUpBlade.ActivateBlade();
+               popUpBlade.audioPlayer.Play("Knife_Trap");
             }
         }
         private void OnTriggerExit2D(Collider2D other)
