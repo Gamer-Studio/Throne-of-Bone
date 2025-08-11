@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using NaughtyAttributes;
 using ToB.Entities;
+using ToB.Memories;
 using ToB.Utils;
 using UnityEngine;
 
@@ -85,6 +86,7 @@ namespace ToB
             Hitbox.enabled = false;
             enabled = false;
             audioPlayer.Play("hit_blood_flesh_gore_01");
+            MemoriesManager.Instance.MemoryAcquired(10002);
         }
 
         public bool IsFlyInPatrolArea(Fly fly)
