@@ -144,7 +144,7 @@ namespace ToB.Entities.Skills
             CategorizeSkills(id);
             // bsStat을 실제 플레이어에 적용
             bsStats.ApplyStats(bsStats);
-            UIManager.Instance.toastUI.Show($"스킬 {id} : {skillDB.GetSkillById(id).skillName} 획득!");
+            UIManager.Instance.toastUI.Show($"스킬 : {skillDB.GetSkillById(id).skillName} 획득!");
             return true;
         }
         else
