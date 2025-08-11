@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using DG.Tweening;
 using ToB.Entities.Interface;
+using ToB.Memories;
 using Unity.Behavior;
 using UnityEngine;
 
@@ -107,6 +108,7 @@ namespace ToB.Entities
             
             Animator.SetTrigger(EnemyAnimationString.Die);
             audioPlayer.Play("Guardian_Death");
+            MemoriesManager.Instance.MemoryAcquired(10009);
             agent.BlackboardReference.SetVariableValue("IsAlive", false);
             deathImpact.gameObject.SetActive(true);
             deathImpact.Play();

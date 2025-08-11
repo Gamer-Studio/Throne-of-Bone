@@ -1,4 +1,5 @@
 using ToB.Entities.Interface;
+using ToB.Memories;
 using UnityEngine;
 
 namespace ToB.Entities
@@ -47,6 +48,7 @@ namespace ToB.Entities
             base.Die();
             audioPlayer.StopAll();
             audioPlayer.Play("Spectre_Death_02");
+            MemoriesManager.Instance.MemoryAcquired(10008);
             Hitbox.enabled = false;
             FSM.ChangePattern(null);
             Animator.SetTrigger(EnemyAnimationString.Die);

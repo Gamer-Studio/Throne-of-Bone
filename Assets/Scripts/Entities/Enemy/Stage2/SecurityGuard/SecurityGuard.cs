@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using ToB.Entities.Interface;
+using ToB.Memories;
 using UnityEngine;
 
 namespace ToB.Entities
@@ -45,6 +46,7 @@ namespace ToB.Entities
             base.Die();
             audioPlayer.StopAll();
             audioPlayer.Play("Orc_Death_05");
+            MemoriesManager.Instance.MemoryAcquired(10007);
             Animator.SetTrigger(EnemyAnimationString.Die);
             Hitbox.enabled = false;
             FSM.ChangePattern(null);
