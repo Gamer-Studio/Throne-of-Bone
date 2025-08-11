@@ -8,7 +8,6 @@ using UnityEngine;
 
 namespace ToB.CutScene
 {
-    [RequireComponent(typeof(Location))]
     public abstract class DisposableCutScene : MonoBehaviour
     {
         private bool visited;
@@ -19,11 +18,12 @@ namespace ToB.CutScene
         private void Awake()
         {
             location = GetComponent<Location>();
-            location.OnPlayerEntered += TriggerCutScene;
+            if (location) location.OnPlayerEntered += TriggerCutScene;
         }
 
         public void TriggerCutScene()
         {
+            Debug.Log("Trigger CutScene");
             if (visited) return;
             visited = true;
             StartCoroutine(CutSceneCoroutine());
@@ -40,7 +40,7 @@ namespace ToB.CutScene
 
         private void OnDestroy()
         {
-            location.OnPlayerEntered -= TriggerCutScene;
+            if (location) location.OnPlayerEntered -= TriggerCutScene;
         }
         
         
