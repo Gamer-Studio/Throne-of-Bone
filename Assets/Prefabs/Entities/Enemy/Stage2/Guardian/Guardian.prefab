@@ -400,6 +400,7 @@ GameObject:
   - component: {fileID: 3236473671839605313}
   - component: {fileID: 1166198543147598894}
   - component: {fileID: 1436082279705047151}
+  - component: {fileID: 8403883173071312826}
   m_Layer: 0
   m_Name: Sprite
   m_TagString: Untagged
@@ -422,6 +423,7 @@ Transform:
   m_Children:
   - {fileID: 6800609365033423748}
   - {fileID: 9019055015958633849}
+  - {fileID: 7777250592943874933}
   m_Father: {fileID: 3090303676605375086}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &1991904136658432981
@@ -533,6 +535,20 @@ MonoBehaviour:
   beams:
   - {fileID: 8087007601841728865}
   - {fileID: 6875332470160023330}
+--- !u!114 &8403883173071312826
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1166681158367683026}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 383646569fb04c2babfa49d0b40ea4bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sourcePool: []
+  audioSourceParent: {fileID: 7777250592943874933}
 --- !u!1 &3907178262280361701
 GameObject:
   m_ObjectHideFlags: 0
@@ -614,6 +630,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   knockbackType: 0
+  <Blockable>k__BackingField: 0
 --- !u!61 &4441739670802542641
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -808,6 +825,7 @@ MonoBehaviour:
   target: {fileID: 0}
   isAlive: 0
   <ReactOnDamage>k__BackingField: 0
+  audioPlayer: {fileID: 8403883173071312826}
   <Area>k__BackingField: {fileID: 0}
   <EnemyBody>k__BackingField: {fileID: 16980977852683939}
   <Stat>k__BackingField: {fileID: 5420243335281178962}
@@ -6247,6 +6265,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53ab476cda1b5a342a8c9589483b3fc8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemy: {fileID: 0}
   currentHP: 0
 --- !u!114 &8202305564076060350
 MonoBehaviour:
@@ -6452,6 +6471,37 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1.35, y: 1.7626953}
   m_EdgeRadius: 0
+--- !u!1 &7379098679388869930
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7777250592943874933}
+  m_Layer: 0
+  m_Name: Audio Sources
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7777250592943874933
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7379098679388869930}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -5.2400002, y: 1, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8519910944360481743}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8002922688326187888
 GameObject:
   m_ObjectHideFlags: 0

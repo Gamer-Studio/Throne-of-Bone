@@ -84,7 +84,7 @@ namespace ToB
             Animator.SetTrigger(EnemyAnimationString.Die);
             Hitbox.enabled = false;
             enabled = false;
-            audioPlayer.Play("hit_blood_flesh_gore_03");
+            audioPlayer.Play("hit_blood_flesh_gore_01");
         }
 
         public override void Release()

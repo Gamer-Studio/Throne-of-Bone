@@ -81,6 +81,8 @@ namespace ToB.Entities
         {
             CloseDoors();
             yield return new WaitUntil(() => !doors[0].IsOpen);
+            AudioManager.Stop(AudioType.Background);
+            AudioManager.Play("1.Boss",AudioType.Background);
             
             // Phase 1 : 한 마리
             yield return StartCoroutine(FirstRatEarthQuake());
@@ -124,6 +126,7 @@ namespace ToB.Entities
             SAVE.Current.Achievements.KillRat = true;
 
             OpenDoors();
+            AudioManager.Play("1.Stage",AudioType.Background);
         }
 
         private void CloseDoors()
@@ -143,7 +146,7 @@ namespace ToB.Entities
 
         private IEnumerator FirstRatEarthQuake()
         {
-            firstSewerRat.audioPlayer.Play("Movement_Earth_Loop_01", true);
+            firstSewerRat.audioPlayer.Play("Movement_Earth_Loop_01");
             mainCamNoise.m_AmplitudeGain = 5f;
             mainCamNoise.m_FrequencyGain = 25f;
             roomCamNoise.m_AmplitudeGain = 5f;

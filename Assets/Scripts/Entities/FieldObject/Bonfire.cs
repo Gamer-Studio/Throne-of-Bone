@@ -103,6 +103,7 @@ namespace ToB.Entities.FieldObject
         public void Save()
         {
             StageManager.Save(this);
+            UIManager.Instance.toastUI.Show("저장이 완료되었습니다.");
         }
 
         public void TeleportPointSelected()

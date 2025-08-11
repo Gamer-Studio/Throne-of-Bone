@@ -10080,6 +10080,7 @@ GameObject:
   - component: {fileID: 3678284196481772229}
   - component: {fileID: 9076656960145260971}
   - component: {fileID: 3274423059247459717}
+  - component: {fileID: 1705662032331688071}
   m_Layer: 0
   m_Name: Boss1
   m_TagString: Untagged
@@ -10108,6 +10109,7 @@ Transform:
   - {fileID: 7606403338037854047}
   - {fileID: 737477714479717471}
   - {fileID: 8797349553178695258}
+  - {fileID: 5756456678341818322}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3678284196481772229
@@ -10133,7 +10135,7 @@ MonoBehaviour:
   target: {fileID: 0}
   isAlive: 0
   <ReactOnDamage>k__BackingField: 0
-  audioPlayer: {fileID: 0}
+  audioPlayer: {fileID: 1705662032331688071}
   <Strategy>k__BackingField: {fileID: 9076656960145260971}
   stat: {fileID: 6337745576739767016}
   deathBleed: {fileID: 6080410680826482338}
@@ -10190,6 +10192,20 @@ MonoBehaviour:
   hasCollided: 0
   IsWallLeft: 0
   IsWallRight: 0
+--- !u!114 &1705662032331688071
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3081770651317235590}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 383646569fb04c2babfa49d0b40ea4bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sourcePool: []
+  audioSourceParent: {fileID: 5756456678341818322}
 --- !u!1 &5742384321724983965
 GameObject:
   m_ObjectHideFlags: 0
@@ -15379,6 +15395,37 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
+--- !u!1 &8360809406234263549
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5756456678341818322}
+  m_Layer: 0
+  m_Name: Audio Sources
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5756456678341818322
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8360809406234263549}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.6666667, y: 0.6666667, z: 0.6666667}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5289137679260194401}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8977877948581817534
 GameObject:
   m_ObjectHideFlags: 0

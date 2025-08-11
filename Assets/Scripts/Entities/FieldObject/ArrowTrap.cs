@@ -29,9 +29,11 @@ namespace ToB.Entities.FieldObject
         [SerializeField] private float ArrowDamage;
         [SerializeField] private float ArrowKnockBack;
         private Coroutine shootingCo;
+        private ObjectAudioPlayer audioPlayer;
         public override void OnLoad()
         {
             DetermineDirection();
+            if (audioPlayer == null) audioPlayer = GetComponent<ObjectAudioPlayer>();
         }
         
         private void Update()
@@ -49,6 +51,7 @@ namespace ToB.Entities.FieldObject
         {
             //딜레이 시간 동안 대기한 뒤 발사
             yield return new WaitForSeconds(ShootDelayTime);
+            audioPlayer.Play("Arrow_Trap");
             var eff = arrowPrefab.Pooling().GetComponent<Arrow>();
             eff.transform.position = transform.position;
             eff.Direction = arrowDirection;
