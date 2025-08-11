@@ -55,7 +55,6 @@ namespace ToB.UI.WideMap
 
     private void OnDisable()
     {
-      Debug.Log("TPPanel OnDisable");
       foreach (var button in buttons) Destroy(button.gameObject);
 
       buttons.Clear();

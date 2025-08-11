@@ -74,7 +74,7 @@ namespace ToB.Entities.FieldObject
         {
             isDiscovered = true;
             animator.SetBool("IsDiscovered", isDiscovered);
-            Debug.Log("화톳불 발견");
+            DebugSymbol.ETC.Log("화톳불 발견");
             interactionText.text = "F : 쉬어가기";
             // 이후 TP포인트에 추가, 지도에 추가 등등
         }

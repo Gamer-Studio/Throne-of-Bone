@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using ToB.Core.InputManager;
+using ToB.Utils;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -17,13 +18,13 @@ namespace ToB.Core.InputManager
 
         public void LoadKeySettings()
         {
-            Debug.Log(KeyBindsFilePath);
+            DebugSymbol.ETC.Log(KeyBindsFilePath);
             if (!File.Exists(KeyBindsFilePath))
             {
-                Debug.Log("사전 키셋팅이 없어 기본값을 불러옵니다.");
+                DebugSymbol.ETC.Log("사전 키셋팅이 없어 기본값을 불러옵니다.");
                 return;
             }
-            Debug.Log("키셋팅 파일을 찾았습니다");
+            DebugSymbol.ETC.Log("키셋팅 파일을 찾았습니다");
             string json = File.ReadAllText(KeyBindsFilePath);
             
             TOBInputManager.Instance.PlayerInput.actions.LoadBindingOverridesFromJson(json);
@@ -37,7 +38,7 @@ namespace ToB.Core.InputManager
 
         private void SaveToJsonFile(string json)
         {
-            Debug.Log("키셋팅을 저장합니다");
+            DebugSymbol.ETC.Log("키셋팅을 저장합니다");
             File.WriteAllText(KeyBindsFilePath, json);
         }
     }

@@ -17,6 +17,7 @@ namespace ToB.Utils
     public static DebugSymbol Editor { get; private set; } = new("EDITOR") { onRelease = () => Editor = null };
     public static DebugSymbol UI { get; private set; } = new("UI") { onRelease = () => UI = null };
     public static DebugSymbol Save { get; private set; } = new ("SAVE") { onRelease = () => Save = null };
+    public static DebugSymbol ETC { get; private set; } = new ("ETC") { onRelease = () => ETC = null };
     
     #endregion
 
