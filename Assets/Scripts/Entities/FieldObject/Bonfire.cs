@@ -1,6 +1,7 @@
 using Newtonsoft.Json.Linq;
 using TMPro;
 using ToB.Core;
+using ToB.CutScene;
 using ToB.Entities.Skills;
 using ToB.IO;
 using ToB.IO.SubModules.SavePoint;
@@ -21,6 +22,9 @@ namespace ToB.Entities.FieldObject
         public bool IsInteractable { get; set; }
         private ObjectAudioPlayer audioPlayer;
         [SerializeField] private Animator animator;
+
+        public bool hasCutScene;
+        public DisposableCutScene cutScene;
         
         #region SaveLoad
 
@@ -55,6 +59,21 @@ namespace ToB.Entities.FieldObject
         public void Interact()
         {
             audioPlayer.Play("fntgm_magic_fire_08");
+
+            if (hasCutScene)
+            {
+                StageManager.Instance.player.stat.HealtoFullHp();
+                if(!isDiscovered) BonfireDiscovered();
+                else
+                {
+                    var savePointModule = SAVE.Current.SavePoints;
+                    var pointData = new SavePointData(StageIndex, RoomIndex, room.bonfires.FindIndex(v => v == this));
+                    
+                    savePointModule.lastSavePoint = savePointModule.activeSavePoints.FindIndex(v => v.Equals(pointData));
+                    
+                }
+
+            }
             StageManager.Instance.player.stat.HealtoFullHp();
             if(!isDiscovered) BonfireDiscovered();
             else
