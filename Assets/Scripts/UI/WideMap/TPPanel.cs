@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using NaughtyAttributes;
 using TMPro;
 using ToB.Core;
@@ -8,7 +7,6 @@ using ToB.IO.SubModules.SavePoint;
 using ToB.Scenes.Stage;
 using UnityEngine;
 using UnityEngine.Localization.SmartFormat;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace ToB.UI.WideMap
@@ -20,20 +18,11 @@ namespace ToB.UI.WideMap
     [SerializeField, ReadOnly] private List<Button> buttons = new();
 
     #endregion
-    
-    #region Bindings
-
-    private const string Binding = "Binding";
-
-    [Foldout(Binding), SerializeField] private Transform buttonContainer;
-    [Foldout(Binding), SerializeField] private Button originButton;
-
-    #endregion
 
     private void OnEnable()
     {
-      if(SAVE.Current == null || !SAVE.Current.IsLoaded) return;
-      
+      if (SAVE.Current == null || !SAVE.Current.IsLoaded) return;
+
       var module = SAVE.Current.SavePoints;
 
       var currentPoint = module.GetLastSavePoint();
@@ -48,7 +37,7 @@ namespace ToB.UI.WideMap
         button.GetComponentInChildren<TMP_Text>().text =
           "TPPointButton".Localize("Global").FormatSmart(data.stageIndex, data.roomIndex);
 
-        if(data != currentPoint)
+        if (data != currentPoint)
         {
           var i1 = i;
           button.onClick.AddListener(() => Teleport(data, i1));
@@ -58,10 +47,18 @@ namespace ToB.UI.WideMap
           button.interactable = false;
           button.GetComponent<Image>().color = Color.gray;
         }
-        
+
         button.gameObject.SetActive(true);
         buttons.Add(button);
       }
+    }
+
+    private void OnDisable()
+    {
+      Debug.Log("TPPanel OnDisable");
+      foreach (var button in buttons) Destroy(button.gameObject);
+
+      buttons.Clear();
     }
 
     private void Teleport(SavePointData data, int pointIndex)
@@ -69,18 +66,15 @@ namespace ToB.UI.WideMap
       data.Teleport();
       transform.parent?.gameObject.SetActive(false);
       StageManager.Instance.ChangeGameState(GameState.Play);
-      SAVE.Current.SavePoints.lastSavePoint = pointIndex;
     }
-    
-    private void OnDisable()
-    {
-      Debug.Log("TPPanel OnDisable");
-      foreach (var button in buttons)
-      {
-        Destroy(button.gameObject);
-      }
-      
-      buttons.Clear();
-    }
+
+    #region Bindings
+
+    private const string Binding = "Binding";
+
+    [Foldout(Binding)] [SerializeField] private Transform buttonContainer;
+    [Foldout(Binding)] [SerializeField] private Button originButton;
+
+    #endregion
   }
 }
