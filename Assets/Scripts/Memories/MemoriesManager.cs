@@ -27,7 +27,7 @@ namespace ToB.Memories
 
         private void LoadMemoriesDataBase()
         {
-            var handle = Addressables.LoadAssetAsync<MemoriesDataSO>("MemoriesDataBase");
+            var handle = Addressables.LoadAssetAsync<MemoriesDataSO>("Assets/Data/Memories/MemoriesData.asset");
             memoriesDB = handle.WaitForCompletion();
             if (memoriesDB != null) Debug.Log("일지 DB 어드레서블로 불러오기 성공");
         }
@@ -44,6 +44,10 @@ namespace ToB.Memories
             }
 
             memoriesStates = SAVE.Current.PlayerStat.savedMemoryStates;
+            foreach (var memory in memoriesDB.memoriesDataBase)
+            {
+                memoriesStates.TryAdd(memory.id, false);
+            }
         }
 
         public void MemoryAcquired(int _id)

@@ -8,10 +8,12 @@ namespace ToB.Entities.FieldObject
 {
     public class KeyDoor: FieldObjectProgress, IInteractable
     {
+        private readonly int IsOpened = Animator.StringToHash("IsOpened");
         [SerializeField] public TMP_Text interactionText;
         [SerializeField] public SpriteRenderer DoorSR;
         [SerializeField] public Canvas Infocanvas;
         [SerializeField] public Collider2D DoorCollider;
+        [SerializeField] public Animator animator;
         public bool IsInteractable { get; set; }
         public bool isOpened;
         private ObjectAudioPlayer audioPlayer;
@@ -71,17 +73,18 @@ namespace ToB.Entities.FieldObject
         {
             interactionText.text = "";
             IsInteractable = !_opened;
-            DoorSR.enabled = !_opened;
+            //DoorSR.enabled = !_opened;
             DoorCollider.enabled = !_opened;
             Infocanvas.enabled = !_opened;
+            animator.SetBool(IsOpened, _opened);
         }
 
         private void OnTriggerEnter2D(Collider2D other)
         {
             if (other.CompareTag("Player"))
             {
-                interactionText.text = "\nF";
-                interactionText.color = Color.black;
+                interactionText.text = "F";
+                interactionText.color = Color.white;
             }
         }
         
