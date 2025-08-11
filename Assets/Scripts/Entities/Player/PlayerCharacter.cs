@@ -289,6 +289,7 @@ namespace ToB.Player
       if (IsMoving && IsFlight && DetectWall(dir))
       {
         isClimbing = true;
+        currentJumpCount = maxJumpCount;
         animator.SetBool(BOOL_CLIMB, true);
         
         if (body.linearVelocityY < wallEnduringSpeed) body.linearVelocityY = Mathf.Max(body.linearVelocityY, wallEnduringSpeed);
