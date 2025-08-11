@@ -17,6 +17,7 @@ using ToB.World;
 using ToB.Worlds;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 using AudioType = ToB.Core.AudioType;
 
@@ -222,5 +223,10 @@ namespace ToB.Scenes.Stage
     }
     
     #endregion
+
+    public void EndGame()
+    {
+      SceneManager.LoadScene("Outro");
     }
+  }
 }

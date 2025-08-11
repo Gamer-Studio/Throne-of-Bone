@@ -5,6 +5,7 @@ using TMPro;
 using ToB.IO;
 using ToB.Core;
 using ToB.Scenes.Stage;
+using ToB.UI;
 using ToB.Utils;
 using ToB.Worlds;
 using UnityEngine;
@@ -34,6 +35,8 @@ namespace ToB.Entities
         [Header("센티넬 말풍선")]
         [SerializeField] private GameObject speechBubbleRoot;
         [SerializeField] TextMeshProUGUI speechText;
+
+        private bool visited;
         
         private void Awake()
         {
@@ -54,8 +57,10 @@ namespace ToB.Entities
 
         private void PlayerEntered()
         {
-            if(SAVE.Current.Achievements.KillSentinel) return;
+            if (visited) return;
+            if(SAVE.Current != null && SAVE.Current.Achievements.KillSentinel) return;
             
+            visited = true;
             StartCoroutine(SentinelRoomCoroutine());
         }
 
@@ -89,15 +94,20 @@ namespace ToB.Entities
             yield return new WaitUntil(()=> !sentinel.IsAlive);
             
             // 센티넬 처치 기록
-            SAVE.Current.Achievements.KillSentinel = true;
+            if(SAVE.Current != null) SAVE.Current.Achievements.KillSentinel = true;
             
             AudioManager.Stop(AudioType.Background);
             StageManager.Instance.ChangeGameState(GameState.CutScene);
             
             yield return StartCoroutine(SentinelDie());
             
-            StageManager.Instance.ChangeGameState(GameState.Play);
-            
+            // StageManager.Instance.ChangeGameState(GameState.Play);
+
+            yield return new WaitForSeconds(1f);
+
+            yield return StartCoroutine(UIManager.Instance.FadeOut(3));
+
+            StageManager.Instance.EndGame();
         }
 
         IEnumerator Phase2TransitionMoment()
@@ -111,6 +121,7 @@ namespace ToB.Entities
         {
             speechBubbleRoot.SetActive(true);
             speechText.color = Color.red;
+            sentinel.dashParticle.Stop();
             
             sentinel.Phase2Aura.SendEvent("OnStop");
             yield return StartCoroutine(TextCoroutine("…아직… 끝나지 않았어…"));
@@ -197,6 +208,7 @@ namespace ToB.Entities
             yield return new WaitForSeconds(1.3f);
             Debug.Log("히트박스 키기");
             clone.Hitbox.enabled = true;
+            clone.prevHP = clone.Stat.CurrentHP;
             clone.SetTarget(StageManager.Instance.player.transform);
         }
 
@@ -211,7 +223,7 @@ namespace ToB.Entities
             clone.Hitbox.enabled = false;
             clone.Agent.enabled = false;
             clone.SetTarget(null);
-            clone.Animator.SetTrigger(EnemyAnimationString.Die);
+            clone.Animator.SetTrigger(EnemyAnimationString.CloneDie);
 
             DOVirtual.DelayedCall(1.3f, () => { clone.gameObject.SetActive(false); });
         }
