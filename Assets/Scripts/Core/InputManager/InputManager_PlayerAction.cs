@@ -64,10 +64,11 @@ namespace ToB.Core.InputManager
             else if (StageManager.Instance.CurrentState == GameState.CutScene
                      && context.performed)
             {
-                StageManager.Instance.cutSceneProcessCall = true;
+                // 스테이지 매니저에 굳이 이 필드를 만들어놓고 잊고 위에 같은 목적으로 액션도 걸어서 번잡해졌습니다. 개발 일정 관계상 이대로 둡니다. (승화) 
+                StageManager.Instance.cutSceneProcessCall = true;       
             }
             
-            if(context.performed)
+            else if(StageManager.Instance.CurrentState == GameState.Play && context.performed)
                 player?.Interact();
         }
 

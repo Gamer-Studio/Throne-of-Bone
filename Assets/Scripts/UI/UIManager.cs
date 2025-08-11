@@ -129,7 +129,7 @@ namespace ToB.UI
         public IEnumerator FadeIn(float time)
         {
             Tween t = fadePanel.DOFade(0, time);
-            yield return new WaitUntil(() => t.IsComplete());
+            yield return new WaitUntil(() => !t.IsActive() || t.IsComplete());
         }
         public IEnumerator FadeOut(float time)
         {
