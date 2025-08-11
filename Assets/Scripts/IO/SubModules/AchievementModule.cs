@@ -12,6 +12,9 @@ namespace ToB.IO.SubModules
     public bool KillRat = false;
     
     [JsonProperty]
+    public bool KillGuardian = false;
+    
+    [JsonProperty]
     public bool KillSentinel = false;
 
     #endregion
@@ -19,5 +22,13 @@ namespace ToB.IO.SubModules
     public AchievementModule(string name) : base(name)
     {
     }
+
+    public bool IsActive(string achievementName) => achievementName switch
+    {
+      nameof(KillRat) => KillRat,
+      nameof(KillGuardian) => KillGuardian,
+      nameof(KillSentinel) => KillSentinel,
+      _ => false
+    };
   }
 }
