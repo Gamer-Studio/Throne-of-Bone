@@ -3,6 +3,7 @@ using TMPro;
 using ToB.Core;
 using ToB.Entities.Skills;
 using ToB.IO;
+using ToB.IO.SubModules.SavePoint;
 using ToB.Scenes.Stage;
 using ToB.UI;
 using ToB.Utils;
@@ -58,6 +59,10 @@ namespace ToB.Entities.FieldObject
             if(!isDiscovered) BonfireDiscovered();
             else
             {
+                var savePointModule = SAVE.Current.SavePoints;
+                var pointData = new SavePointData(StageIndex, RoomIndex, room.bonfires.FindIndex(v => v == this));
+                
+                savePointModule.lastSavePoint = savePointModule.activeSavePoints.FindIndex(v => v.Equals(pointData));
                 BonfireUIPanel.SetActive(true);
                 interactionText.text = "";
                 StageManager.Instance.ChangeGameState(GameState.Dialog);
