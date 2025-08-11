@@ -4,6 +4,7 @@ using ToB.Memories;
 using ToB.UI;
 using ToB.Utils;
 using UnityEngine;
+using UnityEngine.ResourceManagement;
 
 namespace ToB.Entities.FieldObject
 {
@@ -45,6 +46,9 @@ namespace ToB.Entities.FieldObject
                 UIManager.Instance.toastUI.Show("일지를 획득했다!");
                 MemoriesManager.Instance.MemoryAcquired(memoryItemID);
                 spriteRenderer.enabled = false;
+
+                if (memoryItemID.ToString()[3] == '3') Core.ResourceManager.Instance.GiveManaToPlayer(10);
+                else Core.ResourceManager.Instance.GiveManaToPlayer(5);
             }
         }
         

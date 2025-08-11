@@ -23,16 +23,9 @@ namespace ToB.Entities.FieldObject
         [SerializeField] public float damage;
         [SerializeField] public float activeTime;
         [SerializeField] public float safeTime;
-        private bool isActivated;
+        public bool isActivated;
         private Coroutine C_SpinningTimer;
         [SerializeField] private ObjectAudioPlayer audioPlayer;
-
-        private void OnEnable()
-        {
-            if (!animator) animator = GetComponent<Animator>();
-            if (audioPlayer == null) audioPlayer = GetComponentInParent<ObjectAudioPlayer>();
-            audioPlayer.StopAll();
-        }
 
         private void SpinningCoroutine()
         {
@@ -51,15 +44,15 @@ namespace ToB.Entities.FieldObject
             {
                 isActivated = true;
                 animator.SetBool(IsActivated, true);
-                audioPlayer.Play("Saw_Trap");
+                audioPlayer.Play("Saw_Trap_Edit",true);
                 yield return new WaitForSeconds(activeTime);
 
                 isActivated = false;
                 animator.SetBool(IsActivated, false);
-                audioPlayer.Stop("Saw_Trap");
+                audioPlayer.Stop("Saw_Trap_Edit");
                 yield return new WaitForSeconds(safeTime);
             }
-
+            audioPlayer.Stop("Saw_Trap_Edit");
             isActivated = false;
             animator.SetBool(IsActivated, false);
             C_SpinningTimer = null;
@@ -80,7 +73,7 @@ namespace ToB.Entities.FieldObject
                 if (C_SpinningTimer != null) StopCoroutine(C_SpinningTimer);
                 C_SpinningTimer = null;
                 isActivated = true;
-                audioPlayer.Play("Saw_Trap", true);
+                audioPlayer.Play("Saw_Trap_Edit", true);
                 animator.SetBool(IsActivated, true);
             }
             else if (_bladeMode == BladeMode.Timed)
@@ -102,14 +95,7 @@ namespace ToB.Entities.FieldObject
         {
             GearBladeModeToggle(bladeMode);
         }
-        private void OnTriggerEnter2D(Collider2D other)
-        {
-            if (other.gameObject.CompareTag("Player") && isActivated)
-            {
-                other.Damage(damage, this);
-                other.KnockBack(knockBackPower, gameObject);
-            }
-        }
+
 
         [field: SerializeField] public bool Blockable { get; set; }
         [field: SerializeField] public bool Effectable { get; set; }

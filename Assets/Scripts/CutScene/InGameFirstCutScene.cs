@@ -8,6 +8,7 @@ using ToB.Scenes.Stage;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
+using AudioType = ToB.Core.AudioType;
 
 namespace ToB.Entities
 {
@@ -60,6 +61,8 @@ namespace ToB.Entities
 
             Grimoire.SpeechBubble.ActiveBubbleRoot(true);
             yield return null;
+            AudioManager.Stop(AudioType.Background);
+            AudioManager.Play("1.Stage", AudioType.Background);
             yield return StartCoroutine(Grimoire.Say("...일어났군요."));
             yield return StartCoroutine(Grimoire.Say("..."));
             yield return StartCoroutine(Grimoire.Say("...안심하세요. 저는 당신의 적이 아닙니다."));

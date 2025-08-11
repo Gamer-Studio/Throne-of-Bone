@@ -24,30 +24,33 @@ namespace ToB.Entities.FieldObject
             Disabled
         }
         
-        [SerializeField] private Animator animator;
-        [SerializeField] private PopUpBladeState state;
-        [SerializeField] private float activeTime;
-        [SerializeField] private float safeTime;
-        [SerializeField] private float knockBackPower;
-        [SerializeField] private float damage;
-        private float invincibleTime = 1f;
+        [SerializeField] public Animator animator;
+        [SerializeField] public PopUpBladeState state;
+        [SerializeField] public float activeTime;
+        [SerializeField] public float safeTime;
+        [SerializeField] public float knockBackPower;
+        [SerializeField] public float damage;
+        public float invincibleTime = 1f;
         
         private Coroutine C_popUpTimer;
-        private bool isActivated;
+        public bool isActivated;
         
-        private PolygonCollider2D PolygonCollider;
-        private SpriteRenderer SpriteRenderer;
+        [SerializeField] private PolygonCollider2D PolygonCollider;
+        [SerializeField] private SpriteRenderer SpriteRenderer;
         private Sprite lastSprite;
         [SerializeField] public ObjectAudioPlayer audioPlayer;
 
         private void OnEnable()
         {
-            if(!animator) animator = GetComponent<Animator>();
-            if(!PolygonCollider) PolygonCollider = GetComponent<PolygonCollider2D>();
-            if(!SpriteRenderer) SpriteRenderer = GetComponent<SpriteRenderer>();
-            if(audioPlayer == null) audioPlayer = GetComponentInParent<ObjectAudioPlayer>();
+            if(!animator) animator = GetComponentInChildren<Animator>();
+            if(!PolygonCollider) PolygonCollider = GetComponentInChildren<PolygonCollider2D>();
+            if(!SpriteRenderer) SpriteRenderer = GetComponentInChildren<SpriteRenderer>();
+            if(audioPlayer == null) audioPlayer = GetComponent<ObjectAudioPlayer>();
             lastSprite = SpriteRenderer.sprite;
-            
+        }
+
+        public override void OnLoad()
+        {
             SetState(state);
         }
 
@@ -130,15 +133,7 @@ namespace ToB.Entities.FieldObject
             animator.SetBool(IsActivated, true);
         }
         
-        private void OnTriggerStay2D(Collider2D other)
-        {
-            if (other.gameObject.CompareTag("Player") && isActivated && invincibleTime <= 0)
-            {
-                other.Damage(damage, this);
-                other.KnockBack(knockBackPower, gameObject);
-                invincibleTime = 1f;
-            }
-        }
+
 
         private void UpdateCollider()
         {

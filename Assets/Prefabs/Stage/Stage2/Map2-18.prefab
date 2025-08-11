@@ -15689,6 +15689,7 @@ MonoBehaviour:
   bonfires: []
   enemies:
     array: []
+  enemiesList: []
   links:
   - {fileID: 8781961051816788434}
   entityContainer: {fileID: 6416182101115832409}
@@ -18971,6 +18972,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d17a57e152a258843a5044db85b1d94b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  stageIndex: 0
+  roomIndex: 0
+  normalEnemyTable:
+    array: []
+  fieldObjects:
+    array: []
+  bonfires: []
+  enemies:
+    array: []
+  enemiesList: []
+  links: []
+  entityContainer: {fileID: 0}
+  <Background>k__BackingField: {fileID: 0}
+  onLoad:
+    m_PersistentCalls:
+      m_Calls: []
+  onUnload:
+    m_PersistentCalls:
+      m_Calls: []
+  onEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  onExit:
+    m_PersistentCalls:
+      m_Calls: []
+  pos: {x: 0, y: 0, z: 0}
   sentinel: {fileID: 8988177274050750132}
   location: {fileID: 2206295159978971013}
   exitBlocker: {fileID: 8604480733880965589}
@@ -19001,6 +19028,9 @@ MonoBehaviour:
     m_Bits: 64
   gizmoColor: {r: 1, g: 0, b: 0, a: 0.105882354}
   PlayerEntered: 0
+  OnPlayerEnteredUE:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!61 &7479763033036640585
 BoxCollider2D:
   m_ObjectHideFlags: 0

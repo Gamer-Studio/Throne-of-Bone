@@ -91,7 +91,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b08cb29d85ca3ee48880049b27f3d989, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  popUpBlade: {fileID: 323123105246794282}
+  popUpBlade: {fileID: 2213158079386167466}
 --- !u!1 &3064884209817520108
 GameObject:
   m_ObjectHideFlags: 0
@@ -132,10 +132,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6812208511503497810}
-  - component: {fileID: 323123105246794282}
   - component: {fileID: 212063132005875757}
   - component: {fileID: 6826590340404549569}
   - component: {fileID: 7144951914765969416}
+  - component: {fileID: 5517335981613975441}
   m_Layer: 0
   m_Name: Sprite_1
   m_TagString: Untagged
@@ -158,28 +158,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 909554331818503044}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &323123105246794282
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4366524683818364360}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8874aa1fcff12b64d85057c5e864e3a3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  room: {fileID: 0}
-  animator: {fileID: 0}
-  state: 0
-  activeTime: 3
-  safeTime: 3
-  knockBackPower: 10
-  damage: 20
-  audioPlayer: {fileID: 6950757626088679992}
-  <Blockable>k__BackingField: 0
-  <Effectable>k__BackingField: 1
 --- !u!95 &212063132005875757
 Animator:
   serializedVersion: 7
@@ -312,6 +290,19 @@ PolygonCollider2D:
       - {x: 0.03, y: 0.13499999}
       - {x: 0.03, y: 0.16499999}
   m_UseDelaunayMesh: 0
+--- !u!114 &5517335981613975441
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4366524683818364360}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c263099f9b8841b4ab5da147432b6fca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  popUpBlade: {fileID: 2213158079386167466}
 --- !u!1 &4958291124137089625
 GameObject:
   m_ObjectHideFlags: 0
@@ -322,6 +313,7 @@ GameObject:
   m_Component:
   - component: {fileID: 909554331818503044}
   - component: {fileID: 6950757626088679992}
+  - component: {fileID: 2213158079386167466}
   m_Layer: 0
   m_Name: PopUpBlade
   m_TagString: Untagged
@@ -362,6 +354,32 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sourcePool: []
   audioSourceParent: {fileID: 1958859674082178697}
+--- !u!114 &2213158079386167466
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4958291124137089625}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8874aa1fcff12b64d85057c5e864e3a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  room: {fileID: 0}
+  animator: {fileID: 212063132005875757}
+  state: 1
+  activeTime: 2
+  safeTime: 5
+  knockBackPower: 10
+  damage: 10
+  invincibleTime: 1
+  isActivated: 0
+  PolygonCollider: {fileID: 7144951914765969416}
+  SpriteRenderer: {fileID: 6826590340404549569}
+  audioPlayer: {fileID: 6950757626088679992}
+  <Blockable>k__BackingField: 0
+  <Effectable>k__BackingField: 1
 --- !u!1 &6768783189624435431
 GameObject:
   m_ObjectHideFlags: 0
