@@ -2,6 +2,7 @@ using System;
 using NaughtyAttributes;
 using ToB.Entities;
 using ToB.Entities.Interface;
+using ToB.Memories;
 using UnityEngine;
 
 namespace ToB.Entities
@@ -63,6 +64,7 @@ namespace ToB.Entities
             Animator.SetTrigger(EnemyAnimationString.Die);
             Hitbox.enabled = false;
             audioPlayer.Play("Danger_01");
+            MemoriesManager.Instance.MemoryAcquired(10000);
             FSM.ChangePattern(null);
         }
     }

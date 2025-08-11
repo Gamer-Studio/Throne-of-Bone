@@ -59,14 +59,13 @@ namespace ToB.UI
 
         private void UpdateCounter(int curCount)
         {
-            Debug.Log("Count");
             int value = curCount;
             for (int i = 0; i < 5; i++)
             {
                 // 일단 SetActive를 true한 다음
                 images[i].gameObject.SetActive(true);
                 if (i < value)
-                    images[i].color = new Color(0.8f, 0, 1, 1);
+                    images[i].color = new Color(0f, 0.6f, 1, 1);
                 else if (i < maxRangeAttackCount)
                     images[i].color = new Color(1, 1, 1, 0.5f);
                 else

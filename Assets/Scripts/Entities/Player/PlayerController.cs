@@ -21,6 +21,7 @@ namespace ToB.Player
     
     private bool isMeleeAttacking = false;
     private bool isRangedAttacking = false;
+    [ShowNativeProperty] private bool Death => character.stat.Hp <= 0;
 
     [SerializeField, ReadOnly] private float stareDirectionVertical;
     private float prevStareDirection;
@@ -73,7 +74,7 @@ namespace ToB.Player
     /// </summary>
     public void Move(InputAction.CallbackContext context)
     {
-      if(!character) return;
+      if(!character || Death) return;
       
       var input = context.ReadValue<Vector2>().x;
       if (Math.Abs(input) > 0.1f)
@@ -155,6 +156,8 @@ namespace ToB.Player
     /// </summary>
     public void Jump(InputAction.CallbackContext context)
     {
+      if(Death) return;
+      
       if (context.performed) character.Jump();
       if (context.canceled) character.CancelJump();
     }
@@ -164,6 +167,8 @@ namespace ToB.Player
     /// </summary>
     public void Dash(InputAction.CallbackContext context)
     {
+      if(Death) return;
+
       if (context.performed) character.Dash();
     }
 
@@ -174,6 +179,8 @@ namespace ToB.Player
     /// </summary>
     public void MeleeAttack(InputAction.CallbackContext context)
     {
+      if(Death) return;
+      
       if (!character.IsFlight || !context.performed)
       {
         isMeleeAttacking = context.performed;
@@ -210,11 +217,15 @@ namespace ToB.Player
     /// </summary>
     public void RangedAttack(InputAction.CallbackContext context)
     {
+      if(Death) return;
+
       isRangedAttacking = context.performed;
     }
 
     public void Block(InputAction.CallbackContext context)
     {
+      if(Death) return;
+
       if (context.performed)
       {
         if(!character.IsBlocking) character.StartBlock();
@@ -234,6 +245,8 @@ namespace ToB.Player
     /// </summary>
     public void Interaction(InputAction.CallbackContext context)
     {
+      if(Death) return;
+      
       if (context.performed)
       {
         Interact();
@@ -291,10 +304,5 @@ namespace ToB.Player
       }
     }
     #endregion
-
-    public void StopMove()
-    {
-      character.IsMoving = false;
-    }
   }
 }

@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
+using System.Diagnostics;
 using DG.Tweening;
+using ToB.Core.InputManager;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.VFX;
@@ -19,8 +21,16 @@ namespace ToB.Entities
 
         [SerializeField] private GameObject glowAnimation;
         [SerializeField] private VisualEffect glowVFX;
+        [SerializeField] NPCSpeechBubble speechBubble;
+        public NPCSpeechBubble SpeechBubble => speechBubble;
         
         Tween appearTween;
+
+        private float motionTime = 0.3f;
+        public float MotionTime => motionTime;
+        
+        private bool goNext;
+        
 
         private void Awake()
         {
@@ -40,11 +50,12 @@ namespace ToB.Entities
             }
         }
 
-        public void OnAppear()
+        public void Appear()
         {
             material.SetColor(Color1, Color.white);
             sprite.enabled = true;
             glowAnimation.SetActive(true);
+            speechBubble.SetText("");
 
             glowVFX.Play();
             
@@ -66,6 +77,20 @@ namespace ToB.Entities
 
                     glowVFX.Stop();
                 });
+        }
+
+        public IEnumerator Say(string text)
+        {
+            yield return StartCoroutine(speechBubble.SetTextLetterByLetter(text));
+            TOBInputManager.Instance.anyInteractionKeyAction += ProcessSaying;
+            yield return new WaitUntil(() => goNext);
+            TOBInputManager.Instance.anyInteractionKeyAction -= ProcessSaying;
+            goNext = false;
+        }
+
+        public void ProcessSaying()
+        {
+            goNext = true;
         }
     }
 }

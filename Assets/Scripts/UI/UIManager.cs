@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using ToB.Core;
+using ToB.UI.WideMap;
 using ToB.Utils.Singletons;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -60,7 +61,7 @@ namespace ToB.UI
                     gameOverUI.gameObject.SetActive(false);
                     effectUI.gameObject.SetActive(false);
                     toastUI.gameObject.SetActive(false);
-                    AudioManager.Play("RedClouds",AudioType.Background);
+                    AudioManager.Play("0.Title",AudioType.Background);
                     break;
                 
                 case "Intro":

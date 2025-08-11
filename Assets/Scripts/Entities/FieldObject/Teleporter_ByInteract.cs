@@ -1,8 +1,10 @@
 using System.Collections.Generic;
 using NaughtyAttributes;
 using TMPro;
+using ToB.Core;
 using ToB.Scenes.Stage;
 using UnityEngine;
+using AudioType = ToB.Core.AudioType;
 
 namespace ToB.Entities.FieldObject
 {
@@ -22,6 +24,9 @@ namespace ToB.Entities.FieldObject
         {
             StageManager.Instance.player.TPTransform = teleporterPos;
             StageManager.Instance.player.TeleportByObject();
+            AudioManager.Stop(AudioType.Background);
+            if (StageManager.Instance.CurrentStageIndex == 1) AudioManager.Play("1.Stage", AudioType.Background);
+            else if (StageManager.Instance.CurrentStageIndex == 2) AudioManager.Play("2.Stage", AudioType.Background);
         }
 
         private void OnTriggerEnter2D(Collider2D other)

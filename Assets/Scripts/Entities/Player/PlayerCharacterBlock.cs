@@ -26,6 +26,7 @@ namespace ToB.Player
     [Label("패링 발동 제한 시간"), Foldout("Block State")] public float parryTimeLimit = 0.3f;
     [Label("방어 발동 제한 시간"), Tooltip("패링 시간 제외 방어 제한 시간입니다."), Foldout("Block State")] public float blockTimeLimit = 1.7f;
     [Label("패링 상태인지"), Foldout("Block State")] public bool isParrying = false;
+    [Label("방어 무적시간"), Foldout("Block State")] public float guardImmuneTime = 0.3f;
     [Label("패링시 무적시간"), Foldout("Block State")] public float parryImmuneTime = 0.5f;
     [Label("패링시 멈추는 시간"), Foldout("Block State")] public float parryFreezeTime = 0.2f;
     [Label("패링했을 때 검기 회복량"), Foldout("Block State")] public int parryReward = 2;
@@ -98,6 +99,8 @@ namespace ToB.Player
           audioPlayer.Play($"fntgm_blade_heavy_hit_0{rand}");
           stat.Damage(damage);
           stat.tempDef -= additionalDef;
+          if (immuneTime < parryImmuneTime) immuneTime = guardImmuneTime;
+          
         }
       
         animator.SetTrigger(TRIGGER_BLOCK);
@@ -192,7 +195,7 @@ namespace ToB.Player
       else if (freezeBlockable && value >= 100)
       {
         freezeBlockable = false;
-        audioPlayer.Play("fntgm_magic_shield_04");
+        audioPlayer.Play("fntgm_magic_shield_05");
       }
     }
 

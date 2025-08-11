@@ -55,7 +55,7 @@ namespace ToB.Entities.FieldObject
         {
             yield return new WaitForSeconds(resetDuration);
             state = State.Opened;
-            animator.SetTrigger(ObstacleAnimationString.Reset);
+            //animator.SetTrigger(ObstacleAnimationString.Reset);
             
         }
 

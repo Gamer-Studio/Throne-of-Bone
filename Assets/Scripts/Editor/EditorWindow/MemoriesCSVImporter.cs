@@ -3,6 +3,8 @@ using System.Text.RegularExpressions;
 using ToB.Memories;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class MemoriesCSVImporter : EditorWindow
 {
@@ -17,14 +19,17 @@ public class MemoriesCSVImporter : EditorWindow
         false);
 
     if (GUILayout.Button("Import CSV to MemoriesDataBase"))
+    {
       if (csvFile == null || memoriesDataBase == null)
       {
         Debug.LogError("CSV 파일과 Memories Database SO를 지정해 주세요.");
         return;
       }
 
-    ImportCSV(csvFile, memoriesDataBase);
+      ImportCSV(csvFile, memoriesDataBase);
+    }
   }
+
 
   [MenuItem("Tools/Import Memories CSV")]
   public static void ShowWindow()
@@ -45,7 +50,7 @@ public class MemoriesCSVImporter : EditorWindow
 
   private void ImportCSV(TextAsset csv, MemoriesDataSO database)
   {
-    database.memoriesDataBase.Clear();
+    if (database != null) database.memoriesDataBase.Clear();
 
     var lines = csv.text.Split('\n');
 
@@ -55,7 +60,7 @@ public class MemoriesCSVImporter : EditorWindow
       if (string.IsNullOrEmpty(line)) continue;
 
       var tokens = ParseCsvLine(line);
-      if (tokens.Count < 12) continue;
+      if (tokens.Count < 4) continue;
 
       var memories = new Memories
       {
@@ -63,9 +68,8 @@ public class MemoriesCSVImporter : EditorWindow
         name = tokens[1],
         description = tokens[2],
         relatedIconFileName = tokens[3]
-        //relatedIcon = Addressables.LoadAssetAsync<Sprite>($"MemoriesImages/{memories.relatedIconFileName}")
       };
-
+      memories.relatedIcon = AssetDatabase.LoadAssetAtPath<Sprite>($"Assets/Artwork/MemoriesSprite/{memories.relatedIconFileName}.png");
       database.memoriesDataBase.Add(memories);
     }
 

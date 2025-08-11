@@ -3,6 +3,7 @@ using System.Collections;
 using DG.Tweening;
 using ToB.Entities;
 using ToB.Entities.Interface;
+using ToB.Memories;
 using UnityEngine;
 
 namespace ToB.Entities
@@ -59,6 +60,7 @@ namespace ToB.Entities
             
             Animator.SetTrigger(EnemyAnimationString.Die);
             audioPlayer.Play("Death_03");
+            MemoriesManager.Instance.MemoryAcquired(10005);
             Strategy.enabled = false;
 
             transform.DOKill();

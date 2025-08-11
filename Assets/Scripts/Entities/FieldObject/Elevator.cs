@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using ToB.Entities.Interface;
 using ToB.IO;
+using ToB.Utils;
 using UnityEngine;
 
 namespace ToB.Entities.FieldObject
@@ -32,6 +33,7 @@ namespace ToB.Entities.FieldObject
         [SerializeField] private Sprite[] sprites; // 0 UP 1 Down 2 Moving
         [SerializeField] private bool WannaGoingUp;
         [SerializeField] private GameObject InitFloorPositions;
+        private ObjectAudioPlayer audioPlayer;
 
 
        
@@ -96,6 +98,7 @@ namespace ToB.Entities.FieldObject
         private IEnumerator ElevatorMove()
         {
             IsInteractable = false;
+            audioPlayer.Play("Elevator");
             spriteRenderer.sprite = sprites[2];
 
             float speed = 0f;
@@ -161,6 +164,7 @@ namespace ToB.Entities.FieldObject
         public override void OnLoad()
         {
             WannaGoingUp = true;
+            if (audioPlayer == null) audioPlayer = GetComponent<ObjectAudioPlayer>();
         }
 
         public override JObject ToJson()

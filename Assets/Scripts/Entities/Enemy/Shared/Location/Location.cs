@@ -1,6 +1,7 @@
 using System;
 using ToB.Player;
 using UnityEngine;
+using UnityEngine.Events;
 using Random = UnityEngine.Random;
 
 namespace ToB.Entities
@@ -19,6 +20,7 @@ namespace ToB.Entities
         public event Action OnPlayerEntered;
         public event Action OnPlayerExit;
 
+        public UnityEvent OnPlayerEnteredUE;
         private void Reset()
         {
             mask = LayerMask.GetMask("Player");       
@@ -43,6 +45,7 @@ namespace ToB.Entities
             {
                 PlayerEntered = true;
                 OnPlayerEntered?.Invoke();
+                OnPlayerEnteredUE.Invoke();
             }
         }
         private void OnTriggerExit2D(Collider2D other)

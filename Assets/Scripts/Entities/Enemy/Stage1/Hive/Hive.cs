@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using NaughtyAttributes;
 using ToB.Entities;
+using ToB.Memories;
 using ToB.Utils;
 using UnityEngine;
 
@@ -26,16 +27,18 @@ namespace ToB
             
             if(!DataSO) Debug.LogError("HiveSO가 없습니다");
             
-            flies = new List<GameObject>();
+            
             
             PatrolRange.Init(DataSO.PatrolRange);
             ChaseRange.Init(DataSO.ChaseRange);
-            RangeBaseSightSensor.Init(this);
         }
 
         protected override void OnEnable()
         {
             base.OnEnable();
+            flies = new List<GameObject>();
+            RangeBaseSightSensor.Init(this);
+            
             stat.Init(this, DataSO);
         }
 
@@ -82,19 +85,29 @@ namespace ToB
             Animator.SetTrigger(EnemyAnimationString.Die);
             Hitbox.enabled = false;
             enabled = false;
-            audioPlayer.Play("hit_blood_flesh_gore_03");
+            audioPlayer.Play("hit_blood_flesh_gore_01");
+            MemoriesManager.Instance.MemoryAcquired(10002);
+        }
+
+        public override void Release()
+        {
+            foreach (var fly in flies)
+            {
+                if (fly) fly.Release();
+            }
+            base.Release();
         }
 
         public bool IsFlyInPatrolArea(Fly fly)
         {
             return (fly.transform.position - PatrolRange.transform.position).sqrMagnitude < Mathf.Pow(DataSO.PatrolRange, 2);
         }
-        private void OnDestroy()
-        {
-            foreach (var fly in flies)
-            {
-                if (fly) fly.Release();
-            }
-        }
+        // private void OnDestroy()
+        // {
+        //     foreach (var fly in flies)
+        //     {
+        //         if (fly) fly.Release();
+        //     }
+        // }
     }
 }

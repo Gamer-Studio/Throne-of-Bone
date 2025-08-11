@@ -11,7 +11,7 @@ namespace ToB.UI
     {
             [Header( "Hit Effect" )]
             [SerializeField] public Image redOverlay;
-            [SerializeField] public float hitFadeInTime = 0.1f;
+            [SerializeField] public float hitFadeInTime = 0.03f;
             [SerializeField] public float hitFadeOutTime = 0.2f;
             [SerializeField] public float hitTargetAlpha = 0.5f;
             public UnityEvent onHitEffectEnd = new();

@@ -31,6 +31,9 @@ namespace ToB.Entities.Projectiles
       private Material tilemapMaterialInstance;
       private bool IsContacted;
       private Color originalColor;
+
+      private float innerTimer;
+      private float groundCollisionIgnoreTime = 0.5f;
       public override bool Blockable => false;
       public Vector2 Direction
         {
@@ -60,23 +63,36 @@ namespace ToB.Entities.Projectiles
     
        protected override void OnTriggerEnter2D(Collider2D other)
         {
-          if ((rockHitLayers & 1 << other.gameObject.layer) == 0) return;
-          if (IsContacted) return;
+          int layer = other.gameObject.layer; // 충돌한 레이어 캐싱
           
-          Debug.Log("충돌 시퀀스 실행");
-      
-          other.KnockBack(knockBackForce, direction);
-      
-          if (other.TryGetComponent<IDamageable>(out var damageable))
+          // 플레이어, 그라운드 외의 오브젝트와 충돌 시 무시. 이미 충돌한 경우 무시
+          if ((rockHitLayers & (1 << layer)) == 0) return;
+          if (IsContacted) return;
+
+          // 그라운드와 충돌 시 스폰 후 1초동안은 충돌 무시
+          if (layer == LayerMask.NameToLayer("Ground"))
           {
-            if (gameObject.activeSelf)
-            {
-              damageable.Damage(damage, this);
-              //HitEffect(other);
-            }
+            if (Time.time - innerTimer < groundCollisionIgnoreTime) return;
           }
-          //플레이어 혹은 바닥에 충돌 시, 사라짐 코루틴 시작
-          StartCoroutine(Disappear());
+
+          // 플레이어 충돌 시 넉백 및 데미지 처리
+          if (layer == LayerMask.NameToLayer("Player"))
+          {
+            other.KnockBack(knockBackForce, direction);
+            if (other.TryGetComponent<IDamageable>(out var damageable))
+            {
+              if (gameObject.activeSelf)
+              {
+                damageable.Damage(damage, this);
+              }
+            }
+            StartCoroutine(Disappear());
+          }
+          // 그라운드와 충돌 시 바로 사라짐 시작
+          else if (layer == LayerMask.NameToLayer("Ground"))
+          {
+            StartCoroutine(Disappear());
+          }
         }
        
        private IEnumerator Disappear()
@@ -139,26 +155,14 @@ namespace ToB.Entities.Projectiles
         }
         private void OnEnable()
         {
-          //camera = Camera.main;
           trail.enabled = true;
           tilemapMaterialInstance = Instantiate(spriteRenderer.material);
           spriteRenderer.material = tilemapMaterialInstance;
           body.AddForce(Vector2.down * speed, ForceMode2D.Impulse);
           Team = Team.Enemy;
+          
+          innerTimer = Time.time;
         }
 
-       /*
-       private void FixedUpdate()
-        {
-         // body.MovePosition(body.position + direction * (speed * Time.fixedDeltaTime));
-      
-         var pos = camera.WorldToViewportPoint(transform.position);
-
-          if (pos.x < 0 || pos.x > 1 || pos.y < 0 || pos.y > 1)
-          {
-           Release();
-          }
-        }
-        */
     }
 }

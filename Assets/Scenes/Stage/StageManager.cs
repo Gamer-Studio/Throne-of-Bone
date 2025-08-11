@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Cinemachine;
 using NaughtyAttributes;
 using ToB.Core;
@@ -7,6 +8,7 @@ using ToB.Entities.FieldObject;
 using ToB.Entities.NPC;
 using ToB.IO;
 using ToB.IO.SubModules;
+using ToB.IO.SubModules.SavePoint;
 using ToB.Player;
 using ToB.UI;
 using ToB.Utils;
@@ -16,6 +18,7 @@ using ToB.Worlds;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Serialization;
+using AudioType = ToB.Core.AudioType;
 
 namespace ToB.Scenes.Stage
 {
@@ -106,16 +109,15 @@ namespace ToB.Scenes.Stage
       if (!savedInfo.Equals(SavePointData.Default))
       {
         // 저장기록이 있을 경우 마지막 저장지점에서 소환
-        int stageIndex = savedInfo.stageIndex, roomIndex = savedInfo.roomIndex;
-        var room = RoomController.LoadRoom(stageIndex, roomIndex, true);
-        var bonfire = room.bonfires[savedInfo.pointIndex];
-        player.transform.position = bonfire.TPTransform.position;
+        savedInfo.Teleport();
       }
       else
       {
         // 저장기록이 없을 경우 초기 지점에서 소환
         var room = RoomController.LoadRoom(1, 1, true);
         player.transform.position = room.transform.position.X(v => v + 12).Y(v => v - 11);
+        AudioManager.Stop(AudioType.Background);
+        AudioManager.Play("1.Stage", AudioType.Background);
       }
     }
 
@@ -201,8 +203,7 @@ namespace ToB.Scenes.Stage
     {
       if (!HasInstance) return;
       
-      foreach (var pair in RoomController.loadedRooms)
-        if(pair.Value) pair.Value.Save();
+      foreach (var pair in RoomController.loadedRooms.Where(pair => pair.Value)) pair.Value.Save();
       
       if(bonfire != null)
         SAVE.Current.SavePoints.UpdateSavePoint(bonfire);
