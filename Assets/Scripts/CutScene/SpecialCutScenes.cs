@@ -21,7 +21,9 @@ namespace ToB.CutScene
             yield return StartCoroutine(Grimoire.Say("제가 간직하고 있는 것 중, <color=#FFD300>‘영웅’<color=#FFFFFF>의 <color=#FFD300>전투 경험과 관련된 기록<color=#FFFFFF>이 있습니다."));
             yield return StartCoroutine(Grimoire.Say("그리고 지금 손에 넣은 이 마력 결정을 통해..."));
             yield return StartCoroutine(Grimoire.Say("그 기억을 당신에게 전달해 줄 수 있을지도 모릅니다."));
-
+            
+            Grimoire.SpeechBubble.ActiveBubbleRoot(false);
+            
             yield return StartCoroutine(UIManager.Instance.tutorialManager.ObtainedManaCutScene());
             StageManager.Instance.ChangeGameState(GameState.CutScene);  // 위 코루틴의 마지막에 책을 닫는데 닫을 때 게임스테이트 Play가 되기에 도로 상태 덮어쓰는 부분
 
@@ -35,6 +37,8 @@ namespace ToB.CutScene
             c = Color.black;
             c.a = 0;
             UIManager.Instance.fadePanel.color = c;
+            
+            Grimoire.SpeechBubble.ActiveBubbleRoot(true);
             
             yield return StartCoroutine(Grimoire.Say("......성공이군요."));
             yield return StartCoroutine(Grimoire.Say("당신의 몸이, 기억을 잘 받아들였습니다."));
