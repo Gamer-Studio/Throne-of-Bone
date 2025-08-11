@@ -4,6 +4,7 @@ using Cinemachine;
 using NaughtyAttributes;
 using ToB.Core;
 using ToB.Core.InputManager;
+using ToB.CutScene;
 using ToB.Entities.FieldObject;
 using ToB.Entities.NPC;
 using ToB.IO;
@@ -63,6 +64,8 @@ namespace ToB.Scenes.Stage
     [Foldout(Binding), SerializeField] private CinemachineConfiner2D confiner;
     [Foldout(Binding), SerializeField] private Transform roomContainer;
     [Foldout(Binding), SerializeField] private Camera mainCamera;
+    [field:SerializeField] public SpecialCutScenes SpecialCutScenes { get; private set; }
+
 
     #endregion
 

@@ -4,6 +4,8 @@ using ToB.Entities;
 using ToB.Entities.Effect;
 using ToB.Entities.Skills;
 using ToB.IO;
+using ToB.Scenes.Stage;
+using ToB.UI;
 using ToB.Utils;
 using ToB.Utils.Singletons;
 using UnityEngine;
@@ -131,6 +133,12 @@ namespace ToB.Core
         public void GiveManaToPlayer(int mana)
         {
             PlayerMana += mana;
+
+            if (SAVE.Current != null && SAVE.Current.Achievements.GotFirstManaCrystal)
+            {
+                SAVE.Current.Achievements.GotFirstManaCrystal = false;
+                StartCoroutine(StageManager.Instance.SpecialCutScenes.ObtainedFirstManaCutScene());
+            }
         }
         
         /// <summary>

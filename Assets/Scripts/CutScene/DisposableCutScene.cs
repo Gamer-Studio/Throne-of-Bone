@@ -23,7 +23,6 @@ namespace ToB.CutScene
 
         public void TriggerCutScene()
         {
-            Debug.Log("Trigger CutScene");
             if (visited) return;
             visited = true;
             StartCoroutine(CutSceneCoroutine());
