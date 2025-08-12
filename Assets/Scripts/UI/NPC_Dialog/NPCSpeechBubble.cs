@@ -71,6 +71,7 @@ namespace ToB
                     }
                     else
                     {
+                        textBuffer += letter;
                         speechText.text += textBuffer;
                         textBuffer = "";
                         metTag = false;
