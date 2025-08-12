@@ -63,7 +63,7 @@ namespace ToB.UI
       max = maxValue;
       if (_valueType == ValueType.Health)
       {
-        max += player.stat.Hp;
+        max = maxValue + player.stat.maxHp;
         text.text = $"{(int)player.stat.Hp} / {(int)max}";
       }
       Value = Value;
@@ -106,7 +106,7 @@ namespace ToB.UI
       switch (_valueType)
       {
         case ValueType.Health:
-          ChangeMax((int)BattleSkillManager.Instance.BSStats.MaxHp);
+          ChangeMax(BattleSkillManager.Instance.BSStats.MaxHp);
           text.text = $"{(int)player.stat.Hp} / {(int)max}";
           UpdateHPBar(player.stat.Hp);
           player.stat.onHpChanged.AddListener(UpdateHPBar);

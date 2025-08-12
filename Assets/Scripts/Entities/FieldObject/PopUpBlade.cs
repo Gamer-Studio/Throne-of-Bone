@@ -54,6 +54,11 @@ namespace ToB.Entities.FieldObject
             SetState(state);
         }
 
+        public override void OnUnLoad()
+        {
+            audioPlayer.StopAll();
+        }
+
         private void LateUpdate()
         {
             // Polygon Collider가 스프라이트 갱신에 따라 갱신되도록 함

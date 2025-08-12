@@ -28,13 +28,14 @@ namespace ToB.Entities.FieldObject
         {
             base.LoadJson(json);
             IsOpened = json.Get(nameof(IsOpened), IsOpened);
-            audioPlayer = GetComponent<ObjectAudioPlayer>();
+            if (!audioPlayer) audioPlayer = GetComponent<ObjectAudioPlayer>();
+            IsInteractable = !IsOpened;
+            animator.SetBool("IsOpened", IsOpened);
         }
         
         public override void OnLoad()
         {
-            IsInteractable = !IsOpened;
-            animator.SetBool("IsOpened", IsOpened);
+            
         }
         public override JObject ToJson()
         {

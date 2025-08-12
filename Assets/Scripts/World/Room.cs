@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using NaughtyAttributes;
 using Newtonsoft.Json.Linq;
@@ -212,8 +213,15 @@ namespace ToB.Worlds
     /// </summary>
     public void Save()
     {
-      var data = ToJson();
-      saveModule.Read(data);
+      try
+      {
+        var data = ToJson();
+        saveModule.Read(data);
+      }
+      catch (NullReferenceException e)
+      {
+        DebugSymbol.Save.Log($"Error while saving room data: {stageIndex} / {roomIndex}");
+      }
     }
 
     /// <summary>

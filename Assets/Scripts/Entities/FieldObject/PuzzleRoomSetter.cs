@@ -37,7 +37,11 @@ namespace ToB.Entities.FieldObject
         
         public override void OnLoad()
         {
-            if (IsCleared) MoveBoxToClearedPos();
+            if (IsCleared)
+            {
+                MoveBoxToClearedPos();
+                foreach (var plate in PlatesInRoom) plate.Clear();
+            }
         }
 
         
@@ -96,7 +100,12 @@ namespace ToB.Entities.FieldObject
         }
         private void MoveBoxToClearedPos()
         {
-            foreach(var box in BoxesInRoom) box.TPBoxToPos(box.ClearedPosition);
+            foreach (var box in BoxesInRoom)
+            {
+                box.TPBoxToPos(box.ClearedPosition);
+                box.BoxRigidbody.constraints = RigidbodyConstraints2D.FreezeAll;
+            }
+            
         }
 
         private void OnTriggerEnter2D(Collider2D other)

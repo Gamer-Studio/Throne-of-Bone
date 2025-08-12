@@ -22,6 +22,9 @@ namespace ToB.UI.WideMap
     private void OnEnable()
     {
       if (SAVE.Current == null || !SAVE.Current.IsLoaded) return;
+      foreach (var button in buttons) Destroy(button.gameObject);
+
+      buttons.Clear();
 
       var module = SAVE.Current.SavePoints;
 
@@ -51,13 +54,6 @@ namespace ToB.UI.WideMap
         button.gameObject.SetActive(true);
         buttons.Add(button);
       }
-    }
-
-    private void OnDisable()
-    {
-      foreach (var button in buttons) Destroy(button.gameObject);
-
-      buttons.Clear();
     }
 
     private void Teleport(SavePointData data, int pointIndex)

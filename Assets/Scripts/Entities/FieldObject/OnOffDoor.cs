@@ -59,6 +59,7 @@ namespace ToB.Entities.FieldObject
            doorMode = json.GetEnum(nameof(doorMode), doorMode);
            activeInputCount = json.Get(nameof(activeInputCount), activeInputCount);
            isOpened = json.Get(nameof(isOpened), isOpened);
+           OnOffDoorInteract(isOpened);
        }
        public override void OnLoad()
        {

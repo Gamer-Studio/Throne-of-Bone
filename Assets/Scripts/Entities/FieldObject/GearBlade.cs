@@ -96,6 +96,11 @@ namespace ToB.Entities.FieldObject
             GearBladeModeToggle(bladeMode);
         }
 
+        public override void OnUnLoad()
+        {
+            audioPlayer.StopAll();
+        }
+
 
         [field: SerializeField] public bool Blockable { get; set; }
         [field: SerializeField] public bool Effectable { get; set; }
