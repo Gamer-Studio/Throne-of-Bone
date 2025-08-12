@@ -6,6 +6,7 @@ using DG.Tweening;
 using TMPro;
 using ToB.Core;
 using ToB.Entities.Buffs;
+using ToB.World.Structures;
 using UnityEngine;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.SceneManagement;
@@ -18,7 +19,7 @@ namespace ToB.Scenes.Intro
     public static bool isLoaded { get; private set; } = false;
     
     [SerializeField] private TMP_Text loadingText;
-    Tween loadingTween;
+    private Tween loadingTween;
     private bool loadStageIsNew;
 
     private async UniTask LoadContent()
@@ -30,7 +31,8 @@ namespace ToB.Scenes.Intro
       (string name, AsyncOperationHandle loader)[] loaderList = {
         ("Shared Table", sharedTableLoader),
         ("언어 번들", stringTableHandle),
-        ("버프 데이터", Buff.Load())
+        ("버프 데이터", Buff.Load()),
+        ("생성형 오브젝트", Structure.Load())
       };
 
       foreach (var operation in loaderList)
