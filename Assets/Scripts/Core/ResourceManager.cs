@@ -135,9 +135,9 @@ namespace ToB.Core
         {
             PlayerMana += mana;
 
-            if (SAVE.Current != null && SAVE.Current.Achievements.GotFirstManaCrystal)
+            if (SAVE.Current != null && !SAVE.Current.Achievements.GotFirstManaCrystal)
             {
-                SAVE.Current.Achievements.GotFirstManaCrystal = false;
+                SAVE.Current.Achievements.GotFirstManaCrystal = true;
                 StartCoroutine(StageManager.Instance.SpecialCutScenes.ObtainedFirstManaCutScene());
             }
         }
