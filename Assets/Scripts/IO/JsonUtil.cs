@@ -32,6 +32,10 @@ namespace ToB.IO
               target.Namespace.StartsWith("ToB.IO.Converters")
         select (JsonConverter)Activator.CreateInstance(target)).ToList();
       
+      // String HashSet Register
+      
+      converters.Add(new StringHashSetConverter());
+      
       // IntEnumDictionary 대응
       var enumTypes = types
         .Where(t =>
@@ -52,7 +56,6 @@ namespace ToB.IO
           DebugSymbol.Save.Log($"[JsonEnumConverterRegistry] '{enumType.Name}' 등록 실패: {e.Message}");
         }
       }
-      
       
       if(JsonConvert.DefaultSettings is null) goto CreateSetting;
       var setting = JsonConvert.DefaultSettings?.Invoke();
