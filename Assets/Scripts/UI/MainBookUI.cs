@@ -48,7 +48,13 @@ namespace ToB.UI
         
         private void ShowPanel(int indexToShow)
         {
+            // i가 1, 3일 때 (Soul, Statstics 패널) SetActive 대신 안내 팝업 추가
             StageManager.Instance?.ChangeGameState(GameState.UI);
+            if (indexToShow == 1 || indexToShow == 3)
+            {
+                UIManager.Instance.toastUI.Show("추구 기능 추가 예정");
+                return;
+            }
             for (int i = 0; i < panelObjects.Length; i++)
             {
                 if (i == indexToShow)
@@ -110,6 +116,8 @@ namespace ToB.UI
         {
             if (context.performed)
             {
+                UIManager.Instance.toastUI.Show("추후 개방 예정!");
+                /*
                 if (gameObject.activeSelf && currentPanel == panelObjects[1])
                 {
                     CloseBook();
@@ -125,6 +133,7 @@ namespace ToB.UI
                     UIManager.Instance.panelStack.Push(this);
                     ShowPanel(1);
                 }
+                */
             }
         }
         
@@ -154,6 +163,8 @@ namespace ToB.UI
         {
             if (context.performed)
             {
+                UIManager.Instance.toastUI.Show("추후 개방 예정!");
+                /*
                 if (gameObject.activeSelf && currentPanel == panelObjects[3])
                 {
                     CloseBook();
@@ -169,6 +180,7 @@ namespace ToB.UI
                     UIManager.Instance.panelStack.Push(this);
                     ShowPanel(3);
                 }
+                */
             }
         }
 
