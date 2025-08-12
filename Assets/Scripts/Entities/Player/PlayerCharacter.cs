@@ -2,14 +2,18 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using NaughtyAttributes;
+using ToB.Core;
 using ToB.Core.InputManager;
 using ToB.Entities;
 using ToB.Entities.Buffs;
 using ToB.Entities.Interface;
+using ToB.IO;
+using ToB.Scenes.Stage;
 using ToB.UI;
 using ToB.Utils;
 using ToB.Utils.Singletons;
 using ToB.Utils.UI;
+using ToB.World.Structures;
 using ToB.Worlds;
 using UnityEngine;
 using UnityEngine.Events;
@@ -439,10 +443,25 @@ namespace ToB.Player
     /// </summary>
     public UnityEvent<float> OnHpChange => stat.onHpChanged;
 
+    private bool isDeath;
     private void OnDeathHandler()
     {
+      if (isDeath) return;
+      isDeath = true;
       
       animator.SetBool(BOOL_DEATH, true);
+
+      var deathObject = (DeathObject)Structure.Spawn(StageManager.RoomController.currentRoom, "DeathObject");
+      deathObject.transform.position = transform.position;
+
+      deathObject.gold = ResourceManager.Instance.PlayerGold;
+      deathObject.mana = ResourceManager.Instance.PlayerMana;
+      SAVE.Current.Player.deathVersion++;
+      
+      deathObject.deathVersion = SAVE.Current.Player.deathVersion;
+      
+      ResourceManager.Instance.PlayerGold = 0;
+      ResourceManager.Instance.PlayerMana = 0;
     }
 
     #endregion Event

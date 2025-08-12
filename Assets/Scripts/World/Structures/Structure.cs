@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using NaughtyAttributes;
 using Newtonsoft.Json.Linq;
 using ToB.IO;
+using ToB.IO.Converters;
 using ToB.Utils;
 using ToB.Worlds;
 using UnityEngine;
@@ -20,7 +21,7 @@ namespace ToB.World.Structures
     #region Binding
 
     private const string Binding = "Binding";
-    [Label("구조물이 배치된 방"), SerializeField, Foldout(Binding)] private Room room;
+    [Label("구조물이 배치된 방"), SerializeField, Foldout(Binding)] public Room room;
     
     #endregion
     
@@ -41,10 +42,12 @@ namespace ToB.World.Structures
 
     public virtual JObject ToJson()
     {
-      var json = new JObject();
-      
-      json.Add("type", PrefabName);
-      
+      var json = new JObject
+      {
+        [nameof(PrefabName)] = PrefabName,
+        ["position"] = transform.localPosition.ToJValue(),
+      };
+
       return json;
     }
 
@@ -93,6 +96,7 @@ namespace ToB.World.Structures
       structure.room = room;
       structure.transform.SetParent(room.transform);
       structure.PrefabName = structureName;
+      structure.name += "_" + structure.GetInstanceID();
       
       structure.transform.localPosition = Vector3.zero;
       structure.transform.localRotation = Quaternion.identity;
