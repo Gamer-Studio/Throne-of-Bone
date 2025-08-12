@@ -9,6 +9,7 @@ namespace ToB.IO.SubModules.Players
 
     #region Data
 
+    public int deathVersion = 0;
 
     #endregion
 

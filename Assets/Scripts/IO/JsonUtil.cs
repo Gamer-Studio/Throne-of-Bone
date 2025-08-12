@@ -230,14 +230,7 @@ namespace ToB.IO
     /// <param name="defaultValue">기본 Vector3 값</param>
     /// <returns>Vector3 값 또는 기본값</returns>
     public static Vector3 Get(this JObject json, string key, Vector3 defaultValue)
-    {
-      var str = json.Get(key, string.Empty);
-      var values = str.Split(',');
-
-      return !string.IsNullOrEmpty(str) ? 
-        new Vector3(float.Parse(values[0]), float.Parse(values[1]), float.Parse(values[2])) 
-        : defaultValue;
-    }
+      => json.Get<JValue>(key)?.ToVector3() ?? defaultValue;
     
     #endregion JObject
 

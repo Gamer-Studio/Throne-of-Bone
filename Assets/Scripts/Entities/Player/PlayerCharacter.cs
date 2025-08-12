@@ -2,14 +2,19 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using NaughtyAttributes;
+using ToB.Core;
 using ToB.Core.InputManager;
 using ToB.Entities;
 using ToB.Entities.Buffs;
 using ToB.Entities.Interface;
+using ToB.Entities.Skills;
+using ToB.IO;
+using ToB.Scenes.Stage;
 using ToB.UI;
 using ToB.Utils;
 using ToB.Utils.Singletons;
 using ToB.Utils.UI;
+using ToB.World.Structures;
 using ToB.Worlds;
 using UnityEngine;
 using UnityEngine.Events;
@@ -439,10 +444,25 @@ namespace ToB.Player
     /// </summary>
     public UnityEvent<float> OnHpChange => stat.onHpChanged;
 
+    private bool isDeath;
     private void OnDeathHandler()
     {
+      if (isDeath) return;
+      isDeath = true;
       
       animator.SetBool(BOOL_DEATH, true);
+
+      // 스킬 비활성화
+      BattleSkillManager.Instance.DeactivateAllSkills();
+
+      // 사망 오브젝트 생성
+      var deathObject = (DeathObject)Structure.Spawn(StageManager.RoomController.currentRoom, "DeathObject");
+      deathObject.transform.position = transform.position;
+
+      ResourceManager.Instance.GiveResourcesToCorpse(deathObject);
+      SAVE.Current.Player.deathVersion++;
+      
+      deathObject.deathVersion = SAVE.Current.Player.deathVersion;
     }
 
     #endregion Event

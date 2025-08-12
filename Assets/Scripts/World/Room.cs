@@ -320,7 +320,12 @@ namespace ToB.Worlds
 
         if (data != dummy)
         {
-          Structure.Spawn(this, key).LoadJson(data);
+          var obj = Structure.Spawn(this, data.Get("PrefabName", "dummy"));
+          obj.name = key;
+          obj.LoadJson(data);
+          var objPosition = data.Get("position", Vector3.zero);
+          obj.transform.localPosition = objPosition;
+          obj.room = this;
         }
       }
     }
