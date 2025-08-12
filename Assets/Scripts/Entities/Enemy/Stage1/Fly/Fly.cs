@@ -81,7 +81,6 @@ namespace ToB.Entities
         IEnumerator ReleaseSelf()
         {
             yield return new WaitForSeconds(2f);
-            Hive.flies.Remove(gameObject);
             gameObject.Release();
         }
 

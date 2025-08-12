@@ -9,6 +9,12 @@ namespace ToB.Entities.NPC
         [Header("Scavenger NPC")]
         [SerializeField] private DialogStringOnlySO _dialog;
 
+        enum ScavengerNPCState
+        {
+            Entry,
+            ShopSelected,
+            Exit
+        }
         public override void Interact()
         {
             base.Interact();
