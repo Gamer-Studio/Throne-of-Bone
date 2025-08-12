@@ -3,7 +3,9 @@ using Newtonsoft.Json;
 using ToB.Core;
 using ToB.Player;
 using ToB.Scenes.Stage;
+using UnityEngine;
 using AudioType = UnityEngine.AudioType;
+using Object = UnityEngine.Object;
 
 namespace ToB.IO.SubModules.SavePoint
 {
@@ -30,10 +32,18 @@ namespace ToB.IO.SubModules.SavePoint
     {
       var player = PlayerCharacter.Instance;
       var roomController = StageManager.RoomController;
+
+      foreach (var pair in roomController.loadedRooms)
+      {
+        Object.Destroy(pair.Value.gameObject);
+      }
+      
+      roomController.loadedRooms.Clear();
       
       var room = roomController.LoadRoom(stageIndex, roomIndex, true);
       var bonfire = room.bonfires[pointIndex];
       player.transform.position = bonfire.TPTransform.position;
+      Debug.Log(bonfire.TPTransform.position);
       
       AudioManager.Stop(Core.AudioType.Background);
       if (room.stageIndex == 1) AudioManager.Play("1.Stage", Core.AudioType.Background);
