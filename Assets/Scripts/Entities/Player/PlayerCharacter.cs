@@ -7,6 +7,7 @@ using ToB.Core.InputManager;
 using ToB.Entities;
 using ToB.Entities.Buffs;
 using ToB.Entities.Interface;
+using ToB.Entities.Skills;
 using ToB.IO;
 using ToB.Scenes.Stage;
 using ToB.UI;
@@ -451,6 +452,10 @@ namespace ToB.Player
       
       animator.SetBool(BOOL_DEATH, true);
 
+      // 스킬 비활성화
+      BattleSkillManager.Instance.DeactivateAllSkills();
+
+      // 사망 오브젝트 생성
       var deathObject = (DeathObject)Structure.Spawn(StageManager.RoomController.currentRoom, "DeathObject");
       deathObject.transform.position = transform.position;
 
