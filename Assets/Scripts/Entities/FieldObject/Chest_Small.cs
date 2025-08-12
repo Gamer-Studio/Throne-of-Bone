@@ -1,11 +1,12 @@
 using ToB.Core;
 using ToB.Entities.Interface;
 using ToB.Utils;
+using ToB.Worlds;
 using UnityEngine;
 
 namespace ToB.Entities.FieldObject
 {
-    public class Chest_Small : FieldObjectProgress, IDamageable
+    public class Chest_Small : FieldObjectProgress, IDamageable, IAttacker
     {
         [SerializeField] private int gold;
         [SerializeField] private int mana;
@@ -26,6 +27,10 @@ namespace ToB.Entities.FieldObject
             animator.SetBool("IsOpened", false);
             HP = 1;
             _collider.enabled = true;
+            Blockable = false;
+            Effectable = true;
+            Position = transform.position;
+            Team = Team.Enemy;
         }
         public void Damage(float damage, IAttacker sender = null)
         {
@@ -44,6 +49,9 @@ namespace ToB.Entities.FieldObject
             animator.SetBool("IsOpened", true);
             audioPlayer.Play("Wood_04");
         }
-        
+        public bool Blockable { get; set; }
+        public bool Effectable { get; set;}
+        public Vector3 Position { get; set;}
+        public Team Team { get; set;}
     }
 }

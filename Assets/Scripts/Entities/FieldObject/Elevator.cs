@@ -4,11 +4,12 @@ using Newtonsoft.Json.Linq;
 using ToB.Entities.Interface;
 using ToB.IO;
 using ToB.Utils;
+using ToB.Worlds;
 using UnityEngine;
 
 namespace ToB.Entities.FieldObject
 {
-    public class Elevator : FieldObjectProgress, IInteractable, IDamageable
+    public class Elevator : FieldObjectProgress, IInteractable, IDamageable, IAttacker
     {
 
         [Header("레버 및 엘레베이터")] [SerializeField]
@@ -222,5 +223,10 @@ namespace ToB.Entities.FieldObject
                 spriteRenderer.sprite = sprites[WannaGoingUp ? 0 : 1];
             }
         }
+
+        public bool Blockable { get; set; } = false;
+        public bool Effectable { get; set; } = false;
+        public Vector3 Position { get; set; } = default;
+        public Team Team { get; set; } = Team.Enemy;
     }
 }
