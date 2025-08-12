@@ -50,7 +50,7 @@ namespace ToB.UI.NPC_Dialog
         {
             RectTransform targetRect = current.GetComponent<RectTransform>();
             Vector3 rectPos = targetRect.position;
-            pointer.position = rectPos + new Vector3(-2.5f, 0);
+            pointer.position = rectPos + transform.localScale.x * new Vector3(-2.5f, 0);
         }
 
         public void Process()

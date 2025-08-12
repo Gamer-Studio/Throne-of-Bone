@@ -1,6 +1,7 @@
 using System.Collections;
 using Cinemachine;
 using ToB.Core;
+using ToB.Core.InputManager;
 using ToB.Scenes.Stage;
 using ToB.UI;
 using UnityEngine;
@@ -23,10 +24,12 @@ namespace ToB.CutScene
             yield return StartCoroutine(Grimoire.Say("그 기억을 당신에게 전달해 줄 수 있을지도 모릅니다."));
             
             Grimoire.SpeechBubble.ActiveBubbleRoot(false);
-            
+
+            TOBInputManager.Instance.blockUICancel = true;
             yield return StartCoroutine(UIManager.Instance.tutorialManager.ObtainedManaCutScene());
             StageManager.Instance.ChangeGameState(GameState.CutScene);  // 위 코루틴의 마지막에 책을 닫는데 닫을 때 게임스테이트 Play가 되기에 도로 상태 덮어쓰는 부분
-
+            TOBInputManager.Instance.blockUICancel = false;
+            
             Color c = Color.red;
             c.a = 0.5f;
             UIManager.Instance.fadePanel.color = c;
