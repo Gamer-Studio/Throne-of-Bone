@@ -20,7 +20,7 @@ namespace ToB.Entities.FieldObject
         public override void LoadJson(JObject json)
         {
             base.LoadJson(json);
-            WaterLevel = json.Get(nameof(WaterLevel), 0);
+            WaterLevel = json.Get(nameof(WaterLevel), 2);
         }
         
         public override void OnLoad()
@@ -44,9 +44,9 @@ namespace ToB.Entities.FieldObject
 
         private void SetWaterLevel()
         {
-            WaterLevel = 0;
-            if (_isLever1Activated) WaterLevel++;
-            if (_isLever2Activated) WaterLevel++;
+            WaterLevel = 2;
+            if (!_isLever1Activated) WaterLevel--;
+            if (!_isLever2Activated) WaterLevel--;
             WaterBlock.transform.localPosition = WaterLevelPos[WaterLevel].localPosition;
         }
 

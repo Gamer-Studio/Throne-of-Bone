@@ -16,6 +16,7 @@ namespace ToB.Entities.FieldObject
         private float ValveOpenTargetY; // 물 틀 때 시작하는 위치
         [SerializeField] public Lever LinkedLever;
         [SerializeField] public RectTransform WaterMask;
+        [SerializeField] public SpriteRenderer waterSpriteRenderer;
         
         public bool isValveActivated;
         
@@ -49,8 +50,14 @@ namespace ToB.Entities.FieldObject
 
         public override void OnLoad()
         {
+            waterSpriteRenderer.enabled = true;
             SetWaterSize();
             InitPosition();
+        }
+
+        public override void OnUnLoad()
+        {
+            waterSpriteRenderer.enabled = false;
         }
         
         public override JObject ToJson()
