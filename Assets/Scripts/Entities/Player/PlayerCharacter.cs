@@ -459,14 +459,10 @@ namespace ToB.Player
       var deathObject = (DeathObject)Structure.Spawn(StageManager.RoomController.currentRoom, "DeathObject");
       deathObject.transform.position = transform.position;
 
-      deathObject.gold = ResourceManager.Instance.PlayerGold;
-      deathObject.mana = ResourceManager.Instance.PlayerMana;
+      ResourceManager.Instance.GiveResourcesToCorpse(deathObject);
       SAVE.Current.Player.deathVersion++;
       
       deathObject.deathVersion = SAVE.Current.Player.deathVersion;
-      
-      ResourceManager.Instance.PlayerGold = 0;
-      ResourceManager.Instance.PlayerMana = 0;
     }
 
     #endregion Event

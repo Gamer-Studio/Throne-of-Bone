@@ -8,6 +8,7 @@ using ToB.Scenes.Stage;
 using ToB.UI;
 using ToB.Utils;
 using ToB.Utils.Singletons;
+using ToB.World.Structures;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
@@ -247,7 +248,7 @@ namespace ToB.Core
         
         
         #region DeathPenelty
-        /* 시체 오브젝트 클래스 만들어지면 그때 주석 해제 (Corpse)
+        // 시체 오브젝트 클래스 만들어지면 그때 주석 해제 (Corpse)
          
         /// <summary>
         /// 시체에게 자원 소지량을 전달해주는 메서드.
@@ -258,13 +259,12 @@ namespace ToB.Core
         /// 럽샷하는 경우(플레이어가 먼저 죽고 날아간 검기에 몹이 죽는다던지)의 골드/마나결정은
         /// 획득되게 할 건지, 획득하면 어떻게 처리할 것인지 같은 타이밍 이슈는 추후 생각하는 거로 하겠습니다.
         /// </summary>
-        public void GiveResourcesToCorpse(Corpse corpse)
+        public void GiveResourcesToCorpse(DeathObject obj)
         {
-            corpse.Gold = DropAllGoldsToCorpse();
-            corpse.Mana = DropAllManaToCorpse();
+            obj.gold = DropAllGoldsToCorpse();
+            obj.mana = DropAllManaToCorpse();
         }
         
-        */
         public int DropAllGoldsToCorpse()
         {
             int totalGold = PlayerGold + UsedGold;
