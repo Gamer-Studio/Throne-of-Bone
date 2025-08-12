@@ -26,7 +26,7 @@ namespace ToB.Entities.FieldObject
             StageManager.Instance.player.TeleportByObject();
             AudioManager.Stop(AudioType.Background);
             if (StageManager.Instance.CurrentStageIndex == 1) AudioManager.Play("1.Stage", AudioType.Background);
-            else if (StageManager.Instance.CurrentStageIndex == 2) AudioManager.Play("2.Stage", AudioType.Background);
+            else if (StageManager.Instance.CurrentStageIndex == 2 || StageManager.Instance.CurrentStageIndex == 0) AudioManager.Play("2.Stage", AudioType.Background);
         }
 
         private void OnTriggerEnter2D(Collider2D other)

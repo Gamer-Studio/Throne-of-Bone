@@ -111,7 +111,7 @@ namespace ToB.Entities.Skills
         // Check 1. 이미 배운 스킬인지 확인
         if (skillState == SkillState.Acquired)
         {
-            UIManager.Instance.toastUI.Show($"스킬 {id} : {skillDB.GetSkillById(id).skillName} 는 이미 배운 스킬입니다.");
+            UIManager.Instance.toastUI.Show($"스킬 : {skillDB.GetSkillById(id).skillName} 는 이미 배운 스킬입니다.");
             return false;
         }
         // Check 2. 상위 티어 스킬을 배우려고 하는가? 추후 티어정보가 저장되는 곳이 확정되면...
