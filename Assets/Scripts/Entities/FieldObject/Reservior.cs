@@ -21,6 +21,7 @@ namespace ToB.Entities.FieldObject
         {
             base.LoadJson(json);
             WaterLevel = json.Get(nameof(WaterLevel), 2);
+            WaterBlock.transform.localPosition = WaterLevelPos[WaterLevel].localPosition;
         }
         
         public override void OnLoad()
