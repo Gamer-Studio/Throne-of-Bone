@@ -72,6 +72,14 @@ namespace ToB.UI
             SceneManager.LoadScene(Defines.MainMenuScene);
         }
 
+        public void OpenSkillUI()
+        {
+            gameObject.SetActive(true);
+            UIManager.Instance.panelStack.Push(this);
+            UIManager.Instance.wideMapUI.gameObject.SetActive(false);
+            ShowPanel(0);
+        }
+
         #region InputAction
         public void SkillUIToggle(InputAction.CallbackContext context)
         {
@@ -190,7 +198,7 @@ namespace ToB.UI
 
         public override void Process(InputAction.CallbackContext context)
         {
-            throw new System.NotImplementedException();
+            
         }
         
         public override void Cancel(InputAction.CallbackContext context)

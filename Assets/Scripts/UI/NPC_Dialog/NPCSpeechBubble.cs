@@ -52,10 +52,35 @@ namespace ToB
             speechText.text = "";
             yield return null;
             canvasGroup.alpha = 1;
+
+            string textBuffer = "";
+            bool metTag = false;
             
             foreach (char letter in text)
             {
+                if (letter == '<')
+                {
+                    metTag = true;
+                }
+
+                if (metTag)
+                {
+                    if (letter != '>')
+                    {
+                        textBuffer += letter;
+                    }
+                    else
+                    {
+                        speechText.text += textBuffer;
+                        textBuffer = "";
+                        metTag = false;
+                    }
+                    continue;
+                }
+                
                 speechText.text += letter;
+                
+
                 if (skipFlag)
                 {
                     speechText.text = text;

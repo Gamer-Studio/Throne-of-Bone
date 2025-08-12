@@ -6,6 +6,7 @@ using ToB.Entities.FieldObject;
 using ToB.IO;
 using ToB.Scenes.Stage;
 using ToB.Utils;
+using ToB.World.Structures;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
@@ -28,6 +29,7 @@ namespace ToB.Worlds
     [Label("오브젝트"), Foldout(State)] public SerializableDictionary<string, FieldObjectProgress> fieldObjects = new();
     [Label("모닥불 목록"), Foldout(State)] public List<Bonfire> bonfires = new();
     [Label("인스턴스된 적"), Foldout(State), SerializeField, ReadOnly] private SerializableDictionary<Transform, Enemy> enemies = new();
+    [Label("생성형 구조물"), Foldout(State)] public List<Structure> structures = new();
     [SerializeField] private List<Enemy> enemiesList = new();
     
     #endregion
@@ -248,24 +250,14 @@ namespace ToB.Worlds
     /// </summary>
     public virtual void Unload()
     {
-      // foreach (var pair in enemies)
-      // {
-      //   if(pair.Value)
-      //     pair.Value.Release();
-      // }
-
       foreach (var enemy in enemiesList)
-      {
-        //Debug.Log(enemy.GetType().Name + " is trying to Release");
         enemy.Release();
-      }
       
       enemies.Clear();
       
       Save();
       
       onUnload?.Invoke();
-      // Destroy(gameObject);
     }
     
     /// <summary>
@@ -306,18 +298,37 @@ namespace ToB.Worlds
     
     #region Serialization
     
+    /// <summary>
+    /// 방 로딩 전 호출됩니다.
+    /// </summary>
+    /// <param name="json"></param>
     public void LoadJson(JObject json)
     {
       var dummy = new JObject();
       var objects = json.Get(nameof(fieldObjects), dummy);
+      var structureData = json.Get(nameof(structures), dummy);
 
       foreach (var pair in fieldObjects)
       {
         pair.Value.room = this;
         pair.Value.LoadJson(objects.Get(pair.Key, dummy));
       }
+
+      foreach (var (key, token) in structureData)
+      {
+        var data = token.Get(dummy);
+
+        if (data != dummy)
+        {
+          Structure.Spawn(this, key).LoadJson(data);
+        }
+      }
     }
 
+    /// <summary>
+    /// 방 저장 전 호출됩니다.
+    /// </summary>
+    /// <returns></returns>
     public JObject ToJson()
     {
       var objects = new JObject();
@@ -327,8 +338,14 @@ namespace ToB.Worlds
       {
         objects[pair.Key] = pair.Value.ToJson();
       }
+      
+      var structureData = new JObject();
+      
+      foreach (var structure in structures)
+        structureData[structure.name] = structure.ToJson();
 
       result[nameof(fieldObjects)] = objects;
+      result[nameof(structures)] = structureData;
       
       return result;
     }

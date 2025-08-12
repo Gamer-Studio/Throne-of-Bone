@@ -27,6 +27,9 @@ namespace ToB.UI
         public ToastUI toastUI;
 
         public Image fadePanel;
+        public GameObject rayBlocker;
+        
+        public TutorialManager tutorialManager;
 
         [SerializeField] private EventSystem eventSystem;
         

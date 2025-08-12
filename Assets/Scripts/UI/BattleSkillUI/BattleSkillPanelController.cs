@@ -1,3 +1,4 @@
+using System;
 using ToB.Entities.Skills;
 using UnityEngine;
 using UnityEngine.UI;
@@ -33,6 +34,7 @@ namespace ToB.UI
         private int selectedSkillID;
         private Button selectedButton;
         
+        public static event Action OnSkillLearned;
         
         [Header("나머지 버튼들")]
         [SerializeField] private Button LearnButton;
@@ -165,6 +167,7 @@ namespace ToB.UI
             // 실패 시 갱신 안하고 성공 시 정보 갱신
             selectedButton.GetComponent<EverySkillButtons>().UpdateButtonImage();
             SelectedSkillTextUpdate();
+            OnSkillLearned?.Invoke();
         }
         
         public void OnExitButtonClick()
