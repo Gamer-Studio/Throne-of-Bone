@@ -121,6 +121,8 @@ namespace ToB.Scenes.Stage
         var room = RoomController.LoadRoom(1, 1, true);
         player.transform.position = room.transform.position.X(v => v + 12).Y(v => v - 11);
       }
+
+      player.stat.Hp = player.stat.maxHp + player.stat.tempMaxHP;
     }
 
     private void Start()
