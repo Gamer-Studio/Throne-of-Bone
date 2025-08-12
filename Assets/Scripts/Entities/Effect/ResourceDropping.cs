@@ -2,6 +2,7 @@ using UnityEngine;
 using DG.Tweening;
 using ToB.Core;
 using ToB.Player;
+using ToB.Scenes.Stage;
 using ToB.Utils;
 using AudioType = ToB.Core.AudioType;
 
@@ -58,7 +59,7 @@ namespace ToB.Entities.Effect
             if (isCollectableByPlayer)
             {
                 Vector2 direction = (player.transform.position - transform.position);
-                if (direction.sqrMagnitude < 0.1f)
+                if (direction.sqrMagnitude < 0.1f && StageManager.Instance.CurrentState == GameState.Play)
                 {
                     if (resourceType == InfiniteResourceType.Gold)
                         ResourceManager.Instance.GiveGoldToPlayer(amount);
