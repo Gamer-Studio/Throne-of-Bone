@@ -27,7 +27,7 @@ namespace ToB.UI
             rectTransform = GetComponent<RectTransform>();
             image = GetComponentInChildren<Image>();
             image.color = Color.black;
-            this.gameObject.SetActive(false);
+            this.gameObject.SetActive(true);
             basePos = rectTransform.localPosition;
         }
 

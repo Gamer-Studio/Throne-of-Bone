@@ -5634,8 +5634,6 @@ MonoBehaviour:
         m_EditorAssetChanged: 0
   fieldObjects:
     array:
-    - Key: Sprite_1
-      Value: {fileID: 60621288865789961}
     - Key: Chest_Large
       Value: {fileID: 216070301319052115}
     - Key: Chest_Small
@@ -5646,6 +5644,12 @@ MonoBehaviour:
       Value: {fileID: 2282066554891103663}
     - Key: Reservior
       Value: {fileID: 87252020193375965}
+    - Key: PopUpBlade (1)
+      Value: {fileID: 806667752841883302}
+    - Key: PopUpBlade (2)
+      Value: {fileID: 1880850914458600073}
+    - Key: PopUpBlade
+      Value: {fileID: 7153678496409103266}
   bonfires: []
   enemies:
     array: []
@@ -11966,6 +11970,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2213158079386167466, guid: 54a7e472dba2b084cabd5f04aad77c78, type: 3}
+      propertyPath: room
+      value: 
+      objectReference: {fileID: 4396329301837953947}
     - target: {fileID: 4958291124137089625, guid: 54a7e472dba2b084cabd5f04aad77c78, type: 3}
       propertyPath: m_Name
       value: PopUpBlade (2)
@@ -11975,9 +11983,14 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 54a7e472dba2b084cabd5f04aad77c78, type: 3}
---- !u!114 &60621288865789961 stripped
+--- !u!4 &591038788913496487 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 909554331818503044, guid: 54a7e472dba2b084cabd5f04aad77c78, type: 3}
+  m_PrefabInstance: {fileID: 336829327614093859}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1880850914458600073 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 323123105246794282, guid: 54a7e472dba2b084cabd5f04aad77c78, type: 3}
+  m_CorrespondingSourceObject: {fileID: 2213158079386167466, guid: 54a7e472dba2b084cabd5f04aad77c78, type: 3}
   m_PrefabInstance: {fileID: 336829327614093859}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
@@ -11986,11 +11999,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8874aa1fcff12b64d85057c5e864e3a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!4 &591038788913496487 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 909554331818503044, guid: 54a7e472dba2b084cabd5f04aad77c78, type: 3}
-  m_PrefabInstance: {fileID: 336829327614093859}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1551326795133748748
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -12047,6 +12055,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 180
       objectReference: {fileID: 0}
+    - target: {fileID: 2213158079386167466, guid: 54a7e472dba2b084cabd5f04aad77c78, type: 3}
+      propertyPath: room
+      value: 
+      objectReference: {fileID: 4396329301837953947}
     - target: {fileID: 4958291124137089625, guid: 54a7e472dba2b084cabd5f04aad77c78, type: 3}
       propertyPath: m_Name
       value: PopUpBlade (1)
@@ -12056,6 +12068,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 54a7e472dba2b084cabd5f04aad77c78, type: 3}
+--- !u!114 &806667752841883302 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2213158079386167466, guid: 54a7e472dba2b084cabd5f04aad77c78, type: 3}
+  m_PrefabInstance: {fileID: 1551326795133748748}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8874aa1fcff12b64d85057c5e864e3a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &1808205527063965064 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 909554331818503044, guid: 54a7e472dba2b084cabd5f04aad77c78, type: 3}
@@ -12796,6 +12819,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2213158079386167466, guid: 54a7e472dba2b084cabd5f04aad77c78, type: 3}
+      propertyPath: room
+      value: 
+      objectReference: {fileID: 4396329301837953947}
     - target: {fileID: 4958291124137089625, guid: 54a7e472dba2b084cabd5f04aad77c78, type: 3}
       propertyPath: m_Name
       value: PopUpBlade
@@ -12805,6 +12832,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 54a7e472dba2b084cabd5f04aad77c78, type: 3}
+--- !u!114 &7153678496409103266 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2213158079386167466, guid: 54a7e472dba2b084cabd5f04aad77c78, type: 3}
+  m_PrefabInstance: {fileID: 9074840372265976584}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8874aa1fcff12b64d85057c5e864e3a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &8173802307817580684 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 909554331818503044, guid: 54a7e472dba2b084cabd5f04aad77c78, type: 3}

@@ -4,6 +4,7 @@ using DG.Tweening;
 using TMPro;
 using ToB.IO;
 using ToB.Core;
+using ToB.Memories;
 using ToB.Scenes.Stage;
 using ToB.UI;
 using ToB.Utils;
@@ -119,6 +120,7 @@ namespace ToB.Entities
 
         IEnumerator SentinelDie()
         {
+            MemoriesManager.Instance.MemoryAcquired(2003);
             speechBubbleRoot.SetActive(true);
             speechText.color = Color.red;
             sentinel.dashParticle.Stop();
