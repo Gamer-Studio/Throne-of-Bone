@@ -127,9 +127,9 @@ namespace ToB.Entities.FieldObject
                     break;
                 }
 
+                audioPlayer.Stop("Elevator");
                 yield return new WaitForFixedUpdate();
             }
-            
             spriteRenderer.sprite = sprites[WannaGoingUp ? 0 : 1];
             IsInteractable = true;
             C_Move = null;

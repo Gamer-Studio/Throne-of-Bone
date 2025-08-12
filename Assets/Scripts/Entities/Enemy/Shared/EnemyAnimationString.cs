@@ -14,6 +14,7 @@ namespace ToB.Entities
         public static readonly int Attack = Animator.StringToHash("Attack");
         public static readonly int SpecialAttack = Animator.StringToHash("SpecialAttack");
         public static readonly int Die = Animator.StringToHash("Die");
+        public static readonly int CloneDie = Animator.StringToHash("CloneDie");
         public static readonly int Sleep = Animator.StringToHash("Sleep");
         public static readonly int WakeUp = Animator.StringToHash("WakeUp");
         public static readonly int Bark = Animator.StringToHash("Bark");

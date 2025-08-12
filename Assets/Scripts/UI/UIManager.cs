@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using ToB.Core;
 using ToB.UI.WideMap;
 using ToB.Utils.Singletons;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using AudioType = ToB.Core.AudioType;
 
 namespace ToB.UI
@@ -23,6 +25,8 @@ namespace ToB.UI
         public GameOverUI gameOverUI;
         public EffectUI effectUI;
         public ToastUI toastUI;
+
+        public Image fadePanel;
 
         [SerializeField] private EventSystem eventSystem;
         
@@ -119,5 +123,22 @@ namespace ToB.UI
         {
             gameOverUI.Init();
         }
+        
+        #region FadeFX
+
+        public IEnumerator FadeIn(float time)
+        {
+            Tween t = fadePanel.DOFade(0, time);
+            yield return new WaitUntil(() => !t.IsActive() || t.IsComplete());
+        }
+        public IEnumerator FadeOut(float time)
+        {
+            Tween t = fadePanel.DOFade(1, time);
+            yield return new WaitUntil(() => !t.IsActive() || t.IsComplete());
+            
+        }
+        
+        
+        #endregion
     }
 }

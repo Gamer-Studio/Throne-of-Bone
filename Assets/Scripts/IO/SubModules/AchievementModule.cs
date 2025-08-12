@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Newtonsoft.Json;
 
 namespace ToB.IO.SubModules
@@ -16,6 +17,9 @@ namespace ToB.IO.SubModules
     
     [JsonProperty]
     public bool KillSentinel = false;
+
+    [JsonProperty] 
+    private HashSet<string> completedCutScene = new();
 
     #endregion
 

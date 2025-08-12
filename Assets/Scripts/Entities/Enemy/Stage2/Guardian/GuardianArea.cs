@@ -64,7 +64,6 @@ namespace ToB.Entities
             {
                 StartCoroutine(WaitUntilGuardiansDefeated(() =>
                 {
-                    Debug.Log("Hi");
                     isCleared = true;
                     exitBlocker.SetActive(false);
                     areaDetection.OnPlayerEntered -= PlayerEntered;

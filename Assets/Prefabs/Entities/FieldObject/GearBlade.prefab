@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1690372497931416953}
   - component: {fileID: 8550297840772156907}
+  - component: {fileID: 5008186184679663503}
   m_Layer: 0
   m_Name: GearBlade
   m_TagString: Untagged
@@ -48,6 +49,29 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sourcePool: []
   audioSourceParent: {fileID: 4804823075997452362}
+--- !u!114 &5008186184679663503
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 615435710570820959}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c58bdd6f0ebd434981d27244bbdfd59d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  room: {fileID: 0}
+  animator: {fileID: 6142571737349297260}
+  bladeMode: 0
+  knockBackPower: 3
+  damage: 10
+  activeTime: 3
+  safeTime: 3
+  isActivated: 0
+  audioPlayer: {fileID: 8550297840772156907}
+  <Blockable>k__BackingField: 0
+  <Effectable>k__BackingField: 1
 --- !u!1 &3029763620782399898
 GameObject:
   m_ObjectHideFlags: 0
@@ -119,10 +143,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 250562720065888540}
-  - component: {fileID: 3719059229264598709}
   - component: {fileID: 8122195790593190466}
   - component: {fileID: 1961030354269062810}
   - component: {fileID: 6142571737349297260}
+  - component: {fileID: 8262436991146278043}
   m_Layer: 0
   m_Name: Sprite_1
   m_TagString: Untagged
@@ -146,28 +170,6 @@ Transform:
   - {fileID: 1286445895478496690}
   m_Father: {fileID: 1690372497931416953}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3719059229264598709
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7973554986635608453}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c58bdd6f0ebd434981d27244bbdfd59d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  room: {fileID: 0}
-  animator: {fileID: 0}
-  bladeMode: 1
-  knockBackPower: 10
-  damage: 20
-  activeTime: 3
-  safeTime: 3
-  audioPlayer: {fileID: 8550297840772156907}
-  <Blockable>k__BackingField: 0
-  <Effectable>k__BackingField: 1
 --- !u!212 &8122195790593190466
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -281,3 +283,16 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &8262436991146278043
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7973554986635608453}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66f7f43aada9441dacf1acc07548c796, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gearBlade: {fileID: 5008186184679663503}

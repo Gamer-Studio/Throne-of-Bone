@@ -116,7 +116,7 @@ namespace ToB.Player
     {
       if(!IsBlockable || IsMoving) return;
 
-      stat.BlockEnergy -= requireBlockEnergy + BattleSkillManager.Instance.BSStats.GuardGaugeDiscount;
+      stat.BlockEnergy -= requireBlockEnergy - BattleSkillManager.Instance.BSStats.GuardGaugeDiscount;
       blockCoroutine = StartCoroutine(BlockCoroutine());
     }
     

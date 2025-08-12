@@ -17,7 +17,7 @@ namespace ToB.Entities.FieldObject
         public override void LoadJson(JObject json)
         {
             base.LoadJson(json);
-            ClearedPosition = json.Get(nameof(ClearedPosition), Vector3.zero);
+            ClearedPosition = json.Get(nameof(ClearedPosition), transform.localPosition);
         }
 
         public override JObject ToJson()
@@ -30,8 +30,7 @@ namespace ToB.Entities.FieldObject
         
         public void SaveClearedBoxPos()
         {
-            if (ClearedPosition != Vector3.zero)
-                ClearedPosition = transform.position;
+            ClearedPosition = transform.localPosition;
             IsRoomCleared = true;
             BoxRigidbody.constraints = RigidbodyConstraints2D.FreezeAll;
         }
@@ -62,7 +61,7 @@ namespace ToB.Entities.FieldObject
         private Coroutine pushImmuneCoroutine;
         private void OnCollisionStay2D(Collision2D other)
         {
-            if (other.gameObject.CompareTag("Player") && StageManager.Instance.player.IsDashing)
+            if (other.gameObject.CompareTag("Player") && StageManager.Instance.player.IsDashing && !IsRoomCleared)
             {
                 PushImmune();
             }

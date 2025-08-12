@@ -25,12 +25,14 @@ namespace ToB.Entities.FieldObject
 
     public class OnOffDoor : FieldObjectProgress
     {
+       private readonly int Opened = Animator.StringToHash("IsOpened");
        [SerializeField] private List<Lever> levers = new List<Lever>();
        [SerializeField] private List<PressurePlate> pressurePlates = new List<PressurePlate>();
        
        private int activeInputCount;
        [SerializeField] private DoorMode doorMode;
        [SerializeField] private bool isOpened;
+       [SerializeField] private Animator animator;
        private ObjectAudioPlayer audioPlayer;
        public bool IsOpened
        {
@@ -113,7 +115,7 @@ namespace ToB.Entities.FieldObject
        /// </summary>
        private void UpdateDoorState()
        {
-           DoorImage.color = isOpened ? new Color(1,1,1,0.3f) : Color.yellow;
+           animator.SetBool(Opened, isOpened);
            _collider.enabled = !isOpened;
        }
        

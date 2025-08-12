@@ -290,6 +290,7 @@ namespace ToB.Player
       if (IsMoving && IsFlight && DetectWall(dir))
       {
         isClimbing = true;
+        currentJumpCount = maxJumpCount;
         animator.SetBool(BOOL_CLIMB, true);
         
         if (body.linearVelocityY < wallEnduringSpeed) body.linearVelocityY = Mathf.Max(body.linearVelocityY, wallEnduringSpeed);
@@ -504,7 +505,7 @@ namespace ToB.Player
     private IEnumerator JumpCoroutine(float power)
     {
       animator.SetTrigger(TRIGGER_JUMP);
-      audioPlayer.Play("Jump_woosh");
+      audioPlayer.Play("Jump_woosh_Edit");
 
       if (isClimbing)
       {

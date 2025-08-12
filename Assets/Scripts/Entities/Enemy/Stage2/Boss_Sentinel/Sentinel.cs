@@ -35,6 +35,9 @@ namespace ToB.Entities
         [Header("영역 컴포넌트")] 
         [SerializeField] private SentinelArea area;
        
+        [Header("닷지 앤 대시")]
+        [SerializeField] public ParticleSystem dashParticle;
+        
         [Header("점프 슬램")]
         [SerializeField] private GameObject shockwavePrefab;
         [SerializeField] private VisualEffect shockwaveEffect;
@@ -65,6 +68,12 @@ namespace ToB.Entities
             Agent.BlackboardReference.SetVariableValue("ShieldCooldown", DataSO.BarrierCooldown);
             SpecialAttackQueue = new Queue<float>();
             shockwaveEffect.Stop();
+
+            for (int i = 0; i < 20; i++)
+            {
+                GameObject waveObj = shockwavePrefab.Pooling();
+                waveObj.SetActive(false);
+            }
         }
 
         protected override void OnEnable()
@@ -107,6 +116,7 @@ namespace ToB.Entities
             else
             {
                 float deltaHP = prevHP - Stat.CurrentHP;
+                Debug.Log(prevHP + " || " + Stat.CurrentHP);
                 original.Stat.ChangeHP(-deltaHP);
                 prevHP = Stat.CurrentHP;
             }

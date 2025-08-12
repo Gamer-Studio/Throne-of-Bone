@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using TMPro;
 using ToB.Core.InputManager;
+using ToB.UI;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,7 +16,8 @@ namespace ToB
         [SerializeField] private RectTransform InteractShortcutIcon;
         
         [SerializeField] RectTransform thisRectTransform;
-
+        [SerializeField] private WorldSpaceUIScaler scaler;
+        
         public bool skipFlag;
         private void Reset()
         {
@@ -25,6 +27,7 @@ namespace ToB
         private void Awake()
         {
             canvasGroup.alpha = 0;
+            if(scaler) scaler.ScaleChangedAction += RebuildLayout;
         }
 
         public void SetText(string text)
@@ -85,7 +88,11 @@ namespace ToB
             if(thisRectTransform) LayoutRebuilder.ForceRebuildLayoutImmediate(thisRectTransform);
             Canvas.ForceUpdateCanvases();   
             RePositionShortcutIcon();
-            
+        }
+
+        private void OnDestroy()
+        {
+            if(scaler) scaler.ScaleChangedAction -= RebuildLayout;
         }
     }
 }
