@@ -7,6 +7,7 @@ using ToB.Core;
 using ToB.Core.InputManager;
 using ToB.Entities.FieldObject;
 using ToB.IO;
+using ToB.Memories;
 using ToB.Scenes.Stage;
 using ToB.Worlds;
 using UnityEditor;
@@ -127,6 +128,7 @@ namespace ToB.Entities
 
             OpenDoors();
             AudioManager.Play("1.Stage",AudioType.Background);
+            MemoriesManager.Instance.MemoryAcquired(1003);
         }
 
         private void CloseDoors()
