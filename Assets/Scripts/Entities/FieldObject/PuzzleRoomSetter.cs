@@ -37,7 +37,11 @@ namespace ToB.Entities.FieldObject
         
         public override void OnLoad()
         {
-            if (IsCleared) MoveBoxToClearedPos();
+            if (IsCleared)
+            {
+                MoveBoxToClearedPos();
+                foreach (var plate in PlatesInRoom) plate.Clear();
+            }
         }
 
         

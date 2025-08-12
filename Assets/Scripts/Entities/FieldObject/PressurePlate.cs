@@ -38,6 +38,7 @@ namespace ToB.Entities.FieldObject
         public void Clear()
         {
             IsCleared = true;
+            IsActivated = true;
             SetPlateSprite(plateType, IsCleared);
             objectCount = 0;
             SetColliderWidth(0);
@@ -70,7 +71,7 @@ namespace ToB.Entities.FieldObject
         
         private void SetPlateSprite(PlateType type, bool isActivated = false)
         {
-            onPlateActivated?.Invoke(IsActivated);
+            onPlateActivated?.Invoke(isActivated);
             switch (type)
             {
                 case PlateType.Stone:

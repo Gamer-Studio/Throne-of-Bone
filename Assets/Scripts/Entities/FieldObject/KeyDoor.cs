@@ -30,6 +30,7 @@ namespace ToB.Entities.FieldObject
         {
             base.LoadJson(json);
             isOpened = json.Get(nameof(isOpened), isOpened);
+            InitState();
             
         }
         
