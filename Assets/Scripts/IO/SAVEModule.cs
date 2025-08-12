@@ -97,8 +97,17 @@ namespace ToB.IO
       foreach (var (key, value) in data)
       {
         if (value is null) continue;
-        
-        this[key] = value;
+
+        try
+        {
+          this[key] = value;
+        }
+        catch (NullReferenceException)
+        {
+          DebugSymbol.Save.Log(value);
+          DebugSymbol.Save.Log($"[SAVE-{name}] Error while reading {key}.");
+          throw;
+        }
       }
     }
     
