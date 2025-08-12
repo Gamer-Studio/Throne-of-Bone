@@ -10,7 +10,7 @@ namespace ToB.IO.SubModules
     #region Data
 
     [JsonProperty]
-    public bool GotFirstManaCrystal = true;
+    public bool GotFirstManaCrystal = false;
     
     [JsonProperty]
     public bool KillRat = false;
