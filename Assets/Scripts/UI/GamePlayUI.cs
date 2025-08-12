@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using DG.Tweening;
 using ToB.Entities.Skills;
+using ToB.Scenes.Stage;
 
 namespace ToB.UI
 {
@@ -39,19 +40,21 @@ namespace ToB.UI
         #region TestButton
         public void TestGoldAddButton()
         {
-            ResourceManager.Instance.GiveGoldToPlayer(100);
+            ResourceManager.Instance.GiveGoldToPlayer(900000);
         }
         public void TestManaAddButton()
         {
             ResourceManager.Instance.GiveManaToPlayer(100);
         }
-        public void TestGoldSubButton()
+        public void TestPlayerInvincibleBtn()
         {
-            ResourceManager.Instance.IsPlayerHaveEnoughResources(50,0);
+            StageManager.Instance.player.invincibility = true;
+            UIManager.Instance.toastUI.Show("테스트용 플레이어 무적 활성화");
         }
-        public void TestManaSubButton()
+        public void TestPlayerInvinOffBtn()
         {
-            ResourceManager.Instance.IsPlayerHaveEnoughResources(10,50);       
+            StageManager.Instance.player.invincibility = false;
+            UIManager.Instance.toastUI.Show("테스트용 플레이어 무적 비활성화");
         }
 
         public void TestKeyAddButton()
