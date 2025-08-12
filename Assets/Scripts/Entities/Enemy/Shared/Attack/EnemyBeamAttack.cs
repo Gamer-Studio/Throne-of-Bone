@@ -51,8 +51,11 @@ namespace ToB.Entities
         {
             foreach (var obj in objects)
             {
-                obj.Damage(damage, this);
-                obj.KnockBack(1, new  Vector2(obj.transform.eulerAngles.y == 0 ? 1 : -1, 0));
+                if (obj.TryGetComponent<IAttacker>(out IAttacker atk) && atk.Team != Team.Enemy)
+                {
+                    obj.Damage(damage, this);
+                    obj.KnockBack(1, new Vector2(obj.transform.eulerAngles.y == 0 ? 1 : -1, 0));
+                }
             }
         }
 
@@ -60,8 +63,11 @@ namespace ToB.Entities
         {
             foreach (var obj in objects)
             {
-                obj.Damage(endDamage, this);
-                obj.KnockBack(8, new  Vector2(obj.transform.eulerAngles.y == 0 ? 1 : -1, 0));
+                if (obj.TryGetComponent<IAttacker>(out IAttacker atk) && atk.Team != Team.Enemy)
+                {
+                    obj.Damage(endDamage, this);
+                    obj.KnockBack(8, new Vector2(obj.transform.eulerAngles.y == 0 ? 1 : -1, 0));
+                }
             }
         }
     }

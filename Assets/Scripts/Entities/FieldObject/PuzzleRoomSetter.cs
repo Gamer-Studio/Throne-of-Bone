@@ -96,7 +96,12 @@ namespace ToB.Entities.FieldObject
         }
         private void MoveBoxToClearedPos()
         {
-            foreach(var box in BoxesInRoom) box.TPBoxToPos(box.ClearedPosition);
+            foreach (var box in BoxesInRoom)
+            {
+                box.TPBoxToPos(box.ClearedPosition);
+                box.BoxRigidbody.constraints = RigidbodyConstraints2D.FreezeAll;
+            }
+            
         }
 
         private void OnTriggerEnter2D(Collider2D other)
