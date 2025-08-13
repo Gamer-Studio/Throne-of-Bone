@@ -116,11 +116,12 @@ namespace ToB.Entities
         IEnumerator SentinelDie()
         {
             MemoriesManager.Instance.MemoryAcquired(2003);
-            speechBubbleRoot.SetActive(true);
-            speechText.color = Color.red;
             sentinel.dashParticle.Stop();
 
             yield return new WaitForSeconds(2);
+            
+            speechBubbleRoot.SetActive(true);
+            speechText.color = Color.red;
             sentinel.Phase2Aura.SendEvent("OnStop");
             yield return StartCoroutine(TextCoroutine("…아직… 끝나지 않았어…"));
             yield return StartCoroutine(TextCoroutine("지켜야 해… 지켜야 해…"));
