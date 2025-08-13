@@ -9,7 +9,8 @@ namespace ToB
         private  Vector2 camOriginPos;
         private Vector2 bgOriginPos;
 
-        public float weight = 0.975f;
+        public float horizontalWeight = 0.975f;
+        public float verticalWeight = 0.975f;
         private void Awake()
         {
             camOriginPos = new Vector2(10.26434f, -12.39999f);
@@ -19,7 +20,7 @@ namespace ToB
         private void LateUpdate()
         {
             Vector2 posDiff = (Vector2)Camera.main.transform.position - camOriginPos;
-            transform.position = bgOriginPos + posDiff * weight;
+            transform.position = bgOriginPos + new Vector2(posDiff.x * horizontalWeight, posDiff.y * verticalWeight);
         }
     }
 }

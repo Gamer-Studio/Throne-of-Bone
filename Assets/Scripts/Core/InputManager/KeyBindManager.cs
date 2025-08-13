@@ -18,7 +18,8 @@ namespace ToB.Core.InputManager
 
         public void LoadKeySettings()
         {
-            DebugSymbol.ETC.Log(KeyBindsFilePath);
+            // 심볼이 어플 킬때 강제로 꺼져서 풀었습니다
+            Debug.Log(KeyBindsFilePath);
             if (!File.Exists(KeyBindsFilePath))
             {
                 DebugSymbol.ETC.Log("사전 키셋팅이 없어 기본값을 불러옵니다.");

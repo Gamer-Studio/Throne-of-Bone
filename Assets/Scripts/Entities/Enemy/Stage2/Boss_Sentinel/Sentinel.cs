@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
@@ -8,6 +9,7 @@ using ToB.Utils;
 using Unity.Behavior;
 using UnityEngine;
 using UnityEngine.VFX;
+using Random = UnityEngine.Random;
 
 namespace ToB.Entities
 {
@@ -55,6 +57,7 @@ namespace ToB.Entities
         public Coroutine attackCoroutine;
 
         public bool BubbleAttackEnd { get; private set; }
+        public bool groundMoving;
 
         [Header("클론 전용 필드")] 
         public bool isClone;
@@ -102,6 +105,17 @@ namespace ToB.Entities
 
             Agent.BlackboardReference.SetVariableValue("JumpSlamChargeTime", 2f);
             Agent.BlackboardReference.SetVariableValue("Phase", 1);
+        }
+
+        private void Update()
+        {
+            if (groundMoving &&
+                Physics.IsLedgeOnSide(
+                    DirectionUtil.GetHorizontalDirection(Physics.externalVelocity[EnemyPhysicsKeys.MOVE])))
+            {
+                Physics.externalVelocity.Remove(EnemyPhysicsKeys.MOVE);
+                groundMoving = false;   
+            }
         }
 
         public override void OnTakeDamage(IAttacker sender)

@@ -30,6 +30,7 @@ namespace ToB.IO
     /// </summary>
     public static event Action<SAVE> OnCurrentSave = save =>
     {
+      Debug.Log("리소스 매니저 저장");
       save.Node(nameof(ResourceManager)).Read(ResourceManager.Instance);
     };
     
@@ -130,9 +131,8 @@ namespace ToB.IO
 
       InitMetaData();
 
-      Data.Save(rootPath);
-      
       OnSave?.Invoke();
+      Data.Save(rootPath);
     }
 
     private void InitMetaData()
