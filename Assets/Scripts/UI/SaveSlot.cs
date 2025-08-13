@@ -12,7 +12,7 @@ namespace ToB.UI
     public void SetSave(SAVE save, int index)
     {
       if (save.name != "empty")
-        infoText.text = $"세이브 슬롯 {index + 1} - {save.name}\n날짜 : {save.SaveTime}\n보유 골드 : {save.gold}";
+        infoText.text = $"세이브 슬롯 {index + 1} - {save.name}\n날짜 : {save.SaveTime}";
       else
         infoText.text = $"세이브 슬롯 {index + 1} - EMPTY";
     }

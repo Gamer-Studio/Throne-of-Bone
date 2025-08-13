@@ -1,6 +1,7 @@
 using System.Collections;
 using Newtonsoft.Json.Linq;
 using ToB.IO;
+using ToB.Utils;
 using UnityEngine;
 
 namespace ToB.Entities.FieldObject
@@ -15,11 +16,13 @@ namespace ToB.Entities.FieldObject
         private float ValveOpenTargetY; // 물 틀 때 시작하는 위치
         [SerializeField] public Lever LinkedLever;
         [SerializeField] public RectTransform WaterMask;
+        [SerializeField] public SpriteRenderer waterSpriteRenderer;
         
         public bool isValveActivated;
         
         private Coroutine ValveCloseCoroutine;
         private Coroutine ValveOpenCoroutine;
+        private ObjectAudioPlayer audioPlayer;
         
 #if UNITY_EDITOR
         private void OnValidate()
@@ -42,18 +45,25 @@ namespace ToB.Entities.FieldObject
         {
             base.LoadJson(json);
             isValveActivated = json.Get(nameof(isValveActivated), false);
+            audioPlayer = GetComponent<ObjectAudioPlayer>();
         }
 
         public override void OnLoad()
         {
+            waterSpriteRenderer.enabled = true;
             SetWaterSize();
             InitPosition();
+        }
+
+        public override void OnUnLoad()
+        {
+            waterSpriteRenderer.enabled = false;
         }
         
         public override JObject ToJson()
         {
             JObject json = base.ToJson();
-            json.Add(nameof(isValveActivated), isValveActivated);
+            json[nameof(isValveActivated)] = isValveActivated;
             return json;
         }
         
@@ -74,6 +84,7 @@ namespace ToB.Entities.FieldObject
 
         public void LeverInteraction(bool leverState)
         {
+            audioPlayer.Play("WAV_DSGNMisc_Rock_Sequences_Underwater_DR_GQ");
             if (!leverState)
             {
                 DeactivateValve();
@@ -106,6 +117,7 @@ namespace ToB.Entities.FieldObject
         {
             isValveActivated = true;
             LinkedLever.IsInteractable = false;
+            LinkedLever.interactionText.text = "작동 중";
             Vector3 startPos = Vector3.zero;
             Vector3 targetPos = new Vector3(waterSpriteTransform.localPosition.x, ValveCloseTargetY,
                 waterSpriteTransform.localPosition.z);
@@ -118,6 +130,7 @@ namespace ToB.Entities.FieldObject
                     yield return null;
                 }
                 LinkedLever.IsInteractable = true;
+                LinkedLever.UpdateLeverText();
                 Debug.Log("밸브 잠그기 완료");
                 ValveOpenCoroutine = null;
         }
@@ -126,6 +139,7 @@ namespace ToB.Entities.FieldObject
         {
             isValveActivated = false;
             LinkedLever.IsInteractable = false;
+            LinkedLever.interactionText.text = "작동 중";
             Vector3 startPos = new Vector3(waterSpriteTransform.localPosition.x, ValveOpenTargetY,
                 waterSpriteTransform.localPosition.z);
             Vector3 targetPos = Vector3.zero;
@@ -138,6 +152,7 @@ namespace ToB.Entities.FieldObject
                 yield return null;
             }
             LinkedLever.IsInteractable = true;
+            LinkedLever.UpdateLeverText();
             Debug.Log("밸브 열기 완료");
             ValveCloseCoroutine = null;
         }

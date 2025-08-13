@@ -1,5 +1,6 @@
-using System;
 using ToB.Entities;
+using ToB.Entities.Skills;
+using ToB.Utils;
 using UnityEngine;
 
 namespace ToB.Player
@@ -18,13 +19,13 @@ namespace ToB.Player
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-    
-      Vector2 otherCenter = other.GetComponent<Collider2D>().bounds.center;
-      Vector2 posDiff = otherCenter - (Vector2)character.transform.position;
-      Vector2 posDiffDir = posDiff.normalized;
+      if(!other.gameObject) return;
       
-      RaycastHit2D hit = Physics2D.Raycast(character.transform.position, posDiffDir, posDiff.magnitude, hittableLayers);
+      Vector2 otherCenter = other.GetComponent<Collider2D>().bounds.center,
+        posDiff = otherCenter - (Vector2)character.transform.position,
+        posDiffDir = posDiff.normalized;
       
+      var hit = Physics2D.Raycast(character.transform.position, posDiffDir, posDiff.magnitude, hittableLayers);
       if ((hittableLayers & 1 << other.gameObject.layer) != 0)
       {
         GameObject attackEffect = attackEffectPrefab.Pooling();
@@ -35,12 +36,20 @@ namespace ToB.Player
         var ps = attackEffect.GetComponent<ParticleSystem>().main;
         ps.startRotation = angle;
         
-        attackEffect.gameObject.SetActive(true);
+        attackEffect.gameObject.SetActive(true);  
       }
-      
-      other.Damage(character.stat.atk, character);
-      other.KnockBack(30, new Vector2(character.transform.eulerAngles.y == 0 ? 1 : -1, 0)); // 넉백 테스트했습니다. 머지할 때 의도하는 쪽으로 써주세요
+      // 크리티컬 계산
+      float finalDmg = character.stat.atk.Value,
+        chance = BattleSkillManager.Instance.BSStats.CritChance - Random.Range(0, 100) / 100f;
+      if (chance > 0) finalDmg += finalDmg * BattleSkillManager.Instance.BSStats.CritDmgMultiplier;
 
+      if (character.parryableLayer.Contains(other.gameObject.layer) && character.inBottomAttack)
+      {
+        character.Jump(true);
+      }
+
+      other.Damage(finalDmg, character);
+      other.KnockBack(30, new Vector2(character.transform.eulerAngles.y == 0 ? 1 : -1, 0)); // 넉백 테스트했습니다. 머지할 때 의도하는 쪽으로 써주세요
     }
   }
 }

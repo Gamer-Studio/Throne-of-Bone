@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using ToB.Core;
+using ToB.Scenes.Stage;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -8,8 +10,7 @@ namespace ToB.UI
 {
     public class MainBookUI:UIPanelBase
     {
-        
-        [SerializeField] public GameObject[] panels;
+        [SerializeField] public GameObject[] panelObjects;
         private GameObject currentPanel;
         [SerializeField] public Button[] buttons;
         private List<Image> panelImages = new List<Image>();
@@ -30,14 +31,14 @@ namespace ToB.UI
         }
         private void InitPanels()
         {
-            for (int i = 0; i < panels.Length; i++)
+            for (int i = 0; i < panelObjects.Length; i++)
             {
-                panelImages.Add(panels[i].GetComponent<Image>());
+                panelImages.Add(panelObjects[i].GetComponent<Image>());
             }
             
             if (currentPanel == null)
             {
-                panels[0].SetActive(true);
+                panelObjects[0].SetActive(true);
             }
             else
             {
@@ -47,17 +48,24 @@ namespace ToB.UI
         
         private void ShowPanel(int indexToShow)
         {
-            for (int i = 0; i < panels.Length; i++)
+            // i가 1, 3일 때 (Soul, Statstics 패널) SetActive 대신 안내 팝업 추가
+            StageManager.Instance?.ChangeGameState(GameState.UI);
+            if (indexToShow == 1 || indexToShow == 3)
+            {
+                UIManager.Instance.toastUI.Show("추구 기능 추가 예정");
+                return;
+            }
+            for (int i = 0; i < panelObjects.Length; i++)
             {
                 if (i == indexToShow)
                 {
-                    panels[i].SetActive(true);
+                    panelObjects[i].SetActive(true);
                     panelImages[i].raycastTarget = true;
-                    currentPanel = panels[i];
+                    currentPanel = panelObjects[i];
                 }
                 else
                 {
-                    panels[i].SetActive(false);
+                    panelObjects[i].SetActive(false);
                     panelImages[i].raycastTarget = false;
                 }
                 // true인 것만 SetActive, 나머진 false
@@ -67,7 +75,15 @@ namespace ToB.UI
         public void BackToMainMenuScene()
         {
             this.gameObject.SetActive(false);
-            SceneManager.LoadScene("MainMenu");
+            SceneManager.LoadScene(Defines.MainMenuScene);
+        }
+
+        public void OpenSkillUI()
+        {
+            gameObject.SetActive(true);
+            UIManager.Instance.panelStack.Push(this);
+            UIManager.Instance.wideMapUI.gameObject.SetActive(false);
+            ShowPanel(0);
         }
 
         #region InputAction
@@ -78,11 +94,11 @@ namespace ToB.UI
             // 분기 2-2 : 메인북이 켜져 있을 경우, 다른 패널을 부르면 패널을 바꾼다
             if (context.performed)
             {
-                if (gameObject.activeSelf && currentPanel == panels[0])
+                if (gameObject.activeSelf && currentPanel == panelObjects[0])
                 {
                     CloseBook();
                 }
-                else if (gameObject.activeSelf && currentPanel != panels[0])
+                else if (gameObject.activeSelf && currentPanel != panelObjects[0])
                 {
                     ShowPanel(0);
                 }
@@ -100,11 +116,13 @@ namespace ToB.UI
         {
             if (context.performed)
             {
-                if (gameObject.activeSelf && currentPanel == panels[1])
+                UIManager.Instance.toastUI.Show("추후 개방 예정!");
+                /*
+                if (gameObject.activeSelf && currentPanel == panelObjects[1])
                 {
                     CloseBook();
                 }
-                else if (gameObject.activeSelf && currentPanel != panels[1])
+                else if (gameObject.activeSelf && currentPanel != panelObjects[1])
                 {
                     ShowPanel(1);
                 }
@@ -115,6 +133,7 @@ namespace ToB.UI
                     UIManager.Instance.panelStack.Push(this);
                     ShowPanel(1);
                 }
+                */
             }
         }
         
@@ -122,11 +141,11 @@ namespace ToB.UI
         {
             if (context.performed)
             {
-                if (gameObject.activeSelf && currentPanel == panels[2])
+                if (gameObject.activeSelf && currentPanel == panelObjects[2])
                 {
                     CloseBook();
                 }
-                else if (gameObject.activeSelf && currentPanel != panels[2])
+                else if (gameObject.activeSelf && currentPanel != panelObjects[2])
                 {
                     ShowPanel(2);
                 }
@@ -144,11 +163,13 @@ namespace ToB.UI
         {
             if (context.performed)
             {
-                if (gameObject.activeSelf && currentPanel == panels[3])
+                UIManager.Instance.toastUI.Show("추후 개방 예정!");
+                /*
+                if (gameObject.activeSelf && currentPanel == panelObjects[3])
                 {
                     CloseBook();
                 }
-                else if (gameObject.activeSelf && currentPanel != panels[3])
+                else if (gameObject.activeSelf && currentPanel != panelObjects[3])
                 {
                     ShowPanel(3);
                 }
@@ -159,19 +180,19 @@ namespace ToB.UI
                     UIManager.Instance.panelStack.Push(this);
                     ShowPanel(3);
                 }
+                */
             }
         }
 
         public void SettingUIToggle(InputAction.CallbackContext context)
         {
-            Debug.Log("SettingUIToggle 실행됨");
             if (context.performed && !UIManager.Instance.isThereActiveUI)
             {
-                if (gameObject.activeSelf && currentPanel == panels[4])
+                if (gameObject.activeSelf && currentPanel == panelObjects[4])
                 {
                     CloseBook();
                 }
-                else if (gameObject.activeSelf && currentPanel != panels[4])
+                else if (gameObject.activeSelf && currentPanel != panelObjects[4])
                 {
                     ShowPanel(4);
                 }
@@ -189,7 +210,7 @@ namespace ToB.UI
 
         public override void Process(InputAction.CallbackContext context)
         {
-            throw new System.NotImplementedException();
+            
         }
         
         public override void Cancel(InputAction.CallbackContext context)
@@ -197,10 +218,12 @@ namespace ToB.UI
             CloseBook();
         }
 
-        private void CloseBook()
+        public void CloseBook()
         {
             gameObject.SetActive(false);
             UIManager.Instance.panelStack.Pop();
+            if(StageManager.Instance && UIManager.Instance.panelStack.Count == 0) 
+                StageManager.Instance.ChangeGameState(GameState.Play);
         }
     }
 }

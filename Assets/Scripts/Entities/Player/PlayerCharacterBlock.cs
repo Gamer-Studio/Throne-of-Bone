@@ -1,6 +1,8 @@
 using System.Collections;
 using NaughtyAttributes;
 using ToB.Core;
+using ToB.Entities.Interface;
+using ToB.Entities.Skills;
 using ToB.Utils;
 using UnityEngine;
 using AudioType = ToB.Core.AudioType;
@@ -24,6 +26,7 @@ namespace ToB.Player
     [Label("패링 발동 제한 시간"), Foldout("Block State")] public float parryTimeLimit = 0.3f;
     [Label("방어 발동 제한 시간"), Tooltip("패링 시간 제외 방어 제한 시간입니다."), Foldout("Block State")] public float blockTimeLimit = 1.7f;
     [Label("패링 상태인지"), Foldout("Block State")] public bool isParrying = false;
+    [Label("방어 무적시간"), Foldout("Block State")] public float guardImmuneTime = 0.3f;
     [Label("패링시 무적시간"), Foldout("Block State")] public float parryImmuneTime = 0.5f;
     [Label("패링시 멈추는 시간"), Foldout("Block State")] public float parryFreezeTime = 0.2f;
     [Label("패링했을 때 검기 회복량"), Foldout("Block State")] public int parryReward = 2;
@@ -32,7 +35,9 @@ namespace ToB.Player
 
     //
     public bool IsBlocking => blockCoroutine != null;
-    public bool IsBlockable => !IsBlocking && stat.BlockEnergy > requireBlockEnergy && !freezeBlockable && currentBlockCoolTime <= 0;
+    public bool IsBlockable => !IsBlocking
+                               && stat.BlockEnergy > requireBlockEnergy + BattleSkillManager.Instance.BSStats.GuardGaugeDiscount
+                               && !freezeBlockable && currentBlockCoolTime <= 0;
 
     public float BlockAngle
     {
@@ -58,10 +63,10 @@ namespace ToB.Player
     
     private Coroutine blockCoroutine = null;
 
-    public void Block(float damage, MonoBehaviour sender)
+    public void Block(float damage, IAttacker sender)
     {
       // 공격 방향 구하기
-      var blockDir = (sender.transform.position - transform.position).normalized;
+      var blockDir = (sender.Position - transform.position).normalized;
       var angle = Mathf.Atan2(blockDir.y, blockDir.x) * Mathf.Rad2Deg + 360;
       
       if (MathUtil.GetAngleDiff(angle, shield.transform.rotation.eulerAngles.z) > blockAngle / 2)
@@ -75,11 +80,13 @@ namespace ToB.Player
         {
           // 패링
           AvailableRangedAttack += parryReward;
+          stat.Hp += (stat.maxHp + stat.tempMaxHP) * BattleSkillManager.Instance.BSStats.ParryHealAmount;
           if (immuneTime < parryImmuneTime) immuneTime = parryImmuneTime;
         
           Time.timeScale = 0;
           int rand = Random.Range(1, 4);
-          AudioManager.Play($"fntgm_blade_heavy_hit_0{rand}",AudioType.Effect);
+          audioPlayer.Play($"fntgm_blade_heavy_hit_0{rand}");
+          // 이 부분 저스트가드 사운드 확정되면 수정
           if(freezeTime < parryFreezeTime) freezeTime = parryFreezeTime;
         }
         else
@@ -89,9 +96,11 @@ namespace ToB.Player
 
           stat.tempDef += additionalDef;
           int rand = Random.Range(1, 4);
-          AudioManager.Play($"fntgm_blade_heavy_hit_0{rand}",AudioType.Effect);
+          audioPlayer.Play($"fntgm_blade_heavy_hit_0{rand}");
           stat.Damage(damage);
           stat.tempDef -= additionalDef;
+          if (immuneTime < parryImmuneTime) immuneTime = guardImmuneTime;
+          
         }
       
         animator.SetTrigger(TRIGGER_BLOCK);
@@ -107,7 +116,7 @@ namespace ToB.Player
     {
       if(!IsBlockable || IsMoving) return;
 
-      stat.BlockEnergy -= requireBlockEnergy;
+      stat.BlockEnergy -= requireBlockEnergy - BattleSkillManager.Instance.BSStats.GuardGaugeDiscount;
       blockCoroutine = StartCoroutine(BlockCoroutine());
     }
     
@@ -166,7 +175,7 @@ namespace ToB.Player
           if(blockEnergyCurrentRegenTime >= blockEnergyRegenTime)
           {
             blockEnergyCurrentRegenTime = 0;
-            stat.BlockEnergy += blockEnergyRegenAmount;
+            stat.BlockEnergy += blockEnergyRegenAmount + BattleSkillManager.Instance.BSStats.GuardGaugeRegen;
 
             if (freezeBlockable && stat.BlockEnergy >= 100)
               freezeBlockable = false;
@@ -180,13 +189,13 @@ namespace ToB.Player
       if (value <= 0)
       {
         freezeBlockable = true;
-        AudioManager.Play("env_trap_activate_01", AudioType.Effect);
+        audioPlayer.Play("fntgm_magic_ice_08");
       }
         
       else if (freezeBlockable && value >= 100)
       {
         freezeBlockable = false;
-        AudioManager.Play("fntgm_magic_shield_04", AudioType.Effect);
+        audioPlayer.Play("fntgm_magic_shield_05");
       }
     }
 
@@ -195,7 +204,7 @@ namespace ToB.Player
       isParrying = true;
       shield.gameObject.SetActive(true);
       
-      yield return new WaitForSeconds(parryTimeLimit);
+      yield return new WaitForSeconds(parryTimeLimit + BattleSkillManager.Instance.BSStats.ParryTime);
       isParrying = false;
 
       for (float blockTime = 0, rkbe = requireKeepBlockEnergy * (Time.fixedDeltaTime / blockTimeLimit); blockTime < blockTimeLimit; blockTime += Time.fixedDeltaTime)

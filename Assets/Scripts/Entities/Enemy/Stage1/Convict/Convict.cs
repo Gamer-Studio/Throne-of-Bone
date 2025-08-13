@@ -1,6 +1,8 @@
 using System.Resources;
 using NaughtyAttributes;
 using ToB.Core;
+using ToB.Entities.Interface;
+using ToB.Memories;
 using UnityEngine;
 
 namespace ToB.Entities
@@ -26,8 +28,9 @@ namespace ToB.Entities
             DataSO = enemySO as ConvictSO;
         }
 
-        private void Start()
+        protected override void OnEnable()
         {
+            base.OnEnable();
             InitProperties();
             
             FSM.Init();
@@ -54,9 +57,17 @@ namespace ToB.Entities
             EnemyBody.Init(this, DataSO.BodyDamage);
         }
 
+        public override void OnTakeDamage(IAttacker sender)
+        {
+            base.OnTakeDamage(sender);
+            if (Stat.CurrentHP > 0) audioPlayer.Play("Skeleton_Hurt_02");
+        }
+
         protected override void Die()
         {
             base.Die();
+            audioPlayer.Play("Skeleton_Death_02");
+            MemoriesManager.Instance.MemoryAcquired(10001);
             Animator.SetTrigger(EnemyAnimationString.Die);
             Hitbox.enabled = false;
             FSM.ChangePattern(null);

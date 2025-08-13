@@ -1,3 +1,4 @@
+using ToB.Core;
 using ToB.Player;
 using ToB.Scenes.Intro;
 using UnityEngine;
@@ -10,23 +11,21 @@ namespace ToB.UI
     {
         
         private PlayerCharacter player;
-
-
-      
+        
         private void Awake()
         {
-            SceneManager.sceneLoaded += OnSceneLoaded;
+            // SceneManager.sceneLoaded += OnSceneLoaded;
         }
         private void OnDestroy()
         {
-            SceneManager.sceneLoaded -= OnSceneLoaded;
+            // SceneManager.sceneLoaded -= OnSceneLoaded;
         }
         
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            if (scene.name != "Intro" && scene.name != "MainMenu")
+            if (scene.name != Defines.IntroScene && scene.name != Defines.MainMenuScene)
             {
-                player = PlayerCharacter.GetInstance();
+                player = PlayerCharacter.Instance;
                 if (player != null)
                 {
                     Init();
@@ -38,17 +37,16 @@ namespace ToB.UI
             }
         }
 
-        private void Init()
+        public void Init()
         {
-            player.stat.onHpChanged.AddListener(GameOver);
+            player = PlayerCharacter.Instance;
+            
+            player.stat.onDeath.AddListener(GameOver);
         }
         
-        private void GameOver(float curHp)
+        private void GameOver()
         {
-            if (curHp <= 0)
-            {
-                gameObject.SetActive(true);
-            }
+            gameObject.SetActive(true);
         }
 
         public void ReLoadScene()

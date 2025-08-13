@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using ToB.Entities.Skills;
 using UnityEngine;
 
 namespace ToB.Entities.Buffs
@@ -5,6 +7,7 @@ namespace ToB.Entities.Buffs
   public class BuffController : MonoBehaviour
   {
     [SerializeField] private SerializableDictionary<Buff, BuffInfo> buffs = new();
+    public List<Buff> immunedBuffs = new();
 
     [SerializeField] private ParticleSystem poisonEffect;
     
@@ -16,10 +19,13 @@ namespace ToB.Entities.Buffs
     /// <param name="force">true일 경우 버프가 존재할 경우 info를 덮어씌웁니다.</param>
     public void Apply(Buff buff, BuffInfo info, bool force = false)
     {
+      if(immunedBuffs.Contains(buff)) return;
+      
       if (!buffs.ContainsKey(buff))
       {
-        buff.Apply(gameObject, info);
-        buffs[buff] = info;
+        var infoClone = info.Clone();
+        buff.Apply(gameObject, infoClone);
+        buffs[buff] = infoClone;
 
         if (buff == Buff.Poison)
         {

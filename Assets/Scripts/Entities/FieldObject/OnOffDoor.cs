@@ -1,5 +1,7 @@
+using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using ToB.IO;
+using ToB.Utils;
 using UnityEngine;
 
 namespace ToB.Entities.FieldObject
@@ -23,11 +25,15 @@ namespace ToB.Entities.FieldObject
 
     public class OnOffDoor : FieldObjectProgress
     {
-       [SerializeField] private Lever[] levers;
+       private readonly int Opened = Animator.StringToHash("IsOpened");
+       [SerializeField] private List<Lever> levers = new List<Lever>();
+       [SerializeField] private List<PressurePlate> pressurePlates = new List<PressurePlate>();
        
-       private int activeLeverCount;
+       private int activeInputCount;
        [SerializeField] private DoorMode doorMode;
        [SerializeField] private bool isOpened;
+       [SerializeField] private Animator animator;
+       private ObjectAudioPlayer audioPlayer;
        public bool IsOpened
        {
            get => isOpened;
@@ -45,18 +51,19 @@ namespace ToB.Entities.FieldObject
        private void Awake()
        {
            if (_collider ==null) _collider = GetComponent<Collider2D>();
-           IsOpened = isOpened;
+           audioPlayer = GetComponent<ObjectAudioPlayer>();
        }
        public override void LoadJson(JObject json)
        {
            base.LoadJson(json);
            doorMode = json.GetEnum(nameof(doorMode), doorMode);
-           activeLeverCount = json.Get(nameof(activeLeverCount), activeLeverCount);
+           activeInputCount = json.Get(nameof(activeInputCount), activeInputCount);
            isOpened = json.Get(nameof(isOpened), isOpened);
+           OnOffDoorInteract(isOpened);
        }
        public override void OnLoad()
        {
-           IsOpened = isOpened;
+           OnOffDoorInteract(isOpened);
            // 세이브데이터 로딩이 끝나면 문의 상태를 결정해 줌
        }
 
@@ -64,8 +71,8 @@ namespace ToB.Entities.FieldObject
        {
            JObject json = base.ToJson();
            json.Set(nameof(doorMode), doorMode);
-           json.Add(nameof(activeLeverCount), activeLeverCount);
-           json.Add(nameof(isOpened), isOpened);
+           json[nameof(activeInputCount)] = activeInputCount;
+           json[nameof(isOpened)] = isOpened;
            return json;
        }
        #endregion
@@ -76,27 +83,31 @@ namespace ToB.Entities.FieldObject
        /// <param name="leverState"></param>
        public void OnOffDoorInteract(bool leverState)
        {
-           activeLeverCount = 0;
+           bool temp = isOpened;
+           activeInputCount = 0;
            switch (doorMode)
            {
                case DoorMode.Normal:
-                   activeLeverCount = leverState ? 1 : 0;
-                   IsOpened = activeLeverCount > 0;
+                   activeInputCount = leverState ? 1 : 0;
+                   IsOpened = activeInputCount > 0;
                    break;
                case DoorMode.Invert:
                    IsOpened = !IsOpened;
                    break;
                case DoorMode.Or:
-                   foreach (var lever in levers) if (lever.isLeverActivated) activeLeverCount++;
-                   IsOpened = activeLeverCount > 0;
+                   foreach (var lever in levers) if (lever.isLeverActivated) activeInputCount++;
+                   foreach (var plate in pressurePlates) if (plate.IsActivated) activeInputCount++;
+                   IsOpened = activeInputCount > 0;
                    break;
                case DoorMode.And:
-                   foreach (var lever in levers) if (lever.isLeverActivated) activeLeverCount++;
-                   IsOpened = activeLeverCount == levers.Length;
+                   foreach (var lever in levers) if (lever.isLeverActivated) activeInputCount++;
+                   foreach (var plate in pressurePlates) if (plate.IsActivated) activeInputCount++;
+                   IsOpened = activeInputCount == levers.Count + pressurePlates.Count;
                    break;
                case DoorMode.Fixed:
                    break;
            }
+           if (temp != IsOpened) audioPlayer.Play("Part_Assembly_30");
            UpdateDoorState();
        }
        
@@ -105,7 +116,7 @@ namespace ToB.Entities.FieldObject
        /// </summary>
        private void UpdateDoorState()
        {
-           DoorImage.color = isOpened ? new Color(1,1,1,0.3f) : Color.yellow;
+           animator.SetBool(Opened, isOpened);
            _collider.enabled = !isOpened;
        }
        

@@ -2,16 +2,21 @@ using System;
 using System.Collections;
 using NaughtyAttributes;
 using ToB.Core;
+using ToB.Entities.Interface;
 using ToB.Player;
+using ToB.Utils;
 using UnityEngine;
 
 namespace ToB.Entities
 {
+    /// <summary>
+    /// Room에서 적 유닛 처리용도로 MonoBehavior -> PooledObject로 부모 클래스를 바꿨습니다.
+    /// </summary>
     [RequireComponent(typeof(EnemyPhysics))]
-    public abstract class Enemy : MonoBehaviour
+    public abstract class Enemy : Entity
     {
         [Header("기본 참조")] 
-        [Expandable, SerializeField] protected EnemySO enemySO;
+        [Expandable, SerializeField] public EnemySO enemySO;
         public EnemySO EnemySO => enemySO;
         [SerializeField] private Rigidbody2D rb;
         public Rigidbody2D Rb => rb;
@@ -43,9 +48,10 @@ namespace ToB.Entities
         public Transform target;
         
         [Header("속성")]
-        [SerializeField] protected bool isAlive;
+        [SerializeField, ReadOnly] protected bool isAlive;
         [field:SerializeField] public bool ReactOnDamage { get; private set; }
         public bool IsAlive => isAlive;
+        public ObjectAudioPlayer audioPlayer;
         
         protected virtual void Awake()
         {
@@ -53,8 +59,21 @@ namespace ToB.Entities
             if(!Physics) Physics = GetComponent<EnemyPhysics>();
             if(!Animator) Animator = GetComponentInChildren<Animator>();
             if(!Sprite) Sprite = GetComponent<SpriteRenderer>();
+            if(!audioPlayer) audioPlayer = gameObject.AddComponent<ObjectAudioPlayer>();
             
             isAlive = true;
+        }
+
+        protected virtual void OnEnable()
+        {
+            isAlive = true;
+            Physics.enabled = true;
+            Animator.enabled = true;
+            Animator.Rebind();
+            Sprite.enabled = true;
+            Hitbox.enabled = true;
+            if(Knockback) Knockback.enabled = true;
+            target = null;
         }
 
         protected virtual void Reset()
@@ -70,16 +89,15 @@ namespace ToB.Entities
             isAlive = true;
         }
 
-        public void OnTakeDamage(MonoBehaviour sender)
+        public virtual void OnTakeDamage(IAttacker sender)
         {
-            if (!sender || !ReactOnDamage) return;
-            bool isSenderLeft = sender.transform.position.x < transform.position.x;
+            if (sender == null || !ReactOnDamage) return;
+            bool isSenderLeft = sender.Position.x < transform.position.x;
             bool isLookingLeft = LookDirectionHorizontal == Vector2.left;
             
             if (isSenderLeft != isLookingLeft)
                 FlipBody();
         }
-
         private void FlipBody()
         {
             Vector3 localScale = transform.localScale;
@@ -90,10 +108,15 @@ namespace ToB.Entities
         protected virtual void Die()
         {
             Core.ResourceManager.Instance.SpawnResources(InfiniteResourceType.Gold,enemySO.DropGold,transform);
-            Core.ResourceManager.Instance.SpawnResources(InfiniteResourceType.Mana,enemySO.DropMana,transform);
+            Core.ResourceManager.Instance.SpawnResources(InfiniteResourceType.Mana,enemySO.DropMana,transform, enemySO.ManaDropRate);
+            
             isAlive = false;
         }
 
+        public virtual void SetTarget(Transform target)
+        {
+            this.target = target;
+        }
         public float GetTargetDistanceSQR()
         {
             if (!target) return float.MaxValue;
@@ -127,7 +150,7 @@ namespace ToB.Entities
         public void LookHorizontal(Vector2 direction)
         {
             Vector3 scale = transform.localScale;
-            scale.x = direction.x > 0 ? 1 : -1;;
+            scale.x = direction.x > 0 ? 1 : -1;
             transform.localScale = scale;
         }
 
@@ -137,5 +160,7 @@ namespace ToB.Entities
             Vector2 dir = target.position - transform.position;
             LookHorizontal(dir);
         }
+        
+        
     }
 }

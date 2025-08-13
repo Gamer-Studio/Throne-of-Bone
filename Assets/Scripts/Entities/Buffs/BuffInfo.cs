@@ -15,5 +15,7 @@ namespace ToB.Entities.Buffs
       this.duration = duration;
       this.delay = delay;
     }
+    
+    public BuffInfo Clone() => new (level, duration, delay);
   }
 }

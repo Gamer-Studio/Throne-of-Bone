@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using ToB.Utils.Singletons;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -12,6 +13,7 @@ namespace ToB.Utils
     private readonly Dictionary<string, ObjectPool<PooledObject>> pools = new();
     [SerializeField] private SerializableDictionary<string, Transform> releasedContainers = new();
     [SerializeField] private SerializableDictionary<string, AssetReference> assetReferences = new();
+    private HashSet<AssetReference> refSet = new();
     
     /// <summary>
     /// key 값의 오브젝트를 풀링합니다.
@@ -27,6 +29,12 @@ namespace ToB.Utils
       
       throw new MissingReferenceException($"{key}는 존재하지 않는 오브젝트 풀입니다.");
     }
+
+    /// <summary>
+    /// AssetReference 확인 용도 메서드입니다.
+    /// </summary>
+    /// <param name="key"></param>
+    public AssetReference GetRef(string key) => assetReferences[key];
     
     /// <summary>
     /// 풀링한 오브젝트를 해제합니다. <br/>
@@ -70,8 +78,10 @@ namespace ToB.Utils
       {
         // release
         obj.gameObject.SetActive(false);
-        obj.transform.SetParent(container.transform);
+        if (container)
+          obj.transform.SetParent(container.transform);
         obj.pool = null;
+
       }, Destroy);
 
       pools.Add(key, result);
@@ -88,7 +98,11 @@ namespace ToB.Utils
     public ObjectPool<PooledObject> Register(string key, AssetReference reference, bool releaseOnDestroy = true)
     {
       if (pools.ContainsKey(key)) throw new Exception($"해당 {key} 풀은 이미 생성되어있습니다.");
-      if (releaseOnDestroy) assetReferences[key] = reference;
+      if (releaseOnDestroy)
+      {
+        assetReferences[key] = reference;
+        refSet.Add(reference);
+      }
       
       var obj = reference.IsValid() ? (GameObject)reference.Asset : reference.LoadAssetAsync<GameObject>().WaitForCompletion();
 
@@ -98,6 +112,8 @@ namespace ToB.Utils
     /// <param name="key">확인할 풀의 키 입니다.</param>
     /// <returns>해당 키의 오브젝트 풀이 만들어져있는지 여부</returns>
     public bool IsRegistered(string key) => pools.ContainsKey(key);
+
+    public bool IsRegistered(AssetReference reference) => refSet.Contains(reference);
 
     #region Unity Event
     
@@ -117,6 +133,8 @@ namespace ToB.Utils
       }
       
       assetReferences.Clear();
+      refSet.Clear();
+      PoolingHelper.ClearCache();
     }
     
     #endregion

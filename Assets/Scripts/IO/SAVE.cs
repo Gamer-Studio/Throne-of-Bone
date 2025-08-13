@@ -4,7 +4,13 @@ using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using ToB.Core;
+using ToB.IO.SubModules;
+using ToB.IO.SubModules.Players;
+using ToB.IO.SubModules.SavePoint;
+using ToB.Player;
+using ToB.Utils;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace ToB.IO
 {
@@ -38,15 +44,40 @@ namespace ToB.IO
     public event Action OnSave;
     
     [field: SerializeField] public SAVEModule Data { get; private set; }
+    [field: SerializeField] public bool IsLoaded { get; private set; } = false;
     
     #region MetaData
     
     public JObject MetaData => Data.MetaData;
     public string fileName;
     public string name = "empty";
-    public int gold = 0;
+    public bool isFirstEnter = true;
     [field: SerializeField] public string SaveTime { get; private set; }
     [field: SerializeField] public int Version { get; private set; }
+
+    #endregion
+    
+    #region Defines
+
+    /// <summary>
+    /// Root/Player 경로의 데이터입니다.
+    /// </summary>
+    public PlayerModule Player => Current.Data.Node<PlayerModule>(nameof(Player), true);
+    
+    /// <summary>
+    /// Root/Player/PlayerStat 경로의 데이터입니다.
+    /// </summary>
+    public PlayerStatModule PlayerStat => Player.Node<PlayerStatModule>(nameof(PlayerStat), true);
+    
+    /// <summary>
+    /// Root/SavePoints 경로의 데이터입니다.
+    /// </summary>
+    public SavePointModule SavePoints => Current.Data.Node<SavePointModule>(nameof(SavePoints), true);
+    
+    /// <summary>
+    /// Root/Achievements 경로의 도전과제 데이터입니다.
+    /// </summary>
+    public AchievementModule Achievements => Current.Data.Node<AchievementModule>(nameof(Achievements), true);
 
     #endregion
     
@@ -63,9 +94,19 @@ namespace ToB.IO
 
     public void Save()
     {
-      SaveTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+      {
+        // 저장 전 액션
+        
+        if(PlayerCharacter.HasInstance)
+          PlayerCharacter.Instance.Save();
+        
+        SaveTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+        name = SaveTime;
+      }
       
       var rootPath = Path.Combine(SavePath, fileName);
+      DebugSymbol.Save.Log($"Save file saved: {rootPath}");
+
       var dir = new DirectoryInfo(rootPath);
 
       // 폴더가 이미 존재할 시 원활한 저장을 위해 초기화
@@ -97,13 +138,20 @@ namespace ToB.IO
     private void InitMetaData()
     {
       MetaData[nameof(name)] = name;
-      MetaData[nameof(gold)] = gold;
       MetaData[nameof(SaveTime)] = SaveTime;
       MetaData[nameof(Version)] = Version;
+      MetaData[nameof(isFirstEnter)] = false;
     }
     
     public SAVEModule Node(string key, bool force = false) => Data.Node(key, force);
 
+    public void Delete()
+    {
+      var rootPath = Path.Combine(SavePath, fileName);
+      if (Directory.Exists(rootPath))
+        Directory.Delete(rootPath, true);
+    }
+    
     /// <summary>
     /// TODO 저장 파일의 유효성 체크
     /// </summary>
@@ -129,7 +177,6 @@ namespace ToB.IO
         // 메타데이터 불러오기
         
         target.name = target.MetaData.Get(nameof(name), target.name);
-        target.gold = target.MetaData.Get(nameof(gold), target.gold);
         target.SaveTime = target.MetaData.Get(nameof(SaveTime), target.SaveTime);
         target.Version = target.MetaData.Get(nameof(Version), CurrentVersion);
       }
@@ -156,9 +203,11 @@ namespace ToB.IO
       if (Directory.Exists(rootPath) && Validate(rootPath))
       {
         await Data.Load(rootPath, true);
+        isFirstEnter = false;
       }
         
       Current = this;
+      IsLoaded = true;
       
       OnCurrentLoad.Invoke(this);
     }
@@ -184,10 +233,10 @@ namespace ToB.IO
       // 메타 데이터 세팅
       var meta = result.MetaData;
       
-      result.name = meta.Get("name", "empty");
-      result.gold = meta.Get("gold", 0);
-      result.SaveTime = meta.Get("saveTime", "not saved");
-      result.Version = meta.Get("version", CurrentVersion);
+      result.name = meta.Get(nameof(name), "empty");
+      result.SaveTime = meta.Get(nameof(SaveTime), "not saved");
+      result.Version = meta.Get(nameof(Version), CurrentVersion);
+      result.isFirstEnter = meta.Get(nameof(isFirstEnter), true);
 
       return result;
     }

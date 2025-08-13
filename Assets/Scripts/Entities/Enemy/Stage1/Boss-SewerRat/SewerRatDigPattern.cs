@@ -18,6 +18,7 @@ namespace ToB.Entities
         public override void Enter()
         {
             coroutine = enemy.StartCoroutine(Dig());
+            enemy.audioPlayer.Play("Movement_Earth_Loop_01", true);
         }
 
         public override void Execute()
@@ -31,6 +32,7 @@ namespace ToB.Entities
             if(coroutine != null) enemy.StopCoroutine(coroutine);
             ratStrategy.GroundDustEffect.gameObject.SetActive(false);
             ratStrategy.GroundRubble.gameObject.SetActive(false);
+            
         }
 
         IEnumerator Dig()
@@ -43,9 +45,10 @@ namespace ToB.Entities
             Tween tween = enemy.transform.DOShakePosition(1, new Vector3(0.5f, 0.5f, 0), 20, 90);
             yield return tween.WaitForCompletion();
 
+            sewerRat.Hitbox.enabled = false;
             tween = enemy.transform.DOMoveY(enemy.transform.position.y - 5, 0.7f);
             yield return tween.WaitForCompletion();
-
+            enemy.audioPlayer.Stop("Movement_Earth_Loop_01");
             coroutine = enemy.StartCoroutine(Ascend());
         }
 
@@ -68,6 +71,7 @@ namespace ToB.Entities
             ratStrategy.GroundRubble.gameObject.SetActive(true);
             ratStrategy.GroundRubble.Play();
             
+            sewerRat.Hitbox.enabled = true;
             enemy.Physics.velocityY = sewerRat.DataSO.AscendPower;
             enemy.Physics.gravityEnabled = true;
             ratStrategy.LookPlayer();
@@ -93,7 +97,7 @@ namespace ToB.Entities
             float tackleSpeed = sewerRat.DataSO.TackleSpeed;
             
             Vector2 fixedDirection = (destination - (Vector2)enemy.transform.position).normalized;  // 단순 플레이어 방향 방식이 궤도 오차가 심했어서 레이로
-            
+            enemy.audioPlayer.Play("SFX_impactbigheavy02");
             while (!enemy.Physics.HasCollided)
             {
                 // 고정된 방향으로 등속 이동

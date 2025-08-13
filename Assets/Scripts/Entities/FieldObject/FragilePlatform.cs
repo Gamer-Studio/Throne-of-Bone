@@ -1,10 +1,10 @@
 using System.Collections;
-using UnityEngine;
 using DG.Tweening;
 using Newtonsoft.Json.Linq;
 using ToB.IO;
+using UnityEngine;
 
-namespace ToB.Entities.Obstacle
+namespace ToB.Entities.FieldObject
 {
     public class FragilePlatform : FieldObjectProgress
     {
@@ -39,6 +39,13 @@ namespace ToB.Entities.Obstacle
         public override void OnLoad()
         {
             gameObject.SetActive(!isActivated);
+        }
+        
+        public override JObject ToJson()
+        {
+            JObject json = base.ToJson();
+            json[nameof(isActivated)] = isActivated;
+            return json;
         }
         
         #endregion

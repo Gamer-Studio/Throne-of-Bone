@@ -101,6 +101,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5112725980193751958}
   - component: {fileID: 6097009762869871472}
+  - component: {fileID: 2434778596661060408}
   m_Layer: 0
   m_Name: WaterValve
   m_TagString: Untagged
@@ -123,6 +124,7 @@ Transform:
   m_Children:
   - {fileID: 990213157936110170}
   - {fileID: 5628140734622818225}
+  - {fileID: 4395294958746448126}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6097009762869871472
@@ -137,15 +139,60 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c043659ca2c94e68bc7c3c6316f305fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 0
-  saveByName: 1
+  room: {fileID: 0}
   waterSpriteTransform: {fileID: 5628140734622818225}
   moveSpeed: 5
   Height: 25
   Width: 0.5
   LinkedLever: {fileID: 0}
   WaterMask: {fileID: 990213157936110170}
+  waterSpriteRenderer: {fileID: 3866777873893631085}
   isValveActivated: 0
+--- !u!114 &2434778596661060408
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3694503405356572382}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 383646569fb04c2babfa49d0b40ea4bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sourcePool: []
+  audioSourceParent: {fileID: 4395294958746448126}
+--- !u!1 &6358103849950359841
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4395294958746448126}
+  m_Layer: 0
+  m_Name: Audio Sources
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4395294958746448126
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6358103849950359841}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5112725980193751958}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8967516724989567213
 GameObject:
   m_ObjectHideFlags: 0
@@ -185,7 +232,7 @@ SpriteRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8967516724989567213}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1

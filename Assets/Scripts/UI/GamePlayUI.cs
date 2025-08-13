@@ -5,6 +5,8 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using DG.Tweening;
+using ToB.Entities.Skills;
+using ToB.Scenes.Stage;
 
 namespace ToB.UI
 {
@@ -18,33 +20,41 @@ namespace ToB.UI
         [SerializeField] public GameObject KeyUI;
         [SerializeField] public TMPro.TextMeshProUGUI KeyText;
         [SerializeField] public Image saveIndicator;
+        [SerializeField] UIGaugeBar hpGaugeBar;
+        [SerializeField] UIGaugeBar manaGaugeBar;
+        [SerializeField] RangeAtkCountUI rangeAtkCountUI;
+        
         private void Awake()
         {
             playerInfoPanel.SetActive(true);
-            miniMapPanel.SetActive(true);
+            miniMapPanel.SetActive(false);
             saveIndicatorPanel.SetActive(false);
             ResourceManager.Instance.onGoldChanged.AddListener(UpdateGoldText);
             ResourceManager.Instance.onManaChanged.AddListener(UpdateManaText);
             ResourceManager.Instance.onMasterKeyChanged.AddListener(UpdateKeyText);
             InitText();
         }
+        
+        
 
         #region TestButton
         public void TestGoldAddButton()
         {
-            ResourceManager.Instance.GiveGoldToPlayer(10);
+            ResourceManager.Instance.GiveGoldToPlayer(900000);
         }
         public void TestManaAddButton()
         {
-            ResourceManager.Instance.GiveManaToPlayer(10);
+            ResourceManager.Instance.GiveManaToPlayer(100);
         }
-        public void TestGoldSubButton()
+        public void TestPlayerInvincibleBtn()
         {
-            ResourceManager.Instance.IsPlayerHaveEnoughResources(50,0);
+            StageManager.Instance.player.invincibility = true;
+            UIManager.Instance.toastUI.Show("테스트용 플레이어 무적 활성화");
         }
-        public void TestManaSubButton()
+        public void TestPlayerInvinOffBtn()
         {
-            ResourceManager.Instance.IsPlayerHaveEnoughResources(10,50);       
+            StageManager.Instance.player.invincibility = false;
+            UIManager.Instance.toastUI.Show("테스트용 플레이어 무적 비활성화");
         }
 
         public void TestKeyAddButton()
@@ -54,8 +64,8 @@ namespace ToB.UI
 
         public void TestHPAddButton()
         {
-            PlayerCharacter player = PlayerCharacter.GetInstance();
-            player.stat.Hp = player.stat.maxHp;
+            PlayerCharacter player = PlayerCharacter.Instance;
+            player.stat.HealtoFullHp();
         }
 
         #endregion
@@ -66,6 +76,13 @@ namespace ToB.UI
             UpdateGoldText(ResourceManager.Instance.PlayerGold);
             UpdateManaText(ResourceManager.Instance.PlayerMana);
             UpdateKeyText(ResourceManager.Instance.MasterKey);
+        }
+
+        public void InitGages()
+        {
+            hpGaugeBar.Init();
+            manaGaugeBar.Init();
+            rangeAtkCountUI.Init();
         }
 
         private void UpdateGoldText(int gold)

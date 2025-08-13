@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 6271763654151634175}
   - component: {fileID: 6454097696789378931}
-  - component: {fileID: 7773874578649206330}
   - component: {fileID: 138054437620854566}
   - component: {fileID: 7771000100120433332}
   m_Layer: 0
@@ -30,7 +29,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4236552174876710302}
@@ -63,23 +62,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &7773874578649206330
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4157416632355595692}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 37af31a9f62023645ae8d83b9853d0f4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  <LinearMovement>k__BackingField: {fileID: 138054437620854566}
-  <ContactDamage>k__BackingField: {fileID: 7771000100120433332}
-  layerMask:
-    serializedVersion: 2
-    m_Bits: 192
 --- !u!114 &138054437620854566
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -106,12 +88,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd53abeb9ec5e2f41a1955a71b1c186b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 0
+  nonSODamage: 0
   knockBackPower: 0
   knockBackDirection: {x: 0, y: 0}
+  isSelfDamagePos: 1
+  anotherDamagePos: {x: 0, y: 0, z: 0}
   playerMask:
     serializedVersion: 2
     m_Bits: 64
+  directional: 0
+  blockable: 1
+  effectable: 1
+  <Team>k__BackingField:
+    color: {r: 1, g: 0, b: 0, a: 1}
+    name: Enemy
+    id: 2
 --- !u!1 &8588942396851678149
 GameObject:
   m_ObjectHideFlags: 0

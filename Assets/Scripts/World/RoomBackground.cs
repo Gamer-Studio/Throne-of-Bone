@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Tilemaps;
 
 namespace ToB.Worlds
 {
@@ -10,7 +11,11 @@ namespace ToB.Worlds
     public UnityEvent onExit = new();
 
     public Collider2D backgroundCollider;
+    [SerializeField] private Collider2D cameraCollider = null;
+    public Tilemap tilemap;
     
+    public Collider2D CameraCollider => cameraCollider ? cameraCollider : backgroundCollider;
+
     public void OnTriggerEnter2D(Collider2D other)
     {
       if(other.CompareTag("Player")) onEnter?.Invoke();

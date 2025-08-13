@@ -3,24 +3,33 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using NaughtyAttributes;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using ToB.IO.SubModules;
+using ToB.IO.SubModules.Players;
+using ToB.IO.SubModules.SavePoint;
 using ToB.Utils;
 using UnityEngine;
 
 namespace ToB.IO
 {
   [Serializable]
-  public class SAVEModule : JObject, IJsonSerializable
+  public class SAVEModule : JObject, ISAVEModule
   {
-    public string name;
+    private string name;
+
+    public string Name
+    {
+      get => name;
+      set => name = value;
+    }
 
     #region MetaData
 
-    private Dictionary<string, SAVEModule> children;
+    protected readonly Dictionary<string, ISAVEModule> children = new();
     public string[] ChildNames => children.Keys.ToArray();
     public JObject MetaData => (JObject)this["metaData"];
+    public string ModuleType => nameof(SAVEModule);
 
     #endregion
 
@@ -29,11 +38,23 @@ namespace ToB.IO
     /// name으로 root를 명시적으로 지정하지 마세요. 
     /// </summary>
     /// <param name="name">모듈의 명칭입니다.</param>
-    public SAVEModule(string name)
+    public SAVEModule(string name) : base()
     {
       this.name = name;
-      children = new Dictionary<string, SAVEModule>();
       this["metaData"] = new JObject();
+    }
+
+    public JObject BeforeSave()
+    {
+      // 자식 정보를 메타데이터로 입력
+      var childModuleInfo = new JObject();
+
+      foreach (var (_, node) in children)
+        childModuleInfo[node.Name] = node.ModuleType;
+      
+      MetaData["children"] = childModuleInfo;
+
+      return this;
     }
 
     public void Save(string parentPath)
@@ -44,13 +65,13 @@ namespace ToB.IO
       if (children.Count > 0)
       {
         Directory.CreateDirectory(path);
-      
+
         foreach (var (_, node) in children)
-        {
           node.Save(path);
-        }
       }
 
+      // 데이터 저장
+      BeforeSave();
       var filename = isRoot ? System.IO.Path.Combine(path, name + ".json") : path + ".json";
       
       using var writer = File.CreateText(filename);
@@ -71,11 +92,22 @@ namespace ToB.IO
     /// <param name="data"></param>
     public virtual void Read(JObject data)
     {
+      if(data == null) return;
+      
       foreach (var (key, value) in data)
       {
         if (value is null) continue;
-        
-        this[key] = value;
+
+        try
+        {
+          this[key] = value;
+        }
+        catch (NullReferenceException)
+        {
+          DebugSymbol.Save.Log(value);
+          DebugSymbol.Save.Log($"[SAVE-{name}] Error while reading {key}.");
+          throw;
+        }
       }
     }
     
@@ -113,6 +145,7 @@ namespace ToB.IO
         #endif
       }
       
+      var childModuleInfo = MetaData.Get("children", JsonUtil.Blank);
 
       if (chainLoading && Directory.Exists(path))
       {
@@ -134,7 +167,14 @@ namespace ToB.IO
             continue;
           }
 
-          var childModule = Node(fileName, true);
+          ISAVEModule childModule = childModuleInfo.Get(fileName, nameof(SAVEModule)) switch
+          {
+            nameof(PlayerModule) => Node<PlayerModule>(fileName, true),
+            nameof(PlayerStatModule) => Node<PlayerStatModule>(fileName, true),
+            nameof(SavePointModule) => Node<SavePointModule>(fileName, true),
+            nameof(AchievementModule) => Node<AchievementModule>(fileName, true),
+            _ => Node(fileName, true),
+          };
           await childModule.Load(System.IO.Path.Combine(path, fileName), true);
         }
       }
@@ -147,37 +187,48 @@ namespace ToB.IO
     /// <param name="force">true일시 존재하지 않으면 생성합니다.</param>
     public SAVEModule Node(string key, bool force = false)
     {
-      if(children.TryGetValue(key, out var node))
-        return node;
+      if (children.TryGetValue(key, out var node))
+      {
+        if (node is SAVEModule value) return value;
+        else throw new Exception("Node type is not match");
+      }
       
       if (!force) throw new Exception("Node not found");
       
-      node = new SAVEModule(key);
-      children.Add(key, node);
-      return node;
+      var resultNode = new SAVEModule(key);
+      children.Add(key, resultNode);
+      return resultNode;
     }
 
     /// <summary>
     /// 제네릭 바인딩 기능이 있는 노드를 반환합니다.
-    /// 아직 사용하지 말아주세요.. 구현중입니다.
     /// </summary>
     /// <param name="key"></param>
     /// <param name="force"></param>
     /// <typeparam name="T"></typeparam>
-    public GenericSAVEModule<T> Node<T>(string key, bool force = false) where T : IJsonSerializable
+    public T Node<T>(string key, bool force = false) where T : ISAVEModule
     {
-      if (children.TryGetValue(key, out var node))
+      if(children.TryGetValue(key, out var node))
       {
-        if (node is GenericSAVEModule<T> result)
-          return result;
+        if (node is not T value) throw new Exception("Node type is not match");
         
-        throw new Exception("Node is not GenericSAVEModule<T>");
+        return value;
       }
+      
       if (!force) throw new Exception("Node not found");
       
-      var newNode = new GenericSAVEModule<T>(key);
-      children.Add(key, newNode);
-      return newNode;
+      var result = typeof(T) switch
+      {
+        var type when type == typeof(SAVEModule) => (T) (object) new SAVEModule(key),
+        var type when type == typeof(PlayerModule) => (T) (object) new PlayerModule(key),
+        var type when type == typeof(PlayerStatModule) => (T) (object) new PlayerStatModule(key),
+        var type when type == typeof(SavePointModule) => (T)  (object) new SavePointModule(key),
+        var type when type == typeof(AchievementModule) => (T)  (object) new AchievementModule(key),
+        _ => (T) Activator.CreateInstance(typeof(T), key),
+      };
+      
+      children.Add(key, result);
+      return result;
     }
 
     /// <summary>

@@ -1,3 +1,4 @@
+using ToB.Core;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -7,7 +8,7 @@ namespace ToB.UI
     {
         public void ToMainMenu()
         {
-            SceneManager.LoadScene("MainMenu");
+            SceneManager.LoadScene(Defines.MainMenuScene);
         }
         
     }

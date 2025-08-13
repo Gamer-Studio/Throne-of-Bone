@@ -1,21 +1,31 @@
 using System;
+using System.Collections;
 using Cinemachine;
 using NaughtyAttributes;
+using ToB.Core;
 using ToB.Entities;
 using ToB.Utils;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Serialization;
 
 namespace ToB.Player
 {
   public class PlayerController : MonoBehaviour
   {
-    [Label("활성화된 메인 카메라"), SerializeField, ReadOnly] private new Camera camera;
+    [Label("활성화된 메인 카메라"), SerializeField, ReadOnly] private Camera mainCamera;
     [Label("시네머신 카메라"), SerializeField] protected CinemachineVirtualCamera vCam;
     [Label("플레이어 캐릭터"), SerializeField] protected PlayerCharacter character;
-
+    [Label("시선 처리 시간"), SerializeField] private float stareTime;
+    [Label("방어 개선"), SerializeField] private bool guardImprove = true;
+    
     private bool isMeleeAttacking = false;
     private bool isRangedAttacking = false;
+    [ShowNativeProperty] private bool Death => character.stat.Hp <= 0;
+
+    [SerializeField, ReadOnly] private float stareDirectionVertical;
+    private float prevStareDirection;
+    [SerializeField, ReadOnly] private float stareTimeBuffer;
     
     #region Unity Event
     
@@ -24,21 +34,21 @@ namespace ToB.Player
     private void Reset()
     {
       if (!vCam) vCam = FindAnyObjectByType<CinemachineVirtualCamera>();
-      if (!character) character = PlayerCharacter.GetInstance();
+      if (!character) character = PlayerCharacter.Instance;
     }
     
 #endif
 
     private void Awake()
     {
-      camera = Camera.main;
+      mainCamera = Camera.main;
       if (!vCam) vCam = FindAnyObjectByType<CinemachineVirtualCamera>();
-      if (!character) character = PlayerCharacter.GetInstance();
+      if (!character) character = PlayerCharacter.Instance;
     }
 
     private void FixedUpdate()
     {
-      var cursorPos = camera.ScreenToWorldPoint(Input.mousePosition).Z(0);
+      var cursorPos = mainCamera.ScreenToWorldPoint(Input.mousePosition).Z(0);
       var characterPos = character.transform.position;
       var angle = (cursorPos - characterPos).normalized;
 
@@ -52,6 +62,7 @@ namespace ToB.Player
       }
       
       character.SetBlockFocus(angle);
+      Look();
     }
 
     #endregion
@@ -63,7 +74,7 @@ namespace ToB.Player
     /// </summary>
     public void Move(InputAction.CallbackContext context)
     {
-      if(!character) return;
+      if(!character || Death) return;
       
       var input = context.ReadValue<Vector2>().x;
       if (Math.Abs(input) > 0.1f)
@@ -75,6 +86,69 @@ namespace ToB.Player
       {
         character.IsMoving = false;
       }
+
+      // 시선 처리
+      if (!character.IsMoving)
+      {
+        stareDirectionVertical = context.ReadValue<Vector2>().y;
+      }
+      
+      // 소리 재생
+      if (context.performed)
+      {
+        WalkSound();
+      }
+    }
+    
+    #region WalkSound
+    private Coroutine walkSoundCoroutine;
+
+    private void WalkSound()
+    {
+      if (walkSoundCoroutine != null) return;
+      walkSoundCoroutine = StartCoroutine(WalkSoundCoroutine());
+    }
+
+    private IEnumerator WalkSoundCoroutine()
+    {
+      if (character.IsMoving && !character.inWater && !character.IsFlight)
+      {
+        character.audioPlayer.Play("Footsteps_DirtyGround_Run_02",true);
+      }
+      else if (character.IsMoving && character.inWater)
+      {
+        character.audioPlayer.Play("Footsteps_WaterV2_Walk_05", true);
+      }
+      else
+      {
+        walkSoundCoroutine = null;
+        yield break;
+      }
+      while (character.IsMoving) 
+      {
+        yield return new WaitForFixedUpdate();
+      }
+      character.audioPlayer.StopAll();
+      walkSoundCoroutine = null;
+    }
+    #endregion
+
+    private void Look()
+    {
+      if (stareDirectionVertical != prevStareDirection || character.IsMoving)
+      {
+        stareTimeBuffer = 0;
+        prevStareDirection = stareDirectionVertical;
+      }
+      
+      stareTimeBuffer += Time.fixedDeltaTime;
+      if (stareTimeBuffer < stareTime)
+      {
+        GameCameraManager.Instance.Stare(0);
+        return;
+      }
+      
+      GameCameraManager.Instance.Stare(stareDirectionVertical);
     }
 
     /// <summary>
@@ -82,8 +156,10 @@ namespace ToB.Player
     /// </summary>
     public void Jump(InputAction.CallbackContext context)
     {
+      if(Death) return;
+      
       if (context.performed) character.Jump();
-      else if (context.canceled) character.CancelJump();
+      if (context.canceled) character.CancelJump();
     }
 
     /// <summary>
@@ -91,6 +167,8 @@ namespace ToB.Player
     /// </summary>
     public void Dash(InputAction.CallbackContext context)
     {
+      if(Death) return;
+
       if (context.performed) character.Dash();
     }
 
@@ -101,13 +179,15 @@ namespace ToB.Player
     /// </summary>
     public void MeleeAttack(InputAction.CallbackContext context)
     {
+      if(Death) return;
+      
       if (!character.IsFlight || !context.performed)
       {
         isMeleeAttacking = context.performed;
         return;
       }
       
-      var cursorPos = camera.ScreenToWorldPoint(Input.mousePosition).Z(0);
+      var cursorPos = mainCamera.ScreenToWorldPoint(Input.mousePosition).Z(0);
       var characterPos = character.transform.position.Y(v => v);
       var direction = (cursorPos - characterPos).normalized;
       
@@ -137,13 +217,20 @@ namespace ToB.Player
     /// </summary>
     public void RangedAttack(InputAction.CallbackContext context)
     {
+      if(Death) return;
+
       isRangedAttacking = context.performed;
     }
 
     public void Block(InputAction.CallbackContext context)
     {
-      if (context.performed) character.StartBlock();
-      else if (context.canceled) character.CancelBlock();
+      if(Death) return;
+
+      if (context.performed)
+      {
+        if(!character.IsBlocking) character.StartBlock();
+      }
+      else if (context.canceled && !guardImprove) character.CancelBlock();
     }
     
     #endregion
@@ -158,6 +245,8 @@ namespace ToB.Player
     /// </summary>
     public void Interaction(InputAction.CallbackContext context)
     {
+      if(Death) return;
+      
       if (context.performed)
       {
         Interact();

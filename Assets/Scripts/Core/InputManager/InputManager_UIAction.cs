@@ -8,22 +8,30 @@ using UnityEngine.InputSystem;
 namespace ToB.Core.InputManager
 {
     
-    public partial class InputManager
+    public partial class TOBInputManager
     {
+        public bool blockUICancel = false;
         public void UIProcess(InputAction.CallbackContext context)
         {
+            if (IsRebinding) return;
             if (UIManager.Instance.panelStack.Count == 0) return;
+
             UIManager.Instance.panelStack.Peek().Process(context);
         }
         public void UICancel(InputAction.CallbackContext context)
         {
+            if (IsRebinding) return;
             if (!context.performed) return;
+            if (blockUICancel) return;
+            
             if (UIManager.Instance.panelStack.Count == 0)
             {
                 UIManager.Instance.mainBookUI.SettingUIToggle(context);
                 return;
             }
+
             UIManager.Instance.panelStack.Peek().Cancel(context);
+            
         }
 
         public void StatisticsUIToggle(InputAction.CallbackContext context)
@@ -63,6 +71,7 @@ namespace ToB.Core.InputManager
 
         public bool CanUseUIToggles()
         {
+            if (IsRebinding) return false;
             return UIManager.Instance.panelStack.Count == 0 || UIManager.Instance.panelStack.Peek() is MainBookUI;
         }
     }

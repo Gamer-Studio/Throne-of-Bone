@@ -5,13 +5,18 @@ using Cinemachine;
 using DG.Tweening;
 using ToB.Core;
 using ToB.Core.InputManager;
+using ToB.Entities.FieldObject;
+using ToB.IO;
+using ToB.Memories;
 using ToB.Scenes.Stage;
+using ToB.Worlds;
 using UnityEditor;
 using UnityEngine;
+using AudioType = ToB.Core.AudioType;
 
 namespace ToB.Entities
 {
-    public class SewerRatRoomSequence : MonoBehaviour
+    public class SewerRatRoomSequence : Room
     {
         [Header( "보스 오브젝트" )]
         [SerializeField] private SewerRat firstSewerRat;
@@ -26,6 +31,9 @@ namespace ToB.Entities
         [Header("보스룸 버추얼 카메라")]
         [SerializeField] private CinemachineVirtualCamera roomVirtualCamera;
         [SerializeField] private CinemachineVirtualCamera ratVirtualCamera;
+
+        [Header("문")] 
+        [SerializeField] private List<Door> doors;
         
         CinemachineVirtualCamera mainVirtualCamera;
         private CinemachineBasicMultiChannelPerlin mainCamNoise;
@@ -38,8 +46,9 @@ namespace ToB.Entities
             roomLocation = GetComponent<Location>();
         }
 
-        private void Start()
+        protected override void Start()
         {
+            base.Start();
             // TODO: 진행도에서 이미 깼으면 스스스로 파괴. 최적화 하고자 하면 보스를 사전참조하지 않고 못 깼으면 그 때 인스턴스화
             // TODO: 다만 entity 오브젝트에 스케일 맞게 끌어놓는 게 편해서 일단 이렇게 해둡니다
 
@@ -62,14 +71,21 @@ namespace ToB.Entities
 
         private void PlayerEntered()
         {
+            if(SAVE.Current.Achievements.KillRat) return;
+            
             if (phaseCount != 0) return;
             phaseCount++;
-            InputManager.Instance.SetInputActive(false);
+            TOBInputManager.Instance.SetInputActive(false);
             StartCoroutine(Sequence());
         }
 
         private IEnumerator Sequence()
         {
+            CloseDoors();
+            yield return new WaitUntil(() => !doors[0].IsOpen);
+            AudioManager.Stop(AudioType.Background);
+            AudioManager.Play("1.Boss",AudioType.Background);
+            
             // Phase 1 : 한 마리
             yield return StartCoroutine(FirstRatEarthQuake());
             
@@ -83,11 +99,11 @@ namespace ToB.Entities
             roomVirtualCamera.Priority = 0;
             
             firstSewerRat.target = StageManager.Instance.player.transform;
-            InputManager.Instance.SetInputActive(true);
+            TOBInputManager.Instance.SetInputActive(true);
             
             // Phase 2 : 두 마리
             if(!hardMode) yield break;
-            yield return new WaitUntil(() => !firstSewerRat);
+            yield return new WaitUntil(() => !firstSewerRat.IsAlive);
             
             roomVirtualCamera.Priority = 50;
             roomVirtualCamera.m_Lens.OrthographicSize = 6f;
@@ -108,18 +124,42 @@ namespace ToB.Entities
             anotherSewerRats[0].target = StageManager.Instance.player.transform;
             anotherSewerRats[1].target = StageManager.Instance.player.transform;
             
+            yield return new WaitUntil(() => !anotherSewerRats[0].IsAlive && !anotherSewerRats[1].IsAlive);
+            SAVE.Current.Achievements.KillRat = true;
+
+            OpenDoors();
+            AudioManager.Play("1.Stage",AudioType.Background);
+            MemoriesManager.Instance.MemoryAcquired(1003);
         }
+
+        private void CloseDoors()
+        {
+            foreach (var door in doors)
+            {
+                door.Close();
+            }
+        }
+        private void OpenDoors()
+        {
+            foreach (var door in doors)
+            {
+                door.Open();
+            }
+        }
+
         private IEnumerator FirstRatEarthQuake()
         {
+            firstSewerRat.audioPlayer.Play("Movement_Earth_Loop_01");
             mainCamNoise.m_AmplitudeGain = 5f;
             mainCamNoise.m_FrequencyGain = 25f;
             roomCamNoise.m_AmplitudeGain = 5f;
             roomCamNoise.m_FrequencyGain = 25f;
             
             yield return new WaitForSeconds(1f);
-
+            
+            firstSewerRat.audioPlayer.Stop("Movement_Earth_Loop_01");
             roomVirtualCamera.Priority = 50;
-            roomVirtualCamera.transform.position = transform.position;
+            roomVirtualCamera.transform.position = roomLocation.transform.position + new Vector3(0,0,-10);
             roomVirtualCamera.transform.position += Vector3.down * 5f;
             roomVirtualCamera.m_Lens.OrthographicSize = 4f;
             
@@ -150,7 +190,7 @@ namespace ToB.Entities
         private void CreateDust(SewerRat sewerRat)
         {
             Vector2 rayOrigin = sewerRat.transform.position;
-            rayOrigin.y = transform.position.y;
+            rayOrigin.y = roomLocation.transform.position.y;
             Vector2 groundPoint = Physics2D.Raycast(rayOrigin, Vector2.down, 100f, groundMask).point;
 
             ParticleSystem groundDustEffect = sewerRat.Strategy.GroundDustEffect;
@@ -182,9 +222,11 @@ namespace ToB.Entities
             
             yield return new WaitUntil(() => sewerRat.IsGrounded);
             
+            firstSewerRat.audioPlayer.Play("Footstep_05");
+            firstSewerRat.audioPlayer.Play("AgressiveShout_04");
             ratVirtualCamera.Priority = 0;
             roomVirtualCamera.Priority = 50;
-            roomVirtualCamera.transform.position = transform.position + Vector3.down * 2.5f;
+            roomVirtualCamera.transform.position = roomLocation.transform.position + Vector3.down * 2.5f + new Vector3(0,0,-10);
             sewerRat.Animator.SetBool(EnemyAnimationString.Roll, false);
         }
     }

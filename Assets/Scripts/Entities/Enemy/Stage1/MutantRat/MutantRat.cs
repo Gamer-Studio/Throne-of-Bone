@@ -1,3 +1,5 @@
+using ToB.Entities.Interface;
+using ToB.Memories;
 using UnityEngine;
 
 namespace ToB.Entities
@@ -7,30 +9,46 @@ namespace ToB.Entities
         IEnemyHitPart
     {
         
-        public MutantRatSO DataSO { get; private set; }
+        public MutantRatSO DataSO => enemySO as MutantRatSO;
         [field:SerializeField] public EnemyStatHandler Stat { get; private set; }
         [field:SerializeField] public EnemyRangeBaseSightSensor RangeBaseSightSensor { get; private set; }
         [field:SerializeField] public EnemySimpleSensor AttackSensor { get; private set; }
         [field:SerializeField] public MutantRatFSM FSM { get; private set; }
         
+        [field:SerializeField] public EnemyBody EnemyBody { get; private set; }
         [field:SerializeField] public ParticleSystem deathEffect { get; private set; }
         
 
         protected override void Awake()
         {
             base.Awake();
-            DataSO = enemySO as MutantRatSO;
             
-            Stat.Init(this, DataSO);
             Knockback.Init(this);
             RangeBaseSightSensor.Init(this);
             FSM.Init();
             deathEffect.gameObject.SetActive(false);
+            EnemyBody.Init(this, DataSO.BodyDamage);
         }
+
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+            Stat.Init(this, DataSO);
+            Hitbox.enabled = true;
+            FSM.Init();
+            
+        }
+
         protected override void Reset()
         {
             Stat = GetComponentInChildren<EnemyStatHandler>();
             FSM = GetComponent<MutantRatFSM>();
+        }
+
+        public override void OnTakeDamage(IAttacker sender)
+        {
+            base.OnTakeDamage(sender);
+            if (Stat.CurrentHP > 0) audioPlayer.Play("Scream_01");
         }
 
         protected override void Die()
@@ -40,9 +58,12 @@ namespace ToB.Entities
             deathEffect.gameObject.SetActive(true);
             deathEffect.transform.SetParent(null);
             deathEffect.Play();
-            
-            Destroy(gameObject);
-            Destroy(deathEffect,2);
+            audioPlayer.Play("Death_01");
+            MemoriesManager.Instance.MemoryAcquired(10004);
+
+            Hitbox.enabled = false;
+            Sprite.enabled = false;
+            FSM.ChangePattern(null);
         }
     }
 }

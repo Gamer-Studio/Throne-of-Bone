@@ -30,7 +30,8 @@ Transform:
   m_LocalPosition: {x: 25.018059, y: -24.77305, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 8488742508681531835}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7979204637054485691
@@ -40,7 +41,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2392123188894686550}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
   m_Name: 
@@ -95,70 +96,6 @@ MonoBehaviour:
     m_ActionId: 864bfce7-6a24-41c2-a3e2-389672469fd3
     m_ActionName: 'Player/Fire[/Mouse/leftButton]'
   - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 2e2db298-8dca-493e-bcdf-098b1e0d197b
-    m_ActionName: 'UI/Navigate[/Keyboard/w,/Keyboard/upArrow,/Keyboard/s,/Keyboard/downArrow,/Keyboard/a,/Keyboard/leftArrow,/Keyboard/d,/Keyboard/rightArrow]'
-  - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 672590898898256484}
-        m_TargetAssemblyTypeName: ToB.Core.InputManager.InputManager, Assembly-CSharp
-        m_MethodName: UIProcess
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_ActionId: 687c57df-8788-464b-86f1-c39f1295097f
-    m_ActionName: 'UI/Submit[/Keyboard/enter]'
-  - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 672590898898256484}
-        m_TargetAssemblyTypeName: ToB.Core.InputManager.InputManager, Assembly-CSharp
-        m_MethodName: CancelCurrentPanel
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_ActionId: cf707984-b7bb-4e80-99b9-97e3dc3b13e7
-    m_ActionName: 'UI/Cancel[/Keyboard/escape]'
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 992bde84-43df-438d-b23b-05bc344f3341
-    m_ActionName: 'UI/Point[/Mouse/position]'
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: e376a432-582a-4192-bad3-6e4f8e48121d
-    m_ActionName: 'UI/Click[/Mouse/leftButton]'
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 57da2d59-5b98-437f-a75c-3d58b8bb4894
-    m_ActionName: 'UI/ScrollWheel[/Mouse/scroll]'
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 08cec2ca-6fcd-43f7-b64a-7688bb3bf26d
-    m_ActionName: 'UI/MiddleClick[/Mouse/middleButton]'
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 95a43d5a-f721-4a26-8a81-9f8088386d47
-    m_ActionName: 'UI/RightClick[/Mouse/rightButton]'
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 12b0721b-8d8c-4939-95bb-ea46e1bcb84b
-    m_ActionName: UI/TrackedDevicePosition
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 7c65ea3e-30ff-4db9-a241-1a4a7fc39192
-    m_ActionName: UI/TrackedDeviceOrientation
-  - m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 672590898898256484}
         m_TargetAssemblyTypeName: ToB.Core.InputManager.InputManager, Assembly-CSharp
@@ -208,138 +145,6 @@ MonoBehaviour:
     m_ActionName: 'Player/RangedAtttack[/Mouse/rightButton]'
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: ToB.UI.IntroUI, Assembly-CSharp
-        m_MethodName: CloseCurrentPanel
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_ActionId: 4007a022-de53-4ebf-bc74-2768a7bdd80d
-    m_ActionName: 'MainMenu/CloseCurrentPanel[/Keyboard/escape]'
-  - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: ToB.UI.MainBookUI, Assembly-CSharp
-        m_MethodName: StatisticsUIToggle
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_ActionId: d22c1a39-121a-47a0-be08-ce6de272878f
-    m_ActionName: 'Stage/StatisticsUIToggle[/Keyboard/p]'
-  - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: ToB.UI.MainBookUI, Assembly-CSharp
-        m_MethodName: SoulUIToggle
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_ActionId: 93a7054b-fecb-46f2-aa0c-96c73ede3ec6
-    m_ActionName: 'Stage/SoulUIToggle[/Keyboard/k]'
-  - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: ToB.UI.GamePlayUI, Assembly-CSharp
-        m_MethodName: ClearActiveUI
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_ActionId: 21472047-e2b9-4149-96da-6338e1767ef0
-    m_ActionName: 'Stage/ClearActiveUI[/Keyboard/escape]'
-  - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: ToB.UI.GamePlayUI, Assembly-CSharp
-        m_MethodName: ClearActiveUI
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_ActionId: 596070d4-a770-4160-88c7-2ca22b638597
-    m_ActionName: 'Stage/SettingUIToggle[/Keyboard/escape]'
-  - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: ToB.UI.MainBookUI, Assembly-CSharp
-        m_MethodName: SkillUIToggle
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_ActionId: b86368c6-de3e-43f2-a931-bd0f5744379e
-    m_ActionName: 'Stage/SkillUIToggle[/Keyboard/l]'
-  - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: ToB.UI.MainBookUI, Assembly-CSharp
-        m_MethodName: CollectionUIToggle
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_ActionId: 3c2d5ed0-767f-4e53-b745-6bf54c7e10bf
-    m_ActionName: 'Stage/CollectionUIToggle[/Keyboard/o]'
-  - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: ToB.UI.WideMapUI, Assembly-CSharp
-        m_MethodName: WideMapToggle
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_ActionId: fab35e07-4445-493b-ab5d-4fd22e232ce5
-    m_ActionName: 'Stage/WideMapToggle[/Keyboard/m]'
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: e61fd35c-2604-48ab-92b3-2cb13fcd67ff
-    m_ActionName: 'Stage/QuestUIToggle[/Keyboard/j]'
-  - m_PersistentCalls:
-      m_Calls:
       - m_Target: {fileID: 672590898898256484}
         m_TargetAssemblyTypeName: ToB.Core.InputManager, Assembly-CSharp
         m_MethodName: PlayerInteract
@@ -371,19 +176,7 @@ MonoBehaviour:
     m_ActionId: 69651d32-02bd-4ba6-96c6-22374bcfb14d
     m_ActionName: 'Player/Block[/Keyboard/q]'
   - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 672590898898256484}
-        m_TargetAssemblyTypeName: ToB.Core.InputManager.InputManager, Assembly-CSharp
-        m_MethodName: UIProcess
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
     m_ActionId: 466e762c-0f67-4beb-b617-4decc40fa7ec
     m_ActionName: 'Player/Submit[/Keyboard/f]'
   - m_PersistentCalls:
@@ -487,7 +280,7 @@ MonoBehaviour:
     m_ActionId: 9cbe009d-1689-4180-8a99-901e235c7e2e
     m_ActionName: 'Player/QuestUIToggle[/Keyboard/j]'
   m_NeverAutoSwitchControlSchemes: 1
-  m_DefaultControlScheme: 
+  m_DefaultControlScheme: Keyboard&Mouse
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
@@ -503,5 +296,51 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7054be7796a8cf84186a9494d593a9c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <KeyBindManager>k__BackingField: {fileID: 2828379694731399623}
   player: {fileID: 0}
-  <CurrentActionMap>k__BackingField: 
+  currentActionMap: 0
+--- !u!1 &3042801110071611715
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8488742508681531835}
+  - component: {fileID: 2828379694731399623}
+  m_Layer: 0
+  m_Name: KeyBindingManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8488742508681531835
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3042801110071611715}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7409080537182550021}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2828379694731399623
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3042801110071611715}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a15a6bb43f82e8d4bbf018701267c3d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inputActionAsset: {fileID: -944628639613478452, guid: f39120f54563cf64d928a279e19cb3cc, type: 3}

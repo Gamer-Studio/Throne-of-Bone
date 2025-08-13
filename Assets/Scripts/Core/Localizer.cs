@@ -42,11 +42,11 @@ namespace ToB.Core
       set => LocalizationSettings.SelectedLocale = value;
     }
     
-    public static string Localize(this string key, params string[] args)
+    public static string Localize(this string key, params string[] namespaces)
     {
       if (generalTables.TryGetValue(ActiveLocale.Identifier, out var table))
       {
-        if(table.TryGetValue(generalTableData.GetEntry(string.Join("_", args) + "_" + key).Id, out var entry)) return entry.Value;
+        if(table.TryGetValue(generalTableData.GetEntry(string.Join("_", namespaces) + "_" + key).Id, out var entry)) return entry.Value;
       }
       
       return $"unknown key - {key}";

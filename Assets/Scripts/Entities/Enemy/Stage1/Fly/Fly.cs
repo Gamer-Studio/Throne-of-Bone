@@ -3,6 +3,10 @@
 
 using System;
 using System.Collections;
+using ToB.Entities.FieldObject;
+using ToB.Entities.Interface;
+using ToB.Memories;
+using ToB.Utils;
 using UnityEngine;
 
 namespace ToB.Entities
@@ -53,7 +57,14 @@ namespace ToB.Entities
             Stat.Init(this, DataSO);
             isAlive = true;
             Hitbox.enabled = true;
+            audioPlayer.Play("Organism_15");
             FSM.Init();
+        }
+
+        public override void OnTakeDamage(IAttacker sender)
+        {
+            base.OnTakeDamage(sender);
+            if (Stat.CurrentHP > 0) audioPlayer.Play("Insect_Hurt_04");
         }
 
         protected override void Die()
@@ -62,6 +73,8 @@ namespace ToB.Entities
             Animator.SetTrigger(EnemyAnimationString.Die);
             Hive.flies.Remove(gameObject);
             Hitbox.enabled = false;
+            audioPlayer.Play("Insect_Death_04");
+            MemoriesManager.Instance.MemoryAcquired(10003);
             StartCoroutine(ReleaseSelf());
         }
 
@@ -74,12 +87,13 @@ namespace ToB.Entities
         public void StingAttack()
         {
             GameObject stingObj = StingPrefab.Pooling();
-            LinearProjectile sting = stingObj.GetComponent<LinearProjectile>();
+            LinearMovement linearMovement = stingObj.GetComponent<LinearMovement>();
+            ContactDamage contactDamage = stingObj.GetComponent<ContactDamage>();
             Vector2 direction = GetTargetDirection();
             
             stingObj.transform.position = transform.position;
-            sting.LinearMovement.Init(direction, DataSO.StingSpeed);
-            sting.ContactDamage.Init(DataSO, direction);
+            linearMovement.Init(direction, DataSO.StingSpeed);
+            contactDamage.Init(DataSO, direction);
         }
     }
 }

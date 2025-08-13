@@ -1,0 +1,661 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35ff159f379013844b61494e575ccf76, type: 3}
+  m_Name: BattleSkillSO
+  m_EditorClassIdentifier: 
+  BattleSkillDataBase:
+  - index: 0
+    id: 10000
+    skillName: "\uD30C\uAD34\uC758 \uD3B8\uB9B0 I"
+    tier: 1
+    upStat1: 2
+    upStat2: 0
+    skillType: 1
+    goldCost: 0
+    manaCost: 1
+    reqID1: 0
+    reqID2: 0
+    description: "\uACF5\uACA9\uB825\uC774 2 \uC99D\uAC00\uD569\uB2C8\uB2E4."
+  - index: 1
+    id: 10001
+    skillName: "\uD30C\uAD34\uC758 \uD3B8\uB9B0 II"
+    tier: 2
+    upStat1: 3
+    upStat2: 0
+    skillType: 1
+    goldCost: 500
+    manaCost: 1
+    reqID1: 10000
+    reqID2: 0
+    description: "\uACF5\uACA9\uB825\uC774 3 \uC99D\uAC00\uD569\uB2C8\uB2E4."
+  - index: 2
+    id: 10002
+    skillName: "\uD30C\uAD34\uC758 \uD3B8\uB9B0 III"
+    tier: 3
+    upStat1: 4
+    upStat2: 0
+    skillType: 1
+    goldCost: 800
+    manaCost: 1
+    reqID1: 10001
+    reqID2: 0
+    description: "\uACF5\uACA9\uB825\uC774 4 \uC99D\uAC00\uD569\uB2C8\uB2E4."
+  - index: 3
+    id: 10003
+    skillName: "\uD30C\uAD34\uC758 \uD3B8\uB9B0 IV"
+    tier: 4
+    upStat1: 5
+    upStat2: 0
+    skillType: 1
+    goldCost: 1200
+    manaCost: 1
+    reqID1: 10002
+    reqID2: 0
+    description: "\uACF5\uACA9\uB825\uC774 5 \uC99D\uAC00\uD569\uB2C8\uB2E4."
+  - index: 4
+    id: 10004
+    skillName: "\uD30C\uAD34\uC758 \uD3B8\uB9B0 V"
+    tier: 5
+    upStat1: 7
+    upStat2: 0
+    skillType: 1
+    goldCost: 1700
+    manaCost: 1
+    reqID1: 10003
+    reqID2: 0
+    description: "\uACF5\uACA9\uB825\uC774 7 \uC99D\uAC00\uD569\uB2C8\uB2E4."
+  - index: 5
+    id: 10005
+    skillName: "\uD30C\uAD34\uC758 \uD3B8\uB9B0 VI"
+    tier: 6
+    upStat1: 10
+    upStat2: 0
+    skillType: 1
+    goldCost: 2500
+    manaCost: 1
+    reqID1: 10004
+    reqID2: 0
+    description: "\uACF5\uACA9\uB825\uC774 10 \uC99D\uAC00\uD569\uB2C8\uB2E4."
+  - index: 6
+    id: 10006
+    skillName: "\uD30C\uAD34 \uBCF8\uB2A5"
+    tier: 1
+    upStat1: 0.1
+    upStat2: 0.5
+    skillType: 1
+    goldCost: 500
+    manaCost: 3
+    reqID1: 0
+    reqID2: 0
+    description: "\uCE58\uBA85\uD0C0 \uACF5\uACA9\uC774 \uAC00\uB2A5\uD574\uC9C0\uBA70,
+      10% \uD655\uB960\uB85C \uCD1D \uD53C\uD574\uC758 150%\uC758 \uB370\uBBF8\uC9C0\uB97C
+      \uC785\uD799\uB2C8\uB2E4."
+  - index: 7
+    id: 10007
+    skillName: "\uD30C\uAD34 \uCDA9\uB3D9 I"
+    tier: 2
+    upStat1: 0
+    upStat2: 0.1
+    skillType: 1
+    goldCost: 700
+    manaCost: 3
+    reqID1: 10006
+    reqID2: 0
+    description: "\uCE58\uBA85\uD0C0 \uACF5\uACA9\uC758 \uB370\uBBF8\uC9C0 \uBC30\uC728\uC774
+      10% \uC99D\uAC00\uD569\uB2C8\uB2E4."
+  - index: 8
+    id: 10008
+    skillName: "\uC57D\uC810 \uD3EC\uCC29 I"
+    tier: 3
+    upStat1: 0.05
+    upStat2: 0
+    skillType: 1
+    goldCost: 1000
+    manaCost: 3
+    reqID1: 10006
+    reqID2: 0
+    description: "\uCE58\uBA85\uD0C0 \uACF5\uACA9 \uD655\uB960\uC774 5% \uC99D\uAC00\uD569\uB2C8\uB2E4."
+  - index: 9
+    id: 10009
+    skillName: "\uD30C\uAD34 \uCDA9\uB3D9 II"
+    tier: 4
+    upStat1: 0
+    upStat2: 0.15
+    skillType: 1
+    goldCost: 1400
+    manaCost: 3
+    reqID1: 10007
+    reqID2: 0
+    description: "\uCE58\uBA85\uD0C0 \uACF5\uACA9\uC758 \uB370\uBBF8\uC9C0 \uBC30\uC728\uC774
+      15% \uC99D\uAC00\uD569\uB2C8\uB2E4."
+  - index: 10
+    id: 10010
+    skillName: "\uC57D\uC810 \uD3EC\uCC29 II"
+    tier: 5
+    upStat1: 0.05
+    upStat2: 0
+    skillType: 1
+    goldCost: 2000
+    manaCost: 3
+    reqID1: 10008
+    reqID2: 0
+    description: "\uCE58\uBA85\uD0C0 \uACF5\uACA9 \uD655\uB960\uC774 5% \uC99D\uAC00\uD569\uB2C8\uB2E4."
+  - index: 11
+    id: 10011
+    skillName: "\uD30C\uAD34\uC790\uC758 \uC77C\uACA9"
+    tier: 6
+    upStat1: 0.1
+    upStat2: 0.25
+    skillType: 1
+    goldCost: 3000
+    manaCost: 5
+    reqID1: 10009
+    reqID2: 10010
+    description: "\uCE58\uBA85\uD0C0 \uACF5\uACA9 \uD655\uB960\uC774 10%, \uB370\uBBF8\uC9C0
+      \uBC30\uC728\uC774 25% \uC99D\uAC00\uD569\uB2C8\uB2E4. "
+  - index: 12
+    id: 10012
+    skillName: "\uB04A\uC784\uC5C6\uB294 \uACE0\uD1B5 I"
+    tier: 2
+    upStat1: 0.1
+    upStat2: 0
+    skillType: 1
+    goldCost: 700
+    manaCost: 3
+    reqID1: 0
+    reqID2: 0
+    description: "\uACF5\uACA9 \uC2DC 10% \uD655\uB960\uB85C \uC801\uC5D0\uAC8C \uCD9C\uD608
+      \uD6A8\uACFC\uB97C \uBD80\uC5EC\uD569\uB2C8\uB2E4."
+  - index: 13
+    id: 10013
+    skillName: "\uB04A\uC784\uC5C6\uB294 \uACE0\uD1B5 II"
+    tier: 3
+    upStat1: 0
+    upStat2: 1
+    skillType: 1
+    goldCost: 1200
+    manaCost: 3
+    reqID1: 10012
+    reqID2: 0
+    description: "\uCD9C\uD608\uC758 \uB370\uBBF8\uC9C0\uAC00 100% \uC99D\uAC00\uD569\uB2C8\uB2E4."
+  - index: 14
+    id: 10014
+    skillName: "\uB04A\uC784\uC5C6\uB294 \uACE0\uD1B5 III"
+    tier: 5
+    upStat1: 0.1
+    upStat2: 0
+    skillType: 1
+    goldCost: 2500
+    manaCost: 3
+    reqID1: 10018
+    reqID2: 0
+    description: "\uCD9C\uD608\uC758 \uBD80\uC5EC \uD655\uB960\uC774 10% \uC99D\uAC00\uD569\uB2C8\uB2E4."
+  - index: 15
+    id: 10015
+    skillName: "\uB9C8\uB098 \uC6B4\uC6A9\uBC95 I"
+    tier: 2
+    upStat1: 1
+    upStat2: 0
+    skillType: 1
+    goldCost: 700
+    manaCost: 3
+    reqID1: 0
+    reqID2: 0
+    description: "\uAC80\uAE30\uC758 \uCD5C\uB300 \uC800\uC7A5\uB7C9\uC774 1 \uC99D\uAC00\uD569\uB2C8\uB2E4."
+  - index: 16
+    id: 10016
+    skillName: "\uB9C8\uB098 \uBC84\uC2A4\uD2B8"
+    tier: 3
+    upStat1: 0
+    upStat2: 0.5
+    skillType: 1
+    goldCost: 1200
+    manaCost: 3
+    reqID1: 10015
+    reqID2: 0
+    description: "\uAC80\uAE30\uC758 \uB370\uBBF8\uC9C0 \uBC30\uC728\uC774 50% \uC99D\uAC00\uD569\uB2C8\uB2E4."
+  - index: 17
+    id: 10017
+    skillName: "\uB9C8\uB098 \uC6B4\uC6A9\uBC95 II"
+    tier: 5
+    upStat1: 1
+    upStat2: 0
+    skillType: 1
+    goldCost: 2500
+    manaCost: 3
+    reqID1: 10018
+    reqID2: 0
+    description: "\uAC80\uAE30\uC758 \uCD5C\uB300 \uC800\uC7A5\uB7C9\uC774 1 \uC99D\uAC00\uD569\uB2C8\uB2E4."
+  - index: 18
+    id: 10018
+    skillName: "\uD608\uAE30 \uD761\uC218"
+    tier: 4
+    upStat1: 0.03
+    upStat2: 0
+    skillType: 1
+    goldCost: 2000
+    manaCost: 5
+    reqID1: 10013
+    reqID2: 10016
+    description: "\uAC80\uAE30\uAC00 \uC801\uC5D0\uAC8C \uC801\uC911 \uC2DC \uCD5C\uB300
+      \uCCB4\uB825\uC758 3%\uB97C \uD68C\uBCF5\uD569\uB2C8\uB2E4."
+  - index: 19
+    id: 20000
+    skillName: "\uC218\uD638\uC758 \uD3B8\uB9B0 I"
+    tier: 1
+    upStat1: 10
+    upStat2: 0
+    skillType: 2
+    goldCost: 300
+    manaCost: 1
+    reqID1: 0
+    reqID2: 0
+    description: "\uCD5C\uB300 \uCCB4\uB825\uC774 10 \uC99D\uAC00\uD569\uB2C8\uB2E4."
+  - index: 20
+    id: 20001
+    skillName: "\uC218\uD638\uC758 \uD3B8\uB9B0 II"
+    tier: 2
+    upStat1: 15
+    upStat2: 0
+    skillType: 2
+    goldCost: 500
+    manaCost: 1
+    reqID1: 20000
+    reqID2: 0
+    description: "\uCD5C\uB300 \uCCB4\uB825\uC774 15 \uC99D\uAC00\uD569\uB2C8\uB2E4."
+  - index: 21
+    id: 20002
+    skillName: "\uC218\uD638\uC758 \uD3B8\uB9B0 III"
+    tier: 3
+    upStat1: 20
+    upStat2: 0
+    skillType: 2
+    goldCost: 800
+    manaCost: 1
+    reqID1: 20001
+    reqID2: 0
+    description: "\uCD5C\uB300 \uCCB4\uB825\uC774 20 \uC99D\uAC00\uD569\uB2C8\uB2E4."
+  - index: 22
+    id: 20003
+    skillName: "\uC218\uD638\uC758 \uD3B8\uB9B0 IV"
+    tier: 4
+    upStat1: 25
+    upStat2: 0
+    skillType: 2
+    goldCost: 1200
+    manaCost: 1
+    reqID1: 20002
+    reqID2: 0
+    description: "\uCD5C\uB300 \uCCB4\uB825\uC774 25 \uC99D\uAC00\uD569\uB2C8\uB2E4."
+  - index: 23
+    id: 20004
+    skillName: "\uC218\uD638\uC758 \uD3B8\uB9B0 V"
+    tier: 5
+    upStat1: 35
+    upStat2: 0
+    skillType: 2
+    goldCost: 1700
+    manaCost: 1
+    reqID1: 20003
+    reqID2: 0
+    description: "\uCD5C\uB300 \uCCB4\uB825\uC774 35 \uC99D\uAC00\uD569\uB2C8\uB2E4."
+  - index: 24
+    id: 20005
+    skillName: "\uC218\uD638\uC758 \uD3B8\uB9B0 VI"
+    tier: 6
+    upStat1: 45
+    upStat2: 0
+    skillType: 2
+    goldCost: 2500
+    manaCost: 1
+    reqID1: 20004
+    reqID2: 0
+    description: "\uCD5C\uB300 \uCCB4\uB825\uC774 45 \uC99D\uAC00\uD569\uB2C8\uB2E4."
+  - index: 25
+    id: 20006
+    skillName: "\uC815\uBC00\uD55C \uBC29\uC5B4 I"
+    tier: 2
+    upStat1: 0.1
+    upStat2: 0
+    skillType: 2
+    goldCost: 700
+    manaCost: 3
+    reqID1: 20000
+    reqID2: 0
+    description: "\uC800\uC2A4\uD2B8 \uAC00\uB4DC\uC758 \uD310\uC815 \uC2DC\uAC04\uC774
+      10% \uC99D\uAC00\uD569\uB2C8\uB2E4."
+  - index: 26
+    id: 20007
+    skillName: "\uC0DD\uBA85\uC758 \uAE30\uC6B4 I"
+    tier: 3
+    upStat1: 0
+    upStat2: 0.05
+    skillType: 2
+    goldCost: 1000
+    manaCost: 5
+    reqID1: 20006
+    reqID2: 0
+    description: "\uC800\uC2A4\uD2B8 \uAC00\uB4DC \uC131\uACF5 \uC2DC \uCD5C\uB300
+      \uCCB4\uB825\uC758 5%\uB97C \uD68C\uBCF5\uD569\uB2C8\uB2E4."
+  - index: 27
+    id: 20008
+    skillName: "\uC815\uBC00\uD55C \uBC29\uC5B4 II"
+    tier: 4
+    upStat1: 0.1
+    upStat2: 0
+    skillType: 2
+    goldCost: 1400
+    manaCost: 3
+    reqID1: 20007
+    reqID2: 0
+    description: "\uC800\uC2A4\uD2B8 \uAC00\uB4DC\uC758 \uD310\uC815 \uC2DC\uAC04\uC774
+      10% \uC99D\uAC00\uD569\uB2C8\uB2E4."
+  - index: 28
+    id: 20009
+    skillName: "\uC0DD\uBA85\uC758 \uAE30\uC6B4 II"
+    tier: 5
+    upStat1: 0
+    upStat2: 0.05
+    skillType: 2
+    goldCost: 2000
+    manaCost: 5
+    reqID1: 20008
+    reqID2: 0
+    description: "\uC800\uC2A4\uD2B8 \uAC00\uB4DC \uC131\uACF5 \uC2DC \uD68C\uBCF5\uB418\uB294
+      \uCCB4\uB825\uC758 \uBC30\uC728\uC774 5% \uC99D\uAC00\uD569\uB2C8\uB2E4."
+  - index: 29
+    id: 20010
+    skillName: "\uCCA0\uBCBD\uC758 \uC694\uC0C8 I"
+    tier: 1
+    upStat1: 5
+    upStat2: 0
+    skillType: 2
+    goldCost: 500
+    manaCost: 3
+    reqID1: 0
+    reqID2: 0
+    description: "\uBC29\uC5B4\uB825\uC774 5 \uC99D\uAC00\uD569\uB2C8\uB2E4."
+  - index: 30
+    id: 20011
+    skillName: "\uCCA0\uBCBD\uC758 \uC694\uC0C8 II"
+    tier: 3
+    upStat1: 10
+    upStat2: 0
+    skillType: 2
+    goldCost: 1000
+    manaCost: 3
+    reqID1: 20010
+    reqID2: 0
+    description: "\uBC29\uC5B4\uB825\uC774 10 \uC99D\uAC00\uD569\uB2C8\uB2E4."
+  - index: 31
+    id: 20012
+    skillName: "\uCCA0\uBCBD\uC758 \uC694\uC0C8 III"
+    tier: 5
+    upStat1: 15
+    upStat2: 0
+    skillType: 2
+    goldCost: 2000
+    manaCost: 3
+    reqID1: 20011
+    reqID2: 0
+    description: "\uBC29\uC5B4\uB825\uC774 15 \uC99D\uAC00\uD569\uB2C8\uB2E4."
+  - index: 32
+    id: 20013
+    skillName: "\uC219\uB828\uB41C \uBC29\uC5B4 I"
+    tier: 2
+    upStat1: 5
+    upStat2: 0
+    skillType: 2
+    goldCost: 700
+    manaCost: 3
+    reqID1: 20010
+    reqID2: 0
+    description: "\uAC00\uB4DC \uBC1C\uB3D9 \uC2DC \uC18C\uBAA8\uB418\uB294 \uAC00\uB4DC
+      \uAC8C\uC774\uC9C0 \uC18C\uBAA8\uB7C9\uC774 5 \uAC10\uC18C\uD569\uB2C8\uB2E4."
+  - index: 33
+    id: 20014
+    skillName: "\uBD88\uAD74\uC758 \uC758\uC9C0 I"
+    tier: 3
+    upStat1: 0
+    upStat2: 0.5
+    skillType: 2
+    goldCost: 1000
+    manaCost: 3
+    reqID1: 20013
+    reqID2: 0
+    description: "\uAC00\uB4DC \uAC8C\uC774\uC9C0 \uCD08\uB2F9 \uD68C\uBCF5\uB7C9\uC774
+      5 \uC99D\uAC00\uD569\uB2C8\uB2E4."
+  - index: 34
+    id: 20015
+    skillName: "\uC219\uB828\uB41C \uBC29\uC5B4 II"
+    tier: 4
+    upStat1: 5
+    upStat2: 0
+    skillType: 2
+    goldCost: 1400
+    manaCost: 3
+    reqID1: 20014
+    reqID2: 0
+    description: "\uAC00\uB4DC \uBC1C\uB3D9 \uC2DC \uC18C\uBAA8\uB418\uB294 \uAC00\uB4DC
+      \uAC8C\uC774\uC9C0 \uC18C\uBAA8\uB7C9\uC774 5 \uAC10\uC18C\uD569\uB2C8\uB2E4."
+  - index: 35
+    id: 20016
+    skillName: "\uBD88\uAD74\uC758 \uC758\uC9C0 II"
+    tier: 5
+    upStat1: 0
+    upStat2: 0.5
+    skillType: 2
+    goldCost: 2000
+    manaCost: 3
+    reqID1: 20015
+    reqID2: 0
+    description: "\uAC00\uB4DC \uAC8C\uC774\uC9C0 \uCD08\uB2F9 \uD68C\uBCF5\uB7C9\uC774
+      5 \uC99D\uAC00\uD569\uB2C8\uB2E4."
+  - index: 36
+    id: 30000
+    skillName: "\uC9C0\uBC30\uC758 \uD3B8\uB9B0 I"
+    tier: 1
+    upStat1: 0.05
+    upStat2: 0
+    skillType: 3
+    goldCost: 300
+    manaCost: 1
+    reqID1: 0
+    reqID2: 0
+    description: "\uACE8\uB4DC \uD68D\uB4DD\uB7C9\uC774 5% \uC99D\uAC00\uD569\uB2C8\uB2E4."
+  - index: 37
+    id: 30001
+    skillName: "\uC9C0\uBC30\uC758 \uD3B8\uB9B0 II"
+    tier: 2
+    upStat1: 0.1
+    upStat2: 0
+    skillType: 3
+    goldCost: 500
+    manaCost: 1
+    reqID1: 30000
+    reqID2: 0
+    description: "\uACE8\uB4DC \uD68D\uB4DD\uB7C9\uC774 10% \uC99D\uAC00\uD569\uB2C8\uB2E4."
+  - index: 38
+    id: 30002
+    skillName: "\uC9C0\uBC30\uC758 \uD3B8\uB9B0 III"
+    tier: 3
+    upStat1: 0.15
+    upStat2: 0
+    skillType: 3
+    goldCost: 800
+    manaCost: 1
+    reqID1: 30001
+    reqID2: 0
+    description: "\uACE8\uB4DC \uD68D\uB4DD\uB7C9\uC774 15% \uC99D\uAC00\uD569\uB2C8\uB2E4."
+  - index: 39
+    id: 30003
+    skillName: "\uC9C0\uBC30\uC758 \uD3B8\uB9B0 IV"
+    tier: 4
+    upStat1: 0.2
+    upStat2: 0
+    skillType: 3
+    goldCost: 1200
+    manaCost: 1
+    reqID1: 30002
+    reqID2: 0
+    description: "\uACE8\uB4DC \uD68D\uB4DD\uB7C9\uC774 20% \uC99D\uAC00\uD569\uB2C8\uB2E4."
+  - index: 40
+    id: 30004
+    skillName: "\uC9C0\uBC30\uC758 \uD3B8\uB9B0 V"
+    tier: 5
+    upStat1: 0.2
+    upStat2: 0
+    skillType: 3
+    goldCost: 1700
+    manaCost: 1
+    reqID1: 30003
+    reqID2: 0
+    description: "\uACE8\uB4DC \uD68D\uB4DD\uB7C9\uC774 20% \uC99D\uAC00\uD569\uB2C8\uB2E4."
+  - index: 41
+    id: 30005
+    skillName: "\uC9C0\uBC30\uC758 \uD3B8\uB9B0 VI"
+    tier: 6
+    upStat1: 0.3
+    upStat2: 0
+    skillType: 3
+    goldCost: 2500
+    manaCost: 1
+    reqID1: 30004
+    reqID2: 0
+    description: "\uACE8\uB4DC \uD68D\uB4DD\uB7C9\uC774 30% \uC99D\uAC00\uD569\uB2C8\uB2E4."
+  - index: 42
+    id: 30006
+    skillName: "\uC804\uC7A5 \uC9C0\uBC30 I"
+    tier: 2
+    upStat1: 0.03
+    upStat2: 0
+    skillType: 3
+    goldCost: 700
+    manaCost: 3
+    reqID1: 0
+    reqID2: 0
+    description: "\uB300\uC26C \uC911 \uBB34\uC801 \uC2DC\uAC04\uC774 0.03\uCD08
+      \uC99D\uAC00\uD569\uB2C8\uB2E4."
+  - index: 43
+    id: 30007
+    skillName: "\uC804\uC220 \uAE30\uB3D9 I"
+    tier: 3
+    upStat1: 0
+    upStat2: 0.15
+    skillType: 3
+    goldCost: 1000
+    manaCost: 3
+    reqID1: 30006
+    reqID2: 0
+    description: "\uB300\uC26C \uCFE8\uD0C0\uC784\uC774 0.15\uCD08 \uAC10\uC18C\uD569\uB2C8\uB2E4."
+  - index: 44
+    id: 30008
+    skillName: "\uC804\uC7A5 \uC9C0\uBC30 II"
+    tier: 4
+    upStat1: 0.03
+    upStat2: 0
+    skillType: 3
+    goldCost: 1400
+    manaCost: 3
+    reqID1: 30007
+    reqID2: 0
+    description: "\uB300\uC26C \uC911 \uBB34\uC801 \uC2DC\uAC04\uC774 0.03\uCD08
+      \uC99D\uAC00\uD569\uB2C8\uB2E4."
+  - index: 45
+    id: 30009
+    skillName: "\uC804\uC220 \uAE30\uB3D9 II"
+    tier: 5
+    upStat1: 0
+    upStat2: 0.15
+    skillType: 3
+    goldCost: 2000
+    manaCost: 3
+    reqID1: 30008
+    reqID2: 0
+    description: "\uB300\uC26C \uCFE8\uD0C0\uC784\uC774 0.15\uCD08 \uAC10\uC18C\uD569\uB2C8\uB2E4."
+  - index: 46
+    id: 30010
+    skillName: "\uB3C5\uBB34\uC758 \uC9C0\uBC30\uC790"
+    tier: 2
+    upStat1: 1
+    upStat2: 0
+    skillType: 3
+    goldCost: 1000
+    manaCost: 5
+    reqID1: 0
+    reqID2: 0
+    description: "\uB3C5\uC5D0 \uB300\uD55C \uB370\uBBF8\uC9C0 \uBC0F \uB514\uBC84\uD504\uC5D0
+      \uBA74\uC5ED\uC774 \uB429\uB2C8\uB2E4."
+  - index: 47
+    id: 30011
+    skillName: "\uC5C5\uD654\uC758 \uC9C0\uBC30\uC790"
+    tier: 4
+    upStat1: 1
+    upStat2: 0
+    skillType: 3
+    goldCost: 2000
+    manaCost: 5
+    reqID1: 30010
+    reqID2: 0
+    description: "\uD654\uC5FC\uC5D0 \uB300\uD55C \uB370\uBBF8\uC9C0 \uBC0F \uB514\uBC84\uD504\uC5D0
+      \uBA74\uC5ED\uC774 \uB429\uB2C8\uB2E4."
+  - index: 48
+    id: 30012
+    skillName: "\uB1CC\uACA9\uC758 \uC9C0\uBC30\uC790"
+    tier: 6
+    upStat1: 1
+    upStat2: 0
+    skillType: 3
+    goldCost: 3000
+    manaCost: 5
+    reqID1: 30011
+    reqID2: 0
+    description: "\uC804\uACA9\uC5D0 \uB300\uD55C \uB370\uBBF8\uC9C0 \uBC0F \uB514\uBC84\uD504\uC5D0
+      \uBA74\uC5ED\uC774 \uB429\uB2C8\uB2E4."
+  - index: 49
+    id: 30013
+    skillName: "\uAC70\uB798\uC758 \uAE30\uC220 I"
+    tier: 1
+    upStat1: 0.1
+    upStat2: 0
+    skillType: 3
+    goldCost: 500
+    manaCost: 3
+    reqID1: 0
+    reqID2: 0
+    description: "\uC0C1\uC810 \uAD6C\uB9E4 \uAE08\uC561\uC774 10% \uAC10\uC18C\uD569\uB2C8\uB2E4."
+  - index: 50
+    id: 30014
+    skillName: "\uAC70\uB798\uC758 \uAE30\uC220 II"
+    tier: 3
+    upStat1: 0.1
+    upStat2: 0.1
+    skillType: 3
+    goldCost: 1500
+    manaCost: 3
+    reqID1: 30013
+    reqID2: 0
+    description: "\uC0C1\uC810 \uAD6C\uB9E4 \uBC0F \uB300\uC7A5\uAC04 \uAC15\uD654
+      \uAE08\uC561\uC774 10% \uAC10\uC18C\uD569\uB2C8\uB2E4."
+  - index: 51
+    id: 30015
+    skillName: "\uAC70\uB798\uC758 \uAE30\uC220 III"
+    tier: 5
+    upStat1: 0.1
+    upStat2: 0.1
+    skillType: 3
+    goldCost: 2500
+    manaCost: 3
+    reqID1: 30014
+    reqID2: 0
+    description: "\uC0C1\uC810 \uAD6C\uB9E4 \uBC0F \uB300\uC7A5\uAC04 \uAC15\uD654
+      \uAE08\uC561\uC774 10% \uAC10\uC18C\uD569\uB2C8\uB2E4."

@@ -2,6 +2,9 @@ using UnityEngine;
 using DG.Tweening;
 using ToB.Core;
 using ToB.Player;
+using ToB.Scenes.Stage;
+using ToB.Utils;
+using AudioType = ToB.Core.AudioType;
 
 namespace ToB.Entities.Effect
 {
@@ -30,7 +33,7 @@ namespace ToB.Entities.Effect
         private void Awake()
         {
             rb = GetComponent<Rigidbody2D>();
-            player = PlayerCharacter.GetInstance();
+            player = PlayerCharacter.Instance;
             _collider = GetComponent<Collider2D>();
         }
 
@@ -56,12 +59,14 @@ namespace ToB.Entities.Effect
             if (isCollectableByPlayer)
             {
                 Vector2 direction = (player.transform.position - transform.position);
-                if (direction.sqrMagnitude < 0.1f)
+                if (direction.sqrMagnitude < 0.1f && StageManager.Instance.CurrentState == GameState.Play)
                 {
                     if (resourceType == InfiniteResourceType.Gold)
-                        Core.ResourceManager.Instance.GiveGoldToPlayer(amount);
+                        ResourceManager.Instance.GiveGoldToPlayer(amount);
                     else
-                        Core.ResourceManager.Instance.GiveManaToPlayer(amount);
+                        ResourceManager.Instance.GiveManaToPlayer(amount);
+
+                    AudioManager.Play("env_coins_pickup_shake_05",AudioType.Effect);
                     gameObject.Release();
                     GameObject effect = obtainEffectPrefab.Pooling();
                     effect.transform.position = player.transform.position;

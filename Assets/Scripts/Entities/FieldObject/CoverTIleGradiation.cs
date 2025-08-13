@@ -6,6 +6,7 @@ namespace ToB.Entities.FieldObject
     public class CoverTIleGradiation : MonoBehaviour
     {
         
+        //TODO : 폴리싱 때 섀이더그래프를 어케 해와서 작업할 것. 지금은 사용되지 않고 있어요! (Cloudy)
         public enum GradiantDirection
         {
             Left,

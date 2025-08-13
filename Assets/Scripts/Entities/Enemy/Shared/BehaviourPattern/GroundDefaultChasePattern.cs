@@ -6,24 +6,29 @@ namespace ToB.Entities
     public class GroundDefaultChasePattern:EnemyPattern
     {
         protected readonly string ChaseKey = "Chase";
-        protected readonly float chaseSpeed;
-        
-        public GroundDefaultChasePattern(EnemyStrategy strategy, float chaseSpeed, Action EndCallback = null) : base(strategy, EndCallback)
+
+        protected float ChaseSpeed => ((IEnemyChaserSO)enemy.EnemySO).ChaseSpeed;
+        public GroundDefaultChasePattern(EnemyStrategy strategy, Action EndCallback = null) : base(strategy, EndCallback)
         {
-            this.chaseSpeed = chaseSpeed;
         }
 
         public override void Enter()
         {
             base.Enter();
-            enemy.Physics.externalVelocity[ChaseKey] = enemy.LookDirectionHorizontal * chaseSpeed;
+            enemy.Physics.externalVelocity[ChaseKey] = enemy.LookDirectionHorizontal * ChaseSpeed;
         }
 
         public override void FixedExecute()
         {
             base.FixedExecute();
-            if(!enemy.target)
-                Exit();
+            if (enemy.Physics.IsLedgeBelow())
+            {
+                enemy.Physics.externalVelocity[ChaseKey] = Vector2.zero;
+            }
+            else
+            {
+                enemy.Physics.externalVelocity[ChaseKey] = ChaseSpeed * enemy.LookDirectionHorizontal;
+            }
         }
 
         public override void Exit()

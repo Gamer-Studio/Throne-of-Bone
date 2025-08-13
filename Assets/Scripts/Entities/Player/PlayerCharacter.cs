@@ -2,16 +2,26 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using NaughtyAttributes;
+using ToB.Core;
+using ToB.Core.InputManager;
 using ToB.Entities;
+using ToB.Entities.Buffs;
+using ToB.Entities.Interface;
+using ToB.Entities.Skills;
+using ToB.IO;
+using ToB.Scenes.Stage;
+using ToB.UI;
 using ToB.Utils;
+using ToB.Utils.Singletons;
 using ToB.Utils.UI;
+using ToB.World.Structures;
 using ToB.Worlds;
 using UnityEngine;
 using UnityEngine.Events;
 
 namespace ToB.Player
 {
-  public partial class PlayerCharacter : MonoBehaviour, IDamageable, IKnockBackable
+  public partial class PlayerCharacter : ManualSingleton<PlayerCharacter>, IDamageable, IKnockBackable
   {
     private static readonly int INT_STATE = Animator.StringToHash("State");
     private static readonly int BOOL_IMMUNE = Animator.StringToHash("Immune");
@@ -25,61 +35,107 @@ namespace ToB.Player
     private static readonly int INT_DASH_STATE = Animator.StringToHash("DashState");
     private static readonly int TRIGGER_ATTACK = Animator.StringToHash("Attack");
     private static readonly int INT_ATTACK_MOTION = Animator.StringToHash("AttackMotion");
+    private static readonly int BOOL_DEATH = Animator.StringToHash("Death");
 
-    private static PlayerCharacter instance;
-    
-    /// <summary>
-    /// 현재 활성화된 Player 태그가 붙은 오브젝트의 캐릭터를 찾아옵니다.
-    /// </summary>
-    public static PlayerCharacter GetInstance()
+    protected enum PlayerAnimationState
     {
-      if(instance) return instance;
-      
-      foreach (var obj in GameObject.FindGameObjectsWithTag("Player"))
-      {
-        if (obj.TryGetComponent<PlayerCharacter>(out var comp) && obj.gameObject.activeSelf)
-        {
-          instance = comp;
-          return instance;
-        }
-      }
-      return null;
+      Idle = 0,
+      Walk = 1,
+      Run = 2
     }
-    
+
     #region State
 
-    [Label("조작 가능"), Foldout("State")] public bool isControlable = true;
-    [Label("애니메이션 상태"), Foldout("State"), SerializeField, GetSet(nameof(AnimationState))] protected PlayerAnimationState animationState = PlayerAnimationState.Idle;
-    [Label("이동속도"), Foldout("State")] public float moveSpeed = 2;
-    [Label("최대 이동 속도"), Foldout("State")] public float maxMoveSpeed = 12;
-    [Label("좌/우 마찰력 보정값"), Foldout("State")] public float moveResistanceForce = 1;
-    [Label("벽타기 하강 속도"), Foldout("State")] public float wallEnduringSpeed = -1;
-    [Label("이동방향 (좌/우)"), Foldout("State"), SerializeField, ReadOnly] private PlayerMoveDirection moveDirection = PlayerMoveDirection.Left;
+    [Label("조작 가능")] [Foldout("State")] 
+    public bool isControlable = true;
+
+    [Label("애니메이션 상태")] [Foldout("State")] [SerializeField] [GetSet(nameof(AnimationState))]
+    protected PlayerAnimationState animationState = PlayerAnimationState.Idle;
+
+    [Label("이동속도")] [Foldout("State")] 
+    public float moveSpeed = 2;
+    
+    [Label("최대 이동 속도")] [Foldout("State")] 
+    public float maxMoveSpeed = 12;
+
+    [Label("좌/우 마찰력 보정값")] [Foldout("State")]
+    public float moveResistanceForce = 1;
+
+    [Label("벽타기 하강 속도")] [Foldout("State")]
+    public float wallEnduringSpeed = -1;
+
+    [Label("이동방향 (좌/우)")] [Foldout("State")] [SerializeField] [ReadOnly]
+    private PlayerMoveDirection moveDirection = PlayerMoveDirection.Left;
+
     // true일 때 이동합니다.
-    [Label("이동 모드"), Foldout("State"), SerializeField, ReadOnly] protected bool isMoving = false;
-    [Label("벽타기"), Foldout("State"), SerializeField, ReadOnly] protected bool isClimbing = false;
+    [Label("이동 모드")] [Foldout("State")] [SerializeField] [ReadOnly]
+    protected bool isMoving;
+
+    [Label("벽타기")] [Foldout("State")] [SerializeField] [ReadOnly]
+    protected bool isClimbing;
+
     // Immune State
-    [Label("현재 무적 시간"), Foldout("State")] public float immuneTime = 0f;
-    [Label("피격시 무적 시간"), Foldout("State")] public float damageImmuneTime = 0.3f;
-    [Label("현재 대시 무적 시간"), Foldout("State")] public float dashImmuneTime = 0f;
-    [Label("대시시 무적 시간"), Foldout("State")] public float dashMaxImmuneTime = 0.1f;
-    [Label("기본 넉백 지속 시간"), Foldout("State")] public float knockbackTime = 0.2f;
-    [Label("기본 넉백 배율"), Foldout("State")] public float knockbackMultiplier = 2f;
-    [Label("남은 정지 시간"), Foldout("State")] public float freezeTime = 0f;
-    
+    [Label("현재 무적 시간")] [Foldout("State")] public float immuneTime;
+
+    [Label("피격시 무적 시간")] [Foldout("State")]
+    public float damageImmuneTime = 0.3f;
+
+    [Label("현재 대시 무적 시간")] [Foldout("State")]
+    public float dashImmuneTime;
+
+    [Label("대시시 무적 시간")] [Foldout("State")]
+    public float dashMaxImmuneTime = 0.1f;
+
+    [Label("기본 넉백 지속 시간")] [Foldout("State")]
+    public float knockbackTime = 0.2f;
+
+    [Label("기본 넉백 배율")] [Foldout("State")] public float knockbackMultiplier = 2f;
+    [Label("남은 정지 시간")] [Foldout("State")] public float freezeTime;
+
     public bool IsImmune => isDamageImmune || dashImmuneTime > 0;
-    private bool isDamageImmune = false;
-    
+    private bool isDamageImmune;
+    private bool attackHandledCurrentFrame;
+    public ObjectAudioPlayer audioPlayer;
+
     // 플레이어 스텟 관리 클래스입니다.
-    [Label("캐릭터 스텟"), Foldout("State")] public PlayerStats stat = new();
+    [Label("캐릭터 스텟")] public PlayerStats stat = new();
 
     // Jump State
-    [Label("점프 파워"), Foldout("Jump State")] public float jumpPower = 10;
-    [Label("벽점프 파워"), Foldout("Jump State")] public float wallJumpPower = 10;
-    [Label("벽점프 반동 제어불가 시간"), Foldout("Jump State")] public float wallJumpReactionTime = 0.4f; 
-    [Label("최대 점프 시간"), Foldout("Jump State")] public float jumpTimeLimit = 0.2f;
-    [Label("낙하시 중력가속도 보정값"), Foldout("Jump State")] public float gravityAcceleration = 10;
-    [Label("낙하시 시작 중력값"), Foldout("Jump State")] public float gravityStart = -10;
+    private const string JumpState = nameof(JumpState);
+
+    [Label("최대 점프 가능 횟수")] [Foldout(JumpState)]
+    public int maxJumpCount;
+
+    [Label("현재 점프 가능 횟수")] [Foldout(JumpState)]
+    public int currentJumpCount;
+
+    [Label("점프 파워")] [Foldout(JumpState)] public float jumpPower = 10;
+
+    [Label("최대 점프 가속도")] [Foldout(JumpState)]
+    public float maxJumpSpeed = 10;
+
+    [Label("공중 점프 파워")] [Foldout(JumpState)]
+    public float airJumpPower = 10;
+
+    [Label("벽점프 파워")] [Foldout(JumpState)] public float wallJumpPower = 10;
+
+    [Label("하단 패링 점프 파워")] [Foldout(JumpState)]
+    public float downJumpPower = 10;
+
+    [Label("벽점프 반동 제어불가 시간")] [Foldout(JumpState)]
+    public float wallJumpReactionTime = 0.4f;
+
+    [Label("최대 점프 시간")] [Foldout(JumpState)]
+    public float jumpTimeLimit = 0.2f;
+
+    [Label("낙하시 중력가속도 보정값")] [Foldout(JumpState)]
+    public float gravityAcceleration = 10;
+
+    [Label("낙하시 시작 중력값")] [Foldout(JumpState)]
+    public float gravityStart = -10;
+
+    [Label("낙하 최고 속력")] [Foldout(JumpState)]
+    public float maxFallSpeed = -10;
 
     // 이 아래는 외부 접근용 연결 필드입니다.
     // 캐릭터가 공중인지 여부입니다.
@@ -91,14 +147,14 @@ namespace ToB.Player
       get => animationState;
       set
       {
-        animator.SetInteger(INT_STATE, (int) value);
+        animator.SetInteger(INT_STATE, (int)value);
         animationState = value;
       }
     }
-    
+
     /// <summary>
-    /// 플레이어 이동상태를 제어할 수 있습니다. <br/>
-    /// false - 아무 행동하지 않음 / True - 뛰기
+    ///   플레이어 이동상태를 제어할 수 있습니다. <br />
+    ///   false - 아무 행동하지 않음 / True - 뛰기
     /// </summary>
     /// <exception cref="ArgumentOutOfRangeException"></exception>
     public bool IsMoving
@@ -106,42 +162,43 @@ namespace ToB.Player
       get => isMoving;
       set
       {
-        if (!isMoving && value)
-        {
-          CancelBlock();
-        }
+        if (!isMoving && value) CancelBlock();
         isMoving = value;
         AnimationState = value ? PlayerAnimationState.Run : PlayerAnimationState.Idle;
       }
     }
-    
+
     /// <summary>
-    /// 플레이어가 대시하고 있는지 여부입니다.
+    ///   플레이어가 대시하고 있는지 여부입니다.
     /// </summary>
     public bool IsDashing => animator.GetCurrentAnimatorStateInfo(0).IsName("Dash") || dashCoroutine != null;
 
     private PlayerMoveDirection attackDirection;
+
     public PlayerMoveDirection MoveDirection
     {
       get => moveDirection;
       set => moveDirection = value;
     }
-    
-    #endregion
-    
-    #region Binding
 
-    [Tooltip("캐릭터 바디"), Foldout("Bindings")] public Rigidbody2D body;
-    [Tooltip("캐릭터 콜라이더"), Foldout("Bindings")] public CapsuleCollider2D bodyCollider;
-    [Tooltip("캐릭터 애니메이터"), Foldout("Bindings"), SerializeField] protected Animator animator;
-    [Tooltip("캐릭터 스프라이트"), Foldout("Bindings"), SerializeField] protected SpriteRenderer spriteRenderer;
-    [Foldout("Bindings"), SerializeField] private PlayerGroundChecker groundChecker;
-    [Foldout("Bindings"), SerializeField] private WorldGaugeBar dashGaugeBar, attackGaugeBar;
+    #endregion
+
+    #region Binding
+    private const string Bindings = nameof(Bindings);
+
+    [Tooltip("캐릭터 바디"), Foldout(Bindings)] public Rigidbody2D body;
+    [Tooltip("캐릭터 콜라이더"), Foldout(Bindings)] public CapsuleCollider2D bodyCollider;
+    [Tooltip("캐릭터 애니메이터"), Foldout(Bindings), SerializeField] protected Animator animator;
+    [Tooltip("캐릭터 스프라이트"), Foldout(Bindings), SerializeField] protected SpriteRenderer spriteRenderer;
+    [Foldout(Bindings)] [SerializeField] private PlayerGroundChecker groundChecker;
+    [Foldout(Bindings)] [SerializeField] private WorldGaugeBar dashGaugeBar, attackGaugeBar;
+    [Foldout(Bindings)] [SerializeField] public BuffController buffController;
+    [Foldout(Bindings)] [SerializeField] public Grimoire grimoire;
 
     #endregion
 
     #region Unity Event
-    
+
 #if UNITY_EDITOR
 
     private void Reset()
@@ -149,46 +206,52 @@ namespace ToB.Player
       if (!body) body = GetComponent<Rigidbody2D>();
       if (!animator) animator = GetComponentInChildren<Animator>();
       if (!spriteRenderer) spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+      if (!audioPlayer) audioPlayer = GetComponent<ObjectAudioPlayer>();
+      if (!buffController) buffController = GetComponent<BuffController>();
     }
-    
+
 #endif
 
     private void Awake()
     {
+      if (!audioPlayer) audioPlayer = GetComponent<ObjectAudioPlayer>();
+      Load();
       InitDash();
       InitAttack();
+      OnDeath.AddListener(OnDeathHandler);
 
       if (groundChecker)
-      {
         groundChecker.onLanding.AddListener(() =>
         {
           animator.SetBool(BOOL_IS_FLIGHT, false);
+          audioPlayer.Play(!inWater ? "Footsteps_DirtyGround_Jump_Land_02" : "Footsteps_Water_Jump_Light_01");
         });
-      }
     }
 
     private void Update()
     {
+      attackHandledCurrentFrame = false;
       if (freezeTime > 0)
       {
         freezeTime -= Time.unscaledDeltaTime;
       }
-      else if(Time.timeScale == 0)
+      else if (Time.timeScale == 0)
       {
         Time.timeScale = 1;
         freezeTime = 0;
       }
     }
-    
-    // 
+
     private void FixedUpdate()
     {
-      AirStateAnimationHandle();            // 사전 구햔 3
-      MoveInputHandle();                    // 사전 구현 4 - 벽타기는 여기
-      TakeEnvironmentalForces();            // 사전 구현 5
-      ImmunePropsHandle();                  // 사전 구현 1
+      AirStateAnimationHandle(); // 사전 구햔 3
+      MoveInputHandle(); // 사전 구현 4 - 벽타기는 여기
+      TakeEnvironmentalForces(); // 사전 구현 5
+      ImmunePropsHandle(); // 사전 구현 1
       UpdateResources();
     }
+    
+    #endregion Unity Event
 
     private void UpdateResources()
     {
@@ -198,66 +261,123 @@ namespace ToB.Player
 
     private void AirStateAnimationHandle()
     {
-      if (IsFlight)
-      {
-        animator.SetBool(BOOL_IS_FLIGHT, true);
-      }
-      
+      if (IsFlight) animator.SetBool(BOOL_IS_FLIGHT, true);
+
       var enterFallingAnim = body.linearVelocityY < -0.1f && !inWater &&
                              !IsDashing && !isAttacking;
-      
+
       if (animator.GetBool(BOOL_FALLING) != enterFallingAnim)
       {
         animator.SetBool(BOOL_FALLING, enterFallingAnim);
-        if (enterFallingAnim)
-        {
-          animator.SetTrigger(TRIGGER_FALL);
-        }
+        if (enterFallingAnim) animator.SetTrigger(TRIGGER_FALL);
       }
     }
 
     private void MoveInputHandle()
     {
       if (!isControlable) return;
-      
+
       var dir = moveDirection == PlayerMoveDirection.Left ? Vector2.left : Vector2.right;
       transform.eulerAngles = new Vector3(0,
-        (isAttacking ? attackDirection : MoveDirection) == PlayerMoveDirection.Left ? 180 : 0, 0);
-      
-      // isMoving이 true일떄 이동합니다.
-      if(isMoving && !IsDashing &&
-         (IsFlight || !IsAttackMotion))
-      {
-        // 최대이동속도 설정 및 이동 구현
-        if (Math.Abs(body.linearVelocityX) < maxMoveSpeed)
-        {
-          body.AddForce(dir * moveSpeed, ForceMode2D.Impulse);
-        }
-      }
+        (isAttacking ? attackDirection : MoveDirection) == PlayerMoveDirection.Left ? 180 : 0, 0); 
 
-      if (isMoving && IsFlight && DetectWall(dir))
+      
+      //if (Math.Abs(body.linearVelocityX) < maxMoveSpeed)
+        //body.AddForce(dir * moveSpeed, ForceMode2D.Impulse);
+      // isMoving이 true일떄 이동합니다.
+      if (IsMoving && !IsDashing && !IsAttackMotion)
+        // 최대이동속도 설정 및 이동 구현
+        body.linearVelocityX = (moveDirection == PlayerMoveDirection.Left ? -1 : 1) * moveSpeed;
+
+        // if (Math.Abs(body.linearVelocityX) < maxMoveSpeed)
+          // body.AddForce(dir * moveSpeed, ForceMode2D.Impulse);
+
+      if (IsMoving && IsFlight && DetectWall(dir))
       {
         isClimbing = true;
+        currentJumpCount = maxJumpCount;
         animator.SetBool(BOOL_CLIMB, true);
         
-        if (body.linearVelocityY < 0) body.linearVelocityY = Mathf.Max(body.linearVelocityY, wallEnduringSpeed);
+        if (body.linearVelocityY < wallEnduringSpeed) body.linearVelocityY = Mathf.Max(body.linearVelocityY, wallEnduringSpeed);
+        
       }
       else
       {
         isClimbing = false;
         animator.SetBool(BOOL_CLIMB, false);
       }
+
+      if (isMoving && DetectWallCapsule(dir))
+      {
+        SnapToWallCapsule(dir);
+        
+      }
+    }
+
+    private void SnapToWallCapsule(Vector2 dir)
+    {
+      var bounds = bodyCollider.bounds;
+      Vector2 size = bounds.size;
+      Vector2 origin = bounds.center;
+
+      RaycastHit2D[] hits = Physics2D.CapsuleCastAll(
+        origin,
+        size,
+        bodyCollider.direction,
+        0f,
+        dir,
+        0.03f,
+        LayerMask.GetMask("Ground")
+      );
+
+      foreach (var hit in hits)
+      {
+        if (hit.collider != null && !hit.collider.CompareTag("SemiPlatform"))
+        {
+          float capsuleExtentX = bounds.extents.x;
+          float newX = hit.point.x + dir.x * (-capsuleExtentX - 0.005f);
+
+          body.position = new Vector2(newX, body.position.y);
+          body.linearVelocityX = 0f;
+          break; // 첫 유효 벽에 스냅 후 종료
+        }
+      }
     }
 
     private bool DetectWall(Vector2 dir)
     {
-      Vector2 colliderCenterPos = (Vector2)transform.position + new Vector2(bodyCollider.offset.x * dir.x, bodyCollider.offset.y);
-      Vector2 rayOrigin = colliderCenterPos + dir * (bodyCollider.size.x * 0.5f);
-      
-      if (Physics2D.Raycast(rayOrigin, dir, 0.03f, LayerMask.GetMask("Ground")))
+      var colliderCenterPos = (Vector2)transform.position +
+                              new Vector2(bodyCollider.offset.x * dir.x * transform.localScale.x, bodyCollider.offset.y* transform.localScale.x);
+      var rayOrigin = colliderCenterPos + dir * (bodyCollider.size.x * 0.5f);
+
+      var hit = Physics2D.Raycast(rayOrigin, dir, 0.03f, LayerMask.GetMask("Ground"));
+      if (hit && !hit.collider.CompareTag("SemiPlatform")) return true;
+      return false;
+    }
+    private bool DetectWallCapsule(Vector2 dir)
+    {
+      var bounds = bodyCollider.bounds;
+      Vector2 size = bounds.size;
+      Vector2 origin = bounds.center;
+
+      RaycastHit2D[] hits = Physics2D.CapsuleCastAll(
+        origin,
+        size,
+        bodyCollider.direction,
+        0f,
+        dir,
+        0.03f,
+        LayerMask.GetMask("Ground")
+      );
+
+      foreach (var hit in hits)
       {
-        return true;
+        if (hit.collider != null && !hit.collider.CompareTag("SemiPlatform"))
+        {
+          return true;
+        }
       }
+
       return false;
     }
 
@@ -276,16 +396,14 @@ namespace ToB.Player
     private void TakeEnvironmentalForces()
     {
       // 이동시 마찰력 보정
-      if(Math.Abs(body.linearVelocityX) > 1)
+      if (!IsMoving)
       {
-        body.AddForce(-body.linearVelocity.normalized.Y(0) * moveResistanceForce, ForceMode2D.Impulse);
+        body.linearVelocityX = Mathf.Lerp(body.linearVelocityX, 0, Time.fixedDeltaTime * 10);
       }
-
+      
       // 떨어질 떄 빨리 떨어지게
-      if (body.linearVelocity.y < 0)
-      {
-        body.linearVelocity += Vector2.up * (Physics.gravity.y * (gravityAcceleration - 1) * Time.fixedDeltaTime);
-      }
+      //if (body.linearVelocity.y < 0)
+      //  body.linearVelocity += Vector2.up * (Physics.gravity.y * (gravityAcceleration - 1) * Time.fixedDeltaTime);
     }
 
     private void ImmunePropsHandle()
@@ -314,66 +432,110 @@ namespace ToB.Player
       }
     }
 
-    #endregion
-    
     #region Event
 
     /// <summary>
-    /// 플레이어 사망시 호출됩니다.
+    ///   플레이어 사망시 호출됩니다.
     /// </summary>
     public UnityEvent OnDeath => stat.onDeath;
-    
+
     /// <summary>
-    /// 플레이어의 체력이 변경될 시 호출되며, 매개변수로 현재 체력을 넘겨줍니다.
+    ///   플레이어의 체력이 변경될 시 호출되며, 매개변수로 현재 체력을 넘겨줍니다.
     /// </summary>
     public UnityEvent<float> OnHpChange => stat.onHpChanged;
-    
+
+    private bool isDeath;
+    private void OnDeathHandler()
+    {
+      if (isDeath) return;
+      isDeath = true;
+      
+      animator.SetBool(BOOL_DEATH, true);
+
+      // 스킬 비활성화
+      BattleSkillManager.Instance.DeactivateAllSkills();
+
+      // 사망 오브젝트 생성
+      var deathObject = (DeathObject)Structure.Spawn(StageManager.RoomController.currentRoom, "DeathObject");
+      deathObject.transform.position = transform.position;
+
+      ResourceManager.Instance.GiveResourcesToCorpse(deathObject);
+      SAVE.Current.Player.deathVersion++;
+      
+      deathObject.deathVersion = SAVE.Current.Player.deathVersion;
+    }
+
     #endregion Event
-    
+
     #region Feature
-    
+
     #region Jump Feature
+
     // 점프 관리용 코루틴
-    private Coroutine jumpCoroutine = null;
-    private Coroutine wallJumpControlLockCoroutine = null;
-    
+    private Coroutine jumpCoroutine;
+    private Coroutine wallJumpControlLockCoroutine;
+
     /// <summary>
-    /// Jump()를 호출하여 점프를 시작할 수 있습니다. <br/>
-    /// 빠르게 CancelJump()를 호출하여 낮은 점프를 할 수 있습니다.
+    ///   공중 점프 가능횟수를 초기화합니다.
     /// </summary>
-    public void Jump()
+    public void RegenJump()
+    {
+      currentJumpCount = maxJumpCount;
+    }
+
+    /// <summary>
+    ///   Jump()를 호출하여 점프를 시작할 수 있습니다. <br />
+    ///   빠르게 CancelJump()를 호출하여 낮은 점프를 할 수 있습니다.
+    /// </summary>
+    public void Jump(bool bottomJump = false)
     {
       if (!isControlable) return;
-      if ((inWater || (!IsFlight || isClimbing)) && !IsDashing && jumpCoroutine == null)
+
+      if (bottomJump && bottomJumpAvailable)
       {
-        jumpCoroutine = StartCoroutine(JumpCoroutine());
+        bottomJumpAvailable = false;
+        jumpCoroutine = StartCoroutine(JumpCoroutine(downJumpPower));
+        return;
+      }
+
+      if ((inWater || !IsFlight || isClimbing) && !IsDashing && jumpCoroutine == null)
+      {
+        jumpCoroutine = StartCoroutine(JumpCoroutine(jumpPower));
+      }
+      else if (currentJumpCount > 0 && !isClimbing)
+      {
+        currentJumpCount--;
+        jumpCoroutine = StartCoroutine(JumpCoroutine(airJumpPower));
       }
     }
 
     /// <summary>
-    /// Jump()를 통한 점프가 끝나기전 호출해 점프 도중에 취소할 수 있습니다. 
+    ///   Jump()를 통한 점프가 끝나기전 호출해 점프 도중에 취소할 수 있습니다.
     /// </summary>
     public void CancelJump()
     {
-      if(jumpCoroutine != null)
+      if (jumpCoroutine != null)
       {
         StopCoroutine(jumpCoroutine);
-        if(gravityStart != 0) body.linearVelocityY = gravityStart;
+        if (gravityStart != 0) body.linearVelocityY = gravityStart;
         jumpCoroutine = null;
       }
     }
 
-    private IEnumerator JumpCoroutine()
+    private IEnumerator JumpCoroutine(float power)
     {
       animator.SetTrigger(TRIGGER_JUMP);
+      audioPlayer.Play("Jump_woosh_Edit");
 
       if (isClimbing)
       {
-        Vector2 kickReactionDir = moveDirection == PlayerMoveDirection.Left ? Vector2.right : Vector2.left;
-        
-        body.AddForce(kickReactionDir * (wallJumpPower * 1.4f), ForceMode2D.Impulse);   // 1.4는 약 루트2, 벽차기 약간 더 강하게
+        var kickReactionDir = moveDirection == PlayerMoveDirection.Left ? Vector2.right : Vector2.left;
+
+        //body.AddForce(kickReactionDir * (wallJumpPower * 1.4f), ForceMode2D.Impulse); // 1.4는 약 루트2, 벽차기 약간 더 강하게
+        body.linearVelocityY = jumpPower;
+        body.linearVelocityX = kickReactionDir.x * wallJumpPower * 1.4f;
         transform.eulerAngles = new Vector3(0, kickReactionDir.x > 0 ? 0 : 180, 0);
-        
+
         // 벽 반동에 의해 동작을 못하는 시간이라는 의미지만 반동 직후 사망시 코루틴에 의해 사망 컨트롤 락이 되어야 하는데 풀려버린다던가
         // 그런 식으로 다룰 가능성이 있어서 여기서 벽 반동 코루틴을 캐싱형태로 두었습니다 - 승화
         wallJumpControlLockCoroutine = StartCoroutine(WallJumpControlLock(wallJumpReactionTime));
@@ -382,20 +544,20 @@ namespace ToB.Player
       var jumpTime = 0f;
       while (jumpTime < jumpTimeLimit)
       {
-        body.linearVelocityY = jumpPower;
+        body.linearVelocityY = power;
         jumpTime += Time.deltaTime;
         yield return new WaitForFixedUpdate();
       }
-      
-      if(gravityStart != 0) body.linearVelocityY = gravityStart;
-      
+
+      if (gravityStart != 0) body.linearVelocityY = gravityStart;
+
       jumpCoroutine = null;
     }
 
-    IEnumerator WallJumpControlLock(float time)
+    private IEnumerator WallJumpControlLock(float time)
     {
       isControlable = false;
-      
+
       yield return new WaitForSeconds(time);
 
       isControlable = true;
@@ -403,100 +565,160 @@ namespace ToB.Player
 
     #endregion Jump Feature
 
-    
-    [Foldout("Effect"), SerializeField] private ParticleSystem damagedEffect;
+    public bool invincibility;
+    [Foldout("Effect")] [SerializeField] private ParticleSystem damagedEffect;
+
     /// <summary>
-    /// 플레이어에게 방어력을 반영한 체력 피해를 줍니다.<br/>
-    /// 남은 체력 이상의 피해를 줄 시 자동으로 0까지만 내려가고, <br/>
-    /// 0이 될 시 stats.onDeath 이벤트를 호출합니다.
+    ///   플레이어에게 방어력을 반영한 체력 피해를 줍니다.<br />
+    ///   남은 체력 이상의 피해를 줄 시 자동으로 0까지만 내려가고, <br />
+    ///   0이 될 시 stats.onDeath 이벤트를 호출합니다.
     /// </summary>
     /// <param name="value">피해량입니다.</param>
-    /// <param name="sender">피해량을 주는 주체입니다.</param>
-    public void Damage(float value, MonoBehaviour sender)
+    /// <param name="sender">피해량을 주는 주체입니다. null일시 플레이어에게 고정 피해를 주고, 효과를 발동시키지 않습니다.</param>
+    public void Damage(float value, IAttacker sender)
     {
-      if(IsImmune) return;
+      if (invincibility) return;
+      var isBuff = sender is DamageDebuff;
+      if (sender == null)
+      {
+        stat.Hp -= value;
+        return;
+      }
+      
+      if (sender.Team == Team) return;
+      if (attackHandledCurrentFrame) return;
 
-      if (IsBlocking && sender)
+      attackHandledCurrentFrame = true;
+      
+      if (IsBlocking && sender.Blockable)
+      {
         Block(value, sender);
+      }
+      else if (IsImmune) return;
       else
       {
         stat.Damage(value);
+        if (stat.Hp > 0) audioPlayer.Play("VOXReac_Death_HA_MaleCharVoc_21"); // 피통이 남았을 시
+        else audioPlayer.Play("VOXMisc_Drowning_HA_MaleCharVoc_02"); // 사망 시
 
-        if (sender)
+        if (stat.Hp > 0 && !isBuff) audioPlayer.Play("VOXReac_Death_HA_MaleCharVoc_21"); // 피격 시
+        else if (stat.Hp <= 0) audioPlayer.Play("VOXMisc_Drowning_HA_MaleCharVoc_02"); // 사망 시
+        
+        if (sender.Effectable)
         {
+          UIManager.Instance.effectUI.PlayHitEffect();
+
           damagedEffect.transform.eulerAngles = Vector3.zero;
 
           if (damagedEffect.isPlaying) damagedEffect.Stop();
           damagedEffect.Play();
         }
 
-        if (sender != null && immuneTime < damageImmuneTime) immuneTime = damageImmuneTime;
+        if (!isBuff && immuneTime < damageImmuneTime) immuneTime = damageImmuneTime;
       }
     }
 
     /// <summary>
-    /// 플레이어를 넉백시킵니다.
+    ///   플레이어를 넉백시킵니다.
     /// </summary>
     /// <param name="value">넉백 세기입니다.</param>
     /// <param name="direction">넉백 방향입니다.</param>
     public void KnockBack(float value, Vector2 direction)
     {
-      if(IsImmune) return;
-      
+      if (invincibility) return;
+      if (IsImmune) return;
+
       StartCoroutine(KnockBackCoroutine(value, direction));
     }
-    
+
     /// <summary>
-    /// 플레이어를 넉백시킵니다.
+    ///   플레이어를 넉백시킵니다.
     /// </summary>
     /// <param name="value">넉백 세기입니다.</param>
     /// <param name="sender">넉백을 가하는 오브젝트입니다.</param>
-    public void KnockBack(float value, GameObject sender) => KnockBack(value, sender.transform.position - transform.position);
+    public void KnockBack(float value, GameObject sender)
+    {
+      KnockBack(value, transform.position - sender.transform.position);
+    }
 
     private IEnumerator KnockBackCoroutine(float value, Vector2 direction)
     {
       for (var time = 0f; time < knockbackTime; time += Time.deltaTime)
       {
-        body.AddForce(direction * (value * knockbackMultiplier), ForceMode2D.Impulse);
+        body.linearVelocity = direction * (value * knockbackMultiplier);
+        //body.AddForce(direction * (value * knockbackMultiplier), ForceMode2D.Impulse);
         yield return new WaitForFixedUpdate();
       }
     }
-    
+
     #endregion Feature
-    
+
     #region Water
-    [SerializeField, Foldout("State")] private List<WaterObject> waterObjects = new();
-    
+
+    [SerializeField] [Foldout("State")] private List<WaterObject> waterObjects = new();
+
     private void WaterEnter(WaterObject obj)
     {
-      if(waterObjects.Contains(obj)) return;
-      
+      if (waterObjects.Contains(obj)) return;
+
       waterObjects.Add(obj);
       if (waterObjects.Count > 0) inWater = true;
     }
 
     private void WaterExit(WaterObject obj)
     {
-      if(!waterObjects.Contains(obj)) return;
+      if (!waterObjects.Contains(obj)) return;
 
       waterObjects.Remove(obj);
       if (waterObjects.Count == 0) inWater = false;
     }
 
     #endregion
-    
-    protected enum PlayerAnimationState
+
+    #region Teleportation
+
+    public Transform TPTransform;
+    private Coroutine tpCoroutine;
+    public bool isFadeOutEnded;
+
+    public void TeleportByObject()
     {
-      Idle = 0,
-      Walk = 1,
-      Run = 2,
+      if (stat.Hp <= 0) return;
+      // 플레이어가 사망 시 스폰위치로 TP해야 하니 예외처리
+      if (TPTransform == null)
+      {
+        Debug.Log("TP할 지점이 null입니다. 체크포인트 콜라이더를 통하지 않고 진입했는지 확인해 주세요.");
+        return;
+      }
+
+      if (tpCoroutine != null) return;
+      tpCoroutine = StartCoroutine(TeleportCoroutine());
     }
+
+    private IEnumerator TeleportCoroutine()
+    {
+      UIManager.Instance.effectUI.PlayFadeOutEffect();
+      //순서상 플레이어를 조작하는 컨트롤러를 먼저 끄고, 플레이어 상태를 고정
+      TOBInputManager.Instance.SetInputActive(false);
+      IsMoving = false;
+      body.constraints = RigidbodyConstraints2D.FreezeAll;
+      while (isFadeOutEnded == false) yield return new WaitForEndOfFrame();
+      body.constraints = RigidbodyConstraints2D.FreezeRotation;
+      transform.position = TPTransform.position;
+      TOBInputManager.Instance.SetInputActive(true);
+      // 안전하게 가시 콜라이더에서 탈출
+      yield return new WaitForEndOfFrame();
+      isFadeOutEnded = false;
+      tpCoroutine = null;
+    }
+
+    #endregion
   }
-  
+
   // 이동방향 설정용 열거형입니다.
   public enum PlayerMoveDirection
   {
     Left,
-    Right,
+    Right
   }
 }

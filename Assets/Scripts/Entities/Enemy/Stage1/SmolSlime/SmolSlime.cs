@@ -1,6 +1,8 @@
 using System;
 using NaughtyAttributes;
 using ToB.Entities;
+using ToB.Entities.Interface;
+using ToB.Memories;
 using UnityEngine;
 
 namespace ToB.Entities
@@ -22,8 +24,9 @@ namespace ToB.Entities
             DataSO = enemySO as SmolSlimeSO;
         }
 
-        private void Start()
+        protected override void OnEnable()
         {
+            base.OnEnable();
             InitProperties();
             
             FSM.Init();
@@ -33,6 +36,12 @@ namespace ToB.Entities
         {
             base.Reset();
             InitProperties();
+        }
+
+        public override void OnTakeDamage(IAttacker sender)
+        {
+            base.OnTakeDamage(sender);
+            if (Stat.CurrentHP > 0) audioPlayer.Play("Scream_04");
         }
 
         private void InitProperties()
@@ -54,6 +63,8 @@ namespace ToB.Entities
             base.Die();
             Animator.SetTrigger(EnemyAnimationString.Die);
             Hitbox.enabled = false;
+            audioPlayer.Play("Danger_01");
+            MemoriesManager.Instance.MemoryAcquired(10000);
             FSM.ChangePattern(null);
         }
     }

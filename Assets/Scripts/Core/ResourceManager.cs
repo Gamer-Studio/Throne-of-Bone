@@ -2,8 +2,13 @@ using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using ToB.Entities;
 using ToB.Entities.Effect;
+using ToB.Entities.Skills;
 using ToB.IO;
+using ToB.Scenes.Stage;
+using ToB.UI;
+using ToB.Utils;
 using ToB.Utils.Singletons;
+using ToB.World.Structures;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
@@ -37,7 +42,8 @@ namespace ToB.Core
         {
 
         }
-       
+
+        public float GoldUP;
         public int PlayerGold
         { 
             get => playerGold;
@@ -63,8 +69,6 @@ namespace ToB.Core
         public UnityEvent<int> onGoldChanged = new();
         public UnityEvent<int> onManaChanged = new();
         
-        [SerializeField] public GameObject goldPrefab;
-        [SerializeField] public GameObject manaPrefab;
         [SerializeField] private int ResourcePerObject = 20;
         [SerializeField] private int maxPrefabCount = 10;
 
@@ -75,19 +79,24 @@ namespace ToB.Core
         /// <param name="자원 타입 - Gold / Mana "></param>
         /// <param name="드랍할 자원의 양"></param>
         /// <param name="드랍할 지점"></param>
-        public void SpawnResources(InfiniteResourceType type, int resourceAmount, Transform spawnPoint)
+        public void SpawnResources(InfiniteResourceType type, int resourceAmount, Transform spawnPoint, float dropRate = 1f)
         {
+            if (resourceAmount <= 0) return;
+            
+            if (type == InfiniteResourceType.Mana && dropRate < Random.Range(0f, 1f)) return;
+            // 마나의 경우 드랍 확률에 따라 랜덤 드랍
+            
             //자원 오브젝트 생성할 수량 및 그 안에 들어갈 값 할당
             int prefabCount = Mathf.Clamp((resourceAmount / ResourcePerObject)+1, 1, maxPrefabCount);
             int resourceLeft = resourceAmount;
             // 자원 종류에 따라 프리펩 설정
-            GameObject prefab = (type == InfiniteResourceType.Gold) ? goldPrefab : manaPrefab;
+            var prefabRef = type == InfiniteResourceType.Gold ? "Entities/GoldOrb" : "Entities/EnergyOrb";
             // 생성 위치를 살짝 랜덤하게(몬스터 위치에서 반경 0.2)
             Vector2 randomPos = (Vector2)spawnPoint.position + Random.insideUnitCircle * 0.2f;
             
             for (int i = 0; i < prefabCount; i++)
             {
-                GameObject obj = prefab.Pooling();
+                GameObject obj = PoolingHelper.Pooling(prefabRef, true);
                 obj.transform.position = randomPos;
                 obj.transform.rotation = Quaternion.identity;
                 ResourceDropping resourceDropping = obj.GetComponent<ResourceDropping>();
@@ -105,14 +114,17 @@ namespace ToB.Core
                 resourceLeft -= ResourcePerObject;
             }
         }
-        
+
         /// <summary>
-        /// 플레이어에게 골드를 줍니다.
+        /// 플레이어에게 골드를 줍니다. isGoldUpApplied는 골드 획득량 증가 옵션 적용 여부입니다(기본 true)
+        /// 은행에서 출금하는 경우에는 false로 매개변수 넣어주시면 그대로 증가합니다.
         /// </summary>
         /// <param name="gold"></param>
-        public void GiveGoldToPlayer(int gold)
+        /// <param name="isGoldUPApplied"></param>
+        public void GiveGoldToPlayer(int gold, bool isGoldUPApplied = true)
         {
-            PlayerGold += gold;
+            if (isGoldUPApplied) PlayerGold += (int)(gold * (1 + GoldUP));
+            else PlayerGold += gold;
         }
         
         /// <summary>
@@ -122,6 +134,12 @@ namespace ToB.Core
         public void GiveManaToPlayer(int mana)
         {
             PlayerMana += mana;
+
+            if (SAVE.Current != null && !SAVE.Current.Achievements.GotFirstManaCrystal)
+            {
+                SAVE.Current.Achievements.GotFirstManaCrystal = true;
+                StartCoroutine(StageManager.Instance.SpecialCutScenes.ObtainedFirstManaCutScene());
+            }
         }
         
         /// <summary>
@@ -163,7 +181,7 @@ namespace ToB.Core
         public void UseGold(int requiredGold)
         {
             PlayerGold -= requiredGold;
-            UsedGold += requiredGold;
+            //UsedGold += requiredGold;
             Debug.Log($"{requiredGold} 골드를 사용했습니다.");
         }
         
@@ -174,9 +192,22 @@ namespace ToB.Core
         public void UseMana(int requiredMana)
         {
             PlayerMana -= requiredMana;
-            UsedMana += requiredMana;
+            //UsedMana += requiredMana;
             Debug.Log($"{requiredMana} 마나결정을 사용했습니다");
         }
+
+        /// <summary>
+        /// 스킬 초기화 시 사용한 골드를 돌려주는 메서드입니다.
+        /// </summary>
+        public void ReturnUsedResources()
+        {
+            GiveGoldToPlayer(UsedGold, false);
+            GiveManaToPlayer(UsedMana);
+            UsedGold = 0;
+            UsedMana = 0;
+        }
+        
+        
         #region Keys
         
         //public Dictionary<string, string> IndexedKey = new();
@@ -217,7 +248,7 @@ namespace ToB.Core
         
         
         #region DeathPenelty
-        /* 시체 오브젝트 클래스 만들어지면 그때 주석 해제 (Corpse)
+        // 시체 오브젝트 클래스 만들어지면 그때 주석 해제 (Corpse)
          
         /// <summary>
         /// 시체에게 자원 소지량을 전달해주는 메서드.
@@ -228,23 +259,24 @@ namespace ToB.Core
         /// 럽샷하는 경우(플레이어가 먼저 죽고 날아간 검기에 몹이 죽는다던지)의 골드/마나결정은
         /// 획득되게 할 건지, 획득하면 어떻게 처리할 것인지 같은 타이밍 이슈는 추후 생각하는 거로 하겠습니다.
         /// </summary>
-        public void GiveResourcesToCorpse(Corpse corpse)
+        public void GiveResourcesToCorpse(DeathObject obj)
         {
-            corpse.Gold = DropAllGoldsToCorpse();
-            corpse.Mana = DropAllManaToCorpse();
+            obj.gold = DropAllGoldsToCorpse();
+            obj.mana = DropAllManaToCorpse();
         }
         
-        */
         public int DropAllGoldsToCorpse()
         {
-            int totalGold = PlayerGold;
+            int totalGold = PlayerGold + UsedGold;
             PlayerGold = 0;
+            UsedGold = 0;
             return totalGold;
         }
         public int DropAllManaToCorpse()
         {
             int totalMana = PlayerMana + UsedMana;
             PlayerMana = 0;
+            UsedMana = 0;
             return totalMana;
         }
         
@@ -253,9 +285,11 @@ namespace ToB.Core
         #region Serialization
         public void LoadJson(JObject json)
         {
-            PlayerMana = json.Get(nameof(playerGold), 0);
-            PlayerGold = json.Get(nameof(playerMana), 0);
-            MasterKey = json.Get(nameof(MasterKey), 0);
+            PlayerMana = json.Get(nameof(playerMana), 0);
+            PlayerGold = json.Get(nameof(playerGold), 0);
+            MasterKey = json.Get(nameof(masterkey), 0);
+            UsedGold = json.Get(nameof(UsedGold), 0);
+            UsedMana = json.Get(nameof(UsedMana), 0);
         }
 
         public JObject ToJson()
@@ -263,7 +297,9 @@ namespace ToB.Core
             return new JObject(
                 new JProperty(nameof(playerMana), PlayerMana),
                 new JProperty(nameof(playerGold), PlayerGold),
-                new JProperty(nameof(MasterKey), MasterKey)
+                new JProperty(nameof(masterkey), MasterKey),
+                new JProperty(nameof(UsedGold), UsedGold),
+                new JProperty(nameof(UsedMana), UsedMana)
             );
         }
         #endregion

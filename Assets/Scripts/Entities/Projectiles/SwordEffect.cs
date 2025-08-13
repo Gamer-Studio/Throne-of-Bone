@@ -1,19 +1,16 @@
+using System;
 using NaughtyAttributes;
 using ToB.Utils;
 using UnityEngine;
 
 namespace ToB.Entities.Projectiles
 {
-  public class SwordEffect : PooledObject
+  public class SwordEffect : Projectile
   {
-    [ReadOnly] private new Camera camera;
-    [Label("피해량")] public float damage;
-    [Label("발사 방향")] private Vector2 direction = Vector2.zero;
+    [ReadOnly] private Camera mainCamera;
     [Label("속도")] public float speed = 1;
     [Label("넉백 세기")] public float knockBackForce = 15;
-    
-    public LayerMask hitLayers;
-    
+
     [SerializeField] private Rigidbody2D body;
     [SerializeField] private TrailRenderer trail;
     [SerializeField] private ParticleSystem ps;
@@ -34,7 +31,13 @@ namespace ToB.Entities.Projectiles
       if(trail) trail.Clear();
       if(ps) ps.Clear();
     }
-    
+
+    public override void Release()
+    {
+      launcher = null;
+      base.Release();
+    }
+
     #region Unity Event
     
     #if UNITY_EDITOR
@@ -46,9 +49,10 @@ namespace ToB.Entities.Projectiles
     
     #endif
     
-    private void OnTriggerEnter2D(Collider2D other)
+    protected override void OnTriggerEnter2D(Collider2D other)
     {
-      if ((hitLayers & 1 << other.gameObject.layer) == 0) return;
+      if (!gameObject.activeSelf) return;
+      if (!hitLayers.Contains(other)) return;
       
       other.KnockBack(knockBackForce, direction);
       
@@ -59,8 +63,7 @@ namespace ToB.Entities.Projectiles
           damageable.Damage(damage, this);
           HitEffect(other);
         }
-
-        Release();
+        //Release();
       }
     }
 
@@ -83,16 +86,23 @@ namespace ToB.Entities.Projectiles
       attackEffect.gameObject.SetActive(true);
     }
 
+
     private void OnEnable()
     {
-      camera = Camera.main;
+      ClearEffect();
+      mainCamera = Camera.main;
+    }
+
+    private void OnDisable()
+    {
+      ClearEffect();
     }
 
     private void FixedUpdate()
     {
-      body.MovePosition(body.position + direction * speed * Time.fixedDeltaTime);
+      body.MovePosition(body.position + direction * (speed * Time.fixedDeltaTime));
       
-      var pos = camera.WorldToViewportPoint(transform.position);
+      var pos = mainCamera.WorldToViewportPoint(transform.position);
 
       if (pos.x < 0 || pos.x > 1 || pos.y < 0 || pos.y > 1)
       {
