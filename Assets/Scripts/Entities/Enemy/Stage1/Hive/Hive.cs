@@ -69,10 +69,8 @@ namespace ToB
             float magnitude = offset.magnitude;
             Vector2 direction = offset.normalized;
 
-            RaycastHit2D hit = Physics2D.BoxCast(
+            RaycastHit2D hit = Physics2D.Raycast(
                 Hitbox.bounds.center,
-                newFly.Hitbox.size,
-                0,
                 direction,
                 magnitude,
                 LayerMask.GetMask("Ground"));
@@ -83,7 +81,9 @@ namespace ToB
             }
             else
             {
-                flyObj.transform.position = (Vector2)Hitbox.bounds.center + hit.distance * direction;
+                Vector2 halfSize = newFly.Hitbox.size * 0.5f;
+                Vector2 safePos = hit.point - direction * halfSize;
+                flyObj.transform.position = safePos;
             }
             
             flies.Add(flyObj);

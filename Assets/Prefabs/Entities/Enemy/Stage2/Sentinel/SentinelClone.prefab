@@ -5274,8 +5274,10 @@ MonoBehaviour:
   target: {fileID: 0}
   isAlive: 0
   <ReactOnDamage>k__BackingField: 0
+  audioPlayer: {fileID: 0}
   <Stat>k__BackingField: {fileID: 8461610263357192315}
   <Agent>k__BackingField: {fileID: 7905163863843119904}
+  <EnemyBody>k__BackingField: {fileID: 2276919871955517842}
   <SprintArea>k__BackingField: {fileID: 1887533624965994149}
   <LongSprintArea>k__BackingField: {fileID: 21072753506849848}
   rangeAttackDirection: {x: 0, y: 0}
@@ -5286,14 +5288,16 @@ MonoBehaviour:
     m_Bits: 128
   rangeAttackPrefab: {fileID: 6295309604525858464, guid: 996447bc498bd634091c74868e5359dc, type: 3}
   bloodBubblePrefab: {fileID: 6463559175173691897, guid: 39a7c1dbcb9156a40bf9fb4e6ffd77ca, type: 3}
+  <GlowObject>k__BackingField: {fileID: 1406293755445801483}
   area: {fileID: 0}
+  dashParticle: {fileID: 1488508479987173889}
   shockwavePrefab: {fileID: 2192233338000517532, guid: 1c9b0d0900a2b14418edee545992bccb, type: 3}
   shockwaveEffect: {fileID: 4566150077664063640}
   shockwaveSpawnPositionLeft: {fileID: 4696000437354762205}
   shockwaveSpawnPositionRight: {fileID: 4201595893320778567}
-  shockwaveAccelPower: 3
   phase2Aura: {fileID: 8344272835628300208}
-  isClone: 0
+  groundMoving: 0
+  isClone: 1
   original: {fileID: 0}
   prevHP: 0
 --- !u!1 &1754480609871749919
@@ -5377,6 +5381,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   knockbackType: 0
+  <Blockable>k__BackingField: 0
 --- !u!61 &2601286177716619756
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -5576,6 +5581,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53ab476cda1b5a342a8c9589483b3fc8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemy: {fileID: 0}
   currentHP: 0
 --- !u!1 &3650814803102868159
 GameObject:
@@ -5746,6 +5752,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   knockbackType: 0
+  <Blockable>k__BackingField: 0
 --- !u!61 &7905178070915784134
 BoxCollider2D:
   m_ObjectHideFlags: 0
