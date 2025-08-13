@@ -110,6 +110,7 @@ namespace ToB.Entities
         private void Update()
         {
             if (groundMoving &&
+                Physics.externalVelocity.ContainsKey(EnemyPhysicsKeys.MOVE) &&
                 Physics.IsLedgeOnSide(
                     DirectionUtil.GetHorizontalDirection(Physics.externalVelocity[EnemyPhysicsKeys.MOVE])))
             {

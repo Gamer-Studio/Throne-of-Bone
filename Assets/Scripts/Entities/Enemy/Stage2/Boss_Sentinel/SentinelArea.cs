@@ -43,7 +43,7 @@ namespace ToB.Entities
         {
             base.Awake();
             location.OnPlayerEntered += PlayerEntered;
-            location.OnPlayerExit += PlayerExit;
+            
         }
 
         protected override void OnEnable()
@@ -66,12 +66,6 @@ namespace ToB.Entities
             visited = true;
             StartCoroutine(SentinelRoomCoroutine());
         }
-
-        private void PlayerExit()
-        {
-            sentinel.SetTarget(null);
-        }
-
         #region BossSequence
         
         IEnumerator SentinelRoomCoroutine()
