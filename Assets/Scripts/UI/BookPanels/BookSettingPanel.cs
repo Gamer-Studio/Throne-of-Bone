@@ -43,11 +43,13 @@ namespace ToB.UI.BookPanels
         
         public void OpenHelpPage()
         {
+            UIManager.Instance.toastUI.Show("추후 추가 예정!");
             OpenPage(0);
         }
         
         public void OpenLoadPage()
         {
+            UIManager.Instance.toastUI.Show("추후 추가 예정!");
             OpenPage(1);
         }
 
@@ -64,6 +66,11 @@ namespace ToB.UI.BookPanels
         public void OpenQuitPage()
         {
             OpenPage(4);
+            Application.Quit();
+            #if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+            #endif
+            //게임 종료
         }
     }
 }
