@@ -9,6 +9,7 @@ namespace ToB.UI
     {
         [Header("스크롤 관련")]
         private ScrollRect scrollRect;
+        [SerializeField] private ScrollRect selectedSkillDescScrollRect;
         
         [Header("스킬 패널 스위칭 관련")]        
         [SerializeField] private Button OFN_PanelSwitchButton;
@@ -55,6 +56,7 @@ namespace ToB.UI
         {
             scrollRect.viewport = selectedPanel.GetComponent<RectTransform>();
             scrollRect.content = selectedPanel.gameObject.transform.GetChild(0).GetComponent<RectTransform>();
+            scrollRect.verticalNormalizedPosition = 1;
         }
         private void OnEnable()
         {
@@ -88,6 +90,7 @@ namespace ToB.UI
                 selectedSkillID = skillID;
                 if (selectedButton != null) selectedButton.GetComponent<EverySkillButtons>().UnClicked();
                 selectedButton = button.GetComponent<Button>();
+                selectedSkillDescScrollRect.verticalNormalizedPosition = 1;
                 SelectedSkillTextUpdate();
             }
         }
