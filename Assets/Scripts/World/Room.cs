@@ -155,7 +155,7 @@ namespace ToB.Worlds
 
 #endif
 
-    private void Awake()
+    protected virtual void Awake()
     {
       if (Background)
       {
@@ -164,12 +164,12 @@ namespace ToB.Worlds
       }
     }
 
-    private void Start()
+    protected virtual void Start()
     {
       Load();
     }
 
-    private void OnEnable()
+    protected virtual void OnEnable()
     {
       StageManager.Instance?.AddCameraCollision(Background.CameraCollider);
     }
@@ -218,7 +218,7 @@ namespace ToB.Worlds
         var data = ToJson();
         saveModule.Read(data);
       }
-      catch (NullReferenceException e)
+      catch (NullReferenceException)
       {
         DebugSymbol.Save.Log($"Error while saving room data: {stageIndex} / {roomIndex}");
       }

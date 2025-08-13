@@ -28,7 +28,7 @@ namespace ToB.Core
     [Foldout(Binding), SerializeField] private AudioMixer mixer;
     [Foldout(Binding), SerializeField] private AudioSource backgroundSource = null;
     [Foldout(Binding), SerializeField] private List<AudioSource> effectSources = new(); 
-    [Foldout(Binding), SerializeField] private AudioMixerGroup effectGroup, backgroundGroup, objectGroup;
+    [Foldout(Binding), SerializeField] private AudioMixerGroup masterGroup, effectGroup, backgroundGroup, objectGroup;
     
 #if UNITY_EDITOR
     [Foldout(Binding), SerializeField] private SerializableDictionary<string, AudioClip> loadedClips = new();
@@ -56,7 +56,7 @@ namespace ToB.Core
       EffectVolume = PlayerPrefs.GetFloat("EffectVolume", 80);
       ObjectVolume = PlayerPrefs.GetFloat("ObjectVolume", 80);
     }
-
+    
     private void FixedUpdate()
     {
       transform.eulerAngles = Vector3.zero;
@@ -96,8 +96,10 @@ namespace ToB.Core
 
         if (HasInstance)
         {
-          Instance.SetEffectVolume((input / 100) * (BackgroundVolume / 100));
-          Instance.backgroundSource.volume = (input / 100) * (EffectVolume / 100);
+          // Instance.SetEffectVolume((input / 100) * (BackgroundVolume / 100));
+          // Instance.backgroundSource.volume = (input / 100) * (EffectVolume / 100);
+          float dB = Mathf.Log10(Mathf.Clamp(input / 100, 0.0001f, 1f)) * 20;
+          Instance.mixer.SetFloat("Master", dB);
           Instance.onObjectVolumeChanged.Invoke();
         }
         
@@ -119,7 +121,11 @@ namespace ToB.Core
         var input = Math.Max(0, Math.Min(100, value));
 
         if (HasInstance)
-          Instance.backgroundSource.volume = (input / 100) * (MasterVolume / 100);
+        {
+          // Instance.backgroundSource.volume = (input / 100) * (MasterVolume / 100);
+          float dB = Mathf.Log10(Mathf.Clamp(input / 100, 0.0001f, 1f)) * 20;
+          Instance.mixer.SetFloat("Background", dB);
+        }
 
         backgroundVolume = input;
         PlayerPrefs.SetFloat(nameof(BackgroundVolume), input);
@@ -137,10 +143,15 @@ namespace ToB.Core
       set
       {
         var input = Math.Max(0, Math.Min(100, value));
-        
-        if (HasInstance) 
-          Instance.SetEffectVolume((input / 100) * (MasterVolume / 100));
-        
+
+        if (HasInstance)
+        {
+          float dB = Mathf.Log10(Mathf.Clamp(input / 100, 0.0001f, 1f)) * 20;
+          Instance.mixer.SetFloat("Object", dB);
+          Instance.mixer.SetFloat("UI", dB);
+          //Instance.SetEffectVolume((input / 100) * (MasterVolume / 100));
+        }
+
         effectVolume = input;
         PlayerPrefs.SetFloat(nameof(EffectVolume), input);
       }
@@ -331,6 +342,7 @@ namespace ToB.Core
           obj.transform.localPosition = Vector3.zero;
           var source = obj.AddComponent<AudioSource>();
 
+          source.outputAudioMixerGroup = ObjectMixer;
           source.clip = clip;
           source.Play();
           

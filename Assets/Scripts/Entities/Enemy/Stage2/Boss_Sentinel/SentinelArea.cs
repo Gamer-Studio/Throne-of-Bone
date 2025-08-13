@@ -39,14 +39,16 @@ namespace ToB.Entities
 
         private bool visited;
         
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             location.OnPlayerEntered += PlayerEntered;
             location.OnPlayerExit += PlayerExit;
         }
 
-        private void OnEnable()
+        protected override void OnEnable()
         {
+            base.OnEnable();
             clone1.gameObject.SetActive(false);
             clone2.gameObject.SetActive(false);
 
@@ -102,8 +104,6 @@ namespace ToB.Entities
             
             yield return StartCoroutine(SentinelDie());
             
-            // StageManager.Instance.ChangeGameState(GameState.Play);
-
             yield return new WaitForSeconds(1f);
 
             yield return StartCoroutine(UIManager.Instance.FadeOut(3));

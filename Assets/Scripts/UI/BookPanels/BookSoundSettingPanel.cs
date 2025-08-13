@@ -11,11 +11,11 @@ namespace ToB.UI.BookPanels
         [SerializeField] private Slider bgmSlider;
         [SerializeField] private Slider sfxSlider;
 
-        private void Awake()
+        private void OnEnable()
         {
-            masterSlider.value = AudioManager.MasterVolume;
-            bgmSlider.value = AudioManager.BackgroundVolume;
-            sfxSlider.value = AudioManager.EffectVolume;
+            masterSlider.value = AudioManager.MasterVolume / 100;
+            bgmSlider.value = AudioManager.BackgroundVolume / 100;
+            sfxSlider.value = AudioManager.EffectVolume / 100;
         }
 
         public void OnMasterVolumeChanged(float value)
