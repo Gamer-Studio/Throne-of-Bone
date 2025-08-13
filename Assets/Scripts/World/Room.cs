@@ -176,6 +176,7 @@ namespace ToB.Worlds
 
     private void OnDisable()
     {
+      Debug.Log("RoomIndex :" + roomIndex + " StageIndex :" + stageIndex);
       StageManager.Instance?.RemoveCameraCollision(Background.CameraCollider);
     }
 
