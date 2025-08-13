@@ -46,8 +46,9 @@ namespace ToB.Entities
             roomLocation = GetComponent<Location>();
         }
 
-        private void Start()
+        protected override void Start()
         {
+            base.Start();
             // TODO: 진행도에서 이미 깼으면 스스스로 파괴. 최적화 하고자 하면 보스를 사전참조하지 않고 못 깼으면 그 때 인스턴스화
             // TODO: 다만 entity 오브젝트에 스케일 맞게 끌어놓는 게 편해서 일단 이렇게 해둡니다
 

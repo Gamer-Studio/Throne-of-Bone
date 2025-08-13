@@ -39,14 +39,16 @@ namespace ToB.Entities
 
         private bool visited;
         
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             location.OnPlayerEntered += PlayerEntered;
             location.OnPlayerExit += PlayerExit;
         }
 
-        private void OnEnable()
+        protected override void OnEnable()
         {
+            base.OnEnable();
             clone1.gameObject.SetActive(false);
             clone2.gameObject.SetActive(false);
 
