@@ -46,13 +46,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23ba1b0e1ac8a8e448ed7c0ceb2027d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mainListener: {fileID: 510923995752718174}
   mixer: {fileID: 24100000, guid: 233ab21db9707ff4d87eb46c715e463d, type: 2}
   backgroundSource: {fileID: 486560850531452481}
   effectSources: []
+  masterGroup: {fileID: 24300002, guid: 233ab21db9707ff4d87eb46c715e463d, type: 2}
   effectGroup: {fileID: 2110489587007943128, guid: 233ab21db9707ff4d87eb46c715e463d, type: 2}
   backgroundGroup: {fileID: -7728757810967457398, guid: 233ab21db9707ff4d87eb46c715e463d, type: 2}
   objectGroup: {fileID: 2071010008975524842, guid: 233ab21db9707ff4d87eb46c715e463d, type: 2}
+  loadedClips:
+    array: []
+  onObjectVolumeChanged:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!81 &510923995752718174
 AudioListener:
   m_ObjectHideFlags: 0
