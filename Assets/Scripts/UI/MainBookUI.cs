@@ -52,7 +52,7 @@ namespace ToB.UI
             StageManager.Instance?.ChangeGameState(GameState.UI);
             if (indexToShow == 1 || indexToShow == 3)
             {
-                UIManager.Instance.toastUI.Show("추구 기능 추가 예정");
+                UIManager.Instance.toastUI.Show("추후 기능 개방 예정");
                 return;
             }
             for (int i = 0; i < panelObjects.Length; i++)

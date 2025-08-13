@@ -4,6 +4,7 @@ using ToB.Entities;
 using ToB.Entities.Effect;
 using ToB.Entities.Skills;
 using ToB.IO;
+using ToB.IO.SubModules;
 using ToB.Scenes.Stage;
 using ToB.UI;
 using ToB.Utils;
@@ -21,12 +22,12 @@ namespace ToB.Core
         Mana
     }
 
-    public class ResourceManager : DDOLSingleton<ResourceManager>, IJsonSerializable
+    public class ResourceManager : DDOLSingleton<ResourceManager>
     {
         // 싱글톤 선언 : Singleton<ResourceManager>.Instance.~~로 필요 시 호출
         private int playerGold;
         private int playerMana;
-        
+        private PlayerStatModule playerStat;
 
         private void OnEnable()
         {
@@ -45,27 +46,39 @@ namespace ToB.Core
 
         public float GoldUP;
         public int PlayerGold
-        { 
-            get => playerGold;
+        {
+            get => SAVE.Current?.PlayerStat.playerGold ?? 0;
             set
             {
-                playerGold = value;
-                onGoldChanged?.Invoke(playerGold);
+                SAVE.Current.PlayerStat.playerGold = value;
+                onGoldChanged?.Invoke(value);
             }
         }
-        public int UsedGold { get; set; }
+
+        private int usedGold;
+        public int UsedGold
+        {
+            get => SAVE.Current?.PlayerStat.playerUsedGold??0;
+            set => SAVE.Current.PlayerStat.playerUsedGold = value;
+        }
 
         public int PlayerMana
         { 
-            get => playerMana;
+            get => SAVE.Current?.PlayerStat.playerMana??0;
             set
             {
-                playerMana = value;
-                onManaChanged?.Invoke(playerMana);
+                SAVE.Current.PlayerStat.playerMana = value;
+                onManaChanged?.Invoke(value);
             }
         }
-        public int UsedMana { get; set; }
+        private int usedMana;
 
+        public int UsedMana
+        {
+            get => SAVE.Current?.PlayerStat.playerUsedMana??0;
+            set => SAVE.Current.PlayerStat.playerUsedMana = value;
+        }
+        
         public UnityEvent<int> onGoldChanged = new();
         public UnityEvent<int> onManaChanged = new();
         
@@ -161,6 +174,7 @@ namespace ToB.Core
             }
             if (PlayerMana < requiredMana)
             {
+                Debug.Log(SAVE.Current.PlayerStat.playerMana);;
                 Debug.Log("Not enough mana");
                 _isPlayerHaveEnoughResources = false;
             }
@@ -181,7 +195,6 @@ namespace ToB.Core
         public void UseGold(int requiredGold)
         {
             PlayerGold -= requiredGold;
-            //UsedGold += requiredGold;
             Debug.Log($"{requiredGold} 골드를 사용했습니다.");
         }
         
@@ -192,7 +205,6 @@ namespace ToB.Core
         public void UseMana(int requiredMana)
         {
             PlayerMana -= requiredMana;
-            //UsedMana += requiredMana;
             Debug.Log($"{requiredMana} 마나결정을 사용했습니다");
         }
 
@@ -213,17 +225,15 @@ namespace ToB.Core
         //public Dictionary<string, string> IndexedKey = new();
         // 추후 특정 문에만 맞는 키가 필요한 경우 로직 추가 - 딕셔너리 혹은 리스트?
 
-        private int masterkey;
         public UnityEvent<int> onMasterKeyChanged = new();
-
+        private int masterKey;
         public int MasterKey
         {
-            get => masterkey;
-
+            get => SAVE.Current?.PlayerStat.playerKey??0;
             set
             {
-                masterkey = value;
-                onMasterKeyChanged?.Invoke(masterkey);
+                SAVE.Current.PlayerStat.playerKey = value;
+                onMasterKeyChanged?.Invoke(value);
             }
         }
 
@@ -283,11 +293,12 @@ namespace ToB.Core
         #endregion
         
         #region Serialization
+        /*
         public void LoadJson(JObject json)
         {
             PlayerMana = json.Get(nameof(playerMana), 0);
             PlayerGold = json.Get(nameof(playerGold), 0);
-            MasterKey = json.Get(nameof(masterkey), 0);
+            MasterKey = json.Get(nameof(masterKey), 0);
             UsedGold = json.Get(nameof(UsedGold), 0);
             UsedMana = json.Get(nameof(UsedMana), 0);
         }
@@ -297,11 +308,12 @@ namespace ToB.Core
             return new JObject(
                 new JProperty(nameof(playerMana), PlayerMana),
                 new JProperty(nameof(playerGold), PlayerGold),
-                new JProperty(nameof(masterkey), MasterKey),
+                new JProperty(nameof(masterKey), MasterKey),
                 new JProperty(nameof(UsedGold), UsedGold),
                 new JProperty(nameof(UsedMana), UsedMana)
             );
         }
+        */
         #endregion
     }
 }

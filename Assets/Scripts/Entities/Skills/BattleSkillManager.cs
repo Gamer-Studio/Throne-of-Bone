@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using ToB.IO;
+using ToB.Scenes.Stage;
 using ToB.UI;
 using ToB.Utils;
 using ToB.Utils.Singletons;

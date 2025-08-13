@@ -15,6 +15,12 @@ namespace ToB.IO.SubModules
     [JsonProperty]
     public Dictionary<int, bool> savedMemoryStates = new();
 
+    [JsonProperty] public int playerGold;
+    [JsonProperty] public int playerMana;
+    [JsonProperty] public int playerUsedGold;
+    [JsonProperty] public int playerUsedMana;
+    [JsonProperty] public int playerKey;
+
     #endregion
 
     public PlayerStatModule(string name) : base(name) { }
