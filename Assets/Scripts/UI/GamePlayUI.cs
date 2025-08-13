@@ -32,6 +32,11 @@ namespace ToB.UI
             ResourceManager.Instance.onGoldChanged.AddListener(UpdateGoldText);
             ResourceManager.Instance.onManaChanged.AddListener(UpdateManaText);
             ResourceManager.Instance.onMasterKeyChanged.AddListener(UpdateKeyText);
+            
+        }
+
+        private void OnEnable()
+        {
             InitText();
         }
         

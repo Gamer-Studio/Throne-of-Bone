@@ -58,7 +58,9 @@ namespace ToB.Entities
         {
             base.Die();
             
+            Hitbox.enabled = false;
             Animator.SetTrigger(EnemyAnimationString.Die);
+            Strategy.ChangePattern(null);
             audioPlayer.Play("Death_03");
             MemoriesManager.Instance.MemoryAcquired(10005);
             Strategy.enabled = false;

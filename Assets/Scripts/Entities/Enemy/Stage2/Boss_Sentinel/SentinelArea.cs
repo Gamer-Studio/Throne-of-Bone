@@ -43,7 +43,7 @@ namespace ToB.Entities
         {
             base.Awake();
             location.OnPlayerEntered += PlayerEntered;
-            location.OnPlayerExit += PlayerExit;
+            
         }
 
         protected override void OnEnable()
@@ -66,12 +66,6 @@ namespace ToB.Entities
             visited = true;
             StartCoroutine(SentinelRoomCoroutine());
         }
-
-        private void PlayerExit()
-        {
-            sentinel.SetTarget(null);
-        }
-
         #region BossSequence
         
         IEnumerator SentinelRoomCoroutine()
@@ -107,6 +101,7 @@ namespace ToB.Entities
             yield return new WaitForSeconds(1f);
 
             yield return StartCoroutine(UIManager.Instance.FadeOut(3));
+            UIManager.Instance.fadePanel.color = new Color(0, 0, 0, 0);
 
             StageManager.Instance.EndGame();
         }
@@ -121,10 +116,12 @@ namespace ToB.Entities
         IEnumerator SentinelDie()
         {
             MemoriesManager.Instance.MemoryAcquired(2003);
+            sentinel.dashParticle.Stop();
+
+            yield return new WaitForSeconds(2);
+            
             speechBubbleRoot.SetActive(true);
             speechText.color = Color.red;
-            sentinel.dashParticle.Stop();
-            
             sentinel.Phase2Aura.SendEvent("OnStop");
             yield return StartCoroutine(TextCoroutine("…아직… 끝나지 않았어…"));
             yield return StartCoroutine(TextCoroutine("지켜야 해… 지켜야 해…"));

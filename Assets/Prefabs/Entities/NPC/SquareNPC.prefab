@@ -537,7 +537,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6348794539793448597}
@@ -559,7 +559,7 @@ MonoBehaviour:
   <DialogPanel>k__BackingField: {fileID: 7825876609995562195}
   <Bubble>k__BackingField: {fileID: 6691518702005481448}
   DialogRoot: {fileID: 7758018727391808953}
-  <ZoomSize>k__BackingField: 2.5
+  <ZoomSize>k__BackingField: 5
   <Sprite>k__BackingField: {fileID: 5732537911317206049}
   dialog: {fileID: 11400000, guid: 646f517a326cd0446849f3d39eabbe96, type: 2}
   dialogAccept: {fileID: 11400000, guid: 3a41a6ad887cbd945a0ec453821c3591, type: 2}
@@ -1580,9 +1580,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70e86f793b2729d41a109e1ead2c0678, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  text: {fileID: 7499311656155274982}
+  rootCanvasObject: {fileID: 0}
+  canvasGroup: {fileID: 0}
+  speechText: {fileID: 7499311656155274982}
   InteractShortcutIcon: {fileID: 4375756776791139164}
   thisRectTransform: {fileID: 2922006355389540554}
+  scaler: {fileID: 0}
+  skipFlag: 0
 --- !u!1 &8823317052907206763
 GameObject:
   m_ObjectHideFlags: 0
@@ -1656,9 +1660,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingLayerID: -1261954813
+  m_SortingLayer: -2
+  m_SortingOrder: 300
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

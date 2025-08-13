@@ -26,7 +26,7 @@ namespace ToB
 
         private void Awake()
         {
-            canvasGroup.alpha = 0;
+            if(canvasGroup) canvasGroup.alpha = 0;
             if(scaler) scaler.ScaleChangedAction += RebuildLayout;
         }
 

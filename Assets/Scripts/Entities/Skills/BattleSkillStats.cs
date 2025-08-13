@@ -53,7 +53,7 @@ namespace ToB.Entities.Skills
             player.stat.tempAtk = Atk;
             player.stat.tempMaxHP = MaxHp;
             player.stat.tempDef = Def;
-
+            player.stat.HealtoFullHp();
             if (IsImmuneByPoison)
             {
                 Debug.Log(Buff.Poison);

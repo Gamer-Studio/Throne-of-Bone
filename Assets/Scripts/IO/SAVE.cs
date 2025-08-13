@@ -22,7 +22,7 @@ namespace ToB.IO
     /// </summary>
     public static event Action<SAVE> OnCurrentLoad = save =>
     {
-      ResourceManager.Instance.LoadJson(save.Node(nameof(ResourceManager), true));
+      //ResourceManager.Instance.LoadJson(save.Node(nameof(ResourceManager), true));
     };
 
     /// <summary>
@@ -30,7 +30,7 @@ namespace ToB.IO
     /// </summary>
     public static event Action<SAVE> OnCurrentSave = save =>
     {
-      save.Node(nameof(ResourceManager)).Read(ResourceManager.Instance);
+      //save.Node(nameof(ResourceManager)).Read(ResourceManager.Instance);
     };
     
     public static readonly string SavePath = Path.Combine(Application.persistentDataPath, "Saves");
@@ -130,9 +130,8 @@ namespace ToB.IO
 
       InitMetaData();
 
-      Data.Save(rootPath);
-      
       OnSave?.Invoke();
+      Data.Save(rootPath);
     }
 
     private void InitMetaData()

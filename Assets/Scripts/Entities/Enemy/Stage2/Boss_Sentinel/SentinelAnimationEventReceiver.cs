@@ -20,6 +20,7 @@ namespace ToB.Entities
         public void Dodge()
         {
             sentinel.Physics.externalVelocity[EnemyPhysicsKeys.MOVE] = -10 * sentinel.LookDirectionHorizontal;
+            sentinel.groundMoving = true;
         }
 
         public void PlayDashParticle()
@@ -34,14 +35,19 @@ namespace ToB.Entities
         public void Sprint()
         {
             sentinel.Physics.externalVelocity[EnemyPhysicsKeys.MOVE] = 35 * sentinel.LookDirectionHorizontal;
+            sentinel.groundMoving = true;
+            
         }
         public void LongSprint()
         {
             sentinel.Physics.externalVelocity[EnemyPhysicsKeys.MOVE] = 80 * sentinel.LookDirectionHorizontal;
+            sentinel.groundMoving = true;
+            
         }
         public void LongSprintNext()
         {
             sentinel.Physics.externalVelocity[EnemyPhysicsKeys.MOVE] = 15 * sentinel.LookDirectionHorizontal;
+            sentinel.groundMoving = true;
         }
 
         public void Stop()
