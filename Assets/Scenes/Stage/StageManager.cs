@@ -130,9 +130,12 @@ namespace ToB.Scenes.Stage
       TOBInputManager.Instance.player = FindAnyObjectByType<PlayerController>();
       if (!TOBInputManager.Instance.player)
         DebugSymbol.Editor.Log("플레이어가 씬에 없습니다.");
-      
-      UIManager.Instance?.gamePlayUI.InitGages();
-      UIManager.Instance?.InitsAfterStageAwake();
+
+      if (UIManager.HasInstance)
+      {
+        UIManager.Instance.gamePlayUI.InitGages();
+        UIManager.Instance.InitsAfterStageAwake();
+      }
       // InputManager.Instance.SetActionMap(InputActionMaps.Player);
     }
 
@@ -145,6 +148,7 @@ namespace ToB.Scenes.Stage
       if (unloaded) return;
       if (loadedColliders.ContainsKey(coll)) return;
       if (!player || player.stat.Hp == 0) return;
+      if (!roomContainer) return;
 
       var obj = loadedColliders[coll] = new GameObject(coll.name);
       obj.transform.SetParent(confinerBorder.transform);

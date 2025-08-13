@@ -102,8 +102,6 @@ namespace ToB.Entities
             
             yield return StartCoroutine(SentinelDie());
             
-            // StageManager.Instance.ChangeGameState(GameState.Play);
-
             yield return new WaitForSeconds(1f);
 
             yield return StartCoroutine(UIManager.Instance.FadeOut(3));
