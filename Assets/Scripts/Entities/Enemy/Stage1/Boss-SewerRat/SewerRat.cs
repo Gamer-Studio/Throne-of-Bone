@@ -58,6 +58,7 @@ namespace ToB.Entities
         {
             base.Die();
             
+            Hitbox.enabled = false;
             Animator.SetTrigger(EnemyAnimationString.Die);
             Strategy.ChangePattern(null);
             audioPlayer.Play("Death_03");
