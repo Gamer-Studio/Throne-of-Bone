@@ -24,11 +24,10 @@ namespace ToB
         {
             base.Awake();
             DataSO = enemySO as HiveSO;
-            
-            if(!DataSO) Debug.LogError("HiveSO가 없습니다");
-            
-            
-            
+
+            if (!DataSO) Debug.LogError("HiveSO가 없습니다");
+
+
             PatrolRange.Init(DataSO.PatrolRange);
             ChaseRange.Init(DataSO.ChaseRange);
         }
@@ -38,7 +37,7 @@ namespace ToB
             base.OnEnable();
             flies = new List<GameObject>();
             RangeBaseSightSensor.Init(this);
-            
+
             stat.Init(this, DataSO);
         }
 
@@ -63,19 +62,32 @@ namespace ToB
             lastSummonTime = 0;
 
             GameObject flyObj = flyPrefab.Pooling();
+            Fly newFly = flyObj.GetComponent<Fly>();
 
-            flyObj.transform.position = PatrolRange.GetRandomPosition();
+            Vector2 chosenPosition = PatrolRange.GetRandomPosition();
+            Vector2 offset = chosenPosition - (Vector2)Hitbox.bounds.center;
+            float magnitude = offset.magnitude;
+            Vector2 direction = offset.normalized;
 
-            if (flyObj.transform.position.y > transform.position.y)
+            RaycastHit2D hit = Physics2D.BoxCast(
+                Hitbox.bounds.center,
+                newFly.Hitbox.size,
+                0,
+                direction,
+                magnitude,
+                LayerMask.GetMask("Ground"));
+
+            if (!hit)
             {
-                Vector3 pos = flyObj.transform.position;
-                pos.y = transform.position.y;
-                flyObj.transform.position = pos;
+                flyObj.transform.position = chosenPosition;
             }
-
+            else
+            {
+                flyObj.transform.position = (Vector2)Hitbox.bounds.center + hit.distance * direction;
+            }
+            
             flies.Add(flyObj);
 
-            Fly newFly = flyObj.GetComponent<Fly>();
             newFly.Init(this);
         }
 
@@ -95,12 +107,14 @@ namespace ToB
             {
                 if (fly) fly.Release();
             }
+
             base.Release();
         }
 
         public bool IsFlyInPatrolArea(Fly fly)
         {
-            return (fly.transform.position - PatrolRange.transform.position).sqrMagnitude < Mathf.Pow(DataSO.PatrolRange, 2);
+            return (fly.transform.position - PatrolRange.transform.position).sqrMagnitude <
+                   Mathf.Pow(DataSO.PatrolRange, 2);
         }
         // private void OnDestroy()
         // {

@@ -9,7 +9,7 @@ namespace ToB
         private  Vector2 camOriginPos;
         private Vector2 bgOriginPos;
 
-        private float weight = 0.98f;
+        public float weight = 0.975f;
         private void Awake()
         {
             camOriginPos = new Vector2(10.26434f, -12.39999f);
